@@ -36,6 +36,7 @@ url26 <- "https://datalab.ucdavis.edu/cstahmer/git_workshop_images/terminal_echo
 url27 <- "https://datalab.ucdavis.edu/adventures-in-datascience/vim_open.png"
 url28 <- "https://datalab.ucdavis.edu/adventures-in-datascience/vim_insert_mode.png"
 url29 <- "https://datalab.ucdavis.edu/adventures-in-datascience/vim_save.png"
+url30 <- "https://www.r-project.org/Rlogo.png"
 library(knitr)
 ```
 
@@ -519,4 +520,246 @@ $ git merge hotfix
 ![](`r url18`)
 
 
-# Next Section
+# Introduction to R: Part 1
+
+## Learning objectives
+
+After this lecture, you should be able to:
+
+  * define reproducible research and the role of programming languages
+  * explain what R and RStudio are, how they relate to eachother, and identify the purpose of the different RStudio panes
+  * create and save a script file for later use; use comments to annotate
+  * solve simple mathematical operations in R
+  * create variables and dataframes
+  * inspect the contents of vectors in R and manipulate their content
+  * subset and extract values from vectors
+  * use the help function
+
+![](`r url30`)
+
+## Before We Start
+
+**What is R and RStudio?** ["R"](https://www.r-project.org/about.html) is both a free and open source programming language designed for statistical computing and graphics, and the software for interpreting the code written in the R language. [RStudio](https://rstudio.com/products/rstudio/) is an integrative development environment (IDE) within which you can write and execute code, and interact with the R software. It's an interface for working with the R software that allows you to see your code, plots, variables, etc. all on one screen. This functionality can help you work with R, connect it with other tools, and manage your workspace and projects. You cannot run RStudio without having R installed. While RStudio is a commercial product, the free version is sufficient for most researchers.
+
+**Why learn R?** There are many advantages to working with R. 
+
+* *Scientific integrity.* Working with a scripting language like R facilitates reproducible research. Having the commands for an analysis captured in code promotes transparency and reproducibility. Someone using your code and data should be able to exactly reproduce your analyses. An increasing number of research journals not only encourage, but are beginning to require, submission of code along with a manuscript. 
+* *Many data types and sizes.* R was designed for statistical computing and thus incorporates many data structures and types to facilitate analyses. It can also connect to local and cloud databases.
+* *Graphics.* R has buit-in plotting functionalities that allow you to adjust any aspect of your graph to effectively tell the story of your data.
+* *Open and cross-platform.* Because R is free, open-source software that works across many different operating systems, anyone can inspect the source code, and report and fix bugs. It is supported by a large community of users and developers.
+* *Interdisciplinary and extensible.* Because anyone can write and share R packages, it provides a framework for integrating approaches across domains, encouraging innovation.   
+
+**Navigating the interface**
+  
+* *Source* is your script. You can save this as a .R file and re-run to reproduce your results. 
+* Console - this is where you run the code. You can type directly here, but it won't save anything entered here when you exit RStudio.
+* *Environment/history* lists all the objects you have created and the commands you have run. 
+* *Files/plots/packages/help/viewer* pane is useful for locating files on your machine to read into R, inspecting any graphics you create, seeing a list of available packages, and getting help.
+   
+To interact with R, compose your code in the script and use the commands execute (or run) to send them to the console. ([Shortcuts](https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf): You can use the shortcut Ctrl + Enter, or Cmd + Return, to run a line of code).
+
+_Create a script file for today's lecture and save it to your lecture_4 folder under ist008_2021 in your home directory. (It's good practice to keep your projects organized., Some suggested sub-folders for a research project might be: data, documents, scripts, and, depending on your needs, other relevant outputs or products such as figures._
+
+## Matematical Operations
+
+R works by the process of "REPL": Read-Eval-Print Loop:
+
+1. R waits for you to type an expression (a single piece of code) and press `Enter`.
+2. R then *reads* in your commands and parses them. It reads whether the command is syntactically correct. If so, it will then
+3. *evaluate* the code to compute a result.
+4. R then *prints* the result in the console and
+5. *loops* back around to wait for your next command.
+
+You can use R like a calculator to see how it processes commands. Arithmetic in R follows an *order of operations* (aka _PEMDAS_): Parenthesis, exponents, multiplication and division, addition and subtraction.
+
+```{r echo=T, results='hide'}
+7 + 2
+7 - 2
+244/12
+2 * 12
+```
+
+To see the complete order of operations, use the help command:
+
+```{r echo=T, results='hide'}
+?Syntax
+```
+
+## HELP! 
+
+This is just the beginning, and there are lots of resources to help you learn more. R has built-in help files that can be accessed with the '?'  and args() commands. You can search within the help documentation using the ?? commands. (Note: to get help with arithmetic commands you must put the symbol in single or double quotes.) You can view the package documentation using packageDescription("Name"). And, you can always ask the community: Google, Stack Overflow [r], [topic-specific mailing lists](http://www.r-project.org/mail.html), and the R-help mailing list. On CRAN, check out the [Intro to R Manual](http://cran.r-project.org/doc/manuals/R-intro.pdf) and [R FAQ](http://cran.r-project.org/doc/FAQ/R-FAQ.html). When asking for help, clearly state the problem and provide a [reproducible example](http://adv-r.had.co.nz/Reproducibility.html). [R also has a posting guide](http://www.r-project.org/posting-guide.html) to help you write questions that are more likely to get a helpful reply. It's also a good idea to save your sessionInfo() so you can show others how your machine and session was configured.
+                                                                                                                       
+## Calls
+
+R has many *functions* (reusable commands) built-in that allow you to compute mathematical operations, statistics, and other computing tasks. Code that uses a function is said to *call* that function. When you call a function, the values that you assign as input are called *arguments*. Some functions have multiple parameters and can accept multiple arguments.
+
+```{r echo=T, results='hide'}
+log(10)
+sqrt(9)
+sum(5, 4, 1)
+```
+
+## Variables
+
+A *variable* is a name for a stored value. Variables allow you to reuse the result of a computation, write general expressions (such as 'a*x + b'), and break up your code into smaller steps so it's easier to test and understand. Variable names can contain letters or numbers, but they *cannot* begin with a number. In general, variable names should be descriptive but concise, and should not use the same name as common (base R) functions, like mean, T, median, sum, etc.
+
+```{r echo=T, results='hide'}
+x <- 10
+y <- 24
+fantastic.variable2 = x
+x<-y/2
+```
+
+In R, variables are *copy-on-write*.  When we change a variable (a "write"), R automatically copies the original value so dependent variables are unchanged until they are re-run.
+
+```{r echo=T, results='hide'}
+x = 13
+y = x
+x = 16
+y
+```
+
+## Data Types and Classes
+
+R categorizes data into different types that specify how the object is stored in memory. The typeof() command will return the data type of an object. These types map to how we categorize data in statistics:
+
+* continuous (real numbers)
+* discrete (integers, or finite number of values)
+* logical (1 or 0, T or F)
+* nominal (unordered categorical values)
+* ordinal (ordered categorical values)
+* graph (network data)
+* character (text data) 
+
+Perhaps more useful for day-to-day programming is an object's class, which specifies how it behaves. Classes in R are hierarchical:
+
+* logical (TRUE, FALSE)
+* integer (2, 4, 7)
+* numeric (double, 2, 3, 5.7)
+* complex (3i)
+* character ("marie curie","grace hooper")
+
+```{r echo=T, results='hide'}
+x<- 2
+class(x)
+
+y<- "two"
+class(y)
+
+class(TRUE)
+
+class(mean)
+                
+```
+                                                                                                                       ## Vectors
+                                                                                                                       A *vector* is an ordered collection of values. The elements in the vector must have the same data type. (While class and type are independent, for vectors they are typically the same and thus you can expect that they typically should have the same class.)
+                                                                                                                          
+```{r echo=T, results='hide'}
+v<-c(16, 3, 4, 2, 3, 1, 4, 2, 0, 7, 7, 8, 8, 2, 25)
+class(v)
+
+place <- c("Mandro", "Cruess", "ARC", "CoHo", "PES", "Walker","ARC","Tennis Courts","Library","Arboretum","Arboretum","Disneyland","West Village","iTea", "MU")
+class(place)
+```
+
+What happens if you make a typo or try to combine different data types in the same vector? R resolves this for you and automatically converts elements within the vector to be the same data type. It does so through *implicit coercion* where it conserves the most information possible (logical -> integer -> numeric -> complex -> character). Sometimes this is very helpful, and sometimes it isn't.
+
+### Basic statistics on vectors
+
+You can use functions built into R to inspect a vector and calculate basic statistics.
+
+```{r echo=T, results='hide'}
+length(v)   # returns how many elements are within the object
+length(place)
+```
+
+```{r echo=T, results='hide'}
+min(v)   	# minimum value
+max(v)  		# maximum value
+mean(v)
+median(v)
+sd(v) 		# standard deviation
+```
+
+## Matrices, Arrays & Lists
+
+*Matrices* are two-dimensional containers for values. All elements within a matrix must have the same data type. Arrays generalize vectors and matrices to higher dimensions. In contrast, *lists* are containers for elements with different data types.
+
+## Data Frames
+
+We frequently work with 2-dimensional tables of data. For a tabular data set, typically each row corresponds to a single subject and is called an observation. Each column corresponds to the data measures or responses -- a feature or covariable. (Sometimes people will also refer to these as variables, but that can be confusing as "variable" means something else in R, so here we'll try to avoid that term.)  R's structure for tabular data is the *data frame.*
+
+A data frame is a list of column vectors. Thus, elements of a column must all have the same type (like a vector), but elements of a row can have different types (like a list). Additionally, every row must be the same length. To make a data frame in R, you can combine vectors using the data.frame() command.
+
+```{r echo=T, results='hide'}
+ids <- c(1:15)
+time.min<-v
+place <- place
+distance.mi <-c(3.1, 0.6, 0.8, 0.2, 0.5, 0.2, 0.7, 0.5, 0, 1.2, 1.2, 501, 1.6, 0.4, 4.7) 
+major<-c("nutrition","psychology","global disease","political science", "sociology", "sustainable agriculture","economics","political science","undeclared","psychology","undeclared","economics","political science","english","economics")
+
+my.data <- data.frame(place, distance.mi, time.min, major)
+```
+
+### Inspecting Data Frames
+
+You can print a small dataset, but it can be slow and hard to read especially if there are a lot of coumns. R has many other functions to inspect objects:
+
+```{r echo=T, results='hide'}
+head(my.data)
+tail(my.data)
+nrow(my.data)
+ncol(my.data)
+ls(my.data)
+rownames(my.data)
+str(my.data)
+summary(my.data)
+```
+
+## Subsetting
+
+Sometimes you will want to work with only specific elements in a vector or data frame. To do that, you can refer to the position of the element, which is also also called the index.  
+
+```{r echo=T, results='hide'}
+length(time.min)
+time.min[15]
+```
+
+You can also subset by using the name of an element in a list. The '$' operator extracts a named element from a list, and is useful for extracting the columns from data frames.
+
+How can we look at the distances response?
+ 
+```{r echo=T, results='hide'}
+my.data$distance.mi
+my.data[,2]
+distances2<-my.data[["distance.mi"]]
+distances3<-my.data[[2]]
+
+```
+
+What are the responses for political science majors?
+```{r echo=T, results='hide'}
+polisci_majors <- my.data[which(my.data$major == 'political science'), ]
+View(polisci_majors)
+
+which(my.data$major == "political science")
+shortframe<-my.data[c(4,8,13),]
+```
+
+What are the majors of the first 5 students who replied?
+
+```{r echo=T, results='hide'}
+shortframe2 <- my.data[1:5,"major"]             # range for rows, columns
+```
+
+You can also use '$'  to create an element.
+
+```{r echo=T, results='hide'}
+my.data$mpm <- my.data$distance / my.data$time
+```
+
+*Factors* are the class that R uses to represent categorical data.' *Levels* are categories of a factor.
+
+```{r echo=T, results='hide'}
+levels(my.data$major)
+```
