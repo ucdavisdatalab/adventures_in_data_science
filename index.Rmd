@@ -936,3 +936,24 @@ for (i in 1:10) {
   print(i)
 }
 ```
+
+## Iterating Data.Frame Rows in R ##
+
+In the section on *for* loops above, we learned that you can easily iterate across all values of a list using a "for *i* in *x*" loop.  Working with R data.frames adds a bit of complexity to this process.  Because R was developed as a language for statistial analysis, which always involves the comparison of multiple observations of the same variable (for example, all of the weights recroded across all patients), the default behavior of the "for *i* in *x*" loop when applied to data.frames is to iterate across columns (variables) rather than rows (observations).  Consider the following example:
+
+```
+for (i in iris) {
+  print(i)
+}
+```
+
+If you run the above code, in the first iteration R will assign the vector of values contained in the firt column (Sepal.Length) to *i*, in the second iteration it will assign vectore of values contained in the second column (Sepal.Width) to *i*, etc.  
+
+Iterating through the data columns of a data.frame is useful for many (if not most) operations.  However, there are time when we want to iterate through data one observation at a time.  To accomplish this, we nee do specifically direct R to move through the data.frame by row, as follows:
+
+```
+for (i in 1:nrow(iris)) {
+  thisrow <- iris[i,]
+  print(thisrow)
+}
+```
