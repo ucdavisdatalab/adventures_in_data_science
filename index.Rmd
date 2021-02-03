@@ -1585,7 +1585,16 @@ Unicode escape sequences are usually only used for characters that are not easy
 to type. For example, the cat emoji is number `1f408` (in base 16) in Unicode.
 So the string `"\U1f408"` is the cat emoji.
 
+Note that being able to see printed Unicode characters also depends on whether
+the font your computer is using has a glyph (image representation) for that
+character. Many fonts are limited to a small number of languages. The
+[NerdFont][] project patches fonts commonly used for programming so that they
+have better Unicode coverage. Using a font with good Unicode coverage is not
+essential, but it's convenient if you expect to work with many different
+natural languages or love using emoji.
+
 [base 16]: https://en.wikipedia.org/wiki/Hexadecimal 
+[NerdFont]: https://www.nerdfonts.com/
 
 
 #### Character Encodings in Text Files
@@ -1721,6 +1730,11 @@ can get the first element with:
 result[[1]]
 ```
 
+We have to use the double square bracket `[[` operator here because `x` is a
+list (for a vector, we could use the single square bracket operator instead).
+Notice that in the printout for `result`, R gives us a hint that we should use
+`[[` by printing `[[1]]`.
+
 To see why the function returns a list, consider what happens if we try to
 split two different sentences at once:
 ```{r}
@@ -1819,12 +1833,17 @@ Metacharacter | Meaning
 
 More metacharacters are listed on the stringr cheatsheet, or in `?regex`.
 
-
-### The Wildcard
-
 The `str_view` function is especially helpful for testing regular expressions.
 It opens a browser window with the first match in the string highlighted. We'll
 use it in the subsequent regex examples.
+
+The [RegExr][] website is also helpful for testing regular expressions; it
+provides an interactive interface where you can write regular expressions and
+see where they match a string.
+
+[RegExr]: https://regexr.com/
+
+### The Wildcard
 
 The regex wildcard character is `.` and matches any single character.
 
