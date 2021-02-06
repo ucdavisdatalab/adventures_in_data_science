@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Adventures in Data Science</title>
-  <meta name="description" content="Adventures in Data Science" />
+  <title>8 Packages and Functions | Adventures in Data Science</title>
+  <meta name="description" content="8 Packages and Functions | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Adventures in Data Science" />
+  <meta property="og:title" content="8 Packages and Functions | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Adventures in Data Science" />
+  <meta name="twitter:title" content="8 Packages and Functions | Adventures in Data Science" />
   
   
   
@@ -35,8 +35,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="working-with-the-command-line.html"/>
+<link rel="prev" href="iterating-loops.html"/>
+<link rel="next" href="file-input-and-output.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -291,32 +291,170 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Adventures in Data Science</h1>
-<p class="author"><em>Dr. Carl G. Stahmer</em></p>
-<p class="author"><em>Dr. Pamela L. Reynolds</em></p>
-<p class="author"><em>Dr. Tyler Shoemaker</em></p>
-<p class="author"><em>Carrie Alexander</em></p>
-<p class="author"><em>Arthur Koehl</em></p>
-<p class="date"><em>2021-02-05</em></p>
+<div id="packages-and-functions" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Packages and Functions</h1>
+<div id="learning-objectives-1" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Learning objectives</h2>
+<p>After this lecture, you should be able to:</p>
+<ul>
+<li>explain what a function is</li>
+<li>read and understand the basic syntax of a function in R</li>
+<li>use this syntax to call a function</li>
+<li>use this syntax to build your own function</li>
+<li>test your function</li>
+<li>install packages in R</li>
+<li>load libraries in R</li>
+</ul>
 </div>
-<div id="overview" class="section level1 unnumbered">
-<h1>Overview</h1>
-<p><img src="img/datalab-logo-full-color-rgb.png" /></p>
-<p>This tutorial covers the basics of using the Command Line and Git to track and
-record changes to files on your local computer. It provides background
-information that will help you to better understand the concepts that we will
-discuss in class and to better participate in the hands-on portion of the
-course.</p>
+<div id="what-is-a-function" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> What is a function?</h2>
+<p>Why build code several or a hundred times when you can build it once and then call and run it as many times as you want? The answer is, don’t! A function allows you to perform an action multiple times in R by calling it and applying it in similar contexts.</p>
+<p>For instance, if you build a function that checks the class of all vectors in a dataframe, you can name this function and then apply it to do the same operation with any other dataframe. Or, if you build a function that graphs the correlation between two numeric vectors and exports this graph to a .png file, you can call this same function and apply it to two other vectors, again and again as needed. Functions can greatly increase the efficiency of your programming, and allow you to create flexible and customized solutions.</p>
+</div>
+<div id="what-is-the-basic-syntax-of-a-function-in-r" class="section level2" number="8.3">
+<h2><span class="header-section-number">8.3</span> What is the basic syntax of a function in R?</h2>
+<p>The basic syntax of a function in R, or the way it should be written so that R recognizes it and applies it do perform actions, is usually stated as follows:</p>
+<pre><code>function_name &lt;- function(argument_1, argument_2, ...) {
+   Function body 
+}
+</code></pre>
+<p>What this does not demonstrate is that there are actually two steps to a function: building it, and applying it. We will look at both steps in the following <a href="https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what">code from DataCamp:</a></p>
+</div>
+<div id="step-1-building-a-function" class="section level2" number="8.4">
+<h2><span class="header-section-number">8.4</span> Step 1: Building a function</h2>
+<pre><code>myFirstFun&lt;-function(n)
+{
+  # Compute the square of integer `n` 
+  n*n  
+}</code></pre>
+<p>The code chunk builds the function, setting “myFirstFun” as the name, or variable, to which they have assigned the function. The function itself runs from the word “function” down through the closing curly brace.</p>
+<p><strong>What is an argument?</strong>
+In the above example, “(n)” is the argument. R looks for this argument (in this case, “n”) in the body of the function, which in this case is n*n.</p>
+<p>When we run the above script, the function is saved as an object into the global environment so that it can be called elsewhere, as demonstrated in the code chunks below.</p>
+<p><em>The function has no effect unless you apply it. Until that happens, the function will do nothing but wait to be called.</em></p>
+</div>
+<div id="step-2-calling-the-function" class="section level2" number="8.5">
+<h2><span class="header-section-number">8.5</span> Step 2: Calling the function</h2>
+<p>The code chunk below calls “myFirstFun(n)” and tells R to assign the results of the operation the function performs (n*n) to the variable “u”. But if we run this code as it is (with “n” in the parentheses), we will get an error (unless we have previously assigned “n” as a variable with a value that will accept the operation to be performed — so “n” needs to be a number in this case so that it can be multiplied). We do not actually want to perform the function on the letter “n” but rather, on a number that we will insert in the place of “n.”</p>
+<p>We can apply this function by setting “n” as a number, such as 2, in the example below.</p>
+<pre><code># Call the function with argument `n`
+u &lt;- myFirstFun(2)
 
+# Call `u`
+u</code></pre>
+<p>Once we have changed “n” to a number, R then performs this operation and saves the result to a new variable “u”. We can then ask R to tell us what “u” is, and R returns or prints the results of the function, which in this case, is the number 4 (2*2).</p>
+<p>The image below shows the results we get if we attempt to run the function without changing the argument “n” to a number (giving us an error), and the results when we change “n” to the number “2” which assigns the result of the function (4) to “u”, or the number “3” which assigns the result of the function (now 9) to “u”.</p>
+<p><img src="img/sample_lec7.png" /></p>
+<p>It is important to understand that “n” is an <strong>argument</strong> of the function “myFirstFun.” R does not consider “n” a variable, but it acts like a variable because it can change as you call the function into different contexts.
+<em>To R, “u” and “myFirstFun” are variables because they are names to which values and other content are assigned.</em></p>
+<p>Here is another example of a function with one argument:</p>
+<p><strong>Step 1: Build the function</strong>
+In the code below, we will build a function that checks the classes of all vectors in a dataframe.</p>
+<pre><code>#build function with one argument (variable)
+check_class &lt;- function(data) {
+  lapply(data, class)
+}</code></pre>
+<p><strong>Step 2: Call the function in one or more contexts.</strong>
+In the code below, we will call the function we built above and apply it to two different datasets. Just as we saw in the example above where we inserted the numbers 2 or 3 in place of “n”, we will insert the name of the datasets we want to use in place of the word “data” to call the new function we have built.</p>
+<ul>
+<li>Note: you will need to load the built-in R datasets “mtcars” and “iris” in order to test the code below.*</li>
+</ul>
+<pre><code>#run check_class function on two different dataframes
+check_class(mtcars)
+check_class(iris)</code></pre>
+</div>
+<div id="a-function-can-have-more-than-one-argument" class="section level2" number="8.6">
+<h2><span class="header-section-number">8.6</span> A function can have more than one argument</h2>
+<p>A function works similarly when it has two or more arguments.</p>
+<p>Let’s say we only want to look at the first vector or column in the dataframe “mtcars.” We would write a line of code that looks like this:</p>
+<pre><code>#pull the values of the first column /vector in the dataframe &quot;mtcars&quot;
+mtcars[1]</code></pre>
+<p>But if we wanted to create a function that looks at any column/vector in any dataframe, we could write a function that looks like this:</p>
+<pre><code>#build function with two arguments (variable)
+one_column &lt;- function(data, x) {
+  data[x]
+}</code></pre>
+<p><em>Note: if we want to tell a user what kind of input we want to include, we could instead do something like function(dataset, column_position) or function(dataset, column_name).</em></p>
+<p>Once we have run the above function (telling R to save it to the global environment), we would then call this new function, which we have named one_column, and apply it to various dataframes, and telling R which column or vector in each dataframe we want to view.</p>
+<pre><code>#run one_column function on two different dataframes
+one_column(mtcars, 1)
+one_column(iris, 2)</code></pre>
+<p>#Packages</p>
+<p>A package is a set of functions that other users and developers have made that allow R users to perform various operations. As with many applications and software, some R packages are well crafted, documented, and updated frequently, while others are not. You will want to use your best judgment and choose packages that you think will help you in your work, but will remain stable and functional. Try adding the packages below:</p>
+<pre><code>dplyr
+wakefield
+rlang
+</code></pre>
+<p>Go to Tools &gt; Install Packages in RStudio, search for the functions, and then follow the steps to install them.</p>
+<p>Once you have installed them, you will then need to load the libraries into your R environment by using the following code:</p>
+<pre><code>#load libraries
+library(dplyr)
+library(wakefield)
+library(rlang)</code></pre>
+<p><a href="https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html">Click here to find out more about dplyr</a>
+<a href="https://cran.r-project.org/web/packages/wakefield/wakefield.pdf">Click here to find out more about wakefield</a>
+<a href="https://cran.r-project.org/web/packages/rlang/index.html">Click here to find out more about rlang</a></p>
+<p>If you have installed the above packages and loaded their libraries, you can then create a function that uses the table you made in the earlier session, “Introduction to R,” to add five rows of data, add a logical vector with randomly assigned logical values, and save this as a new table. Your function might look something like this code below. The comment tags indicate what each line of the function will do.</p>
+<p><em>Note: you will need to load in your data for my.table with the initial 15 rows before proceeding with the next steps.</em></p>
+<p>#Step 1: Build a function that adds a logical vector with randomly assigned TRUE/FALSE values</p>
+<pre><code>make_logical.vec &lt;- function(dataset, new.col) {
+  #make logical vector with random values
+  vector_1 &lt;- r_sample_logical(15, prob = NULL, name = &quot;new.vector&quot;) %&gt;% as.logical()  
+  
+  #tell R to read input for the name of new.col so that we can assign this name to the vector/column
+  colName = quo_name(new.col) 
+  
+  #add our new vector, with the name we have specified, to the dataset
+  dataset %&gt;% mutate(!!quo_name(colName) := vector_1) #create new 
+}</code></pre>
+<p>#Step 2: Call our new function ‘make_logical.vec’ and assign the results to the table ‘my.data’.</p>
+<pre><code>my.data &lt;- make_logical.vec(my.data, &quot;logical.vec&quot;)</code></pre>
+<p><em>Note: If we call the function, setting the dataset to ‘my.data’ and the name of the new vector to ‘logical.vec’, it will create the dataframe but will only print it for us in our console. If we want to actually save the new dataframe to update our existing dataframe, we need to reassign it to ‘my.data’, so that the updated dataframe replaces the original dataframe.</em></p>
+<p>As we can see in the code above, a function can contain more than one variable, and can include several or many lines of code and perform many operations. The above example demonstrates this, and also shows that packages such as as the ones we have loaded here, while optional for working in R, can allow you to call many useful functions.</p>
+</div>
+<div id="using-a-package-and-function-to-graph-data-and-export-a-.png" class="section level2" number="8.7">
+<h2><span class="header-section-number">8.7</span> Using a package and function to graph data and export a .png</h2>
+<p>We can install and load the ‘ggplot’ or ‘ggforce’ package to graph data from a dataframe and export the graph to a file. For example, below we can build a function that graphs the data from two columns/vectors, and then generates a .png file.</p>
+<p>We start by loading the package that contains the plotting functions we want to use:</p>
+<p><em>Note: if you have not installed ggforce already, you will want to do that now.</em></p>
+<pre><code>#graph distance and time from our.data
+library(ggforce)</code></pre>
+<p>Next, we could build a function that looks like this:</p>
+<pre><code># write function that graphs two variables from dataset  
+graph_data &lt;- function(data, column1, column2, n)  {
+  distances &lt;- (data %&gt;% filter(column1 &lt;= &quot;n&quot;)) %&gt;%
+    ggplot(aes(column2, column1)) +
+    geom_point() +
+    geom_smooth(method = &quot;lm&quot;, se = FALSE)
+  png(&quot;graph.png&quot;)
+  print(graph)
+  dev.off() 
+}</code></pre>
+<p>Lastly, we can call the above function, and apply it to the dataframe, my.table, to compare distance and time of travel.</p>
+<pre><code>graph_data(my.data, my.data$distance.mi, my.data$time.min, 14.0)</code></pre>
+<p>The above function generates a .png that looks like this:</p>
+<p><img src="img/graph_time_dist_mydata.png" /></p>
+</div>
+<div id="saving-functions-and-calling-them-from-another-file" class="section level2" number="8.8">
+<h2><span class="header-section-number">8.8</span> Saving functions and calling them from another file</h2>
+<p>You can save the functions you build to a separate file, and then load these as a source. For example, I might save my functions to an R script, called “functions.r”. I can then load these sources along with my packages into my R environment.</p>
+<p><em>Note: Although we loaded libraries as we went through this lesson, the best practice is to run your packages and source files at the very beginning of your new R script, as shown in the example that follows.</em></p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="packages-and-functions.html#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb81-2"><a href="packages-and-functions.html#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wakefield)</span>
+<span id="cb81-3"><a href="packages-and-functions.html#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rlang)</span>
+<span id="cb81-4"><a href="packages-and-functions.html#cb81-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggforce)</span>
+<span id="cb81-5"><a href="packages-and-functions.html#cb81-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;functions.r&quot;</span>) </span></code></pre></div>
+<p>The above code will allow you to call functions that are saved in these libraries and in the functions.r file.</p>
+
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="working-with-the-command-line.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="iterating-loops.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="file-input-and-output.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -338,7 +476,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/08_r-functions-packages.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -346,7 +484,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/08_r-functions-packages.Rmd",
 "text": null
 },
 "download": null,

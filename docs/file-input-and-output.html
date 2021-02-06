@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Adventures in Data Science</title>
-  <meta name="description" content="Adventures in Data Science" />
+  <title>9 File Input and Output | Adventures in Data Science</title>
+  <meta name="description" content="9 File Input and Output | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Adventures in Data Science" />
+  <meta property="og:title" content="9 File Input and Output | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Adventures in Data Science" />
+  <meta name="twitter:title" content="9 File Input and Output | Adventures in Data Science" />
   
   
   
@@ -35,8 +35,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="working-with-the-command-line.html"/>
+<link rel="prev" href="packages-and-functions.html"/>
+<link rel="next" href="strings-and-regular-expressions.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -291,32 +291,170 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Adventures in Data Science</h1>
-<p class="author"><em>Dr. Carl G. Stahmer</em></p>
-<p class="author"><em>Dr. Pamela L. Reynolds</em></p>
-<p class="author"><em>Dr. Tyler Shoemaker</em></p>
-<p class="author"><em>Carrie Alexander</em></p>
-<p class="author"><em>Arthur Koehl</em></p>
-<p class="date"><em>2021-02-05</em></p>
+<div id="file-input-and-output" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> File Input and Output</h1>
+<p>This lesson will cover some standard functions for reading and writing data in R.</p>
+<div id="objectives" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Objectives</h2>
+<ul>
+<li>getting and setting working directory</li>
+<li>save and load R objects to/from disk</li>
+<li>read and write tabular data</li>
+<li>read data from a url</li>
+</ul>
 </div>
-<div id="overview" class="section level1 unnumbered">
-<h1>Overview</h1>
-<p><img src="img/datalab-logo-full-color-rgb.png" /></p>
-<p>This tutorial covers the basics of using the Command Line and Git to track and
-record changes to files on your local computer. It provides background
-information that will help you to better understand the concepts that we will
-discuss in class and to better participate in the hands-on portion of the
-course.</p>
+<div id="basic-idea" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> Basic Idea</h2>
+<p>As a data scientist, you will constantly be reading from and writing to files.
+Generally you are given some dataset that you need to analyze and report on.
+This means that you need to load the data into R, run some code, and finally save some outputs.
+This is all done with files.</p>
+</div>
+<div id="file-formats" class="section level2" number="9.3">
+<h2><span class="header-section-number">9.3</span> File Formats</h2>
+<p>When people talk about binary files, vs text files what they really mean is - is it human readable?
+A text file should have text data that a human can read with a text editor.
+A binary file has binary data that a human can’t really read, but the appropriate software can.</p>
+</div>
+<div id="filesystems-and-paths" class="section level2" number="9.4">
+<h2><span class="header-section-number">9.4</span> Filesystems and Paths</h2>
+<p>At a high level, files are information stored on a computer.
+Each file has a name, and a unique file path.
+A filepath is the location of the file in the storage device.
+A file name as two parts: the name and the file extension.</p>
+<p>The file extension (everything after the .) is meant to indicate to the user (you) and the operating system what the file contains.
+This hint means you often times don’t need to open the file to know what kind of data it has.
+However, the extension is not enforced by anything, its just a useful suggestion.</p>
+<p>Paths can be relative or absolute.
+An absolute path is the full path through the filesystem to reach a file.
+A relative path is the path from some starting point to the file you want to reach.
+You can consider a relative path as something that needs to be combined with another path to reach a file.</p>
+</div>
+<div id="get-and-set-working-directory" class="section level2" number="9.5">
+<h2><span class="header-section-number">9.5</span> get and set working directory</h2>
+<p>Before we begin, we will get and set our working directory in R.
+You can think of the working directory as the part that gets combined with the relative path.</p>
+<p><code>getwd()</code> will return the absolute file path of the working directory</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="file-input-and-output.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
+<p>Call setwd to set the working directory to a path you specify as an input argument.</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="file-input-and-output.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;~/Documents/file_io/&quot;</span>) <span class="co"># notice the argument</span></span>
+<span id="cb83-2"><a href="file-input-and-output.html#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
+<p>A really useful function in R is list.files(), which lists all the files at a given path.
+Listing the files should confirm for us that we are in the right place.</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="file-input-and-output.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>() </span></code></pre></div>
+</div>
+<div id="saving-and-loading-r-data" class="section level2" number="9.6">
+<h2><span class="header-section-number">9.6</span> saving and loading R data</h2>
+<div id="rds" class="section level3" number="9.6.1">
+<h3><span class="header-section-number">9.6.1</span> rds</h3>
+<p>A simple way to save an R object directly to a file, such that it can be loaded into another R session is with the <code>saveRDS</code> function.
+<code>saveRDS</code> will write a single object to a specified file path.
+By default, it will save the object as a binary representation.
+This can be very useful for large objects, as the binary format will be significantly more space efficient.</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="file-input-and-output.html#cb85-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</span>
+<span id="cb85-2"><a href="file-input-and-output.html#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(y, <span class="at">file=</span><span class="st">&quot;myvectors.rds&quot;</span>)</span></code></pre></div>
+<p>Confirm that it worked.</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="file-input-and-output.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>()</span></code></pre></div>
+<p>The counterpart to <code>saveRDS</code> is <code>readRDS</code>.
+With <code>readRDS</code>, you can load in an rds file, which by definition contains a single R object, and assign it to a variable in your session.</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="file-input-and-output.html#cb87-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;myvector.rds&quot;</span>)</span></code></pre></div>
+<p>This will work for any R object.
+For example.</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="file-input-and-output.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(mtcars, <span class="at">file=</span><span class="st">&quot;mtcars.rds&quot;</span>)</span>
+<span id="cb88-2"><a href="file-input-and-output.html#cb88-2" aria-hidden="true" tabindex="-1"></a>my_cars <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;mtcars.rds&quot;</span>)</span></code></pre></div>
+<p>Saving and loading using <code>readRDS</code> is really powerful to save data.
+However, it does have a pretty significant drawback - its useless outside of R.
+For someone to explore the data, they would need to load R.</p>
+</div>
+</div>
+<div id="reading-and-writing-text-data" class="section level2" number="9.7">
+<h2><span class="header-section-number">9.7</span> Reading and Writing Text data</h2>
+<p>In addition to <code>saveRDS</code> and <code>readRDS</code>,
+R has functions for working with text files.</p>
+<p>These are commonly used for getting external data into R.
+And for exporting your data so that it can be used by other people.</p>
+<div id="tabular-data" class="section level3" number="9.7.1">
+<h3><span class="header-section-number">9.7.1</span> tabular data</h3>
+<p>Generally the data you work with in R will be tabular.
+Dataframes are an example of tabular data.</p>
+</div>
+<div id="read-and-write-table" class="section level3" number="9.7.2">
+<h3><span class="header-section-number">9.7.2</span> read and write table</h3>
+<p>To write tabular data from a text file use the write.table function.
+Before running it, lets look at the documentation and understand the key arguments.</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="file-input-and-output.html#cb89-1" aria-hidden="true" tabindex="-1"></a>?write.table </span></code></pre></div>
+<p>The important arguments are x, file, and sep.</p>
+<p><strong>x</strong> is the dataframe you are saving.
+<strong>file</strong> is the name of the file you want to create and write to.
+<strong>sep</strong> is the field separator, also called delimiter.</p>
+<p>Notice that if file is left blank, then R will just print the results to the console, instead of into a file.
+Lets use this to explore what the <strong>sep</strong> argument does.</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="file-input-and-output.html#cb90-1" aria-hidden="true" tabindex="-1"></a>small <span class="ot">=</span> <span class="fu">head</span>(my_cars)</span>
+<span id="cb90-2"><a href="file-input-and-output.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small)</span>
+<span id="cb90-3"><a href="file-input-and-output.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot; &quot;</span>)</span>
+<span id="cb90-4"><a href="file-input-and-output.html#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot;.&quot;</span>)</span>
+<span id="cb90-5"><a href="file-input-and-output.html#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot;,&quot;</span>)</span></code></pre></div>
+<p>Lets write our data to a file.</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="file-input-and-output.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(my_cars, <span class="at">file=</span><span class="st">&quot;cars.txt&quot;</span>) </span>
+<span id="cb91-2"><a href="file-input-and-output.html#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>() <span class="co"># confirm it worked</span></span></code></pre></div>
+<p>Now lets read the data back in.</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="file-input-and-output.html#cb92-1" aria-hidden="true" tabindex="-1"></a>from_cars.txt <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">&quot;cars.txt&quot;</span>) </span></code></pre></div>
+<p>Always inspect your data to make sure everything worked</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="file-input-and-output.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(from_cars.txt)</span>
+<span id="cb93-2"><a href="file-input-and-output.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(from_cars.txt)</span>
+<span id="cb93-3"><a href="file-input-and-output.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(from_cars.txt)</span></code></pre></div>
+</div>
+<div id="csv-format" class="section level3" number="9.7.3">
+<h3><span class="header-section-number">9.7.3</span> CSV format</h3>
+<p>A CSV (comma separated values) file is a text file that uses ‘,’ as the field separator.
+This is probably the most commonly used format for plain text tabular data.</p>
+<p>To write a csv in R use the <code>write.csv</code> function.
+This is equivalent to <code>write.table(from_cars.txt, file="cars.csv", sep=",")</code></p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="file-input-and-output.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(from_cars.txt, <span class="at">file=</span><span class="st">&quot;cars.csv&quot;</span>) </span>
+<span id="cb94-2"><a href="file-input-and-output.html#cb94-2" aria-hidden="true" tabindex="-1"></a>from_cars.csv <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;cars.csv&quot;</span>)</span></code></pre></div>
+<p>Again, double check that everything worked.</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="file-input-and-output.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(from_cars.csv)</span>
+<span id="cb95-2"><a href="file-input-and-output.html#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(from_cars.csv)</span>
+<span id="cb95-3"><a href="file-input-and-output.html#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(from_cars.csv)</span></code></pre></div>
+<p>What went wrong here?
+In this case it was ambiguous if the first column was rownames or actual values.</p>
+<p>Lets fix it</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="file-input-and-output.html#cb96-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">=</span> from_cars.csv[, <span class="dv">2</span><span class="sc">:</span><span class="dv">12</span>]</span>
+<span id="cb96-2"><a href="file-input-and-output.html#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(temp) <span class="ot">=</span> from_cars.csv[,<span class="dv">1</span>]</span>
+<span id="cb96-3"><a href="file-input-and-output.html#cb96-3" aria-hidden="true" tabindex="-1"></a>fixed <span class="ot">=</span> temp</span></code></pre></div>
+<p>With these sorts of problems, you can generally fix them by using the appropriate arguments to the function calls of the read and write functions.
+Notice the argument in this function call.
+It specifies that the rownames can be read in from the first column of the tabular data in the file.</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="file-input-and-output.html#cb97-1" aria-hidden="true" tabindex="-1"></a>from_cars.csv <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;cars.csv&quot;</span>, <span class="at">row.names =</span><span class="dv">1</span>) </span></code></pre></div>
+</div>
+<div id="non-tabular-data" class="section level3" number="9.7.4">
+<h3><span class="header-section-number">9.7.4</span> Non tabular data</h3>
+<p>There are functions in R for reading and writing text data that doesn’t represent tabular data.
+A common one is <code>writeLines</code> and <code>readLines</code>.</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="file-input-and-output.html#cb98-1" aria-hidden="true" tabindex="-1"></a>texts <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;line one&quot;</span>, <span class="st">&quot;line two&quot;</span>)</span>
+<span id="cb98-2"><a href="file-input-and-output.html#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(texts, <span class="st">&quot;raw.txt&quot;</span>)</span>
+<span id="cb98-3"><a href="file-input-and-output.html#cb98-3" aria-hidden="true" tabindex="-1"></a>texts2 <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">&quot;raw.txt&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="urls-as-files" class="section level2" number="9.8">
+<h2><span class="header-section-number">9.8</span> URLS as files</h2>
+<p>Files can be transferred over the internet.
+<strong>URLs</strong> are a type of filepath, that denotes a filepath, and the computer that file is stored on.
+Many functions in R that involve reading and writing from files, can be given a url as the filepath argument.
+In that case, the file will be transferred over the internet, onto your computer, and then read into R.</p>
+<p>Here is an example of reading in a file from a url, using the <code>readLines</code> function.</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="file-input-and-output.html#cb99-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://datalab.ucdavis.edu&quot;</span></span>
+<span id="cb99-2"><a href="file-input-and-output.html#cb99-2" aria-hidden="true" tabindex="-1"></a>t <span class="ot">=</span> <span class="fu">readLines</span>(url)</span></code></pre></div>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="working-with-the-command-line.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="packages-and-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="strings-and-regular-expressions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -338,7 +476,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/09_r-input-output.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -346,7 +484,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/09_r-input-output.Rmd",
 "text": null
 },
 "download": null,

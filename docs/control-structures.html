@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Adventures in Data Science</title>
-  <meta name="description" content="Adventures in Data Science" />
+  <title>6 Control Structures | Adventures in Data Science</title>
+  <meta name="description" content="6 Control Structures | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Adventures in Data Science" />
+  <meta property="og:title" content="6 Control Structures | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Adventures in Data Science" />
+  <meta name="twitter:title" content="6 Control Structures | Adventures in Data Science" />
   
   
   
@@ -35,8 +35,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="working-with-the-command-line.html"/>
+<link rel="prev" href="introduction-to-r.html"/>
+<link rel="next" href="iterating-loops.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -291,32 +291,70 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Adventures in Data Science</h1>
-<p class="author"><em>Dr. Carl G. Stahmer</em></p>
-<p class="author"><em>Dr. Pamela L. Reynolds</em></p>
-<p class="author"><em>Dr. Tyler Shoemaker</em></p>
-<p class="author"><em>Carrie Alexander</em></p>
-<p class="author"><em>Arthur Koehl</em></p>
-<p class="date"><em>2021-02-05</em></p>
+<div id="control-structures" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Control Structures</h1>
+<p>Control Structures are functions in computer programming the evaluate conditions (like, for example, the value of a variable) and change the way code behaves based upon evaluated values. For example, you might to perform one function if the value stored in the variable <em>x</em> is greater than 5 and a different function if it is less than less than 5. The <a href="https://en.wikiversity.org/wiki/Control_structures">Wikiversit Control Structures page</a> contains a good, general description of control structures that is not programming language specific. The information that follows provides examples of the most frequetly used R control structures and how to implement them. For more complete documentation on control strcutures in R run the following help command:</p>
+<pre><code>?Control</code></pre>
+<div id="if-statement" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> <em>If</em> Statement</h2>
+<p>The “If Statement” is the most basic of the R control structures. It tests whether a particular condition is true. For example, the below statement tests whether the value of the variable <em>x</em> is greater than 5. If it is, the code prints the phrase “Yay!” to screen. If it is not, the code does nothing:</p>
+<pre><code>x &lt;- 7
+if (x &gt; 5) {
+     print(&quot;Yay!&quot;)
+}</code></pre>
+<p>Note, the general syntax in the example is:</p>
+<pre><code>control_statement (condition) {
+     #code to execute condition is true
+}</code></pre>
+<p>While you will occasionally see variations in how control structures are present, this is a fairly universal syntax across computer programming languages. The specific control structure being invoked is followed by the <em>condition</em> to be tested. Any actions to be performed if the condition evaluates to TRUE are place between curly brackets {} following the condition.</p>
 </div>
-<div id="overview" class="section level1 unnumbered">
-<h1>Overview</h1>
-<p><img src="img/datalab-logo-full-color-rgb.png" /></p>
-<p>This tutorial covers the basics of using the Command Line and Git to track and
-record changes to files on your local computer. It provides background
-information that will help you to better understand the concepts that we will
-discuss in class and to better participate in the hands-on portion of the
-course.</p>
+<div id="relationship-operators" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Relationship Operators</h2>
+<p>The most common conditions evaluate whether one value is equal to ( <em>x</em> == <em>y</em>), equal to or greater than (<em>x</em> =&gt; <em>y</em>), equal to or lesser than (<em>x</em> &lt;= <em>y</em>), greater than (<em>x</em> &gt; <em>y</em>), or lesser than (<em>x</em> &lt; <em>y</em>) another value.</p>
+<p>Another common task is to test whether a BOOLEAN value is TRUE or FALSE. The syntax for this evaluation is:</p>
+<pre><code>if (*x*) { #do something}</code></pre>
+<p>Control structures in R also have a negation symbol which allows you to specify a negative condition. For example, the conditional statement in the following code evaluates to TRUE (meaning any code placed between the curly brackets will be executed) if the x IS NOT EQUAL to 5:</p>
+<pre><code>if (x !=5) { #do something}</code></pre>
+</div>
+<div id="if-else-statement" class="section level2" number="6.3">
+<h2><span class="header-section-number">6.3</span> <em>If Else</em> Statement</h2>
+<p>The “If Else” statement is similar to the “If Statement,” but it allows you specify one code path to execute if the conditional evaluates to TRUE and another to execute if the conditional evaluates to FALSE:</p>
+<pre><code>x &lt;- 7
+if (x &gt; 5) {
+     print(&quot;Yay!&quot;)
+} else {
+     print(&quot;Boo!&quot;)
+}</code></pre>
+</div>
+<div id="ifelse-statement" class="section level2" number="6.4">
+<h2><span class="header-section-number">6.4</span> <em>ifelse</em> Statement</h2>
+<p>R also offers a combined if/else syntax for quick execution of small code chunks:</p>
+<pre><code>x &lt;- 12
+ifelse(x &lt;= 10, &quot;x less than 10&quot;, &quot;x greater than 10&quot;)</code></pre>
+</div>
+<div id="the-switch-statement" class="section level2" number="6.5">
+<h2><span class="header-section-number">6.5</span> The <em>switch</em> Statement</h2>
+<p>The <em>switch</em> statement provides a mechanism for selecting between multiple possible conditions. For example, the following code returns one of several possible values from a list based upon the value of a variable:</p>
+<pre><code>x &lt;- 3
+switch(x,&quot;red&quot;,&quot;green&quot;,&quot;blue&quot;)</code></pre>
+<p><em>Note: if you pass switch a value that exceeds the number of elements in the list R will not compute a reply.</em></p>
+</div>
+<div id="the-which-statement" class="section level2" number="6.6">
+<h2><span class="header-section-number">6.6</span> The <em>which</em> Statement</h2>
+<p>The <em>which</em> statement is not a true conditional statement, but it provides a very useful way to test the values of a dataset and tell you which elements match a particular condition. In the example below, we load the R IRIS dataset and find out which rows have a Petal.Length greater than 1.4:</p>
+<pre><code>data(&quot;iris&quot;)
+rows &lt;- which(iris$Petal.Length &gt; 1.4)</code></pre>
+<p><em>note: you can see all of the R. build in datasets with the data() command.</em></p>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="working-with-the-command-line.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="introduction-to-r.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="iterating-loops.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -338,7 +376,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/06_r-control-structures.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -346,7 +384,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/06_r-control-structures.Rmd",
 "text": null
 },
 "download": null,

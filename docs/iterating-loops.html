@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Adventures in Data Science</title>
-  <meta name="description" content="Adventures in Data Science" />
+  <title>7 Iterating (Loops) | Adventures in Data Science</title>
+  <meta name="description" content="7 Iterating (Loops) | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Adventures in Data Science" />
+  <meta property="og:title" content="7 Iterating (Loops) | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Adventures in Data Science" />
+  <meta name="twitter:title" content="7 Iterating (Loops) | Adventures in Data Science" />
   
   
   
@@ -35,8 +35,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="working-with-the-command-line.html"/>
+<link rel="prev" href="control-structures.html"/>
+<link rel="next" href="packages-and-functions.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -291,32 +291,97 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Adventures in Data Science</h1>
-<p class="author"><em>Dr. Carl G. Stahmer</em></p>
-<p class="author"><em>Dr. Pamela L. Reynolds</em></p>
-<p class="author"><em>Dr. Tyler Shoemaker</em></p>
-<p class="author"><em>Carrie Alexander</em></p>
-<p class="author"><em>Arthur Koehl</em></p>
-<p class="date"><em>2021-02-05</em></p>
+<div id="iterating-loops" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Iterating (Loops)</h1>
+<p>In computer programming iteration is a specific type of control structure that repeatedly runs a specified operation either for a set numbe of iterations or untul some condition is met. For example, you might want your code to peform the same math operation on all of the numbers stored in a vector of values; or perhaps you want the computer to look through a list until it finds the first entry with a value greater than 10; or, maybe you just want the computer to sound an alarm exactly 5 times. Each of these is a type of iteration or “Loop” as they are also commonly called.</p>
+<div id="for-i-in-x-loops" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> For <em>i</em> in <em>x</em> Loops</h2>
+<p>The most common type of loop is the “For <em>i</em> in <em>x</em>” loop which interates through each value (<em>i</em>) in a list (<em>x</em>) and does something with each value. For example, assume that x is a vector containing the following four names names: <em>Sue, John, Heather, George</em>, and that we want to print each of these names to screen. We can do so with the followig code:</p>
+<pre><code>x &lt;- c(&quot;Sue&quot;, &quot;John&quot;, &quot;Heather&quot;, &quot;George&quot;)
+for (i in x) {
+    print(i)
+}</code></pre>
+<p>In the first line of code, we create our vecctor of names (<em>x</em>). Next we begin our “For i in x loop”, which has the following general syntax, which is similar to that of the conditional statements you’ve already mastered:</p>
+<p><em>for (condition) {}</em></p>
+<p>Beginning with the first element of the vector <em>x</em>, which in our case is “Sue”, for each iteration of the for loop the value of the corresponding element in <em>x</em> is assiged to the variable <em>i</em> and then <em>i</em> can be acted upon in the code icnluded between the curly brackets of the function call. In our case we simply tell the conputer to print the value of <em>i</em> to the sreen. Witgh each iteration, the next value in our vector is assigned to <em>i</em> and is subsequently printed to screen, resulting in the following output:</p>
+<pre><code>[1] &quot;Sue&quot;
+[1] &quot;John&quot;
+[1] &quot;Heather&quot;
+[1] &quot;George&quot;</code></pre>
+<p>In addition to acting on vectors or lists, For loops can also be coded to simply execute a chunk of code a designated number of times. For example, the following code will print “Hello World!” to screen exactly 10 times:</p>
+<pre><code>for (i in 1:10) {
+    print(&quot;Hello World!&quot;
+}</code></pre>
 </div>
-<div id="overview" class="section level1 unnumbered">
-<h1>Overview</h1>
-<p><img src="img/datalab-logo-full-color-rgb.png" /></p>
-<p>This tutorial covers the basics of using the Command Line and Git to track and
-record changes to files on your local computer. It provides background
-information that will help you to better understand the concepts that we will
-discuss in class and to better participate in the hands-on portion of the
-course.</p>
+<div id="while-loops" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> <em>While</em> Loops</h2>
+<p>Unlike <em>For</em> loops, which iterate a defined number of times based on the length of a list of range of values provided in the method declaration, <em>While</em> loops continue to iterate infinitely as long as (while) a defined condition is met. For example, assume you have a boolean variable <em>x</em> the value of which is <em>TRUE</em>. You might want to write code that performs some function repeatly until the value of <em>x</em> is switched to <em>FALSE</em>. A good example of this is a case where your program asks the user to enter data, which can then be evaluated for correctness before the you allow the program to move on in its execution. In the example below, we ask the user to tell us the secret of the universe. If the user answeres with the correct answer (42), the code moves on. But if the user provides and incorrect answer, the code iterates back to the beginning of the loop and asks for input again.</p>
+<pre><code>response &lt;- 0
+while (response!=42) {   
+  response &lt;- as.integer(readline(prompt=&quot;What is the answer to the Ultimate Question of Life, the Universe, and Everything? &quot;));
+}</code></pre>
+</div>
+<div id="repeat-loops" class="section level2" number="7.3">
+<h2><span class="header-section-number">7.3</span> <em>Repeat</em> Loops</h2>
+<p>Like <em>While</em> loops, <em>Repeat</em> loops continue to iterate until a specified condition is met; but with <em>Repeat</em> loops that condition is defined not as an argument to the function but is a specific call to “break” that appears in the functions executable code. In the example below we assign the value 1 to a variable <em>i</em> and then loop through code that prints and then iterates the value of i until it reaches 10, at which time we forceably exit the loop:</p>
+<pre><code>i &lt;- 1
+repeat {
+    print(i)
+    i = i+1
+    if (i &gt; 10){
+        break
+    }
+}</code></pre>
+</div>
+<div id="break-and-next" class="section level2" number="7.4">
+<h2><span class="header-section-number">7.4</span> <em>Break</em> and <em>Next</em></h2>
+<p>In the previous section we saw the use of the <em>break</em> statement to force an exit from a <em>repeat</em> loop based on a conditional evaluation in an <em>if</em> statement. <em>Break</em> can actually be used inside any conditional (<em>for</em>, <em>while</em>, <em>repeat</em>) in order to force the end of iteration. This can be useful in a variety of contexts where you want to test for multiple conditions as a means of stopping iteration.</p>
+<p>The <em>next</em> command is similar to <em>break</em> in that it can be used inside any iteration structure to force R to skip execution of the iteration code for particular cases only. For example, we use next below to iterate through the nunbers 1 to 10 and print all values to screen EXCEPT the value 5:</p>
+<pre><code>for (i in 1:10) {
+  if (i == 5){
+    next
+  }
+  print(i)
+}</code></pre>
+</div>
+<div id="iterating-data.frame-rows-in-r" class="section level2" number="7.5">
+<h2><span class="header-section-number">7.5</span> Iterating Data.Frame Rows in R</h2>
+<p>In the section on <em>for</em> loops above, we learned that you can easily iterate across all values of a list using a “for <em>i</em> in <em>x</em>” loop. Working with R data.frames adds a bit of complexity to this process. Because R was developed as a language for statistial analysis, which always involves the comparison of multiple observations of the same variable (for example, all of the weights recroded across all patients), the default behavior of the “for <em>i</em> in <em>x</em>” loop when applied to data.frames is to iterate across columns (variables) rather than rows (observations). Consider the following example:</p>
+<pre><code>for (i in iris) {
+  print(i)
+}</code></pre>
+<p>If you run the above code, in the first iteration R will assign the vector of values contained in the firt column (Sepal.Length) to <em>i</em>, in the second iteration it will assign vectore of values contained in the second column (Sepal.Width) to <em>i</em>, etc.</p>
+<p>Iterating through the data columns of a data.frame is useful for many (if not most) operations. However, there are time when we want to iterate through data one observation at a time. To accomplish this, we nee do specifically direct R to move through the data.frame by row, as follows:</p>
+<pre><code>for (i in 1:nrow(iris)) {
+  thisrow &lt;- iris[i,]
+  print(thisrow)
+}</code></pre>
+</div>
+<div id="lapply" class="section level2" number="7.6">
+<h2><span class="header-section-number">7.6</span> <em>lapply()</em></h2>
+<p>R has a built-in class of functions known as the <em>apply</em> family that provide a shorthand for iterating through collections of data. These behave like a <em>for</em> loop, but require much less actual code to accomplish. The <em>lapply</em> function iterates across lists, such as vectors. When you invoke <em>lapply</em> it applies a defined operation to each item in the subitted list and returns a list of equal length that contains the results of this calculation. In the code below, we assign the values 1 through 10 to a vector and then use <em>lapply</em> to subtract 1 from each item in the vector and finally print the results to screen:</p>
+<pre><code>v &lt;- c(1:10)
+results &lt;- lapply(v, function(x) (x-1))
+print(results)</code></pre>
+<p>We could accomplish the exact same thing with the following <em>for</em> loop</p>
+<pre><code>v &lt;- c(1:10)
+for (i in v) {
+    x &lt;- i - 1
+    print(x)
+}</code></pre>
+<p>The basic syntax of <em>lapply</em> is:</p>
+<p>lapply(list, function)</p>
+<p>where “list” is some list object supplied and “function” is pre-defined chunk of code that will be exectuted. You’ll learn more about functions in a future lesson.</p>
 
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-
-<a href="working-with-the-command-line.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="control-structures.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="packages-and-functions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -338,7 +403,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/07_r-iteration.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -346,7 +411,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/index.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/07_r-iteration.Rmd",
 "text": null
 },
 "download": null,
