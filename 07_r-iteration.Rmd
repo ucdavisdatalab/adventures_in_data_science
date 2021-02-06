@@ -1,0 +1,123 @@
+# Iterating (Loops)
+
+In computer programming iteration is a specific type of control structure that repeatedly runs a specified operation either for a set numbe of iterations or untul some condition is met.  For example, you might want your code to peform the same math operation on all of the numbers stored in a vector of values; or perhaps you want the computer to look through a list until it finds the first entry with a value greater than 10; or, maybe you just want the computer to sound an alarm exactly 5 times.  Each of these is a type of iteration or "Loop" as they are also commonly called.
+
+## For *i* in *x* Loops
+
+The most common type of loop is the "For *i* in *x*" loop which interates through each value (*i*) in a list (*x*) and does something with each value.  For example, assume that x is a vector containing the following four names names:  *Sue, John, Heather, George*, and that we want to print each of these names to screen.  We can do so with the followig code:
+
+```
+x <- c("Sue", "John", "Heather", "George")
+for (i in x) {
+	print(i)
+}
+```
+
+In the first line of code, we create our vecctor of names (*x*).  Next we begin our "For i in x loop", which has the following general syntax, which is similar to that of the conditional statements you've already mastered:
+
+*for (condition) {}*
+
+Beginning with the first element of the vector *x*, which in our case is "Sue", for each iteration of the for loop the value of the corresponding element in *x* is assiged to the variable *i* and then *i* can be acted upon in the code icnluded between the curly brackets of the function call.  In our case we simply tell the conputer to print the value of *i* to the sreen.  Witgh each iteration, the next value in our vector is assigned to *i* and is subsequently printed to screen, resulting in the following output:
+
+```
+[1] "Sue"
+[1] "John"
+[1] "Heather"
+[1] "George"
+```
+
+In addition to acting on vectors or lists, For loops can also be coded to simply execute a chunk of code a designated number of times.  For example, the following code will print "Hello World!" to screen exactly 10 times:
+
+```
+for (i in 1:10) {
+	print("Hello World!"
+}
+```
+
+## *While* Loops
+
+Unlike *For* loops, which iterate a defined number of times based on the length of a list of range of values provided in the method declaration, *While* loops continue to iterate infinitely as long as (while) a defined condition is met.  For example, assume you have a boolean variable *x* the value of which is *TRUE*.  You might want to write code that performs some function repeatly until the value of *x* is switched to *FALSE*.  A good example of this is a case where your program asks the user to enter data, which can then be evaluated for correctness before the you allow the program to move on in its execution.  In the example below, we ask the user to tell us the secret of the universe.  If the user answeres with the correct answer (42), the code moves on.  But if the user provides and incorrect answer, the code iterates back to the beginning of the loop and asks for input again.  
+
+```
+response <- 0
+while (response!=42) {   
+  response <- as.integer(readline(prompt="What is the answer to the Ultimate Question of Life, the Universe, and Everything? "));
+}
+```
+
+## *Repeat* Loops
+
+Like *While* loops, *Repeat* loops continue to iterate until a specified condition is met; but with *Repeat* loops that condition is defined not as an argument to the function but is a specific call to "break" that appears in the functions executable code.  In the example below we assign the value 1 to a variable *i* and then loop through code that prints and then iterates the value of i until it reaches 10, at which time we forceably exit the loop:
+
+```
+i <- 1
+repeat {
+	print(i)
+	i = i+1
+	if (i > 10){
+		break
+	}
+}
+```
+
+## *Break* and *Next*
+
+In the previous section we saw the use of the *break* statement to force an exit from a *repeat* loop based on a conditional evaluation in an *if* statement.   *Break* can actually be used inside any conditional (*for*, *while*, *repeat*) in order to force the end of iteration.  This can be useful in a variety of contexts where you want to test for multiple conditions as a means of stopping iteration.  
+
+The *next* command is similar to *break* in that it can be used inside any iteration structure to force R to skip execution of the iteration code for particular cases only.  For example, we use next below to iterate through the nunbers 1 to 10 and print all values to screen EXCEPT the value 5:
+
+```
+for (i in 1:10) {
+  if (i == 5){
+    next
+  }
+  print(i)
+}
+```
+
+## Iterating Data.Frame Rows in R
+
+In the section on *for* loops above, we learned that you can easily iterate across all values of a list using a "for *i* in *x*" loop.  Working with R data.frames adds a bit of complexity to this process.  Because R was developed as a language for statistial analysis, which always involves the comparison of multiple observations of the same variable (for example, all of the weights recroded across all patients), the default behavior of the "for *i* in *x*" loop when applied to data.frames is to iterate across columns (variables) rather than rows (observations).  Consider the following example:
+
+```
+for (i in iris) {
+  print(i)
+}
+```
+
+If you run the above code, in the first iteration R will assign the vector of values contained in the firt column (Sepal.Length) to *i*, in the second iteration it will assign vectore of values contained in the second column (Sepal.Width) to *i*, etc.  
+
+Iterating through the data columns of a data.frame is useful for many (if not most) operations.  However, there are time when we want to iterate through data one observation at a time.  To accomplish this, we nee do specifically direct R to move through the data.frame by row, as follows:
+
+```
+for (i in 1:nrow(iris)) {
+  thisrow <- iris[i,]
+  print(thisrow)
+}
+```
+
+## *lapply()*
+
+R has a built-in class of functions known as the *apply* family that provide a shorthand for iterating through collections of data.  These behave like a *for* loop, but require much less actual code to accomplish. The *lapply* function iterates across lists, such as vectors.  When you invoke *lapply* it applies a defined operation to each item in the subitted list and returns a list of equal length that contains the results of this calculation.  In the code below, we assign the values 1 through 10 to a vector and then use *lapply* to subtract 1 from each item in the vector and finally print the results to screen:
+
+```
+v <- c(1:10)
+results <- lapply(v, function(x) (x-1))
+print(results)
+```
+
+We could accomplish the exact same thing with the following *for* loop
+
+```
+v <- c(1:10)
+for (i in v) {
+	x <- i - 1
+	print(x)
+}
+```
+
+The basic syntax of *lapply* is:
+
+lapply(list, function)
+
+where "list" is some list object supplied and "function" is pre-defined chunk of code that will be exectuted.  You'll learn more about functions in a future lesson.

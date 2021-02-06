@@ -1,0 +1,201 @@
+# File Input and Output
+This lesson will cover some standard functions for reading and writing data in R.
+
+## Objectives
+- getting and setting working directory
+- save and load R objects to/from disk
+- read and write tabular data
+- read data from a url
+
+## Basic Idea
+As a data scientist, you will constantly be reading from and writing to files.
+Generally you are given some dataset that you need to analyze and report on.
+This means that you need to load the data into R, run some code, and finally save some outputs.
+This is all done with files. 
+
+## File Formats
+When people talk about binary files, vs text files what they really mean is - is it human readable?
+A text file should have text data that a human can read with a text editor.
+A binary file has binary data that a human can't really read, but the appropriate software can.
+
+## Filesystems and Paths
+At a high level, files are information stored on a computer.
+Each file has a name, and a unique file path.
+A filepath is the location of the file in the storage device.
+A file name as two parts: the name and the file extension.
+
+The file extension (everything after the .) is meant to indicate to the user (you) and the operating system what the file contains.
+This hint means you often times don't need to open the file to know what kind of data it has.
+However, the extension is not enforced by anything, its just a useful suggestion.
+
+Paths can be relative or absolute. 
+An absolute path is the full path through the filesystem to reach a file.
+A relative path is the path from some starting point to the file you want to reach.
+You can consider a relative path as something that needs to be combined with another path to reach a file.
+
+##  get and set working directory 
+Before we begin, we will get and set our working directory in R.
+You can think of the working directory as the part that gets combined with the relative path.
+
+`getwd()` will return the absolute file path of the working directory
+```{r eval=FALSE}
+getwd()
+```
+
+
+Call setwd to set the working directory to a path you specify as an input argument.
+```{r eval=FALSE}
+setwd("~/Documents/file_io/") # notice the argument
+getwd()
+```
+
+A really useful function in R is list.files(), which lists all the files at a given path.
+Listing the files should confirm for us that we are in the right place.
+```{r eval=FALSE}
+list.files() 
+```
+
+
+## saving and loading R data
+
+### rds
+A simple way to save an R object directly to a file, such that it can be loaded into another R session is with the `saveRDS` function. 
+`saveRDS` will write a single object to a specified file path.
+By default, it will save the object as a binary representation.
+This can be very useful for large objects, as the binary format will be significantly more space efficient.
+```{r eval=FALSE}
+y = c(0,1,2,3,4)
+saveRDS(y, file="myvectors.rds")
+```
+
+Confirm that it worked.
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+list.files()
+```
+
+The counterpart to `saveRDS` is `readRDS`.
+With `readRDS`, you can load in an rds file, which by definition contains a single R object, and assign it to a variable in your session.
+```{r eval=FALSE}
+x = readRDS("myvector.rds")
+```
+
+This will work for any R object.
+For example. 
+```{r eval=FALSE}
+saveRDS(mtcars, file="mtcars.rds")
+my_cars = readRDS("mtcars.rds")
+```
+
+Saving and loading using `readRDS` is really powerful to save data.
+However, it does have a pretty significant drawback - its useless outside of R.
+For someone to explore the data, they would need to load R.
+
+## Reading and Writing Text data
+In addition to `saveRDS` and `readRDS`,
+R has functions for working with text files.
+
+These are commonly used for getting external data into R. 
+And for exporting your data so that it can be used by other people.
+
+### tabular data
+Generally the data you work with in R will be tabular.
+Dataframes are an example of tabular data.
+
+### read and write table
+To write tabular data from a text file use the write.table function.
+Before running it, lets look at the documentation and understand the key arguments.
+
+```{r eval=FALSE}
+?write.table 
+```
+The important arguments are x, file, and sep.
+
+**x** is the dataframe you are saving.
+**file** is the name of the file you want to create and write to.
+**sep** is the field separator, also called delimiter.
+
+Notice that if file is left blank, then R will just print the results to the console, instead of into a file.
+Lets use this to explore what the **sep** argument does.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+small = head(my_cars)
+write.table(small)
+write.table(small, sep=" ")
+write.table(small, sep=".")
+write.table(small, sep=",")
+```
+
+Lets write our data to a file.
+```{r eval=FALSE}
+write.table(my_cars, file="cars.txt") 
+list.files() # confirm it worked
+```
+
+Now lets read the data back in. 
+```{r eval=FALSE}
+from_cars.txt = read.table("cars.txt") 
+```
+
+Always inspect your data to make sure everything worked
+```{r eval=FALSE}
+colnames(from_cars.txt)
+dim(from_cars.txt)
+head(from_cars.txt)
+```
+### CSV format
+
+A CSV (comma separated values) file is a text file that uses ',' as the field separator.
+This is probably the most commonly used format for plain text tabular data.
+
+To write a csv in R use the `write.csv` function.
+This is equivalent to `write.table(from_cars.txt, file="cars.csv", sep=",")`
+```{r eval=FALSE}
+write.csv(from_cars.txt, file="cars.csv") 
+from_cars.csv = read.csv("cars.csv")
+```
+
+Again, double check that everything worked.
+```{r eval=FALSE}
+head(from_cars.csv)
+colnames(from_cars.csv)
+dim(from_cars.csv)
+```
+
+What went wrong here?
+In this case it was ambiguous if the first column was rownames or actual values.
+
+Lets fix it
+```{r eval=FALSE}
+temp = from_cars.csv[, 2:12]
+rownames(temp) = from_cars.csv[,1]
+fixed = temp
+```
+
+With these sorts of problems, you can generally fix them by using the appropriate arguments to the function calls of the read and write functions.
+Notice the argument in this function call. 
+It specifies that the rownames can be read in from the first column of the tabular data in the file.
+```{r eval=FALSE}
+from_cars.csv = read.csv("cars.csv", row.names =1) 
+```
+
+### Non tabular data
+
+There are functions in R for reading and writing text data that doesn't represent tabular data.
+A common one is `writeLines` and `readLines`.
+```{r eval=FALSE}
+texts = c("line one", "line two")
+writeLines(texts, "raw.txt")
+texts2 = readLines("raw.txt")
+```
+
+## URLS as files
+Files can be transferred over the internet. 
+**URLs** are a type of filepath, that denotes a filepath, and the computer that file is stored on.
+Many functions in R that involve reading and writing from files, can be given a url as the filepath argument.
+In that case, the file will be transferred over the internet, onto your computer, and then read into R.
+
+Here is an example of reading in a file from a url, using the `readLines` function.
+```{r eval=FALSE}
+url = "https://datalab.ucdavis.edu"
+t = readLines(url)
+```
