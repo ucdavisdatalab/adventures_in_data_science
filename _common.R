@@ -37,6 +37,7 @@ url34 <- "./img/mtcars_tree.jpg"
 url35 <- "./img/social_network.jpeg"
 url36 <- "./img/graph-parts.jpg"
 url37 <- "./img/directed-vs-undirected-graph.jpg"
+url38 <- "./img/sql_erd_example.png"
 
 
 library(knitr)
