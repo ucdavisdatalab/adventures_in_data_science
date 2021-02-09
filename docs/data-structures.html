@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Introduction to Git | Adventures in Data Science</title>
-  <meta name="description" content="3 Introduction to Git | Adventures in Data Science" />
+  <title>11 Data Structures | Adventures in Data Science</title>
+  <meta name="description" content="11 Data Structures | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Introduction to Git | Adventures in Data Science" />
+  <meta property="og:title" content="11 Data Structures | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Introduction to Git | Adventures in Data Science" />
+  <meta name="twitter:title" content="11 Data Structures | Adventures in Data Science" />
   
   
   
@@ -36,8 +36,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="introduction-to-version-control.html"/>
-<link rel="next" href="git-branching.html"/>
+<link rel="prev" href="strings-and-regular-expressions.html"/>
+
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -287,92 +287,499 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="introduction-to-git" class="section level1">
-<h1><span class="header-section-number">3</span> Introduction to Git</h1>
-<p>Put some intro text here</p>
-<div id="save-stage-commit" class="section level2">
-<h2><span class="header-section-number">3.1</span> Save, Stage, Commit</h2>
-<p>Git does not automatically preserve versions of every “saved” file. When working with Git, you save files as you always do, but this has no impact on the versions that are preserved in the repository. To create a “versions”, you must first add saved files to a Staging area and then “Commit” your staged files to the repository. The Commits that you make constituted the versions of files that are preserved in the repository.</p>
-<p><img src="img/save_stage_commit.png" /></p>
+<div id="data-structures" class="section level1">
+<h1><span class="header-section-number">11</span> Data Structures</h1>
+<p>Merriam-Webster’s Dictionary defines data as:</p>
+<ol style="list-style-type: decimal">
+<li>factual information (such as measurements or statistics) used as a basis for reasoning, discussion, or calculation</li>
+<li>information in digital form that can be transmitted or processed</li>
+<li>information output by a sensing device or organ that includes both useful and irrelevant or redundant information and must be processed to be meaningful</li>
+</ol>
+<p>Several key principals are introduced in the above definition:</p>
+<ol style="list-style-type: decimal">
+<li>data is an intermediary step leading towards some form of analysis or or presentation, not typically an end in itself</li>
+<li>data comes in multiple formats, both digital and analogue</li>
+<li>data can be collected by both humans and machines</li>
+<li>not all data in a given dataset is necessarily meaninful, correct nor useful</li>
+</ol>
+<p>Data Scientists (as differentiated from statisticians or computer scientists, for example) are expert in understanding the nature of data itself and the steps necessary to assess the suitability of a given data set for answering specific research questions and the work required to properly prepare data for successful analysis. In the broadest terms, we call this process <em>data forensics</em>.</p>
+<p>The first step in the data forensics process is understanding the format(s) through which data are stored and transferred.</p>
+<div id="tabular-data-1" class="section level2">
+<h2><span class="header-section-number">11.1</span> Tabular Data</h2>
+<p>Tabular Data is the most ubiquitous form of data storage and the one most familiar to most users. Tabular data consits of organizing data in a table of rows and columns. Traditionally, each column in the table represents a Field of Variable and each row represents an observation or entity. For example, the table below shows a tabular organization of a subset of the <em>mtcars</em> dataset:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-1">Table 1.1: </span></caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">mpg</th>
+<th align="right">cyl</th>
+<th align="right">disp</th>
+<th align="right">hp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Mazda RX4</td>
+<td align="right">21.0</td>
+<td align="right">6</td>
+<td align="right">160.0</td>
+<td align="right">110</td>
+</tr>
+<tr class="even">
+<td align="left">Mazda RX4 Wag</td>
+<td align="right">21.0</td>
+<td align="right">6</td>
+<td align="right">160.0</td>
+<td align="right">110</td>
+</tr>
+<tr class="odd">
+<td align="left">Datsun 710</td>
+<td align="right">22.8</td>
+<td align="right">4</td>
+<td align="right">108.0</td>
+<td align="right">93</td>
+</tr>
+<tr class="even">
+<td align="left">Hornet 4 Drive</td>
+<td align="right">21.4</td>
+<td align="right">6</td>
+<td align="right">258.0</td>
+<td align="right">110</td>
+</tr>
+<tr class="odd">
+<td align="left">Hornet Sportabout</td>
+<td align="right">18.7</td>
+<td align="right">8</td>
+<td align="right">360.0</td>
+<td align="right">175</td>
+</tr>
+<tr class="even">
+<td align="left">Valiant</td>
+<td align="right">18.1</td>
+<td align="right">6</td>
+<td align="right">225.0</td>
+<td align="right">105</td>
+</tr>
+<tr class="odd">
+<td align="left">Duster 360</td>
+<td align="right">14.3</td>
+<td align="right">8</td>
+<td align="right">360.0</td>
+<td align="right">245</td>
+</tr>
+<tr class="even">
+<td align="left">Merc 240D</td>
+<td align="right">24.4</td>
+<td align="right">4</td>
+<td align="right">146.7</td>
+<td align="right">62</td>
+</tr>
+<tr class="odd">
+<td align="left">Merc 230</td>
+<td align="right">22.8</td>
+<td align="right">4</td>
+<td align="right">140.8</td>
+<td align="right">95</td>
+</tr>
+<tr class="even">
+<td align="left">Merc 280</td>
+<td align="right">19.2</td>
+<td align="right">6</td>
+<td align="right">167.6</td>
+<td align="right">123</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="creating-your-first-repo" class="section level2">
-<h2><span class="header-section-number">3.2</span> Creating Your First Repo</h2>
-<p>Move to your Home directory</p>
-<pre><code>$ cd ~</code></pre>
-<p>note: The $ character represents your command promt. DO NOT type it into your terminal</p>
-<p>Create a new directory for this workshop</p>
-<pre><code>$ mkdir introtogit</code></pre>
-<p>Change to the new directory</p>
-<pre><code>$ cd introtogit</code></pre>
-<p>Put the new directory under version control</p>
-<pre><code>$ git init</code></pre>
+<div id="tree-document-data-structures" class="section level2">
+<h2><span class="header-section-number">11.2</span> Tree / Document Data Structures</h2>
+<p>Another popular form of data structure is the Tree structure, sometimes refered to as a Document based data structure. Tree data structurs present data in a hierarchical tree-like structure in which all items related back to a single, root node. A “Family Tree” is a good example of tree structured data:</p>
+<p><img src="img/family_tree.jpg" /></p>
+<p>The mtcars data from the above table can also be represented using a tree strucutre:</p>
+<p><img src="img/mtcars_tree.jpg" /></p>
+<p>The above image visually dipicts the mtcars data as a tree, which works well for a human reader but is no parsable by the computer. There are a a variety of way to represent tree data as a coputer file (or data stream) so that it can be read and parsed by the computer. In thas class, we will cover two of the most popular formats: XML and JSON.</p>
+<div id="structuring-data-as-xml" class="section level3">
+<h3><span class="header-section-number">11.2.1</span> Structuring Data as XML</h3>
+<p>XML is stands for Extensible Markup Language. Markup languages have been around since the 1960’s and were originally developed as a means to adding structured information to an existing unstructured text. In the days of analogue text preparation, professional editors typically used a blue or red pencil to make notes on typed manuscripts. The use of a specially collored pen or pencil for “marking up” documents, as the procedure was known in the industry, easily allowed subsequent readers to distinguish between editorial comment and formatting notes placed on typed manuscripts from the texts themselves. Computerized markup languages were developed as a means of allowing data specialists to markup a text in a manner that would allow the computer to distinguish between textual content and meta-information (information about the text) about the text when both types of information appear in the same file.</p>
+<p>XML is the most widely used form of markup today. In fact, nearly every webpage that you have ever viewed is actually an XML document that contains both content to be displayed and instructions for the computer on how to display that content embedded in the file using XML <em>Tags</em>, which are simply instructions contained with the special charcters “&lt;” and “&gt;”. For example, consider the following short email text:</p>
+<pre><code>To: Tavi
+From: Jonna
+Subject: Meeting
+Date: Thursday, February 4, 2021 at 2:46 PM
+
+Don&#39;t forget about meeting with Sarah next week, 2pm in room 242.
+
+Thanks,
+
+Jonna</code></pre>
+<p>This email contains quite a bit of structured email (sender, receiver, date/time, etc.), but there is no easy way for the computer easily extract this structure. We can solve this problem by using XML to embed information about the structure directly in the document as follows:</p>
+<pre><code>&lt;head&gt;
+   &lt;to&gt;Tavi&lt;/to&gt;
+   &lt;from&gt;Jonna&lt;/from&gt;
+   &lt;subject&gt;Meeting&lt;/subject&gt;
+   &lt;datetime&gt;
+      &lt;dayofweek&gt;Thursday&lt;/dayofweek&gt;
+      &lt;month&gt;February&lt;/month&gt; 
+      &lt;day&gt;4&lt;/day&gt;
+      &lt;year&gt;2021&lt;/year&gt;
+      &lt;time&gt;2:46 PM&lt;/time&gt;
+   &lt;/datetime&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+   Don&#39;t forget about meeting with Sarah next week, 2pm in room 242.
+
+   Thanks,
+
+   &lt;signature&gt;Jonna&lt;/signuature&gt;
+&lt;/body&gt;</code></pre>
+<p>By using XML, we are able to identify specific information in the email in a way that the computer is a capable of parsing. This allows us to use computational methods to easily extract information in bulk from many emails and it also allows us to program a computer program, such as an email client, to organize and properly display all of the parts of the email.</p>
+<p>The above XML example illustrates several important aspects of XML:</p>
+<ol style="list-style-type: decimal">
+<li>All XML tags are enclosed in “&lt;” and “&gt;” symbols.</li>
+<li>There are 2 primary types of tags, <em>opening tags</em>, which designate the beginning character that is defined by the tag, and <em>closing tags</em>, which designate the end of the portion of the text to be associated with the opening tag.</li>
+<li>Closing tags are always indicated by slash character </tag> where tag is the name of the opening tag that is being closed.</li>
+<li>Tags be be embedded within each other in a tree-like structure. However, any tags opened within a tag must be closed before parent tag can be closed. For example, “<name><first>John</first> <last>Doe</last></name>” is valid, but “<name><first>John</first> <last>Doe</name></last>” is not valid.</li>
+</ol>
+<p>While XML was oringinally developed as a means of embedding meta information about a text directly in a text, it also quickly evolved into a stand-alone means of representing tree-structured data for exchange between computer systems. To this end, many computer applications use XML to store, share, and retrieve data. For exmaple, we can represent the data in our truncated mtcars dataset as XML as follows:</p>
+<pre><code>&lt;cars&gt;
+   &lt;make id=&quot;mazda&quot;&gt;
+      &lt;model id=&quot;RX4&quot;&gt;
+         &lt;mpg&gt;21.0&lt;/mpg&gt;
+         &lt;cyl&gt;6&lt;/cyl&gt;
+         &lt;disp&gt;160.0&lt;/disp&gt;
+         &lt;hp&gt;110&lt;/hp&gt;
+      &lt;/model&gt;
+      &lt;model id=&quot;RX4 Wag&quot;&gt;
+         &lt;mpg&gt;21.0&lt;/mpg&gt;
+         &lt;cyl&gt;6&lt;/cyl&gt;
+         &lt;disp&gt;160.0&lt;/disp&gt;
+         &lt;hp&gt;110&lt;/hp&gt;
+      &lt;/model&gt;
+   &lt;/make&gt;
+   &lt;make id=&quot;Datsun&quot;&gt;
+      &lt;model id=&quot;710&quot;&gt;
+         &lt;mpg&gt;22.8&lt;/mpg&gt;
+         &lt;cyl&gt;4&lt;/cyl&gt;
+         &lt;disp&gt;108.0&lt;/disp&gt;
+         &lt;hp&gt;93&lt;/hp&gt;
+      &lt;/model&gt;
+   &lt;/make&gt;
+   &lt;make id=&quot;Hornet&quot;&gt;
+      &lt;model id=&quot;4 Drive&quot;&gt;
+         &lt;mpg&gt;21.4&lt;/mpg&gt;
+         &lt;cyl&gt;6&lt;/cyl&gt;
+         &lt;disp&gt;258.0&lt;/disp&gt;
+         &lt;hp&gt;110&lt;/hp&gt;
+      &lt;/model&gt;
+      &lt;model id=&quot;Sportabout&quot;&gt;
+         &lt;mpg&gt;18.7&lt;/mpg&gt;
+         &lt;cyl&gt;8&lt;/cyl&gt;
+         &lt;disp&gt;360.0&lt;/disp&gt;
+         &lt;hp&gt;175&lt;/hp&gt;
+      &lt;/model&gt;
+   &lt;/make&gt;
+   &lt;make id=&quot;Valiant&quot;&gt;
+      &lt;model id=&quot;valiant&quot;&gt;
+         &lt;mpg&gt;18.1&lt;/mpg&gt;
+         &lt;cyl&gt;6&lt;/cyl&gt;
+         &lt;disp&gt;225.0&lt;/disp&gt;
+         &lt;hp&gt;105&lt;/hp&gt;
+      &lt;/model&gt;
+   &lt;/make&gt;
+   &lt;make id=&quot;Duster&quot;&gt;
+      &lt;model id=&quot;360&quot;&gt;
+         &lt;mpg&gt;14.3&lt;/mpg&gt;
+         &lt;cyl&gt;8&lt;/cyl&gt;
+         &lt;disp&gt;360.0&lt;/disp&gt;
+         &lt;hp&gt;245&lt;/hp&gt;
+      &lt;/model&gt;
+   &lt;/make&gt;
+   &lt;make id=&quot;Merc&quot;&gt;
+      &lt;model id=&quot;240D&quot;&gt;
+         &lt;mpg&gt;24.4&lt;/mpg&gt;
+         &lt;cyl&gt;4&lt;/cyl&gt;
+         &lt;disp&gt;146.7&lt;/disp&gt;
+         &lt;hp&gt;62&lt;/hp&gt;
+      &lt;/model&gt;
+      &lt;model id=&quot;230&quot;&gt;
+         &lt;mpg&gt;22.8&lt;/mpg&gt;
+         &lt;cyl&gt;4&lt;/cyl&gt;
+         &lt;disp&gt;140.8&lt;/disp&gt;
+         &lt;hp&gt;95&lt;/hp&gt;
+      &lt;/model&gt;
+      &lt;model id=&quot;280&quot;&gt;
+         &lt;mpg&gt;19.2&lt;/mpg&gt;
+         &lt;cyl&gt;6&lt;/cyl&gt;
+         &lt;disp&gt;167.6&lt;/disp&gt;
+         &lt;hp&gt;123&lt;/hp&gt;
+      &lt;/model&gt;
+   &lt;/make&gt;
+&lt;/cars&gt;</code></pre>
+<p>For an XML dataset to be technically valid, the tags used to markup the dataset must themselves be defined according to a <em>schema</em>, another XML document that defines all tags that can be used in marking up a dataset and the allowable tree structure of the markup (for example, which tags can be parents of which other tags, etc.). You do not need to understand, or even know, the schema being used to present data in order to read and parse an XML document. However, schemas are extremely useful (and often necessary) for building applications that perform advanced processing of XML documents, such as web browsers, emial clients, etc. For more information on XML and XML Schemas see the w3schools XML Tutorial at <a href="https://www.w3schools.com/xml/">https://www.w3schools.com/xml/</a>.</p>
 </div>
-<div id="checking-the-status-of-a-repo" class="section level2">
-<h2><span class="header-section-number">3.3</span> Checking the Status of a Repo</h2>
-<p>To check the status of a repository use the followign command</p>
-<pre><code>$ git status</code></pre>
+<div id="structuring-data-as-json" class="section level3">
+<h3><span class="header-section-number">11.2.2</span> Structuring Data as JSON</h3>
+<p>XML provides an excellent framework for encoding, saving, and transfering all kinds of data, and it was the dominant mode of transfering data across the internet for many years. However, XML has an Achilles’ Heel from the data transfer perspective: a lack of sparcity. If you look closely at the mtcars dataset XML example above, you will note that the markup accounts for more of the total characters in the document than the data itself. In a world where data is regularly being exchanged in real time across the network, the use of XMl can result in the necessity to exchange a lot more data to accomplish the same task. This adds both time and cost to every data transaction. <em>JavaScript Object Notation</em> (JSON) was developed as a standard to address this problem and provides a sparse framework for representing data that introduces minimal, non-data elements into the overal data structure.</p>
+<p>JSON uses a key/value pair structure to represent data elements:</p>
+<pre><code>&quot;model&quot;:&quot;RX4&quot;</code></pre>
+<p>Individual data elements are then grouped to reflect more complex data structures:</p>
+<pre><code>{&quot;model&quot;: {&quot;id&quot;: &quot;2&quot;, &quot;hp&quot;: &quot;120&quot;}}</code></pre>
+<p>The example below shows the subsetted mtcars dataset represented as JSON. Note the use of the “[” character to indicated repeated elements in the data:</p>
+<pre><code>{
+    &quot;cars&quot;: [{
+            &quot;make&quot;: &quot;Mazda&quot;,
+            &quot;model&quot;: [{
+                    &quot;id&quot;: &quot;RX4&quot;,
+                    &quot;mpg&quot;: &quot;21.0&quot;,
+                    &quot;cyl&quot;: &quot;6&quot;,
+                    &quot;disp&quot;: &quot;160.0&quot;,
+                    &quot;hp&quot;: &quot;110&quot;
+                },
+                {
+                    &quot;id&quot;: &quot;RX4 Wag&quot;,
+                    &quot;mpg&quot;: &quot;21.0&quot;,
+                    &quot;cyl&quot;: &quot;6&quot;,
+                    &quot;disp&quot;: &quot;160.0&quot;,
+                    &quot;hp&quot;: &quot;110&quot;
+                }
+            ]
+        },
+        {
+            &quot;make&quot;: &quot;Datsun&quot;,
+            &quot;model&quot;: {
+                &quot;id&quot;: &quot;710&quot;,
+                &quot;mpg&quot;: &quot;22.8&quot;,
+                &quot;cyl&quot;: &quot;4&quot;,
+                &quot;disp&quot;: &quot;108.0&quot;,
+                &quot;hp&quot;: &quot;93&quot;
+            }
+        },
+        {
+            &quot;make&quot;: &quot;Hornet&quot;,
+            &quot;model&quot;: [{
+                    &quot;id&quot;: &quot;4 Drive&quot;,
+                    &quot;mpg&quot;: &quot;21.4&quot;,
+                    &quot;cyl&quot;: &quot;6&quot;,
+                    &quot;disp&quot;: &quot;258.0&quot;,
+                    &quot;hp&quot;: &quot;110&quot;
+                },
+                {
+                    &quot;id&quot;: &quot;Sportabout&quot;,
+                    &quot;mpg&quot;: &quot;18.7&quot;,
+                    &quot;cyl&quot;: &quot;8&quot;,
+                    &quot;disp&quot;: &quot;360.0&quot;,
+                    &quot;hp&quot;: &quot;175&quot;
+                }
+            ]
+        },
+        {
+            &quot;make&quot;: &quot;Valiant&quot;,
+            &quot;model&quot;: {
+                &quot;id&quot;: &quot;valiant&quot;,
+                &quot;mpg&quot;: &quot;18.1&quot;,
+                &quot;cyl&quot;: &quot;6&quot;,
+                &quot;disp&quot;: &quot;225.0&quot;,
+                &quot;hp&quot;: &quot;105&quot;
+            }
+        },
+        {
+            &quot;make&quot;: &quot;Duster&quot;,
+            &quot;model&quot;: {
+                &quot;id&quot;: &quot;360&quot;,
+                &quot;mpg&quot;: &quot;14.3&quot;,
+                &quot;cyl&quot;: &quot;8&quot;,
+                &quot;disp&quot;: &quot;360.0&quot;,
+                &quot;hp&quot;: &quot;245&quot;
+            }
+        },
+        {
+            &quot;make&quot;: &quot;Merc&quot;,
+            &quot;model&quot;: [{
+                    &quot;id&quot;: &quot;240D&quot;,
+                    &quot;mpg&quot;: &quot;24.4&quot;,
+                    &quot;cyl&quot;: &quot;4&quot;,
+                    &quot;disp&quot;: &quot;146.7&quot;,
+                    &quot;hp&quot;: &quot;62&quot;
+                },
+                {
+                    &quot;id&quot;: &quot;230&quot;,
+                    &quot;mpg&quot;: &quot;22.8&quot;,
+                    &quot;cyl&quot;: &quot;4&quot;,
+                    &quot;disp&quot;: &quot;140.8&quot;,
+                    &quot;hp&quot;: &quot;95&quot;
+                },
+                {
+                    &quot;id&quot;: &quot;280&quot;,
+                    &quot;mpg&quot;: &quot;19.2&quot;,
+                    &quot;cyl&quot;: &quot;6&quot;,
+                    &quot;disp&quot;: &quot;167.6&quot;,
+                    &quot;hp&quot;: &quot;123&quot;
+                }
+            ]
+        }
+    ]
+}</code></pre>
+<p>For information on the JSON format, see the Tutorialspoint JSON Tutorial at <a href="https://www.tutorialspoint.com/json/index.htm">https://www.tutorialspoint.com/json/index.htm</a>. You can also use the JSONLint Json Validator at <a href="https://jsonlint.com/">https://jsonlint.com/</a> to check the syntax of any JSON representation.</p>
 </div>
-<div id="version-of-a-file" class="section level2">
-<h2><span class="header-section-number">3.4</span> Version of a File</h2>
-<p>In Gitspeak, we ‘commit’ if version of a file to the repository to save a copy of the current working version of a file as a version. This is a multi-step process in which we first ‘stage’ the file to be committed and then ‘commit’ the file.</p>
-<p>STEP 1: Place the file you want to version into the Staging Area</p>
-<pre><code>$ git add &lt;filename&gt;</code></pre>
-<p><em>Replace <filename> in the command above with the actual name of the file you want to version.</em></p>
-<p>STEP 2: Commit Staged Files</p>
-<pre><code>$ git commit -m &#39;A detailed comment explaining the nature of the versio being committed.  Do not include any apostrophe&#39;s in your comment.&#39;</code></pre>
 </div>
-<div id="view-a-history-of-your-commits" class="section level2">
-<h2><span class="header-section-number">3.5</span> View a History of Your Commits</h2>
-<p>To get a history of commits</p>
-<pre><code>$ git log</code></pre>
-<p>To see commit history with patch data (insertions and deletions) for a specified number of commits</p>
-<pre><code>$ git log -p -2</code></pre>
-<p>To see abbreviated stats for the commit history</p>
-<pre><code>$ git log --stat</code></pre>
-<p>You can save a copy of your Git log to a text file with the following command:</p>
-<pre><code>$ git --no-pager log &gt; log.txt</code></pre>
+<div id="relational-databases" class="section level2">
+<h2><span class="header-section-number">11.3</span> Relational Databases</h2>
+<p>Relational Databases, frequently referred to as Relational Database Management Systems (RDBMS), provide another way of structuring data. Unlike tabular, XML, and JSON data representations, RDBMS data is not easily human readable and specialized software is usually required to interact with data stored as relational data. Most programming environments (including r) provide specialized drivers for communicating with RDBMS in order to faciliate working with data stored in these systems.</p>
+<p>RDBMS have three primary pruposes as a data storage format:</p>
+<ol style="list-style-type: decimal">
+<li>To reduce duplication of data;</li>
+<li>To speed-up access and insertion of new data;</li>
+<li>To insure data integrity.</li>
+</ol>
+<p>Items 2 and 3 above are accomplished at the software level, by deploying strict checks on data input, complex data indexing systems, and implementing redundant, automated, backup systems, to name just a few of the functionalities offered by RDBMS. Item 1 above, reducing duplication of data, is accomplished by using a specific, “relational” data structure that encourages the use of controlled lists of data mapped to individual observations. Looking at our mtcars subset data, for example, we see that while there are ten observations, there are only 6 makes of cars. To represent this in RDBMS, we first create a “Table,” a named collection of data, that contains a unique list of car makes:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-2">Table 1.2: </span>MAKE_TABLE</caption>
+<thead>
+<tr class="header">
+<th align="right">id</th>
+<th align="left">Make</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Mazda</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Datsun</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Hornet</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Valiant</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Duster</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">Merc</td>
+</tr>
+</tbody>
+</table>
+<p>Once we have a table of unique lists, we then create and populate a table of our cars, associating each car with its appropriate make from the MAKE_TABLE table:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-3">Table 11.1: </span>CARS_TABLE</caption>
+<thead>
+<tr class="header">
+<th align="right">Make</th>
+<th align="left">Model</th>
+<th align="right">mpg</th>
+<th align="right">cyl</th>
+<th align="right">disp</th>
+<th align="right">hp</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">RX4</td>
+<td align="right">21.0</td>
+<td align="right">6</td>
+<td align="right">160.0</td>
+<td align="right">110</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">RX4 Wag</td>
+<td align="right">21.0</td>
+<td align="right">6</td>
+<td align="right">160.0</td>
+<td align="right">110</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">710</td>
+<td align="right">22.8</td>
+<td align="right">4</td>
+<td align="right">108.0</td>
+<td align="right">93</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">4 Drive</td>
+<td align="right">21.4</td>
+<td align="right">6</td>
+<td align="right">258.0</td>
+<td align="right">110</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Sportabout</td>
+<td align="right">18.7</td>
+<td align="right">8</td>
+<td align="right">360.0</td>
+<td align="right">175</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Valiant</td>
+<td align="right">18.1</td>
+<td align="right">6</td>
+<td align="right">225.0</td>
+<td align="right">105</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">360</td>
+<td align="right">14.3</td>
+<td align="right">8</td>
+<td align="right">360.0</td>
+<td align="right">245</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">240D</td>
+<td align="right">24.4</td>
+<td align="right">4</td>
+<td align="right">146.7</td>
+<td align="right">62</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="left">230</td>
+<td align="right">22.8</td>
+<td align="right">4</td>
+<td align="right">140.8</td>
+<td align="right">95</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">280</td>
+<td align="right">19.2</td>
+<td align="right">6</td>
+<td align="right">167.6</td>
+<td align="right">123</td>
+</tr>
+</tbody>
+</table>
+<p>In the above table, we only normalized the car Make field. In a fully normalized RDBMS data structure, we would also create a control table for the Model field in anticipation of the fact that we could have more than one observation for a given model. Fully normalized RBDMS data structures use control tables for all fields that contain string data.</p>
 </div>
-<div id="comparing-commits" class="section level2">
-<h2><span class="header-section-number">3.6</span> Comparing Commits</h2>
-<pre><code>$ git diff &lt;commit&gt; &lt;commit&gt;</code></pre>
+<div id="non-hierarchical-relational-data" class="section level2">
+<h2><span class="header-section-number">11.4</span> Non-Hierarchical Relational Data</h2>
+<p>In the era of the social network, it is becoming increasingly necessary to represent relationships between entities that are not hierarchical. Unlike a family tree, the fact that you are connected to someone on Facebook or Instagram does not imply any type of hierarchical relationship. Such networks are typically represented using the Graph data structure:</p>
+<p><img src="img/social_network.jpeg" /></p>
+<p>Graphs consits of collections of <em>vertices</em> or <em>nodes</em>, the entities being graphed, and <em>edges</em>, the relationships between nodes.</p>
+<p><img src="img/graph-parts.jpg" /></p>
+<p>Another important aspect of graph data is the concept of <em>directionality</em>. A directed graph indicates the direction of the relationship identified by the edge. We might, for example, wish to draw edges that indicate that one node was influenced by antoher node, in which case we could identify an “influence” edge and use directionality to indicate who influenced whom:</p>
+<p><img src="img/directed-vs-undirected-graph.jpg" /></p>
+<p>Graph data can be stored and or transfered using any of the data formats discussed above or using specialized graph databases management software.</p>
 </div>
-<div id="comparing-files" class="section level2">
-<h2><span class="header-section-number">3.7</span> Comparing Files</h2>
-<pre><code>$ git diff &lt;commit&gt; &lt;file&gt;</code></pre>
-<p>or</p>
-<pre><code>$ git diff &lt;commit&gt;:&lt;file&gt; &lt;commit&gt;:&lt;file&gt;</code></pre>
-</div>
-<div id="to-view-an-earlier-commit" class="section level2">
-<h2><span class="header-section-number">3.8</span> To View an Earlier Commit</h2>
-<pre><code>$ git checkout &lt;commit&gt;</code></pre>
-<p>To solve Detached Head problem either RESET HEAD as described below or just chekout another branch</p>
-<pre><code>git checkout &lt;branch&gt;</code></pre>
-<p>To save this older version as a parallel branch execute</p>
-<pre><code>$ git checkout -b &lt;new_branch_name</code></pre>
-<p>This will save the older commit as a new branch running parallel to master.</p>
-</div>
-<div id="undoing-things" class="section level2">
-<h2><span class="header-section-number">3.9</span> Undoing Things</h2>
-<p>One of the common undos takes place when you commit too early and possibly forget to add some files, or you mess up your commit message. If you want to redo that commit, make the additional changes you forgot, stage them, and commit again using the –amend option</p>
-<pre><code>$ git commit --amend</code></pre>
-<p>To unstage a file for commit use</p>
-<pre><code>$ git reset HEAD &lt;file&gt;</code></pre>
-<p>Throwing away changes you’ve made to a file</p>
-<pre><code>$ git checkout -- &lt;file&gt;</code></pre>
-<p>Rolling everything back to the last commit</p>
-<pre><code>$ git reset --hard HEAD</code></pre>
-<p>Rolling everything back to the next to last commit (The commit before the HEAD commit)</p>
-<pre><code>$ git reset --hard HEAD^</code></pre>
-<p>Rolling everything back tp two commits before the head</p>
-<pre><code>$ git reset --hard HEAD^2</code></pre>
-<p>Rolling everything back to an identified commit using HASH/ID from log</p>
-<pre><code>$ git reset --hard &lt;commit&gt;</code></pre>
-</div>
-<div id="when-things-go-wrong" class="section level2">
-<h2><span class="header-section-number">3.10</span> When Things go Wrong!</h2>
-<p>To reset everything back to an earlier commit and make sure that the HEAD pointer is pointing to the newly reset HEAD, do the following</p>
-<pre><code>$ git reset --hard &lt;commit&gt;
-$ git reset --soft HEAD@{1}</code></pre>
+<div id="geospatial-data" class="section level2">
+<h2><span class="header-section-number">11.5</span> Geospatial Data</h2>
+<p>Geospation data represents a final type of data with it’s own, unique data structure. Geospatial data unique because it always realates directly to the physical world and, because it relies on world-wide standards which have been in development and communally accepted for hundreds of years. Because of its uniqueness as a data type, geospatial data will be covered as a stand-alone topic later in the course.</p>
 
 </div>
 </div>
@@ -381,8 +788,8 @@ $ git reset --soft HEAD@{1}</code></pre>
           </div>
         </div>
       </div>
-<a href="introduction-to-version-control.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="git-branching.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="strings-and-regular-expressions.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -404,7 +811,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/03_git-intro.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/11_data-structures.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -412,7 +819,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/03_git-intro.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/11_data-structures.Rmd",
 "text": null
 },
 "download": null,

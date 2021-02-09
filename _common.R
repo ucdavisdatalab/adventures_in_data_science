@@ -32,5 +32,11 @@ url29 <- "./img/vim_save.png"
 url30 <- "https://www.r-project.org/Rlogo.png"
 url31 <- "./img/sample_lec7.png"
 url32 <- "./img/graph_time_dist_mydata.png"
+url33 <- "./img/family_tree.jpg"
+url34 <- "./img/mtcars_tree.jpg"
+url35 <- "./img/social_network.jpeg"
+url36 <- "./img/graph-parts.jpg"
+url37 <- "./img/directed-vs-undirected-graph.jpg"
+
 
 library(knitr)
