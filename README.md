@@ -39,6 +39,13 @@ media should be given their own, sequentially numbered variable (`url1`,
 `url2`, ..., `url26`, etc.) in the file `_common.R` and should then be called
 from that variable in the body text of the chapter files.
 
+Note: if you plan to include code blocks in the course reader that might 
+take a while to render, consider caching them so they don't have to run 
+every time you re-generate the website. To cache a code block, add 
+`cache=TRUE` in the block's header. It's best practice to label cached 
+blocks, like so: `{r code_block_label, cache=TRUE}`. Cached files will 
+live under the `_bookdown_files/` directory.
+
 Summary of important files:
 
 * `docs` -- output HTML files
