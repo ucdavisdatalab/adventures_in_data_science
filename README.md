@@ -40,7 +40,7 @@ media should be given their own, sequentially numbered variable (`url1`,
 from that variable in the body text of the chapter files.
 
 Note: if you plan to include code blocks in the course reader that might 
-take a while to render, consider caching them so they don't have to run 
+take a while to run, consider caching them so they don't have to compile 
 every time you re-generate the website. To cache a code block, add 
 `cache=TRUE` in the block's header. It's best practice to label cached 
 blocks, like so: `{r code_block_label, cache=TRUE}`. Cached files will 
