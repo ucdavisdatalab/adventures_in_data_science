@@ -45,3 +45,4 @@ url43_web_works <- "./img/basic_internet_routing.png"
 
 
 library(knitr)
+library(stringr)

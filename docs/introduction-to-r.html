@@ -55,15 +55,18 @@
 
 
 
-<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 pre.sourceCode { margin: 0; }
@@ -72,14 +75,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -88,9 +93,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -347,12 +352,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><strong>loops</strong> back around to wait for your next command.</li>
 </ol>
 <p>You can use R like a calculator to see how it processes commands. Arithmetic in R follows an <strong>order of operations</strong> (aka <em>PEMDAS</em>): parenthesis, exponents, multiplication and division, addition and subtraction.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="dv">7</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb30-2" data-line-number="2"><span class="dv">7</span> <span class="op">-</span><span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="dv">244</span><span class="op">/</span><span class="dv">12</span></a>
-<a class="sourceLine" id="cb30-4" data-line-number="4"><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">12</span></a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="introduction-to-r.html#cb30-1"></a><span class="dv">7</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span></span>
+<span id="cb30-2"><a href="introduction-to-r.html#cb30-2"></a><span class="dv">7</span> <span class="op">-</span><span class="st"> </span><span class="dv">2</span></span>
+<span id="cb30-3"><a href="introduction-to-r.html#cb30-3"></a><span class="dv">244</span><span class="op">/</span><span class="dv">12</span></span>
+<span id="cb30-4"><a href="introduction-to-r.html#cb30-4"></a><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="dv">12</span></span></code></pre></div>
 <p>To see the complete order of operations, use the help command:</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">?Syntax</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="introduction-to-r.html#cb31-1"></a>?Syntax</span></code></pre></div>
 </div>
 <div id="help" class="section level2">
 <h2><span class="header-section-number">5.4</span> HELP!</h2>
@@ -361,22 +366,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="calls" class="section level2">
 <h2><span class="header-section-number">5.5</span> Calls</h2>
 <p>R has many <strong>functions</strong> (reusable commands) built-in that allow you to compute mathematical operations, statistics, and other computing tasks. Code that uses a function is said to <em>call</em> that function. When you call a function, the values that you assign as input are called <strong>arguments</strong>. Some functions have multiple parameters and can accept multiple arguments.</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">log</span>(<span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb32-2" data-line-number="2"><span class="kw">sqrt</span>(<span class="dv">9</span>)</a>
-<a class="sourceLine" id="cb32-3" data-line-number="3"><span class="kw">sum</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="introduction-to-r.html#cb32-1"></a><span class="kw">log</span>(<span class="dv">10</span>)</span>
+<span id="cb32-2"><a href="introduction-to-r.html#cb32-2"></a><span class="kw">sqrt</span>(<span class="dv">9</span>)</span>
+<span id="cb32-3"><a href="introduction-to-r.html#cb32-3"></a><span class="kw">sum</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">1</span>)</span></code></pre></div>
 </div>
 <div id="variables" class="section level2">
 <h2><span class="header-section-number">5.6</span> Variables</h2>
 <p>A <strong>variable</strong> is a name for a stored value. Variables allow you to reuse the result of a computation, write general expressions (such as a<em>x + b</em>), and break up your code into smaller steps so it’s easier to test and understand. Variable names can contain letters or numbers, but they <em>cannot</em> begin with a number. In general, variable names should be descriptive but concise, and should not use the same name as common (base R) functions, like mean, T, median, sum, etc.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">y &lt;-<span class="st"> </span><span class="dv">24</span></a>
-<a class="sourceLine" id="cb33-3" data-line-number="3">fantastic.variable2 =<span class="st"> </span>x</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4">x&lt;-y<span class="op">/</span><span class="dv">2</span></a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="introduction-to-r.html#cb33-1"></a>x &lt;-<span class="st"> </span><span class="dv">10</span></span>
+<span id="cb33-2"><a href="introduction-to-r.html#cb33-2"></a>y &lt;-<span class="st"> </span><span class="dv">24</span></span>
+<span id="cb33-3"><a href="introduction-to-r.html#cb33-3"></a>fantastic.variable2 =<span class="st"> </span>x</span>
+<span id="cb33-4"><a href="introduction-to-r.html#cb33-4"></a>x&lt;-y<span class="op">/</span><span class="dv">2</span></span></code></pre></div>
 <p>In R, variables are <strong>copy-on-write</strong>. When we change a variable (a “write”), R automatically copies the original value so dependent variables are unchanged until they are re-run.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">x =<span class="st"> </span><span class="dv">13</span></a>
-<a class="sourceLine" id="cb34-2" data-line-number="2">y =<span class="st"> </span>x</a>
-<a class="sourceLine" id="cb34-3" data-line-number="3">x =<span class="st"> </span><span class="dv">16</span></a>
-<a class="sourceLine" id="cb34-4" data-line-number="4">y</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="introduction-to-r.html#cb34-1"></a>x =<span class="st"> </span><span class="dv">13</span></span>
+<span id="cb34-2"><a href="introduction-to-r.html#cb34-2"></a>y =<span class="st"> </span>x</span>
+<span id="cb34-3"><a href="introduction-to-r.html#cb34-3"></a>x =<span class="st"> </span><span class="dv">16</span></span>
+<span id="cb34-4"><a href="introduction-to-r.html#cb34-4"></a>y</span></code></pre></div>
 </div>
 <div id="data-types-and-classes" class="section level2">
 <h2><span class="header-section-number">5.7</span> Data Types and Classes</h2>
@@ -398,37 +403,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>complex (3i)</li>
 <li>character (“marie curie”,“grace hooper”)</li>
 </ul>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">x&lt;-<span class="st"> </span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="kw">class</span>(x)</a>
-<a class="sourceLine" id="cb35-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb35-4" data-line-number="4">y&lt;-<span class="st"> &quot;two&quot;</span></a>
-<a class="sourceLine" id="cb35-5" data-line-number="5"><span class="kw">class</span>(y)</a>
-<a class="sourceLine" id="cb35-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb35-7" data-line-number="7"><span class="kw">class</span>(<span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb35-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb35-9" data-line-number="9"><span class="kw">class</span>(mean)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="introduction-to-r.html#cb35-1"></a>x&lt;-<span class="st"> </span><span class="dv">2</span></span>
+<span id="cb35-2"><a href="introduction-to-r.html#cb35-2"></a><span class="kw">class</span>(x)</span>
+<span id="cb35-3"><a href="introduction-to-r.html#cb35-3"></a></span>
+<span id="cb35-4"><a href="introduction-to-r.html#cb35-4"></a>y&lt;-<span class="st"> &quot;two&quot;</span></span>
+<span id="cb35-5"><a href="introduction-to-r.html#cb35-5"></a><span class="kw">class</span>(y)</span>
+<span id="cb35-6"><a href="introduction-to-r.html#cb35-6"></a></span>
+<span id="cb35-7"><a href="introduction-to-r.html#cb35-7"></a><span class="kw">class</span>(<span class="ot">TRUE</span>)</span>
+<span id="cb35-8"><a href="introduction-to-r.html#cb35-8"></a></span>
+<span id="cb35-9"><a href="introduction-to-r.html#cb35-9"></a><span class="kw">class</span>(mean)</span></code></pre></div>
 </div>
 <div id="vectors" class="section level2">
 <h2><span class="header-section-number">5.8</span> Vectors</h2>
 <p>A <strong>vector</strong> is an ordered collection of values. The elements in the vector must have the same data type. (While class and type are independent, for vectors they are typically the same and thus you can expect that they typically should have the same class.) You can combine or concatenate values to create a vector using c().</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">v&lt;-<span class="kw">c</span>(<span class="dv">16</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">2</span>, <span class="dv">25</span>)</a>
-<a class="sourceLine" id="cb36-2" data-line-number="2"><span class="kw">class</span>(v)</a>
-<a class="sourceLine" id="cb36-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb36-4" data-line-number="4">place &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Mandro&quot;</span>, <span class="st">&quot;Cruess&quot;</span>, <span class="st">&quot;ARC&quot;</span>, <span class="st">&quot;CoHo&quot;</span>, <span class="st">&quot;PES&quot;</span>, <span class="st">&quot;Walker&quot;</span>, <span class="st">&quot;ARC&quot;</span>,</a>
-<a class="sourceLine" id="cb36-5" data-line-number="5">  <span class="st">&quot;Tennis Courts&quot;</span>, <span class="st">&quot;Library&quot;</span>, <span class="st">&quot;Arboretum&quot;</span>, <span class="st">&quot;Arboretum&quot;</span>, <span class="st">&quot;Disneyland&quot;</span>, <span class="st">&quot;West</span></a>
-<a class="sourceLine" id="cb36-6" data-line-number="6"><span class="st">  Village&quot;</span>, <span class="st">&quot;iTea&quot;</span>, <span class="st">&quot;MU&quot;</span>)</a>
-<a class="sourceLine" id="cb36-7" data-line-number="7"><span class="kw">class</span>(place)</a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="introduction-to-r.html#cb36-1"></a>v&lt;-<span class="kw">c</span>(<span class="dv">16</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">8</span>, <span class="dv">2</span>, <span class="dv">25</span>)</span>
+<span id="cb36-2"><a href="introduction-to-r.html#cb36-2"></a><span class="kw">class</span>(v)</span>
+<span id="cb36-3"><a href="introduction-to-r.html#cb36-3"></a></span>
+<span id="cb36-4"><a href="introduction-to-r.html#cb36-4"></a>place &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Mandro&quot;</span>, <span class="st">&quot;Cruess&quot;</span>, <span class="st">&quot;ARC&quot;</span>, <span class="st">&quot;CoHo&quot;</span>, <span class="st">&quot;PES&quot;</span>, <span class="st">&quot;Walker&quot;</span>, <span class="st">&quot;ARC&quot;</span>,</span>
+<span id="cb36-5"><a href="introduction-to-r.html#cb36-5"></a>  <span class="st">&quot;Tennis Courts&quot;</span>, <span class="st">&quot;Library&quot;</span>, <span class="st">&quot;Arboretum&quot;</span>, <span class="st">&quot;Arboretum&quot;</span>, <span class="st">&quot;Disneyland&quot;</span>, <span class="st">&quot;West</span></span>
+<span id="cb36-6"><a href="introduction-to-r.html#cb36-6"></a><span class="st">  Village&quot;</span>, <span class="st">&quot;iTea&quot;</span>, <span class="st">&quot;MU&quot;</span>)</span>
+<span id="cb36-7"><a href="introduction-to-r.html#cb36-7"></a><span class="kw">class</span>(place)</span></code></pre></div>
 <p>What happens if you make a typo or try to combine different data types in the same vector? R resolves this for you and automatically converts elements within the vector to be the same data type. It does so through <em>implicit coercion</em> where it conserves the most information possible (logical -&gt; integer -&gt; numeric -&gt; complex -&gt; character). Sometimes this is very helpful, and sometimes it isn’t.</p>
 <div id="basic-statistics-on-vectors" class="section level3">
 <h3><span class="header-section-number">5.8.1</span> Basic statistics on vectors</h3>
 <p>You can use functions built into R to inspect a vector and calculate basic statistics.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">length</span>(v)   <span class="co"># returns how many elements are within the object</span></a>
-<a class="sourceLine" id="cb37-2" data-line-number="2"><span class="kw">length</span>(place)</a></code></pre></div>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="kw">min</span>(v)      <span class="co"># minimum value</span></a>
-<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="kw">max</span>(v)          <span class="co"># maximum value</span></a>
-<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="kw">mean</span>(v)</a>
-<a class="sourceLine" id="cb38-4" data-line-number="4"><span class="kw">median</span>(v)</a>
-<a class="sourceLine" id="cb38-5" data-line-number="5"><span class="kw">sd</span>(v)       <span class="co"># standard deviation</span></a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="introduction-to-r.html#cb37-1"></a><span class="kw">length</span>(v)   <span class="co"># returns how many elements are within the object</span></span>
+<span id="cb37-2"><a href="introduction-to-r.html#cb37-2"></a><span class="kw">length</span>(place)</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="introduction-to-r.html#cb38-1"></a><span class="kw">min</span>(v)      <span class="co"># minimum value</span></span>
+<span id="cb38-2"><a href="introduction-to-r.html#cb38-2"></a><span class="kw">max</span>(v)          <span class="co"># maximum value</span></span>
+<span id="cb38-3"><a href="introduction-to-r.html#cb38-3"></a><span class="kw">mean</span>(v)</span>
+<span id="cb38-4"><a href="introduction-to-r.html#cb38-4"></a><span class="kw">median</span>(v)</span>
+<span id="cb38-5"><a href="introduction-to-r.html#cb38-5"></a><span class="kw">sd</span>(v)       <span class="co"># standard deviation</span></span></code></pre></div>
 </div>
 </div>
 <div id="matrices-arrays-lists" class="section level2">
@@ -439,53 +444,53 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">5.10</span> Data Frames</h2>
 <p>We frequently work with 2-dimensional tables of data. For a tabular data set, typically each row corresponds to a single subject and is called an observation. Each column corresponds to the data measures or responses – a feature or covariable. (Sometimes people will also refer to these as variables, but that can be confusing as “variable” means something else in R, so here we’ll try to avoid that term.) R’s structure for tabular data is the <strong>data frame.</strong></p>
 <p>A data frame is a list of column vectors. Thus, elements of a column must all have the same type (like a vector), but elements of a row can have different types (like a list). Additionally, every row must be the same length. To make a data frame in R, you can combine vectors using the data.frame() command.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">distance.mi &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">3.1</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="dv">0</span>, <span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="dv">501</span>, <span class="fl">1.6</span>,</a>
-<a class="sourceLine" id="cb39-2" data-line-number="2">  <span class="fl">0.4</span>, <span class="fl">4.7</span>)</a>
-<a class="sourceLine" id="cb39-3" data-line-number="3">time.min &lt;-<span class="st"> </span>v</a>
-<a class="sourceLine" id="cb39-4" data-line-number="4">major &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;nutrition&quot;</span>, <span class="st">&quot;psychology&quot;</span>, <span class="st">&quot;global disease&quot;</span>, <span class="st">&quot;political science&quot;</span>,</a>
-<a class="sourceLine" id="cb39-5" data-line-number="5">  <span class="st">&quot;sociology&quot;</span>, <span class="st">&quot;sustainable agriculture&quot;</span>, <span class="st">&quot;economics&quot;</span>, <span class="st">&quot;political science&quot;</span>,</a>
-<a class="sourceLine" id="cb39-6" data-line-number="6">  <span class="st">&quot;undeclared&quot;</span>, <span class="st">&quot;psychology&quot;</span>, <span class="st">&quot;undeclared&quot;</span>,<span class="st">&quot;economics&quot;</span>,<span class="st">&quot;political science&quot;</span>,</a>
-<a class="sourceLine" id="cb39-7" data-line-number="7">  <span class="st">&quot;english&quot;</span>, <span class="st">&quot;economics&quot;</span>)</a>
-<a class="sourceLine" id="cb39-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb39-9" data-line-number="9">my.data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(place, distance.mi, time.min, major)</a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="introduction-to-r.html#cb39-1"></a>distance.mi &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">3.1</span>, <span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="fl">0.5</span>, <span class="dv">0</span>, <span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="dv">501</span>, <span class="fl">1.6</span>,</span>
+<span id="cb39-2"><a href="introduction-to-r.html#cb39-2"></a>  <span class="fl">0.4</span>, <span class="fl">4.7</span>)</span>
+<span id="cb39-3"><a href="introduction-to-r.html#cb39-3"></a>time.min &lt;-<span class="st"> </span>v</span>
+<span id="cb39-4"><a href="introduction-to-r.html#cb39-4"></a>major &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;nutrition&quot;</span>, <span class="st">&quot;psychology&quot;</span>, <span class="st">&quot;global disease&quot;</span>, <span class="st">&quot;political science&quot;</span>,</span>
+<span id="cb39-5"><a href="introduction-to-r.html#cb39-5"></a>  <span class="st">&quot;sociology&quot;</span>, <span class="st">&quot;sustainable agriculture&quot;</span>, <span class="st">&quot;economics&quot;</span>, <span class="st">&quot;political science&quot;</span>,</span>
+<span id="cb39-6"><a href="introduction-to-r.html#cb39-6"></a>  <span class="st">&quot;undeclared&quot;</span>, <span class="st">&quot;psychology&quot;</span>, <span class="st">&quot;undeclared&quot;</span>,<span class="st">&quot;economics&quot;</span>,<span class="st">&quot;political science&quot;</span>,</span>
+<span id="cb39-7"><a href="introduction-to-r.html#cb39-7"></a>  <span class="st">&quot;english&quot;</span>, <span class="st">&quot;economics&quot;</span>)</span>
+<span id="cb39-8"><a href="introduction-to-r.html#cb39-8"></a></span>
+<span id="cb39-9"><a href="introduction-to-r.html#cb39-9"></a>my.data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(place, distance.mi, time.min, major)</span></code></pre></div>
 <div id="inspecting-data-frames" class="section level3">
 <h3><span class="header-section-number">5.10.1</span> Inspecting Data Frames</h3>
 <p>You can print a small dataset, but it can be slow and hard to read especially if there are a lot of coumns. R has many other functions to inspect objects:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">head</span>(my.data)</a>
-<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw">tail</span>(my.data)</a>
-<a class="sourceLine" id="cb40-3" data-line-number="3"><span class="kw">nrow</span>(my.data)</a>
-<a class="sourceLine" id="cb40-4" data-line-number="4"><span class="kw">ncol</span>(my.data)</a>
-<a class="sourceLine" id="cb40-5" data-line-number="5"><span class="kw">ls</span>(my.data)</a>
-<a class="sourceLine" id="cb40-6" data-line-number="6"><span class="kw">rownames</span>(my.data)</a>
-<a class="sourceLine" id="cb40-7" data-line-number="7"><span class="kw">str</span>(my.data)</a>
-<a class="sourceLine" id="cb40-8" data-line-number="8"><span class="kw">summary</span>(my.data)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="introduction-to-r.html#cb40-1"></a><span class="kw">head</span>(my.data)</span>
+<span id="cb40-2"><a href="introduction-to-r.html#cb40-2"></a><span class="kw">tail</span>(my.data)</span>
+<span id="cb40-3"><a href="introduction-to-r.html#cb40-3"></a><span class="kw">nrow</span>(my.data)</span>
+<span id="cb40-4"><a href="introduction-to-r.html#cb40-4"></a><span class="kw">ncol</span>(my.data)</span>
+<span id="cb40-5"><a href="introduction-to-r.html#cb40-5"></a><span class="kw">ls</span>(my.data)</span>
+<span id="cb40-6"><a href="introduction-to-r.html#cb40-6"></a><span class="kw">rownames</span>(my.data)</span>
+<span id="cb40-7"><a href="introduction-to-r.html#cb40-7"></a><span class="kw">str</span>(my.data)</span>
+<span id="cb40-8"><a href="introduction-to-r.html#cb40-8"></a><span class="kw">summary</span>(my.data)</span></code></pre></div>
 </div>
 </div>
 <div id="subsetting" class="section level2">
 <h2><span class="header-section-number">5.11</span> Subsetting</h2>
 <p>Sometimes you will want to work with only specific elements in a vector or data frame. To do that, you can refer to the position of the element, which is also also called the index.</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="kw">length</span>(time.min)</a>
-<a class="sourceLine" id="cb41-2" data-line-number="2">time.min[<span class="dv">15</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="introduction-to-r.html#cb41-1"></a><span class="kw">length</span>(time.min)</span>
+<span id="cb41-2"><a href="introduction-to-r.html#cb41-2"></a>time.min[<span class="dv">15</span>]</span></code></pre></div>
 <p>You can also subset by using the name of an element in a list. The <code>$</code> operator
 extracts a named element from a list, and is useful for extracting the columns
 from data frames.</p>
 <p>How can we use subsetting to look only at the distance response?</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">my.data<span class="op">$</span>distance.mi</a>
-<a class="sourceLine" id="cb42-2" data-line-number="2">my.data[,<span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb42-3" data-line-number="3">distances2&lt;-my.data[[<span class="st">&quot;distance.mi&quot;</span>]]</a>
-<a class="sourceLine" id="cb42-4" data-line-number="4">distances3&lt;-my.data[[<span class="dv">2</span>]]</a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="introduction-to-r.html#cb42-1"></a>my.data<span class="op">$</span>distance.mi</span>
+<span id="cb42-2"><a href="introduction-to-r.html#cb42-2"></a>my.data[,<span class="dv">2</span>]</span>
+<span id="cb42-3"><a href="introduction-to-r.html#cb42-3"></a>distances2&lt;-my.data[[<span class="st">&quot;distance.mi&quot;</span>]]</span>
+<span id="cb42-4"><a href="introduction-to-r.html#cb42-4"></a>distances3&lt;-my.data[[<span class="dv">2</span>]]</span></code></pre></div>
 <p>What are the responses for political science majors?</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">polisci_majors &lt;-<span class="st"> </span>my.data[<span class="kw">which</span>(my.data<span class="op">$</span>major <span class="op">==</span><span class="st"> &#39;political science&#39;</span>), ]</a>
-<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="kw">View</span>(polisci_majors)</a>
-<a class="sourceLine" id="cb43-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb43-4" data-line-number="4"><span class="kw">which</span>(my.data<span class="op">$</span>major <span class="op">==</span><span class="st"> &quot;political science&quot;</span>)</a>
-<a class="sourceLine" id="cb43-5" data-line-number="5">shortframe&lt;-my.data[<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">8</span>,<span class="dv">13</span>),]</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="introduction-to-r.html#cb43-1"></a>polisci_majors &lt;-<span class="st"> </span>my.data[<span class="kw">which</span>(my.data<span class="op">$</span>major <span class="op">==</span><span class="st"> &#39;political science&#39;</span>), ]</span>
+<span id="cb43-2"><a href="introduction-to-r.html#cb43-2"></a><span class="kw">View</span>(polisci_majors)</span>
+<span id="cb43-3"><a href="introduction-to-r.html#cb43-3"></a></span>
+<span id="cb43-4"><a href="introduction-to-r.html#cb43-4"></a><span class="kw">which</span>(my.data<span class="op">$</span>major <span class="op">==</span><span class="st"> &quot;political science&quot;</span>)</span>
+<span id="cb43-5"><a href="introduction-to-r.html#cb43-5"></a>shortframe&lt;-my.data[<span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">8</span>,<span class="dv">13</span>),]</span></code></pre></div>
 <p>What are the majors of the first 5 students who replied?</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">shortframe2 &lt;-<span class="st"> </span>my.data[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="st">&quot;major&quot;</span>]             <span class="co"># range for rows, columns</span></a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="introduction-to-r.html#cb44-1"></a>shortframe2 &lt;-<span class="st"> </span>my.data[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>,<span class="st">&quot;major&quot;</span>]             <span class="co"># range for rows, columns</span></span></code></pre></div>
 <p>You can also use <code>$</code> to create an element within the data frame.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">my.data<span class="op">$</span>mpm &lt;-<span class="st"> </span>my.data<span class="op">$</span>distance.mi <span class="op">/</span><span class="st"> </span>my.data<span class="op">$</span>time.min</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="introduction-to-r.html#cb45-1"></a>my.data<span class="op">$</span>mpm &lt;-<span class="st"> </span>my.data<span class="op">$</span>distance.mi <span class="op">/</span><span class="st"> </span>my.data<span class="op">$</span>time.min</span></code></pre></div>
 <p><strong>Factors</strong>* are the class that R uses to represent categorical data. <strong><em>Levels</em></strong> are categories of a factor.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="kw">levels</span>(my.data<span class="op">$</span>major)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="introduction-to-r.html#cb46-1"></a><span class="kw">levels</span>(my.data<span class="op">$</span>major)</span></code></pre></div>
 
 </div>
 </div>
