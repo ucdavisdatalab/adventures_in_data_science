@@ -12,26 +12,24 @@ The base archtecture and functioning of the internet is quite simple:
 
 ![](`r url39`)
 
-1. A content produce puts information on a computer called the *server* for others to retrieve;
+1. A content producer puts information on a computer called the *server* for others to retrieve;
 2. A user uses their local computer, called the *client*, to request the information from the sever;
 3. The server delivers the information to the client.
 
 
-Each of the above detailed steps is accomplished using a sometimes complex set of computer protocols.  The deep, technical details of each step are beyond the scope of this course.  We are here concerned with their conceptual acrchictecture.
+Each of the above detailed steps is accomplished using a tehcnically complex but conceptually simple set of computer protocols.  The technical details are beyond the scope of this course.  We are here concerned with their conceptual acrchictecture.
 
-### Publishing Information on the Server
+### Communication Between Clients and Servers
 
-Anytime a computer connects to any network, that computer is assigned a unique identifier known as an Internet Protocol (IP) Address that uniquely identifies that computer on the network.  IP Address appear in the form 000.000.000.000 Where "0" can be any integer.  For example, 169.237.102.141 is the current IP Address of the computer that currently hosts the DataLab website.  IP address are sometimes pre-designated for particular computers, known as a Static IP Address, and sometimes dynamically assigned from a range of available IP Address using software known as a Dynamic Host Configuration Protocol (DHCP) Server.  Servers are typically assigned static IP addresses and clients are typically assigned dynamic IP addresses.
+Anytime a computer connects to any network, that computer is assigned a unique identifier known as an Internet Protocol (IP) Address that uniquely identifies that computer on the network.  IP Address appear in the form x.x.x.x Where x can be any real number up to three digits in length.  For example, 169.237.102.141 is the current IP Address of the computer that currently hosts the DataLab website.  IP address are sometimes pre-designated for particular computers.  A pre-designated IP address is known as *Static IP Address*. In other cases IP addresses are dynamically assigned from a range of available IP Address using a system known as the Dynamic Host Configuration Protocol (DHCP).  Servers are typically assigned static IP addresses and clients are typically assigned dynamic IP addresses.
 
 ![](`r url40`)
 
-As humans, we are used to accessing websites via a domain name (which we'll discuss shortly), but you also contant any server on the internet by simply typing the IP address into your browser address bar where you would normally enter the domain name.  For exampe, you can simply click on [https://169.237.102.141](https://169.237.102.141) to access the datalab website.
+As humans, we are used to accessing websites via a domain name (which we'll discuss shortly), but you can also contact any server on the internet by simply typing the IP address into your browser address bar where you would normally enter the URL.  For example, you can simply click on [https://169.237.102.141](https://169.237.102.141) to access the datalab website. [note: your browser may give you a security warning if you try to access a server directly using an IP address.  In this case, it is safe to proceed to the site.]
 
-Content Producers typically use specialized software that empoloys the Secure File Transfer Protocol (SFTP) to move move files from their local computer to the internet server.  SFTP sofware creates a connection to the internet server via IP address or domain name using special login credentials that allows the user to drag and drop files onto the server.
+### Domain Name Resolution
 
-### IP Addresses vs. Domain Names
-
-IP Addresses are the unique identifiers that make the internet work.  How can this be, you might ask, since you've most likely never encountered one before?  This is because the internet also utilizes as system known as Domain Name Registration, to translate nice, human readable domains into IP addressess.  The Domain Registry System maintains a global list that associates human readable domain names with machine readable IP addresses.  And a secondary set of of internet connected servers known as Domain Name Servers (DNS) provide a lookup service that translates domain names into IP addresses in the background.  As the client user, you see only the domain.  But the actual request process is looks like this:
+IP Addresses are the unique identifiers that make the internet work, but they are not very human friendly.  To solve this problem, a system of Domain Name Resolution was created.  Under this system, internet service providers access a universal Domain Registry Database that associates human readable domain names with machine readable IP addresses, and a secondary set of of internet connected servers known as Domain Name Servers (DNS) provide a lookup service that translates domain names into IP addresses in the background.  As the end-user, you enter and see only domain names, but the actual request process is a multi-step process in which domain names are translated to IP address in the background:
 
 ![](`r url41`)
 
@@ -42,14 +40,99 @@ IP Addresses are the unique identifiers that make the internet work.  How can th
 5. The client then makes the information request to the server using its retreived IP address;
 6. The server delivers the information to the client.
 
+### Request Routing
 
-### Requesting Information from the Server
+Our simple digram of the client server process shows onl two computers.  But when you connect to the internet you are not, of course, creating a direct connection to a single computer.  Rather, you are connecting to vase network of literally millions of computers, what we have come to refer to as the cloud.
 
-Clients can use a variety of methods to request information from the server.  These include:
+In order to solve this problem, the internet backbone also deploys a routing system that directs requests and responses across the network to the appropriate servers and clients.  
 
-1. A Web Browser
-2. Mobile Apps
-3. Use programming and shell environments such as R, Phython, or Bash to access human readable versions of data via URL or machine readable versions of data via an Application Programming Interface (API), discussed in detail below.
+When you connect to the WiFi network in your home, office, or the local coffee house, you are coneecting to a router.  That router receives all of your requests and, provided you are not requesting somethign directly from another computer that is connedted to the same router, passess that request on to a larger routing network at the Internet Service Provider (ISP).  When the ISP routers recieve your request, they check to see if your requestion something from a computer that connected to their network.  If it is, they deliver the request.  If it is not, they pass the request on to another, regional routing network.  And this routing process is repeated until your request if finally routed to the correct server.
 
-In all cases, spefific data requests are made using the Hyper Text Transfer Protocol (HTTP), which defines a set of rules 
+![](`r url43_web_works`)
+
+
+1. A content produce puts information on a computer called the *server* for others to retrieve;
+2. A user uses their local computer, called the *client*, to request the information from the sever using a domain name using request software such as a web browser;
+3. The user's client sofware first sends a request to a DNS server to retrieve the IP address of the server on the network associated with the entered domain name;
+4. The DNS server returns the associted IP address to the client;
+5. The client sends the request to the local (in home, office, etc.) router;
+6. After check of IP addresses on local network, request is routed to the ISP's routing system;
+7. The request is passed through the internet routing network until it reaches the routing system of the server's ISP and, finally, the server itself.
+
+### The Server Response
+
+When a request is sent to a server across the internet, the reqeust includes both the specific URL of the resource being request and also an hidden *request header*.  The request header provides information to the server such as the IP address and the operating system of the client, the transfer protocol being used, and the software on the cient that is making the request.  The server uses this information to properly format it's reponse and to route it back to the requesting client using the same IP routing process as described above.
+
+### Internt Transfer Protocols
+
+All of the information transferred between computers over the network is transfered as streams of binary data.  In order to insure data integrity, these streams are usually broken up into smaller *packets* of data which are transmitted indepent of each other and then reassembled by the receiving computer once it has received all of the packets in the stream.  The first packet returned (a header packet) typically delivers information about how many packets the client shoudl expect to receive and about how they should be reassembled to recreate the original data stream.  
+
+There are many diferrent standards for how data streams are divided into packets.  One standard might, for example, break the stream into a collectio of 50 byte packes, while another might use 100 byte packages.  These standards are called *protocols*. The two protocols that are familiar to most users are *http* and *https*, which define the hypertext transfer protocol and its sibling the hypertext transfer secure protocol.  When you type a url like https://datalab.ucdavis.edu into your browser, you are instructuing the browser to use the https protocol to exchange information.  Because http and https are so common, most modern browsers do not require you to type the protocol name.  They will simply insert the protocol for you in the background.
+
+## Understanding URLs
+
+URL is an acronym for Uniform Resource Locators.  "Uniform" is a key term in this context.  URLs are not arbitrary pointers to information.  They are machine and human reabable and parsable and contain a lot of information in them.
+
+All URLs are constructed using a standardized format.  Consider the following URL:
+
+```
+https://sfbaywildlife.info/species/common_birds.htm
+```
+
+There are actually several distinct components to the above URL
+
+```{r, echo=FALSE}
+url_protocol <- c("https://")
+url_domain <- c("sfbaywildlife.info")
+url_path <- c("/species/common_birds.htm")
+birds_columns <- c("protocol", "server", "path to file")
+birds_table <- data.frame(url_protocol, url_domain, url_path)
+colnames(birds_table) <- birds_columns
+kable(birds_table[,], caption = "")
+```
+
+We've already discussed Internet Protocols and domain names.  The file path portion of the URL can also provide valualbe information about the server. It reads exactly like a unix file path on the command line.  The path "/species/common_birds.htm" indicates that the 
+
+### Dynanic Files
+
+In the above example, wheb you use the url https://sfbaywildlife.info/species/common_birds.htm to request a resource the secure server at associated with the sfbaywildlife.info server siply finds the the file located on the server at ./species/common_birds.html and delivers it directly to your web browser.  We call this a static web server, becasue the server itself does not do any processign of files prior to delivery.  It simply receives requests for files living on the server and then sends them to the client, whose browser renders the file for viewing.
+
+Many websites, however, use dynamic processing.  Pages with fild extensions such as .php or .jsp, for example, include computer code in them.  Wheb these pages are requested by the server, the server executes the code in the designated file and sends the output of that execution to the requesting client rather than the actual file.  Many sites, such as online stores and blogs, use this functionality to connect their webpages to active databases that track inventory and orders, for example.
+
+### Query Strings
+
+Dynamic websites, such as ecommerce sites that are connected to databases, rquire a mechanism for users to subit information to the server for processing.  This is accomplished through one of two protocols:  GET or POST.
+
+POST commands send submitted information to the server via a hidden *http header* that is invisible to the end user.  Scraping sites that require POST transactions is possible but can require significant sleuthing to deterine the correct parameters and is beyond the scope of this course.
+
+GET requests, which are, happily for web scrapers more ubiquitous than POST requests, are much more simple to understand.  They are submitted via a query string that is simply appended to the request URL as in the following example:
+
+```
+https://ebba.english.ucsb.edu/search_combined/?ft=dragon&numkw=52
+```
+
+Here we see a Query String appended to the end of the actual URL:
+
+```{r, echo=FALSE}
+url_protocol <- c("https://")
+url_domain <- c("ebba.english.ucsb.edu")
+url_path <- c("/search_combined//index.php")
+url_query <- c("?ft=dragon&numkw=52")
+birds_columns <- c("protocol", "server", "path to file", "query string")
+birds_table <- data.frame(url_protocol, url_domain, url_path, url_query)
+colnames(birds_table) <- birds_columns
+kable(birds_table[,], caption = "")
+```
+
+Query strings always appear at the end of the URL and begin with the "?" character followed by a series of key/value pairs separated by the "&" character.  In the above example we see that two parameters are submitted to the server via the query string as follows:
+
+* ft = dragon
+* numkw = 52
+
+The server will use these parameter values as imput to perform a daynamic operation, in this case searching a database.
+
+
+
+  
+
 
