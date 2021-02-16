@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>13 Web Scraping | Adventures in Data Science</title>
+  <meta name="description" content="13 Web Scraping | Adventures in Data Science" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="13 Web Scraping | Adventures in Data Science" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
+  
+  
+  <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="13 Web Scraping | Adventures in Data Science" />
+  
+  
+  
+
+<meta name="author" content="Dr. Carl G. Stahmer" />
+<meta name="author" content="Dr. Pamela L. Reynolds" />
+<meta name="author" content="Dr. Tyler Shoemaker" />
+<meta name="author" content="Carrie Alexander" />
+<meta name="author" content="Arthur Koehl" />
+<meta name="author" content="Nick Ulle" />
+
+
+<meta name="date" content="2021-02-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="how-the-web-works.html"/>
+
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
+<script src="libs/str_view-binding-1.4.0/str_view.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://datalab.ucdavis.edu/">
+  <img src="img/datalab-logo-full-color-rgb.png" style="height: 100%; width: 100%; object-fit: contain" />
+</a></li>
+<li><a href="./" style="font-size: 18px">Adventures in Data Science</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="1" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html"><i class="fa fa-check"></i><b>1</b> Working with the Command Line</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#interacting-with-the-command-line"><i class="fa fa-check"></i><b>1.1</b> Interacting with the Command Line</a></li>
+<li class="chapter" data-level="1.2" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#common-command-line-commands"><i class="fa fa-check"></i><b>1.2</b> Common Command Line Commands</a></li>
+<li class="chapter" data-level="1.3" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#command-line-text-editors"><i class="fa fa-check"></i><b>1.3</b> Command Line Text Editors</a></li>
+<li class="chapter" data-level="1.4" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#basic-vim-commands"><i class="fa fa-check"></i><b>1.4</b> Basic Vim Commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html"><i class="fa fa-check"></i><b>2</b> Introduction to Version Control</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#what-is-version-control"><i class="fa fa-check"></i><b>2.1</b> What is Version Control?</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#software-assisted-version-control"><i class="fa fa-check"></i><b>2.2</b> Software Assisted Version Control</a></li>
+<li class="chapter" data-level="2.3" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#local-vs-server-based-version-control"><i class="fa fa-check"></i><b>2.3</b> Local vs Server Based Version Control</a></li>
+<li class="chapter" data-level="2.4" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#central-version-control-systems"><i class="fa fa-check"></i><b>2.4</b> Central Version Control Systems</a></li>
+<li class="chapter" data-level="2.5" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#distributed-version-control-systems"><i class="fa fa-check"></i><b>2.5</b> Distributed Version Control Systems</a></li>
+<li class="chapter" data-level="2.6" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#the-best-of-both-worlds"><i class="fa fa-check"></i><b>2.6</b> The Best of Both Worlds</a></li>
+<li class="chapter" data-level="2.7" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#vcs-and-the-computer-file-system"><i class="fa fa-check"></i><b>2.7</b> VCS and the Computer File System</a></li>
+<li class="chapter" data-level="2.8" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#how-computers-store-and-access-information"><i class="fa fa-check"></i><b>2.8</b> How Computers Store and Access Information</a></li>
+<li class="chapter" data-level="2.9" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#how-vcs-manage-your-files"><i class="fa fa-check"></i><b>2.9</b> How VCS Manage Your Files</a></li>
+<li class="chapter" data-level="2.10" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#graph-based-data-management"><i class="fa fa-check"></i><b>2.10</b> Graph-Based Data Management</a></li>
+<li class="chapter" data-level="2.11" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#additional-resources"><i class="fa fa-check"></i><b>2.11</b> Additional Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="introduction-to-git.html"><a href="introduction-to-git.html"><i class="fa fa-check"></i><b>3</b> Introduction to Git</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="introduction-to-git.html"><a href="introduction-to-git.html#save-stage-commit"><i class="fa fa-check"></i><b>3.1</b> Save, Stage, Commit</a></li>
+<li class="chapter" data-level="3.2" data-path="introduction-to-git.html"><a href="introduction-to-git.html#creating-your-first-repo"><i class="fa fa-check"></i><b>3.2</b> Creating Your First Repo</a></li>
+<li class="chapter" data-level="3.3" data-path="introduction-to-git.html"><a href="introduction-to-git.html#checking-the-status-of-a-repo"><i class="fa fa-check"></i><b>3.3</b> Checking the Status of a Repo</a></li>
+<li class="chapter" data-level="3.4" data-path="introduction-to-git.html"><a href="introduction-to-git.html#version-of-a-file"><i class="fa fa-check"></i><b>3.4</b> Version of a File</a></li>
+<li class="chapter" data-level="3.5" data-path="introduction-to-git.html"><a href="introduction-to-git.html#view-a-history-of-your-commits"><i class="fa fa-check"></i><b>3.5</b> View a History of Your Commits</a></li>
+<li class="chapter" data-level="3.6" data-path="introduction-to-git.html"><a href="introduction-to-git.html#comparing-commits"><i class="fa fa-check"></i><b>3.6</b> Comparing Commits</a></li>
+<li class="chapter" data-level="3.7" data-path="introduction-to-git.html"><a href="introduction-to-git.html#comparing-files"><i class="fa fa-check"></i><b>3.7</b> Comparing Files</a></li>
+<li class="chapter" data-level="3.8" data-path="introduction-to-git.html"><a href="introduction-to-git.html#to-view-an-earlier-commit"><i class="fa fa-check"></i><b>3.8</b> To View an Earlier Commit</a></li>
+<li class="chapter" data-level="3.9" data-path="introduction-to-git.html"><a href="introduction-to-git.html#undoing-things"><i class="fa fa-check"></i><b>3.9</b> Undoing Things</a></li>
+<li class="chapter" data-level="3.10" data-path="introduction-to-git.html"><a href="introduction-to-git.html#when-things-go-wrong"><i class="fa fa-check"></i><b>3.10</b> When Things go Wrong!</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="git-branching.html"><a href="git-branching.html"><i class="fa fa-check"></i><b>4</b> Git Branching</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="git-branching.html"><a href="git-branching.html#merging-branches"><i class="fa fa-check"></i><b>4.1</b> Merging Branches</a></li>
+<li class="chapter" data-level="4.2" data-path="git-branching.html"><a href="git-branching.html#branching-workflows"><i class="fa fa-check"></i><b>4.2</b> Branching Workflows</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-r.html"><a href="introduction-to-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#learning-objectives"><i class="fa fa-check"></i><b>5.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#before-we-start"><i class="fa fa-check"></i><b>5.2</b> Before We Start</a></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-r.html"><a href="introduction-to-r.html#mathematical-operations"><i class="fa fa-check"></i><b>5.3</b> Mathematical Operations</a></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-r.html"><a href="introduction-to-r.html#help"><i class="fa fa-check"></i><b>5.4</b> HELP!</a></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-r.html"><a href="introduction-to-r.html#calls"><i class="fa fa-check"></i><b>5.5</b> Calls</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-r.html"><a href="introduction-to-r.html#variables"><i class="fa fa-check"></i><b>5.6</b> Variables</a></li>
+<li class="chapter" data-level="5.7" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-types-and-classes"><i class="fa fa-check"></i><b>5.7</b> Data Types and Classes</a></li>
+<li class="chapter" data-level="5.8" data-path="introduction-to-r.html"><a href="introduction-to-r.html#vectors"><i class="fa fa-check"></i><b>5.8</b> Vectors</a>
+<ul>
+<li class="chapter" data-level="5.8.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#basic-statistics-on-vectors"><i class="fa fa-check"></i><b>5.8.1</b> Basic statistics on vectors</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9" data-path="introduction-to-r.html"><a href="introduction-to-r.html#matrices-arrays-lists"><i class="fa fa-check"></i><b>5.9</b> Matrices, Arrays &amp; Lists</a></li>
+<li class="chapter" data-level="5.10" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-frames"><i class="fa fa-check"></i><b>5.10</b> Data Frames</a>
+<ul>
+<li class="chapter" data-level="5.10.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#inspecting-data-frames"><i class="fa fa-check"></i><b>5.10.1</b> Inspecting Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="5.11" data-path="introduction-to-r.html"><a href="introduction-to-r.html#subsetting"><i class="fa fa-check"></i><b>5.11</b> Subsetting</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="control-structures.html"><a href="control-structures.html"><i class="fa fa-check"></i><b>6</b> Control Structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="control-structures.html"><a href="control-structures.html#if-statement"><i class="fa fa-check"></i><b>6.1</b> <em>If</em> Statement</a></li>
+<li class="chapter" data-level="6.2" data-path="control-structures.html"><a href="control-structures.html#relationship-operators"><i class="fa fa-check"></i><b>6.2</b> Relationship Operators</a></li>
+<li class="chapter" data-level="6.3" data-path="control-structures.html"><a href="control-structures.html#if-else-statement"><i class="fa fa-check"></i><b>6.3</b> <em>If Else</em> Statement</a></li>
+<li class="chapter" data-level="6.4" data-path="control-structures.html"><a href="control-structures.html#ifelse-statement"><i class="fa fa-check"></i><b>6.4</b> <em>ifelse</em> Statement</a></li>
+<li class="chapter" data-level="6.5" data-path="control-structures.html"><a href="control-structures.html#the-switch-statement"><i class="fa fa-check"></i><b>6.5</b> The <em>switch</em> Statement</a></li>
+<li class="chapter" data-level="6.6" data-path="control-structures.html"><a href="control-structures.html#the-which-statement"><i class="fa fa-check"></i><b>6.6</b> The <em>which</em> Statement</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="iterating-loops.html"><a href="iterating-loops.html"><i class="fa fa-check"></i><b>7</b> Iterating (Loops)</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="iterating-loops.html"><a href="iterating-loops.html#for-i-in-x-loops"><i class="fa fa-check"></i><b>7.1</b> For <em>i</em> in <em>x</em> Loops</a></li>
+<li class="chapter" data-level="7.2" data-path="iterating-loops.html"><a href="iterating-loops.html#while-loops"><i class="fa fa-check"></i><b>7.2</b> <em>While</em> Loops</a></li>
+<li class="chapter" data-level="7.3" data-path="iterating-loops.html"><a href="iterating-loops.html#repeat-loops"><i class="fa fa-check"></i><b>7.3</b> <em>Repeat</em> Loops</a></li>
+<li class="chapter" data-level="7.4" data-path="iterating-loops.html"><a href="iterating-loops.html#break-and-next"><i class="fa fa-check"></i><b>7.4</b> <em>Break</em> and <em>Next</em></a></li>
+<li class="chapter" data-level="7.5" data-path="iterating-loops.html"><a href="iterating-loops.html#iterating-data.frame-rows-in-r"><i class="fa fa-check"></i><b>7.5</b> Iterating Data.Frame Rows in R</a></li>
+<li class="chapter" data-level="7.6" data-path="iterating-loops.html"><a href="iterating-loops.html#lapply"><i class="fa fa-check"></i><b>7.6</b> <em>lapply()</em></a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="packages-and-functions.html"><a href="packages-and-functions.html"><i class="fa fa-check"></i><b>8</b> Packages and Functions</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="packages-and-functions.html"><a href="packages-and-functions.html#learning-objectives-1"><i class="fa fa-check"></i><b>8.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="8.2" data-path="packages-and-functions.html"><a href="packages-and-functions.html#what-is-a-function"><i class="fa fa-check"></i><b>8.2</b> What is a function?</a></li>
+<li class="chapter" data-level="8.3" data-path="packages-and-functions.html"><a href="packages-and-functions.html#what-is-the-basic-syntax-of-a-function-in-r"><i class="fa fa-check"></i><b>8.3</b> What is the basic syntax of a function in R?</a></li>
+<li class="chapter" data-level="8.4" data-path="packages-and-functions.html"><a href="packages-and-functions.html#step-1-building-a-function"><i class="fa fa-check"></i><b>8.4</b> Step 1: Building a function</a></li>
+<li class="chapter" data-level="8.5" data-path="packages-and-functions.html"><a href="packages-and-functions.html#step-2-calling-the-function"><i class="fa fa-check"></i><b>8.5</b> Step 2: Calling the function</a></li>
+<li class="chapter" data-level="8.6" data-path="packages-and-functions.html"><a href="packages-and-functions.html#a-function-can-have-more-than-one-argument"><i class="fa fa-check"></i><b>8.6</b> A function can have more than one argument</a></li>
+<li class="chapter" data-level="8.7" data-path="packages-and-functions.html"><a href="packages-and-functions.html#using-a-package-and-function-to-graph-data-and-export-a-.png"><i class="fa fa-check"></i><b>8.7</b> Using a package and function to graph data and export a .png</a></li>
+<li class="chapter" data-level="8.8" data-path="packages-and-functions.html"><a href="packages-and-functions.html#saving-functions-and-calling-them-from-another-file"><i class="fa fa-check"></i><b>8.8</b> Saving functions and calling them from another file</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="file-input-and-output.html"><a href="file-input-and-output.html"><i class="fa fa-check"></i><b>9</b> File Input and Output</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#objectives"><i class="fa fa-check"></i><b>9.1</b> Objectives</a></li>
+<li class="chapter" data-level="9.2" data-path="file-input-and-output.html"><a href="file-input-and-output.html#basic-idea"><i class="fa fa-check"></i><b>9.2</b> Basic Idea</a></li>
+<li class="chapter" data-level="9.3" data-path="file-input-and-output.html"><a href="file-input-and-output.html#file-formats"><i class="fa fa-check"></i><b>9.3</b> File Formats</a></li>
+<li class="chapter" data-level="9.4" data-path="file-input-and-output.html"><a href="file-input-and-output.html#filesystems-and-paths"><i class="fa fa-check"></i><b>9.4</b> Filesystems and Paths</a></li>
+<li class="chapter" data-level="9.5" data-path="file-input-and-output.html"><a href="file-input-and-output.html#get-and-set-working-directory"><i class="fa fa-check"></i><b>9.5</b> get and set working directory</a></li>
+<li class="chapter" data-level="9.6" data-path="file-input-and-output.html"><a href="file-input-and-output.html#saving-and-loading-r-data"><i class="fa fa-check"></i><b>9.6</b> saving and loading R data</a>
+<ul>
+<li class="chapter" data-level="9.6.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#rds"><i class="fa fa-check"></i><b>9.6.1</b> rds</a></li>
+</ul></li>
+<li class="chapter" data-level="9.7" data-path="file-input-and-output.html"><a href="file-input-and-output.html#reading-and-writing-text-data"><i class="fa fa-check"></i><b>9.7</b> Reading and Writing Text data</a>
+<ul>
+<li class="chapter" data-level="9.7.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#tabular-data"><i class="fa fa-check"></i><b>9.7.1</b> tabular data</a></li>
+<li class="chapter" data-level="9.7.2" data-path="file-input-and-output.html"><a href="file-input-and-output.html#read-and-write-table"><i class="fa fa-check"></i><b>9.7.2</b> read and write table</a></li>
+<li class="chapter" data-level="9.7.3" data-path="file-input-and-output.html"><a href="file-input-and-output.html#csv-format"><i class="fa fa-check"></i><b>9.7.3</b> CSV format</a></li>
+<li class="chapter" data-level="9.7.4" data-path="file-input-and-output.html"><a href="file-input-and-output.html#non-tabular-data"><i class="fa fa-check"></i><b>9.7.4</b> Non tabular data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.8" data-path="file-input-and-output.html"><a href="file-input-and-output.html#urls-as-files"><i class="fa fa-check"></i><b>9.8</b> URLS as files</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html"><i class="fa fa-check"></i><b>10</b> Strings and Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#printing-output"><i class="fa fa-check"></i><b>10.1</b> Printing Output</a></li>
+<li class="chapter" data-level="10.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences"><i class="fa fa-check"></i><b>10.2</b> Escape Sequences</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#raw-strings"><i class="fa fa-check"></i><b>10.2.1</b> Raw Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings"><i class="fa fa-check"></i><b>10.3</b> Character Encodings</a></li>
+<li class="chapter" data-level="10.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-tidyverse"><i class="fa fa-check"></i><b>10.4</b> The Tidyverse</a></li>
+<li class="chapter" data-level="10.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-stringr-package"><i class="fa fa-check"></i><b>10.5</b> The stringr Package</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#splitting-strings"><i class="fa fa-check"></i><b>10.5.1</b> Splitting Strings</a></li>
+<li class="chapter" data-level="10.5.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#replacing-parts-of-strings"><i class="fa fa-check"></i><b>10.5.2</b> Replacing Parts of Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#regular-expressions"><i class="fa fa-check"></i><b>10.6</b> Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-wildcard"><i class="fa fa-check"></i><b>10.6.1</b> The Wildcard</a></li>
+<li class="chapter" data-level="10.6.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences-1"><i class="fa fa-check"></i><b>10.6.2</b> Escape Sequences</a></li>
+<li class="chapter" data-level="10.6.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#anchors"><i class="fa fa-check"></i><b>10.6.3</b> Anchors</a></li>
+<li class="chapter" data-level="10.6.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-classes"><i class="fa fa-check"></i><b>10.6.4</b> Character Classes</a></li>
+<li class="chapter" data-level="10.6.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#quantifiers"><i class="fa fa-check"></i><b>10.6.5</b> Quantifiers</a></li>
+<li class="chapter" data-level="10.6.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#groups"><i class="fa fa-check"></i><b>10.6.6</b> Groups</a></li>
+<li class="chapter" data-level="10.6.7" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#extracting-matches"><i class="fa fa-check"></i><b>10.6.7</b> Extracting Matches</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>11</b> Data Structures</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="data-structures.html"><a href="data-structures.html#tabular-data-1"><i class="fa fa-check"></i><b>11.1</b> Tabular Data</a></li>
+<li class="chapter" data-level="11.2" data-path="data-structures.html"><a href="data-structures.html#tree-document-data-structures"><i class="fa fa-check"></i><b>11.2</b> Tree / Document Data Structures</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-xml"><i class="fa fa-check"></i><b>11.2.1</b> Structuring Data as XML</a></li>
+<li class="chapter" data-level="11.2.2" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-json"><i class="fa fa-check"></i><b>11.2.2</b> Structuring Data as JSON</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="data-structures.html"><a href="data-structures.html#relational-databases"><i class="fa fa-check"></i><b>11.3</b> Relational Databases</a></li>
+<li class="chapter" data-level="11.4" data-path="data-structures.html"><a href="data-structures.html#non-hierarchical-relational-data"><i class="fa fa-check"></i><b>11.4</b> Non-Hierarchical Relational Data</a></li>
+<li class="chapter" data-level="11.5" data-path="data-structures.html"><a href="data-structures.html#geospatial-data"><i class="fa fa-check"></i><b>11.5</b> Geospatial Data</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="how-the-web-works.html"><a href="how-the-web-works.html"><i class="fa fa-check"></i><b>12</b> How the Web Works</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#client-server-architecture"><i class="fa fa-check"></i><b>12.1</b> Client-Server Architecture</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#communication-between-clients-and-servers"><i class="fa fa-check"></i><b>12.1.1</b> Communication Between Clients and Servers</a></li>
+<li class="chapter" data-level="12.1.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#domain-name-resolution"><i class="fa fa-check"></i><b>12.1.2</b> Domain Name Resolution</a></li>
+<li class="chapter" data-level="12.1.3" data-path="how-the-web-works.html"><a href="how-the-web-works.html#request-routing"><i class="fa fa-check"></i><b>12.1.3</b> Request Routing</a></li>
+<li class="chapter" data-level="12.1.4" data-path="how-the-web-works.html"><a href="how-the-web-works.html#the-server-response"><i class="fa fa-check"></i><b>12.1.4</b> The Server Response</a></li>
+<li class="chapter" data-level="12.1.5" data-path="how-the-web-works.html"><a href="how-the-web-works.html#internet-transfer-protocols"><i class="fa fa-check"></i><b>12.1.5</b> Internet Transfer Protocols</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#understanding-urls"><i class="fa fa-check"></i><b>12.2</b> Understanding URLs</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#dynamic-files"><i class="fa fa-check"></i><b>12.2.1</b> Dynamic Files</a></li>
+<li class="chapter" data-level="12.2.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#query-strings"><i class="fa fa-check"></i><b>12.2.2</b> Query Strings</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="web-scraping.html"><a href="web-scraping.html"><i class="fa fa-check"></i><b>13</b> Web Scraping</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="web-scraping.html"><a href="web-scraping.html#getting-data-from-the-web"><i class="fa fa-check"></i><b>13.1</b> Getting Data from the Web</a>
+<ul>
+<li class="chapter" data-level="13.1.1" data-path="web-scraping.html"><a href="web-scraping.html#whats-in-a-web-page"><i class="fa fa-check"></i><b>13.1.1</b> What’s in a Web Page?</a></li>
+</ul></li>
+<li class="chapter" data-level="13.2" data-path="web-scraping.html"><a href="web-scraping.html#rs-xml-parsers"><i class="fa fa-check"></i><b>13.2</b> R’s XML Parsers</a></li>
+<li class="chapter" data-level="13.3" data-path="web-scraping.html"><a href="web-scraping.html#xpath"><i class="fa fa-check"></i><b>13.3</b> XPath</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="web-scraping.html"><a href="web-scraping.html#predicates"><i class="fa fa-check"></i><b>13.3.1</b> Predicates</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="web-scraping.html"><a href="web-scraping.html#the-web-scraping-workflow"><i class="fa fa-check"></i><b>13.4</b> The Web Scraping Workflow</a>
+<ul>
+<li class="chapter" data-level="13.4.1" data-path="web-scraping.html"><a href="web-scraping.html#being-polite"><i class="fa fa-check"></i><b>13.4.1</b> Being Polite</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="web-scraping.html"><a href="web-scraping.html#case-study-ca-cities"><i class="fa fa-check"></i><b>13.5</b> Case Study: CA Cities</a>
+<ul>
+<li class="chapter" data-level="13.5.1" data-path="web-scraping.html"><a href="web-scraping.html#data-cleaning"><i class="fa fa-check"></i><b>13.5.1</b> Data Cleaning</a></li>
+</ul></li>
+<li class="chapter" data-level="13.6" data-path="web-scraping.html"><a href="web-scraping.html#case-study-the-ca-aggie"><i class="fa fa-check"></i><b>13.6</b> Case Study: The CA Aggie</a></li>
+<li class="chapter" data-level="13.7" data-path="web-scraping.html"><a href="web-scraping.html#css-selectors"><i class="fa fa-check"></i><b>13.7</b> CSS Selectors</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Adventures in Data Science</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="web-scraping" class="section level1" number="13">
+<h1><span class="header-section-number">13</span> Web Scraping</h1>
+<p><em>Scraping</em> a web page means extracting information so that it can be used
+programmatically (for instance, in R).</p>
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Explain and read hypertext markup language (HTML)</li>
+<li>View the HTML source of a web page</li>
+<li>Use Firefox or Chrome’s web developer tools to locate tags within a web page</li>
+<li>With the rvest package:
+<ul>
+<li>Read HTML into R</li>
+<li>Extract HTML tables as data frames</li>
+</ul></li>
+<li>With the xml2 package:
+<ul>
+<li>Use XPath to extract specific elements of a page</li>
+</ul></li>
+</ul>
+<div id="getting-data-from-the-web" class="section level2" number="13.1">
+<h2><span class="header-section-number">13.1</span> Getting Data from the Web</h2>
+<p>Ways you can get data from the web, from most to least convenient:</p>
+<ol style="list-style-type: decimal">
+<li>Direct download or “data dump”</li>
+<li>R or Python package (there are packages for many popular web APIs)</li>
+<li>Documented web API</li>
+<li>Undocumented web API</li>
+<li>Scraping</li>
+</ol>
+<div id="whats-in-a-web-page" class="section level3" number="13.1.1">
+<h3><span class="header-section-number">13.1.1</span> What’s in a Web Page?</h3>
+<p>Modern web pages usually consist of many files:</p>
+<ul>
+<li>Hypertext markup language (HTML) for structure and formatting</li>
+<li>Cascading style sheets (CSS) for more formatting</li>
+<li>JavaScript (JS) for interactivity</li>
+<li>Images</li>
+</ul>
+<p>HTML is the only component that always has to be there. Since HTML is what
+gives a web page structure, it’s what we’ll focus on when scraping.</p>
+<p>HTML is closely related to eXtensible markup language (XML). Both languages use
+<em>tags</em> to mark structural <em>elements</em> of data. In HTML, the elements literally
+correspond to the elements of a web page: paragraphs, links, tables, and so on.</p>
+<p>Most tags come in pairs. The <em>opening tag</em> marks the beginning of an element
+and the <em>closing tag</em> marks the end. Opening tags are written <code>&lt;NAME&gt;</code>, where
+<code>NAME</code> is the name of the tag. Closing tags are written <code>&lt;/NAME&gt;</code>.</p>
+<p>A <em>singleton tag</em> is a tag that stands alone, rather than being part of a pair.
+Singleton tags are written <code>&lt;NAME /&gt;</code>. In HTML (but not XML) they can also be
+written <code>&lt;NAME&gt;</code>. Fortunately, HTML only has a few singleton tags, so they can
+be distinguished by name regardless of which way they’re written.</p>
+<p>For example, here’s some HTML that uses the <code>em</code> (emphasis, usually italic) and
+<code>strong</code> (usually bold) tags, as well as the singleton <code>br</code> (line break) tag:</p>
+<div class="sourceCode" id="cb177"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb177-1"><a href="web-scraping.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;em&gt;&lt;strong&gt;</span>This text<span class="kw">&lt;/strong&gt;</span> is emphasized.<span class="kw">&lt;br</span> <span class="kw">/&gt;&lt;/em&gt;</span> Not emphasized</span></code></pre></div>
+<p>A pair of tags can contain other elements (paired or singleton tags), but not a
+lone opening or closing tag. This creates a strict, treelike hierarchy.</p>
+<p>Opening and singleton tags can have <em>attributes</em> that contain additional
+information. Attributes are name-value pairs written <code>NAME="VALUE"</code> after the
+tag name.</p>
+<p>For instance, the HTML <code>a</code> (anchor) tag creates a link to the URL provided for
+the <code>href</code> attribute:</p>
+<div class="sourceCode" id="cb178"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb178-1"><a href="web-scraping.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span><span class="ot"> href=</span><span class="st">&quot;http://www.google.com/&quot;</span><span class="ot"> id=</span><span class="st">&quot;mytag&quot;</span><span class="kw">&gt;</span>My Search Engine<span class="kw">&lt;/a&gt;</span></span></code></pre></div>
+<p>In this case the tag also has a value set for the <code>id</code> attribute.</p>
+<p>Now let’s look at an example of HTML for a complete, albeit simple, web page:</p>
+<div class="sourceCode" id="cb179"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb179-1"><a href="web-scraping.html#cb179-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;html&gt;</span></span>
+<span id="cb179-2"><a href="web-scraping.html#cb179-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;head&gt;</span></span>
+<span id="cb179-3"><a href="web-scraping.html#cb179-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;title&gt;</span>This is the page title!<span class="kw">&lt;/title&gt;</span></span>
+<span id="cb179-4"><a href="web-scraping.html#cb179-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/head&gt;</span></span>
+<span id="cb179-5"><a href="web-scraping.html#cb179-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;body&gt;</span></span>
+<span id="cb179-6"><a href="web-scraping.html#cb179-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;h1&gt;</span>This is a header!<span class="kw">&lt;/h1&gt;</span></span>
+<span id="cb179-7"><a href="web-scraping.html#cb179-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;p&gt;</span>This is a paragraph.</span>
+<span id="cb179-8"><a href="web-scraping.html#cb179-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;a</span><span class="ot"> href=</span><span class="st">&quot;http://www.r-project.org/&quot;</span><span class="kw">&gt;</span>Here&#39;s a website!<span class="kw">&lt;/a&gt;</span></span>
+<span id="cb179-9"><a href="web-scraping.html#cb179-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/p&gt;</span></span>
+<span id="cb179-10"><a href="web-scraping.html#cb179-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;p</span><span class="ot"> id=</span><span class="st">&quot;hello&quot;</span><span class="kw">&gt;</span>This is another paragraph.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb179-11"><a href="web-scraping.html#cb179-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/body&gt;</span></span>
+<span id="cb179-12"><a href="web-scraping.html#cb179-12" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/html&gt;</span></span></code></pre></div>
+<p>In most web browsers, you can examine the HTML for a web page by right-clicking
+and choosing “View Page Source”.</p>
+<p>See <a href="https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/HTML_basics">here</a> for a more detailed explanation of HTML, and
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element">here</a> for a list of valid HTML elements.</p>
+</div>
+</div>
+<div id="rs-xml-parsers" class="section level2" number="13.2">
+<h2><span class="header-section-number">13.2</span> R’s XML Parsers</h2>
+<p>A <em>parser</em> converts structured data into familiar data structures. R has two
+popular packages for parsing XML (and HTML):</p>
+<ul>
+<li>The “XML” package</li>
+<li>The <a href="https://xml2.r-lib.org/">“xml2” package</a></li>
+</ul>
+<p>The XML package has more features. The xml2 package is more user-friendly, and
+as part of the Tidyverse, it’s relatively well-documented. This lesson focuses
+on xml2, since most of the additional features in the XML package are related
+to writing (rather than parsing) XML documents.</p>
+<p>The xml2 package is often used in conjunction with the <a href="https://rvest.tidyverse.org/">“rvest”
+package</a>, which provides support for CSS selectors (described later in
+this lesson) and automates scraping HTML tables.</p>
+<p>The first time you use these packages, you’ll have to install them:</p>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="web-scraping.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;xml2&quot;</span>)</span>
+<span id="cb180-2"><a href="web-scraping.html#cb180-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rvest&quot;</span>)</span></code></pre></div>
+<p>Let’s start by parsing the example of a complete web page from earlier. The
+xml2 function <code>read_xml</code> reads an XML document, and the rvest function
+<code>read_html</code> reads an HTML document. Both accept an XML/HTML string or a file
+path (including URLs):</p>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="web-scraping.html#cb181-1" aria-hidden="true" tabindex="-1"></a>html <span class="ot">=</span> r<span class="st">&quot;(</span></span>
+<span id="cb181-2"><a href="web-scraping.html#cb181-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb181-3"><a href="web-scraping.html#cb181-3" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;head&gt;</span></span>
+<span id="cb181-4"><a href="web-scraping.html#cb181-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;title&gt;This is the page title!&lt;/title&gt;</span></span>
+<span id="cb181-5"><a href="web-scraping.html#cb181-5" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/head&gt;</span></span>
+<span id="cb181-6"><a href="web-scraping.html#cb181-6" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;body&gt;</span></span>
+<span id="cb181-7"><a href="web-scraping.html#cb181-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;h1&gt;This is a header!&lt;/h1&gt;</span></span>
+<span id="cb181-8"><a href="web-scraping.html#cb181-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p&gt;This is a paragraph.</span></span>
+<span id="cb181-9"><a href="web-scraping.html#cb181-9" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;a href=&quot;</span>http<span class="sc">:</span><span class="er">//</span>www.r<span class="sc">-</span>project.org<span class="sc">/</span><span class="st">&quot;&gt;Here&#39;s a website!&lt;/a&gt;</span></span>
+<span id="cb181-10"><a href="web-scraping.html#cb181-10" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/p&gt;</span></span>
+<span id="cb181-11"><a href="web-scraping.html#cb181-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p id=&quot;</span>hello<span class="st">&quot;&gt;This is another paragraph.&lt;/p&gt;</span></span>
+<span id="cb181-12"><a href="web-scraping.html#cb181-12" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/body&gt;</span></span>
+<span id="cb181-13"><a href="web-scraping.html#cb181-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt; )&quot;</span></span>
+<span id="cb181-14"><a href="web-scraping.html#cb181-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-15"><a href="web-scraping.html#cb181-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xml2)</span>
+<span id="cb181-16"><a href="web-scraping.html#cb181-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb181-17"><a href="web-scraping.html#cb181-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb181-18"><a href="web-scraping.html#cb181-18" aria-hidden="true" tabindex="-1"></a>doc <span class="ot">=</span> <span class="fu">read_html</span>(html)</span>
+<span id="cb181-19"><a href="web-scraping.html#cb181-19" aria-hidden="true" tabindex="-1"></a>doc</span></code></pre></div>
+<pre><code>## {html_document}
+## &lt;html&gt;
+## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8 ...
+## [2] &lt;body&gt;\n    &lt;h1&gt;This is a header!&lt;/h1&gt;\n    &lt;p&gt;This is a paragraph.\n     ...</code></pre>
+<p>The <code>xml_children</code> function returns all of the immediate children of a given
+element.</p>
+<p>The top element of our document is the <code>html</code> tag, and its immediate children
+are the <code>head</code> and <code>body</code> tags:</p>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="web-scraping.html#cb183-1" aria-hidden="true" tabindex="-1"></a>tags <span class="ot">=</span> <span class="fu">xml_children</span>(doc)</span></code></pre></div>
+<p>The result from <code>xml_children</code> is a <em>node set</em> (<code>xml_nodeset</code> object). Think of
+a node set as a vector where the elements are tags rather than numbers or
+strings. Just like a vector, you can access individual elements with the
+indexing (square bracket <code>[</code>) operator:</p>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="web-scraping.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(tags)</span></code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="web-scraping.html#cb186-1" aria-hidden="true" tabindex="-1"></a>head <span class="ot">=</span> tags[<span class="dv">1</span>]</span>
+<span id="cb186-2"><a href="web-scraping.html#cb186-2" aria-hidden="true" tabindex="-1"></a>head</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8 ...</code></pre>
+<p>The <code>xml_text</code> function returns the text contained in a tag. Let’s get the text
+in the <code>title</code> tag, which is beneath the <code>head</code> tag. First we isolate the tag,
+then use <code>xml_text</code>:</p>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="web-scraping.html#cb188-1" aria-hidden="true" tabindex="-1"></a>title <span class="ot">=</span> <span class="fu">xml_children</span>(head)</span>
+<span id="cb188-2"><a href="web-scraping.html#cb188-2" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_text</span>(title)</span></code></pre></div>
+<pre><code>## [1] &quot;&quot;                        &quot;This is the page title!&quot;</code></pre>
+<p>Navigating through the tags by hand is tedious and easy to get wrong, but
+fortunately there’s a better way to find the tags we want.</p>
+</div>
+<div id="xpath" class="section level2" number="13.3">
+<h2><span class="header-section-number">13.3</span> XPath</h2>
+<p>An XML document is a tree, similar to the file system on your computer:</p>
+<pre><code>html
+├── head
+│   └── title
+└── body
+    ├── h1
+    ├── p
+    └── p
+        └── a</code></pre>
+<p>When we wanted to find files, we wrote file paths. We can do something similar
+to find XML elements.</p>
+<p><em>XPath</em> is a language for writing paths to elements in an XML document. XPath is
+not R-specific. At a glance, an XPath looks similar to a file path:</p>
+<table>
+<thead>
+<tr class="header">
+<th>XPath</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>/</code></td>
+<td>root, or element separator</td>
+</tr>
+<tr class="even">
+<td><code>.</code></td>
+<td>current tag</td>
+</tr>
+<tr class="odd">
+<td><code>..</code></td>
+<td>parent tag</td>
+</tr>
+<tr class="even">
+<td><code>*</code></td>
+<td>any tag (wildcard)</td>
+</tr>
+</tbody>
+</table>
+<p>The xml2 function <code>xml_find_all</code> finds all elements at given XPath:</p>
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="web-scraping.html#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;/html/body/p&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (2)}
+## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
+## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<p>Unlike a file path, an XPath can identify multiple elements. If you only want a
+specific element, use indexing to get it from the result.</p>
+<p>XPath also has some features that are different from file paths. The <code>//</code>
+separator means “at any level beneath.” It’s a useful shortcut when you want to
+find a specific element but don’t care where it is.</p>
+<p>Let’s get all of the <code>p</code> elements at any level of the document:</p>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="web-scraping.html#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (2)}
+## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
+## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<p>Let’s also get all <code>a</code> elements at any level beneath a <code>p</code> element:</p>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="web-scraping.html#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p/a&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s a website!&lt;/a&gt;</code></pre>
+<p>The vertical bar <code>|</code> means “or.” You can use it to get two different sets of
+elements in one query.</p>
+<p>Let’s get all <code>h1</code> or <code>p</code> tags:</p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="web-scraping.html#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//h1|//p&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (3)}
+## [1] &lt;h1&gt;This is a header!&lt;/h1&gt;
+## [2] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
+## [3] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<div id="predicates" class="section level3" number="13.3.1">
+<h3><span class="header-section-number">13.3.1</span> Predicates</h3>
+<p>In XPath, the predicate operator <code>[]</code> gets elements at a position or matching a
+condition. Most conditions are about the attributes of the element. In the
+predicate operator, attributes are always prefixed with <code>@</code>.</p>
+<p>For example, suppose we want to find all tags where the <code>id</code> attribute is equal
+to <code>"hello"</code>:</p>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="web-scraping.html#cb199-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//*[@id = &#39;hello&#39;]&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<p>Notice that the equality operator in XPath is <code>=</code>, not <code>==</code>. Strings in XPath
+can be quoted with single or double quotes.</p>
+<p>You can combine multiple conditions in the predicate operator with <code>and</code> and
+<code>or</code>. There are also several XPath functions you can use in the predicate
+operator. These functions are <strong>not</strong> R functions, but rather built into XPath.
+Here are a few:</p>
+<table>
+<thead>
+<tr class="header">
+<th>XPath</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>not()</code></td>
+<td>negation</td>
+</tr>
+<tr class="even">
+<td><code>contains()</code></td>
+<td>check string x contains y</td>
+</tr>
+<tr class="odd">
+<td><code>text()</code></td>
+<td>get tag text</td>
+</tr>
+<tr class="even">
+<td><code>substring()</code></td>
+<td>get a substring</td>
+</tr>
+</tbody>
+</table>
+<p>For instance, suppose we want to get elements that contain the word
+“paragraph”:</p>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="web-scraping.html#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//*[contains(text(), &#39;paragraph&#39;)]&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (2)}
+## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
+## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<p>Finally, note that you can also use the predicate operator to get elements at a
+specific position. For example, to get the second <code>p</code> element anywhere in the
+document:</p>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="web-scraping.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p[2]&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<p>Notice that this is the same as if we had used R to get the second element:</p>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="web-scraping.html#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p&quot;</span>)[<span class="dv">2</span>]</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<p>Beware that although the XPath predicate operator resembles R’s indexing
+operator, the syntax is not always the same.</p>
+<p>We’ll learn more XPath in the examples. There’s a complete list of XPath
+functions on <a href="https://en.wikipedia.org/wiki/XPath#Functions_and_operators">Wikipedia</a>.</p>
+</div>
+</div>
+<div id="the-web-scraping-workflow" class="section level2" number="13.4">
+<h2><span class="header-section-number">13.4</span> The Web Scraping Workflow</h2>
+<p>Scraping a web page is part technology, part art. The goal is to find an XPath
+that’s concise but specific enough to identify only the elements you want. If
+you plan to scrape the web page again later or want to scrape a lot of similar
+web pages, the XPath also needs to be general enough that it still works even
+if there are small variations.</p>
+<p><a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a> and <a href="https://www.google.com/chrome/">Chrome</a> include “web developer tools” that are invaluable
+for planning a web scraping strategy. Press <code>Ctrl + Shift + i</code> (<code>Cmd + Shift + i</code> on OS X) in Firefox or Chrome to open the web developer tools.</p>
+<p>We can also use the web developer tools to interactively identify the element
+that corresponds to a specific part of a web page. Press <code>Ctrl + Shift + c</code> and
+then click on the part of the web page you want to identify.</p>
+<p>The best way to approach web scraping (and programming in general) is as an
+incremental, iterative process. Use the web developer tools to come up with a
+basic strategy, try it out in R, check which parts don’t work, and then repeat
+to adjust the strategy. Expect to go back and forth between your web browser
+and R several times when you’re scraping.</p>
+<p>Most scrapers follow the same four steps, regardless of the web page and the
+language of the scraper:</p>
+<ol style="list-style-type: decimal">
+<li>Download pages with an HTTP request (usually <code>GET</code>)</li>
+<li>Parse pages to extract text</li>
+<li>Clean up extracted text with string methods or regex</li>
+<li>Save cleaned results</li>
+</ol>
+<p>In R, xml2’s <code>read_xml</code> function takes care of step 1 for you, although you can
+also use httr functions to make the request yourself.</p>
+<div id="being-polite" class="section level3" number="13.4.1">
+<h3><span class="header-section-number">13.4.1</span> Being Polite</h3>
+<p>Making an HTTP request is not free! It has a real cost in CPU time and also
+cash. Server administrators will not appreciate it if you make too many
+requests or make requests too quickly. So:</p>
+<ul>
+<li>If you’re making multiple requests, slow them down by using R’s <code>Sys.sleep</code>
+function to make R do nothing for a moment. Aim for no more than 20-30
+requests per second, unless you’re using an API that says more are okay.</li>
+<li>Avoid requesting the same page twice. One way to do this is by <em>caching</em>
+(saving) the results of the requests you make. You can do this manually, or
+use a package that does it automatically, like the <a href="https://enpiar.com/r/httpcache/">httpcache</a> package.</li>
+</ul>
+<p>Failing to be polite can get you banned from websites! Also check the website’s
+terms of service to make sure scraping is not explicitly forbidden.</p>
+</div>
+</div>
+<div id="case-study-ca-cities" class="section level2" number="13.5">
+<h2><span class="header-section-number">13.5</span> Case Study: CA Cities</h2>
+<p><a href="https://en.wikipedia.org/">Wikipedia</a> has many pages that are just tables of
+data. For example, there’s this <a href="https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California">list of cities and towns in
+California</a>. Let’s scrape the table to get a data frame.</p>
+<p>Step 1 is to download the page:</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="web-scraping.html#cb207-1" aria-hidden="true" tabindex="-1"></a>wiki_url <span class="ot">=</span></span>
+<span id="cb207-2"><a href="web-scraping.html#cb207-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California&quot;</span></span>
+<span id="cb207-3"><a href="web-scraping.html#cb207-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb207-4"><a href="web-scraping.html#cb207-4" aria-hidden="true" tabindex="-1"></a>wiki_doc <span class="ot">=</span> <span class="fu">read_html</span>(wiki_url)</span></code></pre></div>
+<p>Step 2 is to extract the table element from the page. We can use Firefox or
+Chrome’s web developer tools to identify the table. HTML tables usually use the
+<code>table</code> tag. Let’s see if it’s the only table in the page:</p>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="web-scraping.html#cb208-1" aria-hidden="true" tabindex="-1"></a>tables <span class="ot">=</span> <span class="fu">xml_find_all</span>(wiki_doc, <span class="st">&quot;//table&quot;</span>)</span>
+<span id="cb208-2"><a href="web-scraping.html#cb208-2" aria-hidden="true" tabindex="-1"></a>tables</span></code></pre></div>
+<pre><code>## {xml_nodeset (4)}
+## [1] &lt;table class=&quot;wikitable&quot;&gt;&lt;tbody&gt;\n&lt;tr&gt;\n&lt;th scope=&quot;row&quot; style=&quot;background ...
+## [2] &lt;table class=&quot;wikitable plainrowheaders sortable&quot;&gt;&lt;tbody&gt;\n&lt;tr&gt;\n&lt;th scop ...
+## [3] &lt;table class=&quot;nowraplinks hlist mw-collapsible autocollapse navbox-inner&quot; ...
+## [4] &lt;table class=&quot;nowraplinks mw-collapsible autocollapse navbox-inner&quot; style ...</code></pre>
+<p>The page has 4 tables. We can either make our XPath more
+specific, or use indexing to get the table we want. Refining the XPath makes
+our scraper more robust, but indexing is easier.</p>
+<p>For the sake of learning, let’s refine the XPath. Going back to the browser, we
+can see that the table includes <code>"wikitable"</code> and <code>"sortable"</code> in its <code>class</code>
+attribute. So let’s search for these among the table elements:</p>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="web-scraping.html#cb210-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">=</span> <span class="fu">xml_find_all</span>(tables, <span class="st">&quot;//*[contains(@class, &#39;sortable&#39;)]&quot;</span>)</span>
+<span id="cb210-2"><a href="web-scraping.html#cb210-2" aria-hidden="true" tabindex="-1"></a>tab</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;table class=&quot;wikitable plainrowheaders sortable&quot;&gt;&lt;tbody&gt;\n&lt;tr&gt;\n&lt;th scop ...</code></pre>
+<p>Now we get just one table! Here we used a second XPath applied only to the
+results from the first, but we also could’ve done this all with one XPath:
+<code>//table[contains(@class, 'sortable')]</code>.</p>
+<p>The next part of extracting the data is to extract the value from each
+individual cell in the table. HTML tables have a strict layout order, with tags
+to indicate rows and cells. We could extract each cell by hand and then
+reassemble them into a data frame, but the rvest function <code>html_table</code> can do
+it for us automatically:</p>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="web-scraping.html#cb212-1" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> <span class="fu">html_table</span>(tab, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb212-2"><a href="web-scraping.html#cb212-2" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> cities[[<span class="dv">1</span>]]</span>
+<span id="cb212-3"><a href="web-scraping.html#cb212-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cities)</span></code></pre></div>
+<pre><code>##           Name Type         County Population (2010)[1][8][9] Land area[1]
+## 1         Name Type         County Population (2010)[1][8][9]        sq mi
+## 2     Adelanto City San Bernardino                     31,765        56.01
+## 3 Agoura Hills City    Los Angeles                     20,330         7.79
+## 4      Alameda City        Alameda                     73,812        10.61
+## 5       Albany City        Alameda                     18,539         1.79
+## 6     Alhambra City    Los Angeles                     83,089         7.63
+##   Land area[1]    Incorporated[7]
+## 1 Land area[1]                km2
+## 2        145.1  December 22, 1970
+## 3         20.2   December 8, 1982
+## 4         27.5     April 19, 1854
+## 5          4.6 September 22, 1908
+## 6         19.8      July 11, 1903</code></pre>
+<p>The <code>fill = TRUE</code> argument ensures that empty cells are filled with <code>NA</code>. We’ve
+successfully imported the data from the web page into R, so we’re done with
+step 2.</p>
+<div id="data-cleaning" class="section level3" number="13.5.1">
+<h3><span class="header-section-number">13.5.1</span> Data Cleaning</h3>
+<p>Step 3 is to clean up the data frame. The column names contain symbols, the
+first row is part of the header, and the column types are not correct.</p>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="web-scraping.html#cb214-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix column names.</span></span>
+<span id="cb214-2"><a href="web-scraping.html#cb214-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cities) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;county&quot;</span>, <span class="st">&quot;population&quot;</span>, <span class="st">&quot;mi2&quot;</span>, <span class="st">&quot;km2&quot;</span>, <span class="st">&quot;date&quot;</span>)</span>
+<span id="cb214-3"><a href="web-scraping.html#cb214-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb214-4"><a href="web-scraping.html#cb214-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove fake first row.</span></span>
+<span id="cb214-5"><a href="web-scraping.html#cb214-5" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> cities[<span class="sc">-</span><span class="dv">1</span>, ]</span>
+<span id="cb214-6"><a href="web-scraping.html#cb214-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset row names.</span></span>
+<span id="cb214-7"><a href="web-scraping.html#cb214-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cities) <span class="ot">=</span> <span class="cn">NULL</span></span></code></pre></div>
+<p>How can we clean up the <code>date</code> column? The <code>as.Date</code> function converts a string
+into a date R understands. The idea is to match the date string to a <em>format
+string</em> where the components of the date are indicated by codes that start with
+<code>%</code>. For example, <code>%m</code> stands for the month as a two-digit number. You can read
+about the different date format codes in <code>?strptime</code>.</p>
+<p>Here’s the code to convert the dates in the data frame:</p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="web-scraping.html#cb215-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">as.Date</span>(cities<span class="sc">$</span>date, <span class="st">&quot;%B %m, %Y&quot;</span>)</span>
+<span id="cb215-2"><a href="web-scraping.html#cb215-2" aria-hidden="true" tabindex="-1"></a>cities<span class="sc">$</span>date <span class="ot">=</span> dates</span></code></pre></div>
+<p>We can also convert the population to a number:</p>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="web-scraping.html#cb216-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(cities<span class="sc">$</span>population)</span></code></pre></div>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="web-scraping.html#cb218-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove commas and footnotes (e.g., [1]) before conversion</span></span>
+<span id="cb218-2"><a href="web-scraping.html#cb218-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb218-3"><a href="web-scraping.html#cb218-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb218-4"><a href="web-scraping.html#cb218-4" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">str_replace_all</span>(cities<span class="sc">$</span>population, <span class="st">&quot;,&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
+<span id="cb218-5"><a href="web-scraping.html#cb218-5" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">str_replace_all</span>(pop, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">[[0-9]+</span><span class="sc">\\</span><span class="st">]&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
+<span id="cb218-6"><a href="web-scraping.html#cb218-6" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">as.numeric</span>(pop)</span>
+<span id="cb218-7"><a href="web-scraping.html#cb218-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb218-8"><a href="web-scraping.html#cb218-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for missing values, which can mean conversion failed</span></span>
+<span id="cb218-9"><a href="web-scraping.html#cb218-9" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(pop))</span></code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="web-scraping.html#cb220-1" aria-hidden="true" tabindex="-1"></a>cities<span class="sc">$</span>population <span class="ot">=</span> pop</span></code></pre></div>
+</div>
+</div>
+<div id="case-study-the-ca-aggie" class="section level2" number="13.6">
+<h2><span class="header-section-number">13.6</span> Case Study: The CA Aggie</h2>
+<p>This will be posted after the in-class lecture.</p>
+</div>
+<div id="css-selectors" class="section level2" number="13.7">
+<h2><span class="header-section-number">13.7</span> CSS Selectors</h2>
+<p><em>Cascading style sheets</em> (CSS) is a language used to control the formatting of
+an XML or HTML document.</p>
+<p><em>CSS selectors</em> are the CSS way to write paths to elements. CSS selectors are
+more concise than XPath, so many people prefer them. Even if you prefer CSS
+selectors, it’s good to know XPath because CSS selectors are less flexible.</p>
+<p>Here’s the basic syntax of CSS selectors:</p>
+<table>
+<thead>
+<tr class="header">
+<th>CSS</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>a</code></td>
+<td>tags <code>a</code></td>
+</tr>
+<tr class="even">
+<td><code>a &gt; b</code></td>
+<td>tags <code>b</code> directly beneath <code>a</code></td>
+</tr>
+<tr class="odd">
+<td><code>a b</code></td>
+<td>tags <code>b</code> anywhere beneath <code>a</code></td>
+</tr>
+<tr class="even">
+<td><code>a, b</code></td>
+<td>tags <code>a</code> or <code>b</code></td>
+</tr>
+<tr class="odd">
+<td><code>#hi</code></td>
+<td>tags with attribute <code>id="hi"</code></td>
+</tr>
+<tr class="even">
+<td><code>.hi</code></td>
+<td>tags with attribute <code>class</code> that contains <code>"hi"</code></td>
+</tr>
+<tr class="odd">
+<td><code>[foo="hi"]</code></td>
+<td>tags with attribute <code>foo="hi"</code></td>
+</tr>
+<tr class="even">
+<td><code>[foo*="hi"]</code></td>
+<td>tags with attribute <code>foo</code> that contains <code>"hi"</code></td>
+</tr>
+</tbody>
+</table>
+<p>If you want to learn more, <a href="http://flukeout.github.io/">CSS Diner</a> is an
+interactive tutorial that covers the entire CSS selector language.</p>
+<p>In Firefox, you can get CSS selectors from the web developer tool. Right-click
+the tag you want a selector for and choose “Copy Unique Selector”. Beware that
+the selectors Firefox generates are often too specific to be useful for
+anything beyond the simplest web scrapers.</p>
+<p>The rvest package uses CSS selectors by default. Behind the scenes, the package
+translates these into XPath and passes them to xml2.</p>
+<p>Here are a few examples of CSS selectors, using rvest’s <code>html_nodes</code> function:</p>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="web-scraping.html#cb221-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb221-2"><a href="web-scraping.html#cb221-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb221-3"><a href="web-scraping.html#cb221-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all p elements</span></span>
+<span id="cb221-4"><a href="web-scraping.html#cb221-4" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;p&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (2)}
+## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
+## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="web-scraping.html#cb223-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all links</span></span>
+<span id="cb223-2"><a href="web-scraping.html#cb223-2" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s a website!&lt;/a&gt;</code></pre>
+<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="web-scraping.html#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all tags with id=&quot;hello&quot;</span></span>
+<span id="cb225-2"><a href="web-scraping.html#cb225-2" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;#hello&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (1)}
+## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="how-the-web-works.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/13_r-web-scraping.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/13_r-web-scraping.Rmd",
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
