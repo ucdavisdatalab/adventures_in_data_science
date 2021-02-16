@@ -21,15 +21,15 @@ Each of the above detailed steps is accomplished using a technically complex but
 
 ### Communication Between Clients and Servers
 
-Anytime a computer connects to any network, that computer is assigned a unique identifier known as an Internet Protocol (IP) Address that uniquely identifies that computer on the network.  IP Address appear in the form x.x.x.x Where x can be any real number up to three digits in length.  For example, 169.237.102.141 is the current IP Address of the computer that currently hosts the DataLab website.  IP address are sometimes pre-designated for particular computers.  A pre-designated IP address is known as *Static IP Address*. In other cases IP addresses are dynamically assigned from a range of available IP Address using a system known as the Dynamic Host Configuration Protocol (DHCP).  Servers are typically assigned static IP addresses and clients are typically assigned dynamic IP addresses.
+Anytime a computer connects to any network, that computer is assigned a unique identifier known as an *internet protocol (IP) address* that uniquely identifies that computer on the network. IP addresses have the form `x.x.x.x`, where each `x` can be any integer from 0 to 255. For example, `169.237.102.141` is the current IP address of the computer that hosts the DataLab website. IP addresses are sometimes pre-designated for particular computers.  A pre-designated IP address is known as *static IP address*. In other cases IP addresses are dynamically assigned from a range of available IP Address using a system known as the *Dynamic Host Configuration Protocol* (DHCP). Servers are typically assigned static IP addresses and clients are typically assigned dynamic IP addresses.
 
 ![](`r url40`)
 
-As humans, we are used to accessing websites via a domain name (which we'll discuss shortly), but you can also contact any server on the internet by simply typing the IP address into your browser address bar where you would normally enter the URL.  For example, you can simply click on [https://169.237.102.141](https://169.237.102.141) to access the DataLab website. [note: your browser may give you a security warning if you try to access a server directly using an IP address.  In this case, it is safe to proceed to the site.]
+As humans, we are used to accessing websites via a domain name (which we'll discuss shortly), but you can also contact any server on the internet by simply typing the IP address into your browser address bar where you would normally enter the URL.  For example, you can simply click on <https://169.237.102.141> to access the DataLab website. (note: your browser may give you a security warning if you try to access a server directly using an IP address. For the link above, it is safe to proceed to the site.)
 
 ### Domain Name Resolution
 
-IP Addresses are the unique identifiers that make the internet work, but they are not very human friendly.  To solve this problem, a system of Domain Name Resolution was created.  Under this system, internet service providers access a universal Domain Registry Database that associates human readable domain names with machine readable IP addresses, and a secondary set of of internet connected servers known as Domain Name Servers (DNS) provide a lookup service that translates domain names into IP addresses in the background.  As the end-user, you enter and see only domain names, but the actual request process is a multi-step process in which domain names are translated to IP address in the background:
+IP addresses are the unique identifiers that make the internet work, but they are not very human friendly. To solve this problem, a system of domain name resolution was created. Under this system, internet service providers access a universal domain registry database that associates human readable domain names with machine readable IP addresses, and a secondary set of of internet connected servers known as *domain name servers* (DNS) provide a lookup service that translates domain names into IP addresses in the background.  As the end-user, you enter and see only domain names, but the actual request process is a multi-step process in which domain names are translated to IP address in the background:
 
 ![](`r url41`)
 
@@ -65,9 +65,9 @@ When a request is sent to a server across the internet, the request includes bot
 
 ### Internet Transfer Protocols
 
-All of the information transferred between computers over the network is transfered as streams of binary data.  In order to insure data integrity, these streams are usually broken up into smaller *packets* of data which are transmitted independent of each other and then reassembled by the receiving computer once it has received all of the packets in the stream.  The first packet returned (a header packet) typically delivers information about how many packets the client should expect to receive and about how they should be reassembled to recreate the original data stream.
+All of the information transferred between computers over the network is transfered as streams of binary data.  In order to ensure data integrity, these streams are usually broken up into smaller *packets* of data which are transmitted independent of each other and then reassembled by the receiving computer once it has received all of the packets in the stream.  The first packet returned (a header packet) typically delivers information about how many packets the client should expect to receive and about how they should be reassembled to recreate the original data stream.
 
-There are many different standards for how data streams are divided into packets.  One standard might, for example, break the stream into a collection of 50 byte packets, while another might use 100 byte packages.  These standards are called *protocols*. The two protocols that are familiar to most users are *http* and *https*, which define the hypertext transfer protocol and its sibling the hypertext transfer secure protocol.  When you type a url like <https://datalab.ucdavis.edu> into your browser, you are instructing the browser to use the https protocol to exchange information.  Because http and https are so common, most modern browsers do not require you to type the protocol name.  They will simply insert the protocol for you in the background.
+There are many different standards for how data streams are divided into packets. One standard might, for example, break the stream into a collection of 50 byte packets, while another might use 100 byte packages.  These standards are called *protocols*. The two protocols that are familiar to most users are *http* and *https*, which define the hypertext transfer protocol and its sibling the hypertext transfer secure protocol. When you type a url like <https://datalab.ucdavis.edu> into your browser, you are instructing the browser to use the https protocol to exchange information. Because http and https are so common, most modern browsers do not require you to type the protocol name. They will simply insert the protocol for you in the background.
 
 ## Understanding URLs
 
@@ -91,21 +91,21 @@ colnames(birds_table) <- birds_columns
 kable(birds_table[,], caption = "")
 ```
 
-We've already discussed Internet Protocols and domain names.  The file path portion of the URL can also provide valuable information about the server. It reads exactly like a Unix file path on the command line.  The path "/species/common_birds.htm" indicates that the 
+We've already discussed Internet Protocols and domain names.  The file path portion of the URL can also provide valuable information about the server. It reads exactly like a Unix file path on the command line.  The path `/species/common_birds.htm` indicates that the file `common_birds.htm` is in the `species` directory on the server.
 
 ### Dynamic Files
 
-In the above example, when you use the url https://sfbaywildlife.info/species/common_birds.htm to request a resource the secure server at associated with the sfbaywildlife.info server siply finds the file located on the server at ./species/common_birds.html and delivers it directly to your web browser.  We call this a static web server, because the server itself does not do any processing of files prior to delivery.  It simply receives requests for files living on the server and then sends them to the client, whose browser renders the file for viewing.
+In the above example, when you enter the URL `https://sfbaywildlife.info/species/common_birds.htm`, your browser requests the file at `/species/common_birds.html` on the server. The server simply finds the file and delivers it to your web browser. We call this a *static web server* because the server itself does not do any processing of files prior to delivery. It simply receives requests for files living on the server and then sends them to the client, whose browser renders the file for viewing.
 
-Many websites, however, use dynamic processing.  Pages with file extensions such as .php or .jsp, for example, include computer code in them. When these pages are requested by the server, the server executes the code in the designated file and sends the output of that execution to the requesting client rather than the actual file.  Many sites, such as online stores and blogs, use this functionality to connect their web pages to active databases that track inventory and orders, for example.
+Many websites, however, use dynamic processing.  Pages with file extensions such as `.php` or `.jsp`, for example, include computer code in them. When these pages are requested by the server, the server executes the code in the designated file and sends the output of that execution to the requesting client rather than the actual file. Many sites, such as online stores and blogs, use this functionality to connect their web pages to active databases that track inventory and orders, for example.
 
 ### Query Strings
 
-Dynamic websites, such as e-commerce sites that are connected to databases, require a mechanism for users to subit information to the server for processing.  This is accomplished through one of two protocols:  GET or POST.
+Dynamic websites, such as e-commerce sites that are connected to databases, require a mechanism for users to submit information to the server for processing. This is accomplished through one of two HTTP commands: GET or POST.
 
-POST commands send submitted information to the server via a hidden *http header* that is invisible to the end user.  Scraping sites that require POST transactions is possible but can require significant sleuthing to determine the correct parameters and is beyond the scope of this course.
+POST commands send submitted information to the server via a hidden *HTTP header* that is invisible to the end user. Scraping sites that require POST transactions is possible but can require significant sleuthing to determine the correct parameters and is beyond the scope of this course.
 
-GET requests, which are, happily for web scrapers more ubiquitous than POST requests, are much more simple to understand.  They are submitted via a query string that is simply appended to the request URL as in the following example:
+GET requests, which are, happily for web scrapers more ubiquitous than POST requests, are much easier to understand. They are submitted via a query string that is simply appended to the request URL as in the following example:
 
 ```
 https://ebba.english.ucsb.edu/search_combined/?ft=dragon&numkw=52
@@ -124,12 +124,9 @@ colnames(birds_table) <- birds_columns
 kable(birds_table[,], caption = "")
 ```
 
-Query strings always appear at the end of the URL and begin with the "?" character followed by a series of key/value pairs separated by the "&" character.  In the above example we see that two parameters are submitted to the server via the query string as follows:
+Query strings always appear at the end of the URL and begin with the `?` character followed by a series of key/value pairs separated by the `&` character.  In the above example we see that two parameters are submitted to the server via the query string as follows:
 
-* ft = dragon
-* numkw = 52
+* `ft=dragon`
+* `numkw = 52`
 
 The server will use these parameter values as input to perform a dynamic operation, in this case searching a database.
-  
-
-
