@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>14 Optical Character Recognition | Adventures in Data Science</title>
+  <meta name="description" content="14 Optical Character Recognition | Adventures in Data Science" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="14 Optical Character Recognition | Adventures in Data Science" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
+  
+  
+  <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="14 Optical Character Recognition | Adventures in Data Science" />
+  
+  
+  
+
+<meta name="author" content="Dr. Carl G. Stahmer" />
+<meta name="author" content="Dr. Pamela L. Reynolds" />
+<meta name="author" content="Dr. Tyler Shoemaker" />
+<meta name="author" content="Carrie Alexander" />
+<meta name="author" content="Arthur Koehl" />
+<meta name="author" content="Nick Ulle" />
+
+
+<meta name="date" content="2021-02-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="web-scraping.html"/>
+
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
+<script src="libs/str_view-binding-1.4.0/str_view.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://datalab.ucdavis.edu/">
+  <img src="img/datalab-logo-full-color-rgb.png" style="height: 100%; width: 100%; object-fit: contain" />
+</a></li>
+<li><a href="./" style="font-size: 18px">Adventures in Data Science</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="1" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html"><i class="fa fa-check"></i><b>1</b> Working with the Command Line</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#interacting-with-the-command-line"><i class="fa fa-check"></i><b>1.1</b> Interacting with the Command Line</a></li>
+<li class="chapter" data-level="1.2" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#common-command-line-commands"><i class="fa fa-check"></i><b>1.2</b> Common Command Line Commands</a></li>
+<li class="chapter" data-level="1.3" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#command-line-text-editors"><i class="fa fa-check"></i><b>1.3</b> Command Line Text Editors</a></li>
+<li class="chapter" data-level="1.4" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#basic-vim-commands"><i class="fa fa-check"></i><b>1.4</b> Basic Vim Commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html"><i class="fa fa-check"></i><b>2</b> Introduction to Version Control</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#what-is-version-control"><i class="fa fa-check"></i><b>2.1</b> What is Version Control?</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#software-assisted-version-control"><i class="fa fa-check"></i><b>2.2</b> Software Assisted Version Control</a></li>
+<li class="chapter" data-level="2.3" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#local-vs-server-based-version-control"><i class="fa fa-check"></i><b>2.3</b> Local vs Server Based Version Control</a></li>
+<li class="chapter" data-level="2.4" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#central-version-control-systems"><i class="fa fa-check"></i><b>2.4</b> Central Version Control Systems</a></li>
+<li class="chapter" data-level="2.5" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#distributed-version-control-systems"><i class="fa fa-check"></i><b>2.5</b> Distributed Version Control Systems</a></li>
+<li class="chapter" data-level="2.6" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#the-best-of-both-worlds"><i class="fa fa-check"></i><b>2.6</b> The Best of Both Worlds</a></li>
+<li class="chapter" data-level="2.7" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#vcs-and-the-computer-file-system"><i class="fa fa-check"></i><b>2.7</b> VCS and the Computer File System</a></li>
+<li class="chapter" data-level="2.8" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#how-computers-store-and-access-information"><i class="fa fa-check"></i><b>2.8</b> How Computers Store and Access Information</a></li>
+<li class="chapter" data-level="2.9" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#how-vcs-manage-your-files"><i class="fa fa-check"></i><b>2.9</b> How VCS Manage Your Files</a></li>
+<li class="chapter" data-level="2.10" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#graph-based-data-management"><i class="fa fa-check"></i><b>2.10</b> Graph-Based Data Management</a></li>
+<li class="chapter" data-level="2.11" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#additional-resources"><i class="fa fa-check"></i><b>2.11</b> Additional Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="introduction-to-git.html"><a href="introduction-to-git.html"><i class="fa fa-check"></i><b>3</b> Introduction to Git</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="introduction-to-git.html"><a href="introduction-to-git.html#save-stage-commit"><i class="fa fa-check"></i><b>3.1</b> Save, Stage, Commit</a></li>
+<li class="chapter" data-level="3.2" data-path="introduction-to-git.html"><a href="introduction-to-git.html#creating-your-first-repo"><i class="fa fa-check"></i><b>3.2</b> Creating Your First Repo</a></li>
+<li class="chapter" data-level="3.3" data-path="introduction-to-git.html"><a href="introduction-to-git.html#checking-the-status-of-a-repo"><i class="fa fa-check"></i><b>3.3</b> Checking the Status of a Repo</a></li>
+<li class="chapter" data-level="3.4" data-path="introduction-to-git.html"><a href="introduction-to-git.html#version-of-a-file"><i class="fa fa-check"></i><b>3.4</b> Version of a File</a></li>
+<li class="chapter" data-level="3.5" data-path="introduction-to-git.html"><a href="introduction-to-git.html#view-a-history-of-your-commits"><i class="fa fa-check"></i><b>3.5</b> View a History of Your Commits</a></li>
+<li class="chapter" data-level="3.6" data-path="introduction-to-git.html"><a href="introduction-to-git.html#comparing-commits"><i class="fa fa-check"></i><b>3.6</b> Comparing Commits</a></li>
+<li class="chapter" data-level="3.7" data-path="introduction-to-git.html"><a href="introduction-to-git.html#comparing-files"><i class="fa fa-check"></i><b>3.7</b> Comparing Files</a></li>
+<li class="chapter" data-level="3.8" data-path="introduction-to-git.html"><a href="introduction-to-git.html#to-view-an-earlier-commit"><i class="fa fa-check"></i><b>3.8</b> To View an Earlier Commit</a></li>
+<li class="chapter" data-level="3.9" data-path="introduction-to-git.html"><a href="introduction-to-git.html#undoing-things"><i class="fa fa-check"></i><b>3.9</b> Undoing Things</a></li>
+<li class="chapter" data-level="3.10" data-path="introduction-to-git.html"><a href="introduction-to-git.html#when-things-go-wrong"><i class="fa fa-check"></i><b>3.10</b> When Things go Wrong!</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="git-branching.html"><a href="git-branching.html"><i class="fa fa-check"></i><b>4</b> Git Branching</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="git-branching.html"><a href="git-branching.html#merging-branches"><i class="fa fa-check"></i><b>4.1</b> Merging Branches</a></li>
+<li class="chapter" data-level="4.2" data-path="git-branching.html"><a href="git-branching.html#branching-workflows"><i class="fa fa-check"></i><b>4.2</b> Branching Workflows</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-r.html"><a href="introduction-to-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#learning-objectives"><i class="fa fa-check"></i><b>5.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#before-we-start"><i class="fa fa-check"></i><b>5.2</b> Before We Start</a></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-r.html"><a href="introduction-to-r.html#mathematical-operations"><i class="fa fa-check"></i><b>5.3</b> Mathematical Operations</a></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-r.html"><a href="introduction-to-r.html#help"><i class="fa fa-check"></i><b>5.4</b> HELP!</a></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-r.html"><a href="introduction-to-r.html#calls"><i class="fa fa-check"></i><b>5.5</b> Calls</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-r.html"><a href="introduction-to-r.html#variables"><i class="fa fa-check"></i><b>5.6</b> Variables</a></li>
+<li class="chapter" data-level="5.7" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-types-and-classes"><i class="fa fa-check"></i><b>5.7</b> Data Types and Classes</a></li>
+<li class="chapter" data-level="5.8" data-path="introduction-to-r.html"><a href="introduction-to-r.html#vectors"><i class="fa fa-check"></i><b>5.8</b> Vectors</a>
+<ul>
+<li class="chapter" data-level="5.8.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#basic-statistics-on-vectors"><i class="fa fa-check"></i><b>5.8.1</b> Basic statistics on vectors</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9" data-path="introduction-to-r.html"><a href="introduction-to-r.html#matrices-arrays-lists"><i class="fa fa-check"></i><b>5.9</b> Matrices, Arrays &amp; Lists</a></li>
+<li class="chapter" data-level="5.10" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-frames"><i class="fa fa-check"></i><b>5.10</b> Data Frames</a>
+<ul>
+<li class="chapter" data-level="5.10.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#inspecting-data-frames"><i class="fa fa-check"></i><b>5.10.1</b> Inspecting Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="5.11" data-path="introduction-to-r.html"><a href="introduction-to-r.html#subsetting"><i class="fa fa-check"></i><b>5.11</b> Subsetting</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="control-structures.html"><a href="control-structures.html"><i class="fa fa-check"></i><b>6</b> Control Structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="control-structures.html"><a href="control-structures.html#if-statement"><i class="fa fa-check"></i><b>6.1</b> <em>If</em> Statement</a></li>
+<li class="chapter" data-level="6.2" data-path="control-structures.html"><a href="control-structures.html#relationship-operators"><i class="fa fa-check"></i><b>6.2</b> Relationship Operators</a></li>
+<li class="chapter" data-level="6.3" data-path="control-structures.html"><a href="control-structures.html#if-else-statement"><i class="fa fa-check"></i><b>6.3</b> <em>If Else</em> Statement</a></li>
+<li class="chapter" data-level="6.4" data-path="control-structures.html"><a href="control-structures.html#ifelse-statement"><i class="fa fa-check"></i><b>6.4</b> <em>ifelse</em> Statement</a></li>
+<li class="chapter" data-level="6.5" data-path="control-structures.html"><a href="control-structures.html#the-switch-statement"><i class="fa fa-check"></i><b>6.5</b> The <em>switch</em> Statement</a></li>
+<li class="chapter" data-level="6.6" data-path="control-structures.html"><a href="control-structures.html#the-which-statement"><i class="fa fa-check"></i><b>6.6</b> The <em>which</em> Statement</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="iterating-loops.html"><a href="iterating-loops.html"><i class="fa fa-check"></i><b>7</b> Iterating (Loops)</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="iterating-loops.html"><a href="iterating-loops.html#for-i-in-x-loops"><i class="fa fa-check"></i><b>7.1</b> For <em>i</em> in <em>x</em> Loops</a></li>
+<li class="chapter" data-level="7.2" data-path="iterating-loops.html"><a href="iterating-loops.html#while-loops"><i class="fa fa-check"></i><b>7.2</b> <em>While</em> Loops</a></li>
+<li class="chapter" data-level="7.3" data-path="iterating-loops.html"><a href="iterating-loops.html#repeat-loops"><i class="fa fa-check"></i><b>7.3</b> <em>Repeat</em> Loops</a></li>
+<li class="chapter" data-level="7.4" data-path="iterating-loops.html"><a href="iterating-loops.html#break-and-next"><i class="fa fa-check"></i><b>7.4</b> <em>Break</em> and <em>Next</em></a></li>
+<li class="chapter" data-level="7.5" data-path="iterating-loops.html"><a href="iterating-loops.html#iterating-data.frame-rows-in-r"><i class="fa fa-check"></i><b>7.5</b> Iterating Data.Frame Rows in R</a></li>
+<li class="chapter" data-level="7.6" data-path="iterating-loops.html"><a href="iterating-loops.html#lapply"><i class="fa fa-check"></i><b>7.6</b> <em>lapply()</em></a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="packages-and-functions.html"><a href="packages-and-functions.html"><i class="fa fa-check"></i><b>8</b> Packages and Functions</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="packages-and-functions.html"><a href="packages-and-functions.html#learning-objectives-1"><i class="fa fa-check"></i><b>8.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="8.2" data-path="packages-and-functions.html"><a href="packages-and-functions.html#what-is-a-function"><i class="fa fa-check"></i><b>8.2</b> What is a function?</a></li>
+<li class="chapter" data-level="8.3" data-path="packages-and-functions.html"><a href="packages-and-functions.html#what-is-the-basic-syntax-of-a-function-in-r"><i class="fa fa-check"></i><b>8.3</b> What is the basic syntax of a function in R?</a></li>
+<li class="chapter" data-level="8.4" data-path="packages-and-functions.html"><a href="packages-and-functions.html#step-1-building-a-function"><i class="fa fa-check"></i><b>8.4</b> Step 1: Building a function</a></li>
+<li class="chapter" data-level="8.5" data-path="packages-and-functions.html"><a href="packages-and-functions.html#step-2-calling-the-function"><i class="fa fa-check"></i><b>8.5</b> Step 2: Calling the function</a></li>
+<li class="chapter" data-level="8.6" data-path="packages-and-functions.html"><a href="packages-and-functions.html#a-function-can-have-more-than-one-argument"><i class="fa fa-check"></i><b>8.6</b> A function can have more than one argument</a></li>
+<li class="chapter" data-level="8.7" data-path="packages-and-functions.html"><a href="packages-and-functions.html#using-a-package-and-function-to-graph-data-and-export-a-.png"><i class="fa fa-check"></i><b>8.7</b> Using a package and function to graph data and export a .png</a></li>
+<li class="chapter" data-level="8.8" data-path="packages-and-functions.html"><a href="packages-and-functions.html#saving-functions-and-calling-them-from-another-file"><i class="fa fa-check"></i><b>8.8</b> Saving functions and calling them from another file</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="file-input-and-output.html"><a href="file-input-and-output.html"><i class="fa fa-check"></i><b>9</b> File Input and Output</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#objectives"><i class="fa fa-check"></i><b>9.1</b> Objectives</a></li>
+<li class="chapter" data-level="9.2" data-path="file-input-and-output.html"><a href="file-input-and-output.html#basic-idea"><i class="fa fa-check"></i><b>9.2</b> Basic Idea</a></li>
+<li class="chapter" data-level="9.3" data-path="file-input-and-output.html"><a href="file-input-and-output.html#file-formats"><i class="fa fa-check"></i><b>9.3</b> File Formats</a></li>
+<li class="chapter" data-level="9.4" data-path="file-input-and-output.html"><a href="file-input-and-output.html#filesystems-and-paths"><i class="fa fa-check"></i><b>9.4</b> Filesystems and Paths</a></li>
+<li class="chapter" data-level="9.5" data-path="file-input-and-output.html"><a href="file-input-and-output.html#get-and-set-working-directory"><i class="fa fa-check"></i><b>9.5</b> get and set working directory</a></li>
+<li class="chapter" data-level="9.6" data-path="file-input-and-output.html"><a href="file-input-and-output.html#saving-and-loading-r-data"><i class="fa fa-check"></i><b>9.6</b> saving and loading R data</a>
+<ul>
+<li class="chapter" data-level="9.6.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#rds"><i class="fa fa-check"></i><b>9.6.1</b> rds</a></li>
+</ul></li>
+<li class="chapter" data-level="9.7" data-path="file-input-and-output.html"><a href="file-input-and-output.html#reading-and-writing-text-data"><i class="fa fa-check"></i><b>9.7</b> Reading and Writing Text data</a>
+<ul>
+<li class="chapter" data-level="9.7.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#tabular-data"><i class="fa fa-check"></i><b>9.7.1</b> tabular data</a></li>
+<li class="chapter" data-level="9.7.2" data-path="file-input-and-output.html"><a href="file-input-and-output.html#read-and-write-table"><i class="fa fa-check"></i><b>9.7.2</b> read and write table</a></li>
+<li class="chapter" data-level="9.7.3" data-path="file-input-and-output.html"><a href="file-input-and-output.html#csv-format"><i class="fa fa-check"></i><b>9.7.3</b> CSV format</a></li>
+<li class="chapter" data-level="9.7.4" data-path="file-input-and-output.html"><a href="file-input-and-output.html#non-tabular-data"><i class="fa fa-check"></i><b>9.7.4</b> Non tabular data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.8" data-path="file-input-and-output.html"><a href="file-input-and-output.html#urls-as-files"><i class="fa fa-check"></i><b>9.8</b> URLS as files</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html"><i class="fa fa-check"></i><b>10</b> Strings and Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#printing-output"><i class="fa fa-check"></i><b>10.1</b> Printing Output</a></li>
+<li class="chapter" data-level="10.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences"><i class="fa fa-check"></i><b>10.2</b> Escape Sequences</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#raw-strings"><i class="fa fa-check"></i><b>10.2.1</b> Raw Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings"><i class="fa fa-check"></i><b>10.3</b> Character Encodings</a></li>
+<li class="chapter" data-level="10.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-tidyverse"><i class="fa fa-check"></i><b>10.4</b> The Tidyverse</a></li>
+<li class="chapter" data-level="10.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-stringr-package"><i class="fa fa-check"></i><b>10.5</b> The stringr Package</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#splitting-strings"><i class="fa fa-check"></i><b>10.5.1</b> Splitting Strings</a></li>
+<li class="chapter" data-level="10.5.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#replacing-parts-of-strings"><i class="fa fa-check"></i><b>10.5.2</b> Replacing Parts of Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#regular-expressions"><i class="fa fa-check"></i><b>10.6</b> Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-wildcard"><i class="fa fa-check"></i><b>10.6.1</b> The Wildcard</a></li>
+<li class="chapter" data-level="10.6.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences-1"><i class="fa fa-check"></i><b>10.6.2</b> Escape Sequences</a></li>
+<li class="chapter" data-level="10.6.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#anchors"><i class="fa fa-check"></i><b>10.6.3</b> Anchors</a></li>
+<li class="chapter" data-level="10.6.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-classes"><i class="fa fa-check"></i><b>10.6.4</b> Character Classes</a></li>
+<li class="chapter" data-level="10.6.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#quantifiers"><i class="fa fa-check"></i><b>10.6.5</b> Quantifiers</a></li>
+<li class="chapter" data-level="10.6.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#groups"><i class="fa fa-check"></i><b>10.6.6</b> Groups</a></li>
+<li class="chapter" data-level="10.6.7" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#extracting-matches"><i class="fa fa-check"></i><b>10.6.7</b> Extracting Matches</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>11</b> Data Structures</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="data-structures.html"><a href="data-structures.html#tabular-data-1"><i class="fa fa-check"></i><b>11.1</b> Tabular Data</a></li>
+<li class="chapter" data-level="11.2" data-path="data-structures.html"><a href="data-structures.html#tree-document-data-structures"><i class="fa fa-check"></i><b>11.2</b> Tree / Document Data Structures</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-xml"><i class="fa fa-check"></i><b>11.2.1</b> Structuring Data as XML</a></li>
+<li class="chapter" data-level="11.2.2" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-json"><i class="fa fa-check"></i><b>11.2.2</b> Structuring Data as JSON</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="data-structures.html"><a href="data-structures.html#relational-databases"><i class="fa fa-check"></i><b>11.3</b> Relational Databases</a></li>
+<li class="chapter" data-level="11.4" data-path="data-structures.html"><a href="data-structures.html#non-hierarchical-relational-data"><i class="fa fa-check"></i><b>11.4</b> Non-Hierarchical Relational Data</a></li>
+<li class="chapter" data-level="11.5" data-path="data-structures.html"><a href="data-structures.html#geospatial-data"><i class="fa fa-check"></i><b>11.5</b> Geospatial Data</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="how-the-web-works.html"><a href="how-the-web-works.html"><i class="fa fa-check"></i><b>12</b> How the Web Works</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#client-server-architecture"><i class="fa fa-check"></i><b>12.1</b> Client-Server Architecture</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#communication-between-clients-and-servers"><i class="fa fa-check"></i><b>12.1.1</b> Communication Between Clients and Servers</a></li>
+<li class="chapter" data-level="12.1.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#domain-name-resolution"><i class="fa fa-check"></i><b>12.1.2</b> Domain Name Resolution</a></li>
+<li class="chapter" data-level="12.1.3" data-path="how-the-web-works.html"><a href="how-the-web-works.html#request-routing"><i class="fa fa-check"></i><b>12.1.3</b> Request Routing</a></li>
+<li class="chapter" data-level="12.1.4" data-path="how-the-web-works.html"><a href="how-the-web-works.html#the-server-response"><i class="fa fa-check"></i><b>12.1.4</b> The Server Response</a></li>
+<li class="chapter" data-level="12.1.5" data-path="how-the-web-works.html"><a href="how-the-web-works.html#internet-transfer-protocols"><i class="fa fa-check"></i><b>12.1.5</b> Internet Transfer Protocols</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#understanding-urls"><i class="fa fa-check"></i><b>12.2</b> Understanding URLs</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#dynamic-files"><i class="fa fa-check"></i><b>12.2.1</b> Dynamic Files</a></li>
+<li class="chapter" data-level="12.2.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#query-strings"><i class="fa fa-check"></i><b>12.2.2</b> Query Strings</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="web-scraping.html"><a href="web-scraping.html"><i class="fa fa-check"></i><b>13</b> Web Scraping</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="web-scraping.html"><a href="web-scraping.html#getting-data-from-the-web"><i class="fa fa-check"></i><b>13.1</b> Getting Data from the Web</a>
+<ul>
+<li class="chapter" data-level="13.1.1" data-path="web-scraping.html"><a href="web-scraping.html#whats-in-a-web-page"><i class="fa fa-check"></i><b>13.1.1</b> What’s in a Web Page?</a></li>
+</ul></li>
+<li class="chapter" data-level="13.2" data-path="web-scraping.html"><a href="web-scraping.html#rs-xml-parsers"><i class="fa fa-check"></i><b>13.2</b> R’s XML Parsers</a></li>
+<li class="chapter" data-level="13.3" data-path="web-scraping.html"><a href="web-scraping.html#xpath"><i class="fa fa-check"></i><b>13.3</b> XPath</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="web-scraping.html"><a href="web-scraping.html#predicates"><i class="fa fa-check"></i><b>13.3.1</b> Predicates</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="web-scraping.html"><a href="web-scraping.html#the-web-scraping-workflow"><i class="fa fa-check"></i><b>13.4</b> The Web Scraping Workflow</a>
+<ul>
+<li class="chapter" data-level="13.4.1" data-path="web-scraping.html"><a href="web-scraping.html#being-polite"><i class="fa fa-check"></i><b>13.4.1</b> Being Polite</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="web-scraping.html"><a href="web-scraping.html#case-study-ca-cities"><i class="fa fa-check"></i><b>13.5</b> Case Study: CA Cities</a>
+<ul>
+<li class="chapter" data-level="13.5.1" data-path="web-scraping.html"><a href="web-scraping.html#data-cleaning"><i class="fa fa-check"></i><b>13.5.1</b> Data Cleaning</a></li>
+</ul></li>
+<li class="chapter" data-level="13.6" data-path="web-scraping.html"><a href="web-scraping.html#case-study-the-ca-aggie"><i class="fa fa-check"></i><b>13.6</b> Case Study: The CA Aggie</a></li>
+<li class="chapter" data-level="13.7" data-path="web-scraping.html"><a href="web-scraping.html#css-selectors"><i class="fa fa-check"></i><b>13.7</b> CSS Selectors</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html"><i class="fa fa-check"></i><b>14</b> Optical Character Recognition</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#loading-page-images"><i class="fa fa-check"></i><b>14.1</b> Loading Page Images</a></li>
+<li class="chapter" data-level="14.2" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#running-ocr"><i class="fa fa-check"></i><b>14.2</b> Running OCR</a></li>
+<li class="chapter" data-level="14.3" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#accuracy"><i class="fa fa-check"></i><b>14.3</b> Accuracy</a></li>
+<li class="chapter" data-level="14.4" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#unreadable-text"><i class="fa fa-check"></i><b>14.4</b> Unreadable Text</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Adventures in Data Science</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="optical-character-recognition" class="section level1" number="14">
+<h1><span class="header-section-number">14</span> Optical Character Recognition</h1>
+<p>Much of the data we’ve used in the course thus far has been <strong>born-digital</strong>.
+That is, we’ve used data that originates from a digital source and does not exist
+elsewhere in some other form. Think back, for example, to the lecture on strings
+in R: your homework required you to type text directly into RStudio, manipulate
+it, and print it to screen. But millions, even billions, of data-rich documents
+do not originate from digital sources. The United States Census, for example,
+dates back to 1790; we still have these records and could go study them to get a
+sense of what the population was like hundreds of years ago. Likewise, printing
+and publishing far precedes the advent of computers; much of the literary record
+is still bound up between the covers books or stowed away in archives. Computers,
+however, can’t read the way we read, so if we wanted to use digital methods to
+analyze such materials, we’d need to convert them into a computationally
+tractable form. How do we do so?</p>
+<p>One way would be to transcribe documents by hand, either by typing out
+<strong>plaintext</strong> versions with word processing software or by using other data entry
+methods like keypunching to record the information those documents contain.
+Amazon’s Mechanical Turk service is an example of this kind of data entry. It’s
+also worth noting that, for much of the history of computing, data entry was
+highly gendered and considered to be “dumb”, secretarial work that young women
+would perform. Much of the divisions between “cool” coding and computational grunt
+work that, in a broad, cultural sense, continue to inform how we think about
+programming, and indeed who gets to program, stem from such perceptions. In
+spite of (or perhaps because of) such perceptions, huge amounts of data owe their
+existence to manual data entry. That said, the process itself is expensive, time
+consuming, error-prone, and, well, dull.</p>
+<p><strong>Optical character recognition</strong>, or OCR, is an attempt to offload the work of
+digitization onto computers. Speaking in a general sense, this process ingests
+images of print pages (such as those available on
+<a href="https://books.google.com/">Google Books</a> or <a href="https://www.hathitrust.org/">HathiTrust</a>),
+applies various <strong>preprocessing</strong> procedures to those images to make them a bit
+easier to read, and then scans through them, trying to match the features it
+finds with a “vocabulary” of text elements it keeps as a point of reference.
+When it makes a match, OCR records a character and enters it into a <strong>text buffer</strong>
+(a temporary data store). Oftentimes this buffer also includes formatting data
+for spaces, new lines, paragraphs, and so on. When OCR is finished, it outputs
+its matches as a data object, which you can then further manipulate or analyze
+using other code.</p>
+<div id="loading-page-images" class="section level2" number="14.1">
+<h2><span class="header-section-number">14.1</span> Loading Page Images</h2>
+<p>OCR “reads” by tracking pixel variations across page images. This means every
+page you want to digitize must be converted into an image format. For the
+purposes of introducing you to OCR, we won’t go through the process of creating
+these images from scratch; instead, we’ll be using ready-made examples. The most
+common page image formats you’ll encounter are <code>pdf</code> and <code>png</code>. They’re
+lightweight, portable, and usually retain the image quality OCR software needs
+to find text.</p>
+<p>The <code>pdftools</code> package is good for working with these files:</p>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="optical-character-recognition.html#cb227-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;pdftools&quot;)</span></span>
+<span id="cb227-2"><a href="optical-character-recognition.html#cb227-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span></code></pre></div>
+<pre><code>## Using poppler version 0.73.0</code></pre>
+<p>Once you’ve downloaded/installed it, you can load a <code>pdf</code> into RStudio from your
+computer by entering its filesystem location as a string and assigning that
+string to a variable, like so:</p>
+<pre><code>pdf &lt;- &quot;./pdf_sample.pdf&quot;</code></pre>
+<p>Note that we haven’t used a special load function, like <code>read.csv()</code> or
+<code>readRDS()</code>. <code>pdftools</code> will grab this file from its location and load it
+properly when you run a process on it. (You can also just write the string out in
+whatever function you want to call, but we’ll keep our <code>pdf</code> location in a variable
+for the sake of clarity.)</p>
+<p>The same method works with web addresses. We’ll be using web material. First,
+write out an address and assign it to a variable.</p>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="optical-character-recognition.html#cb230-1" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://datalab.ucdavis.edu/adventures-in-datascience/pdf_sample.pdf&quot;</span></span></code></pre></div>
+<p>Some <code>pdf</code> files will have text data already encoded into them. This is
+especially the case if someone made a file with word processing software (like
+when you write a paper in Word and email a <code>pdf</code> to your TA or professor). You
+can check whether a <code>pdf</code> has text data with <code>pdf_text()</code>. Assign this function’s
+output to a variable and print it to screen with <code>cat()</code>, like so:</p>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="optical-character-recognition.html#cb231-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">pdf_text</span>(pdf)</span>
+<span id="cb231-2"><a href="optical-character-recognition.html#cb231-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(text_data)</span></code></pre></div>
+<pre><code>## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.</code></pre>
+<p>See how the RStudio terminal recreates the original formatting from the <code>pdf</code>.
+If you were to use <code>print()</code> on the text output, you’d see all the line breaks
+and spaces <code>pdf_text()</code> created to match its output with the file. This
+re-creation would be even more apparent if you were to save the output to a new
+file with <code>write()</code>. Doing so would produce a close, plaintext approximation of
+the original <code>pdf</code>.</p>
+<p>You can also process multi-page <code>pdf</code> files with <code>pdf_text()</code>, with more or less
+success. It can transcribe whole books and will keep them in a single text
+buffer, which you can then assign to a variable or save to a file. Keep in mind,
+however, that if your <code>pdf</code> files have headers, footers, page numbers, chapter
+breaks, or other such paratextual information, <code>pdf_text()</code> will pick this up
+and include it in its output. A later lecture in the course will discuss how to
+go about dealing with this extra data.</p>
+<p>If, when you run <code>pdf_text()</code>, you find that your file already contains text
+data, you’re set! There’s no need to perform OCR and you can immediately start
+working with your data. However, if you run the function and find that it outputs
+a blank character string, you’ll need to OCR it. The next section shows you how.</p>
+</div>
+<div id="running-ocr" class="section level2" number="14.2">
+<h2><span class="header-section-number">14.2</span> Running OCR</h2>
+<p>First, you’ll need to download/install another package, <code>tesseract</code>, which
+complements <code>pdftools</code>. The latter only loads/reads <code>pdfs</code>, whereas <code>tesseract</code>
+actually performs OCR. Download/install <code>tesseract</code>:</p>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="optical-character-recognition.html#cb233-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tesseract&quot;)</span></span>
+<span id="cb233-2"><a href="optical-character-recognition.html#cb233-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tesseract)</span></code></pre></div>
+<p>And assign a new <code>pdf</code> to a new variable:</p>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="optical-character-recognition.html#cb234-1" aria-hidden="true" tabindex="-1"></a>new_pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://jeroen.github.io/images/ocrscan.pdf&quot;</span></span></code></pre></div>
+<p>To run OCR on this <code>pdf</code>, use the following:</p>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="optical-character-recognition.html#cb235-1" aria-hidden="true" tabindex="-1"></a>ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(new_pdf)</span></code></pre></div>
+<pre><code>## Converting page 1 to filef6976264db39ocrscan_1.png... done!</code></pre>
+<p>Print the output to screen with <code>cat()</code> and see if the process worked:</p>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="optical-character-recognition.html#cb237-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ocr_output)</span></code></pre></div>
+<pre><code>## | SAPORS LANE - BOOLE - DORSET - BH25 8 ER
+## TELEPHONE BOOLE (945 13) 51617 - TELEX 123456
+## 
+## Our Ref. 350/PJC/EAC 18th January, 1972.
+## Dr. P.N. Cundall,
+## Mining Surveys Ltd.,
+## Holroyd Road,
+## Reading,
+## Berks.
+## Dear Pete,
+## 
+## Permit me to introduce you to the facility of facsimile
+## transmission.
+## 
+## In facsimile a photocell is caused to perform a raster scan over
+## 
+## the subject copy. The variations of print density on the document
+## cause the photocell to generate an analogous electrical video signal.
+## This signal is used to modulate a carrier, which is transmitted to a
+## remote destination over a radio or cable communications link.
+## 
+## At the remote terminal, demodulation reconstructs the video
+## signal, which is used to modulate the density of print produced by a
+## printing device. This device is scanning in a raster scan synchronised
+## with that at the transmitting terminal. As a result, a facsimile
+## copy of the subject document is produced.
+## 
+## Probably you have uses for this facility in your organisation.
+## 
+## Yours sincerely,
+## 44, f
+## P.J. CROSS
+## Group Leader - Facsimile Research
+## Registered in England: No. 2038
+## No. 1 Registered Office: GO Vicara Lane, Ilford. Eseex.</code></pre>
+<p>Voila! You’ve just digitized text. The formatting is a little off, but things
+look good overall. And most importantly, it looks like everything has been
+transcribed correctly.</p>
+<p>As you ran this process, you might’ve noticed that a new <code>png</code> file briefly
+appeared on your computer. This is because <code>tesseract</code> converts <code>pdfs</code> to <code>png</code>
+under the hood as part of its pre-processing work and then silently deletes that
+<code>png</code> when it outputs its matches. If you have a collection of <code>pdf</code> files that
+you’d like to OCR, it can sometimes be faster and less memory intensive to
+convert them all to <code>png</code> first. You can perform this conversion like so:</p>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="optical-character-recognition.html#cb239-1" aria-hidden="true" tabindex="-1"></a>png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">filenames=</span><span class="st">&quot;./img/png_example.png&quot;</span>)</span></code></pre></div>
+<pre><code>## Converting page 1 to ./img/png_example.png... done!</code></pre>
+<p>In addition to making a <code>png</code> object in your RStudio environment, <code>pdf_convert()</code>
+will also save that file directly to your working directory. Imagine, for
+example, how you might put a vector of <code>pdf</code> files through a <code>for</code> loop and save
+them to a directory, where they can be stored until you’re ready to OCR them.</p>
+<pre><code>pdfs &lt;- c(&quot;list.pdf&quot;, &quot;of.pdf&quot;, &quot;files.pdf&quot;, &quot;to.pdf&quot;, &quot;convert.pdf&quot;)
+outfiles &lt;- c(&quot;list.png&quot;, &quot;of.png&quot;, &quot;files.png&quot;, &quot;to.png&quot;, &quot;convert.png&quot;)
+for (pdf in pdfs) {
+    pdf_convert(pdf, format=&quot;png&quot;, filenames=outfiles)
+}</code></pre>
+<p><code>ocr()</code> can work with a number of different image types. It takes <code>pngs</code> in the
+same way as it takes <code>pdfs</code>:</p>
+<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="optical-character-recognition.html#cb242-1" aria-hidden="true" tabindex="-1"></a>png_ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(png)</span></code></pre></div>
+</div>
+<div id="accuracy" class="section level2" number="14.3">
+<h2><span class="header-section-number">14.3</span> Accuracy</h2>
+<p>If you <code>cat()</code> the output from the above <code>png</code> file, you might notice that the
+text is messier than it was when we used <code>pdf_text_ocr()</code>.</p>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="optical-character-recognition.html#cb243-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(png_ocr_output)</span></code></pre></div>
+<pre><code>## THE SLEREXE COMPANY LIMITED
+## SAPORS LANE . BOOLE - DORSET . BH25 8ER
+## ‘aurrmowe noun (945 18) SU6I7 - run 123486
+## Our Ref. 350/PIC/EAC 18eh January, 1972.
+## De. P.M. Cundall,
+## Mining Surveys Ltd.,
+## Holroyd Road,
+## Reading,
+## Berks.
+## Dear Pete,
+## 
+## Permit ne to introduce you to the facility of facsinile
+## transmission.
+## 
+## In facsimile @ photocell is caused to perform a raster scan over
+## the subject copy, The variations of print density on the docunent
+## cause the photocell to generate an analogous electrical video signal.
+## ‘This signal is used to modulate a carrier, which is transmitted to a
+## remote destination over @ radio or cable Communications Link.
+## 
+## At che remote tersinal, demodulation reconstructs the video
+## signal, which is used to modulate the density of print produced by a
+## printing device. This device is scanning in a raster scan synchronised
+## ith chac at the transmitting terminal. As a result, a facsimile
+## copy of the subject docusent is produced.
+## 
+## Probably you have uses for this facility in your organisation.
+## 
+## Yours sincerely,
+## PJ. CROSS
+## Group Leader ~ Facsimile Research</code></pre>
+<p>This doesn’t have to do with the <code>png</code> file format per se but rather with the
+way we created our file. If you open it, you’ll see that it’s quite blurry,
+which has made it harder for <code>ocr()</code> to match the text it represents:</p>
+<p><img src="img/blurry_page_image.png" /></p>
+<p>This blurriness is because <code>pdf_convert()</code> defaults its conversions to 72 dpi,
+or dots per inch. <strong>Dpi</strong> is a measure of image resolution (originally from
+inkjet printing), which describes the amount of pixels your computer uses to
+create images. More pixels means higher image resolution, though this comes with
+a trade off: images with a high dpi are also bigger and take up more space on your
+computer. Usually, a dpi of 150 is sufficient for most OCR jobs, especially if
+your documents were printed with technologies like typewriters, dot matrix
+printers, and so on and if they feature fairly legible typefaces (Times New Roman,
+for example). A dpi of 300, however, is ideal. You can set the dpi in
+<code>pdf_convert()</code> by adding a dpi argument in the function:</p>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="optical-character-recognition.html#cb245-1" aria-hidden="true" tabindex="-1"></a>hi_res_png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">dpi=</span><span class="dv">150</span>, <span class="at">filenames=</span><span class="st">&quot;./img/hi_res_png_example.png&quot;</span>)</span></code></pre></div>
+<pre><code>## Converting page 1 to ./img/hi_res_png_example.png... done!</code></pre>
+<p>Another function, <code>ocr_data()</code>outputs a data frame that contains all of the words
+<code>tesseract</code> found when it scanned through your image, along with a column of
+<strong>confidence scores</strong>. These scores, which range from 0-100, provide valuable
+information about how well the OCR process has performed, which in turn may
+tell you whether you need to modify your <code>pdf</code> or <code>png</code> files further before
+OCRing them (more on this below). Generally, you can trust scores of 93 and
+above.</p>
+<p>To get confidence scores for an OCR job, call <code>ocr_data()</code> and subset the
+<code>confidence</code> column, like so:</p>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="optical-character-recognition.html#cb247-1" aria-hidden="true" tabindex="-1"></a>ocr_data <span class="ot">&lt;-</span> <span class="fu">ocr_data</span>(hi_res_png)</span>
+<span id="cb247-2"><a href="optical-character-recognition.html#cb247-2" aria-hidden="true" tabindex="-1"></a>confidence_scores <span class="ot">&lt;-</span> ocr_data<span class="sc">$</span>confidence</span>
+<span id="cb247-3"><a href="optical-character-recognition.html#cb247-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_scores)</span></code></pre></div>
+<pre><code>##   [1] 92.326187 93.291992 92.390686 91.292068 90.040321 93.285721 89.960922
+##   [8] 43.996544 43.996544 82.938339 93.216827 92.747429 76.725304 92.798645
+##  [15] 92.798645 94.139832 96.169128 96.553284 91.130814 91.130814 95.643044
+##  [22] 95.643044 95.283821 91.192238 89.044609 87.802193 96.233360 93.276566
+##  [29] 92.992844 95.952171 96.681137 96.284302 95.152283 95.977455 96.308533
+##  [36] 95.692993 95.692993 95.987144 96.534164 96.897186 95.809143 96.897415
+##  [43] 96.315361 96.617821 96.508087 94.390121 95.978737 96.522850 95.214600
+##  [50] 95.642807 96.655434 96.282211 96.282211 96.361366 95.597168 95.981224
+##  [57] 96.211266 95.877457  8.440552 96.515381 95.978645 95.955009 95.685791
+##  [64] 96.777512 96.954750 96.224609 96.495888 96.877327 96.955742 96.350052
+##  [71] 96.784325 96.784325 96.262688 96.271156 96.284409 96.690887 95.752106
+##  [78] 96.577225 96.782013 95.615807 96.313568 96.293747 96.120255 96.120255
+##  [85] 96.640419 95.863403 95.929253 96.522018 96.398582 96.446907 95.803619
+##  [92] 95.803619 95.204765 96.370934 96.169952 95.475868 95.475868 96.492149
+##  [99] 96.108894 96.828568 96.650681 94.557724 94.658371 94.658371 96.770195
+## [106] 96.225060 96.670525 96.354980 96.906342 96.303818 96.014244 96.497437
+## [113] 96.302750 95.792542 95.792542 95.861221 96.304672 96.203583 96.420517
+## [120] 96.625023 96.626266 96.882683 91.595039 96.384834 95.978401 95.988167
+## [127] 96.459465 96.473129 96.613380 96.464584 96.782417 96.463692 96.355392
+## [134] 96.262489 95.908119 96.471008 95.633606 96.694962 96.391228 94.782692
+## [141] 95.936348 96.104546 96.003822 95.396400 96.081680 96.895088 96.446304
+## [148] 95.649055 96.735336 96.161446 96.006187 96.169670 96.660339 96.984940
+## [155] 96.720856 96.825615 96.421089 96.421089 96.121315 96.758072 96.483368
+## [162] 96.435646 96.783485 96.674332 43.258137 81.451591 50.273232 96.291702
+## [169] 96.013054 90.972252 90.843719 96.506401 96.685356 95.623764 94.061028
+## [176] 90.181320 96.139618 92.959770 94.400261 85.483757 70.593071 96.380119
+## [183] 66.150887 18.099655 78.519165 83.035973 31.735725</code></pre>
+<p>The mean is a good indicator of the overall OCR quality:</p>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="optical-character-recognition.html#cb249-1" aria-hidden="true" tabindex="-1"></a>confidence_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(confidence_scores)</span>
+<span id="cb249-2"><a href="optical-character-recognition.html#cb249-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_mean)</span></code></pre></div>
+<pre><code>## [1] 92.51906</code></pre>
+<p>Looks pretty good, though there were a few low scores that dragged the score
+down a bit. Let’s look at the median:</p>
+<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="optical-character-recognition.html#cb251-1" aria-hidden="true" tabindex="-1"></a>confidence_median <span class="ot">&lt;-</span> <span class="fu">median</span>(confidence_scores)</span>
+<span id="cb251-2"><a href="optical-character-recognition.html#cb251-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_median)</span></code></pre></div>
+<pre><code>## [1] 96.12025</code></pre>
+<p>We can work with that!</p>
+<p>If we want to check our output a bit more closely, we can do two things. First,
+we can look directly at <code>ocr_data</code> and compare, row by row, a given word and its<br />
+confidence score.</p>
+<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="optical-character-recognition.html#cb253-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ocr_data)</span></code></pre></div>
+<pre><code>##               word confidence               bbox
+## 1           SAPORS  92.326187    422,194,497,208
+## 2             LANE  93.291992    508,194,560,208
+## 3                -  92.390686    570,203,575,205
+## 4            BOOLE  91.292068    585,193,651,208
+## 5                -  90.040321    661,202,666,205
+## 6           DORSET  93.285721    676,193,755,208
+## 7                -  89.960922    764,203,769,205
+## 8               BH  43.996544    780,193,808,208
+## 9               25  43.996544    807,189,831,217
+## 10             8ER  82.938339    842,193,883,208
+## 11       TELEPHONE  93.216827    449,232,534,243
+## 12           BOOLE  92.747429    544,232,589,243
+## 13         (94513)  76.725304    600,229,664,246
+## 14           51617  92.798645    675,229,719,244
+## 15               -  92.798645    730,237,735,240
+## 16           TELEX  94.139832    746,232,792,243
+## 17          123456  96.169128    804,228,857,244
+## 18             Our  96.553284    211,392,246,408
+## 19            Ref.  91.130814    261,391,306,407
+## 20     350/PJC/EAC  91.130814    325,389,459,409
+## 21            18th  95.643044    863,389,910,405
+## 22        January,  95.643044   924,389,1020,408
+## 23           1972.  95.283821  1038,388,1095,405
+## 24             Dr.  91.192238    212,492,244,508
+## 25            P.N.  89.044609    262,492,307,508
+## 26        Cundall,  87.802193    325,491,419,510
+## 27          Mining  96.233360    212,516,286,538
+## 28         Surveys  93.276566    301,518,383,536
+## 29           Ltd.,  92.992844    398,516,457,535
+## 30         Holroyd  95.952171    212,543,298,562
+## 31           Road,  96.681137    313,542,369,561
+## 32        Reading,  96.284302    213,566,308,587
+## 33          Berks.  95.152283    213,593,282,608
+## 34            Dear  95.977455    213,668,261,683
+## 35           Pete,  96.308533    275,668,333,686
+## 36          Permit  95.692993    276,715,348,732
+## 37              me  95.692993    362,721,386,732
+## 38              to  95.987144    402,719,423,732
+## 39       introduce  96.534164    439,715,548,731
+## 40             you  96.897186    562,720,599,735
+## 41              to  95.809143    614,718,636,731
+## 42             the  96.897415    652,716,685,731
+## 43        facility  96.315361    702,714,799,735
+## 44              of  96.617821    813,715,836,731
+## 45       facsimile  96.508087    852,713,961,731
+## 46   transmission.  94.390121    215,740,371,757
+## 47              In  95.978737    278,793,300,807
+## 48       facsimile  96.522850    316,790,424,807
+## 49               a  95.214600    439,796,450,806
+## 50       photocell  95.642807    463,791,573,811
+## 51              is  96.655434    589,790,611,806
+## 52          caused  96.282211    627,791,700,807
+## 53              to  96.282211    714,793,736,806
+## 54         perform  96.361366    751,790,839,810
+## 55               a  95.597168    852,794,862,806
+## 56          raster  95.981224    876,793,950,806
+## 57            scan  96.211266   965,794,1013,806
+## 58            over  95.877457  1026,793,1075,805
+## 59               :   8.440552      16,824,18,826
+## 60             the  96.515381    215,817,249,832
+## 61         subject  95.978645    265,815,349,836
+## 62           copy.  95.955009    364,820,421,835
+## 63             The  95.685791    451,816,486,831
+## 64      variations  96.777512    501,814,623,831
+## 65              of  96.954750    639,815,661,831
+## 66           print  96.224609    675,814,736,835
+## 67         density  96.495888    752,814,837,834
+## 68              on  96.877327    851,819,875,830
+## 69             the  96.955742    890,814,924,830
+## 70        document  96.350052   939,814,1037,830
+## 71           cause  96.784325    215,846,275,857
+## 72             the  96.784325    290,841,324,857
+## 73       photocell  96.262688    338,841,449,861
+## 74              to  96.271156    465,844,487,857
+## 75        generate  96.284409    502,844,599,860
+## 76              an  96.690887    614,845,637,857
+## 77       analogous  95.752106    652,841,761,861
+## 78      electrical  96.577225    777,839,898,856
+## 79           video  96.782013    914,838,975,856
+## 80         signal.  95.615807   989,838,1071,859
+## 81            This  96.313568    215,865,261,881
+## 82          signal  96.293747    278,865,349,886
+## 83              is  96.120255    365,865,386,881
+## 84            used  96.120255    402,866,450,882
+## 85              to  96.640419    465,868,487,881
+## 86        modulate  95.863403    501,865,599,881
+## 87               a  95.929253    615,870,626,881
+## 88        carrier,  96.522018    639,865,735,884
+## 89           which  96.398582    750,864,812,881
+## 90              is  96.446907    828,864,849,881
+## 91     transmitted  95.803619   865,863,1000,881
+## 92              to  95.803619  1015,867,1037,880
+## 93               a  95.204765  1052,868,1063,879
+## 94          remote  96.370934    215,894,287,907
+## 95     destination  96.169952    302,890,438,907
+## 96            over  95.475868    451,895,500,906
+## 97               a  95.475868    514,895,525,906
+## 98           radio  96.492149    539,889,599,906
+## 99              or  96.108894    614,895,637,906
+## 100          cable  96.828568    653,891,712,906
+## 101 communications  96.650681    727,888,899,906
+## 102          link.  94.557724    915,888,972,905
+## 103             At  94.658371    277,941,300,956
+## 104            the  94.658371    316,941,350,956
+## 105         remote  96.770195    365,943,437,956
+## 106      terminal,  96.225060    453,939,560,962
+## 107   demodulation  96.670525    577,939,725,956
+## 108   reconstructs  96.354980    740,942,886,956
+## 109            the  96.906342    903,940,937,956
+## 110          video  96.303818   951,938,1013,955
+## 111        signal,  96.014244    215,964,297,986
+## 112          which  96.497437    314,964,375,981
+## 113             is  96.302750    390,964,411,981
+## 114           used  95.792542    427,965,475,981
+## 115             to  95.792542    490,968,512,981
+## 116       modulate  95.861221    526,965,625,981
+## 117            the  96.304672    641,965,675,981
+## 118        density  96.203583    690,964,775,984
+## 119             of  96.420517    789,964,812,980
+## 120          print  96.625023    826,963,887,984
+## 121       produced  96.626266   901,964,1001,984
+## 122             by  96.882683  1013,964,1038,983
+## 123              a  91.595039  1052,968,1063,979
+## 124       printing  96.384834   215,989,314,1010
+## 125        device.  95.978401   327,989,410,1006
+## 126           This  95.988167   440,989,486,1006
+## 127         device  96.459465   502,989,575,1006
+## 128             is  96.473129   590,989,611,1006
+## 129       scanning  96.613380   628,989,726,1010
+## 130             in  96.464584   741,989,763,1005
+## 131              a  96.782417   777,994,788,1005
+## 132         raster  96.463692   802,992,876,1005
+## 133           scan  96.355392   890,994,938,1005
+## 134   synchronised  96.262489  953,988,1101,1009
+## 135           with  95.908119  213,1015,263,1031
+## 136           that  96.471008  278,1015,325,1031
+## 137             at  95.633606  340,1018,362,1031
+## 138            the  96.694962  379,1015,413,1031
+## 139   transmitting  96.391228  428,1014,576,1035
+## 140      terminal.  94.782692  591,1014,697,1031
+## 141             As  95.936348  727,1015,749,1031
+## 142              a  96.104546  765,1019,775,1030
+## 143        result,  96.003822  789,1015,873,1034
+## 144              a  95.396400  890,1019,901,1030
+## 145      facsimile  96.081680 915,1012,1026,1030
+## 146           copy  96.895088  215,1045,263,1060
+## 147             of  96.446304  278,1040,300,1056
+## 148            the  95.649055  317,1041,350,1056
+## 149        subject  96.735336  365,1039,450,1060
+## 150       document  96.161446  465,1040,562,1056
+## 151             is  96.006187  578,1039,599,1055
+## 152      produced.  96.169670  614,1040,722,1060
+## 153       Probably  96.660339  278,1091,375,1110
+## 154            you  96.984940  389,1095,427,1110
+## 155           have  96.720856  439,1091,488,1106
+## 156           uses  96.825615  503,1094,550,1106
+## 157            for  96.421089  566,1090,601,1106
+## 158           this  96.421089  616,1089,662,1106
+## 159       facility  96.121315  678,1088,775,1110
+## 160             in  96.758072  792,1088,814,1105
+## 161           your  96.483368  827,1094,876,1110
+## 162  organisation.  96.435646 890,1087,1049,1110
+## 163          Yours  96.783485  678,1141,737,1156
+## 164     sincerely,  96.674332  753,1139,874,1160
+## 165            Td,  43.258137  688,1198,778,1276
+## 166              /  81.451591  808,1209,823,1266
+## 167           P.J.  50.273232  678,1304,724,1319
+## 168          CROSS  96.291702  742,1304,802,1319
+## 169          Group  96.013054  678,1329,739,1347
+## 170         Leader  90.972252  753,1328,827,1344
+## 171              -  90.843719  840,1334,852,1338
+## 172      Facsimile  96.506401  867,1326,978,1344
+## 173       Research  96.685356 992,1327,1092,1344
+## 174     Registered  95.623764  521,1574,600,1587
+## 175             in  94.061028  607,1574,621,1584
+## 176       England:  90.181320  629,1573,695,1586
+## 177            No.  96.139618  725,1574,749,1584
+## 178           2038  92.959770  756,1574,793,1584
+## 179            No.  94.400261    72,1597,99,1610
+## 180              1  85.483757  110,1597,114,1609
+## 181     Registered  70.593071  457,1592,535,1605
+## 182        Office:  96.380119  545,1592,595,1603
+## 183             @O  66.150887  627,1592,644,1602
+## 184         Vicars  18.099655  651,1592,700,1602
+## 185          Lane,  78.519165  723,1592,763,1605
+## 186        Ilford.  83.035973  771,1592,817,1602
+## 187         Essex,  31.735725  825,1592,873,1603</code></pre>
+<p>That’s a lot of information though. Something a little more sparse might be
+better. We can use base R’s <code>table()</code> function to count the number of times
+unique words appear in the OCR data. We do this with the <code>word</code> column in our
+<code>ocr_data</code> variable from above:</p>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="optical-character-recognition.html#cb255-1" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">table</span>(ocr_data<span class="sc">$</span>word)</span>
+<span id="cb255-2"><a href="optical-character-recognition.html#cb255-2" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ocr_vocabulary)</span></code></pre></div>
+<p>Let’s look at the first 30 words:</p>
+<div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="optical-character-recognition.html#cb256-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_vocabulary, <span class="dv">30</span>)</span></code></pre></div>
+<pre><code>##              Var1 Freq
+## 1               -    5
+## 2               :    1
+## 3         (94513)    1
+## 4              @O    1
+## 5               /    1
+## 6               1    1
+## 7          123456    1
+## 8            18th    1
+## 9           1972.    1
+## 10           2038    1
+## 11             25    1
+## 12    350/PJC/EAC    1
+## 13          51617    1
+## 14            8ER    1
+## 15              a    9
+## 16             an    1
+## 17      analogous    1
+## 18             As    1
+## 19             at    1
+## 20             At    1
+## 21         Berks.    1
+## 22             BH    1
+## 23          BOOLE    2
+## 24             by    1
+## 25          cable    1
+## 26       carrier,    1
+## 27          cause    1
+## 28         caused    1
+## 29 communications    1
+## 30           copy    1</code></pre>
+<p>This representation makes it easy to spot errors like discrepancies in spelling.
+We could correct those either manually or with string matching. One way to further
+examine this table is to look for words that only appear once or twice in the
+output; among such entries you’ll often find misspellings. The table does, however,
+have its limitations. Looking at this data can quickly become overwhelming if
+you send in too much text. Additionally, notice that punctuation “sticks” to words
+and that uppercase and lowercase variants of words are counted separately,
+rather than together. These quirks are fine, useful even, if we’re just
+spot-checking for errors, but we’d need to further clean this data if we wanted
+to use it in computational text analysis. A later lecture will discuss other
+methods that we can use to clean text.</p>
+<p>When working in a data-forensic mode with page images, it’s a good idea to pull
+a few files at random and run them through <code>ocr_data()</code> to see what you’re
+working with. OCR accuracy is often wholly reliant on the quality of the page
+images, and most of the work that goes into digitizing text involves properly
+preparing those images for OCR. Adjustments include making sure images are
+converted to black and white, increasing image contrast and brightness, increasing
+dpi, and rotating images so that their text is more or less horizontal.
+<code>tesseract</code> performs some of these tasks itself, but you can also do them ahead
+of time and often you’ll have more control over quality this way. The <code>tesseract</code>
+documentation goes into detail about what you can do to improve accuracy before
+even opening RStudio; we can’t cover this in depth, but keep the resource in mind
+as you work with this type of material. And remember: the only way to completely
+trust your accuracy is to go through the OCR output yourself. It’s a very common
+thing to have to make small tweaks to output. In this sense, we haven’t quite left
+the era of hand transcription.</p>
+</div>
+<div id="unreadable-text" class="section level2" number="14.4">
+<h2><span class="header-section-number">14.4</span> Unreadable Text</h2>
+<p>All that said, these various strategies for improving accuracy will only get you
+so far if your page images are composed in a way OCR just can’t read. OCR systems
+contain a lot of in-built assumptions about what “normal” text is, and they are
+incredibly brittle when they encounter text that diverges from that norm. Early
+systems, for example, required documents to be printed with special, machine-readable
+typefaces; texts that contained anything other than this design couldn’t be read.
+Now, OCR is much better at handling a variety of text styling, but systems still
+struggle with old print materials like <strong>blackletter</strong>.</p>
+<p><img src="img/blackletter_example.jpg" /></p>
+<p>Running:</p>
+<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="optical-character-recognition.html#cb258-1" aria-hidden="true" tabindex="-1"></a>ballad <span class="ot">&lt;-</span> <span class="st">&quot;https://ebba.english.ucsb.edu/images/cache/hunt_1_18305_2448x2448.jpg&quot;</span></span>
+<span id="cb258-2"><a href="optical-character-recognition.html#cb258-2" aria-hidden="true" tabindex="-1"></a>ballad_out <span class="ot">&lt;-</span> <span class="fu">ocr</span>(ballad)</span></code></pre></div>
+<p>Produces:</p>
+<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="optical-character-recognition.html#cb259-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ballad_out)</span></code></pre></div>
+<pre><code>##  CAditeription of Qoptons falcehoo )
+## nf Doge thyze, and of bis fatall farewell,
+## ache fatal fineof Sratteurs lees :
+## \  4Bp gulice due, deferuyng foe. . :
+## Flate (alas) the great tntruth = Whe Crane wolvetipedpto the funne, ort, bis futtrpug long (be fare) 7
+## Mf Wrattours, hotw ttfped % heavdit once of olde: _ TH pll pay bis foes atlak: : :
+## WU do lit toknolv, hal herex-aae And with the kyng ofbpresdinitrine his metcpe moued once alway, :
+## Wotv late allegeance fed. wp Fame, J beardittolve ~~ He hall them quight out caté j
+## @ 3f Riucrsrage againt the Sea. Qnodotwac ihe wolve not fal fre ne, WH ith fentence int fo2 their bntruth, 7
+## And {well with fondeine rayne s Wut higher pid nidmoury ? And boeakpng of his tupll: :
+## Wolw gla ave they to fall agapne, il patt her veach (faith woe repo2te) Che fruits of their fedictous feds, E
+## Anodtrace their wwonted traine? Shame madea backe recour She barnes of earth thail fpll.
+## B) 3f fire by force wolde forge the fall 3 touch no Armes herein at all, Wheterfoules God wot foze clogd w crime
+## Df any fumptuoufe place, sButthelvafable wpe: _ and their potteritic
+## A) 3f water flods byd him leaueof, Wi hote mo2all fence doth reper MWelpotted fore with theirabule,
+## dis flames be wyll difgrace. DF clpmers bye the guyle. And ttand by their folie.
+##  3f Goo command the wyrdes to ceale, Who buyloes a boule of many &gt; heir linpngs left their namea thame,
+## ‘ Ibis blattes are lapo full low: andlatth not ground yorker heir dedes tith popfon (ped: ;
+## H 3f God command the eas to calmes 4But doth ertortethe groundt ig,  Sbeirdeathesatvagefor wantofgrace
+## i hey tyll notrageo2 flow. _ Wis builopng can not dure, SUbeir honours quite ts dead, 4
+## A all thinges at Gods commandemet be,  @€ Who fekes furmifing to dip heir leth tofedethe kytes andcrowes
+## f afbetheirflateregarde: : a Kuler fentby GOD: aCheir armes a maze fo2 men; ie
+## H Audnoman lines whole veftinie 4s fubiec {ure, deuoide of grace. Sbeir guerdon as eramples are Bs
+## wy hint ts bupeeparde. he caufe of bis olune rod. Co Dafh dolte Dunces den, ke
+## ) iSut when a mait fo2lakes thethip, - A byave that Wyll bernett defple Whol vp pour fnouts pou fluggih forte Q
+## s ° Androlwles in wallowing wanes; ‘By right ould lofe a wyng: Poumumming malkpng route : :
+## And of bis valuntarte wyil, Qua thents thee no fying fouls €rtoll pour erclantations vp,
+## i Wis one god bap depraues + {But How as other thyng. 4Baals chapletnes,champions ffoute. &amp;
+## HM olw hal be bopetolcape the gulfe 2 Anobe that lofeth all at games, Make fate fo2 pardons, papitts boaue, ii
+## : Wow Mhal be thinke todeale 2 2 {pendes infotule ercefle: Foz traitours indulgence; o
+## A iolw thal his fanfic baing him found Andhopesbybhapsto bealebisharme, . fend out fome purgatorte (craps, ;
+## i Zo Safties tore with faple 2 Mutt deivke of Beare diftrefte. Home wWulls with peter pence. FE
+## : otw (hall his fraight tn fine fuccede 2 Go fpeake of b2pdles to reftrapne D fwarine of D20nes, how dare pe fol Bi
+## 4 Alas what thall be gapne 2 aLhis wylfull waptward cretpe ¢ With labourpng Wes contend if
+## # Uibatfeare by foes do makebimquake bey care not foz the bake of God, ou fought forhonte fromthe hiues, ;
+## j Wow ofte fubieceto payne 2 Do princes, men bntrue. Wut gall pou foundinend. F
+## ] ioin fundzie tintes in Dangers den Co cuntrye, caufers of much woe, hele walpes do watk, their lings beout F
+## : 4s th2owne theman onivpfe 2 Sp eotal freeones, afall: Whee {pight wyll not auaple ;
+## F) bo climes withouten holde on bye, ano Gtpeir one eftates, altpng, BWhele Peacocks proudearenakedlette fF
+## z sBeware, ¥ hint adutse. a others, arpeas gall. Of their oifplayed tayple. ‘
+## S Alifuchas trut to falfe contracs, D Looe, how long thele Liserds lurkt, hele Lurkype cocks tu cullour red, ,
+## | D2 fecret harmes confpire? GuvG O D&gt; bow great a whple _ Solong banelurkt alofe : é
+## f iBefure, with Portonstbey Haltafte Were they in Handwith fetgnedbarts Whe Beare (althongh but foty of fote) 4
+## 7 A right deferucd hire. ACbeir cuntrye to defple 2 Hath pluc his wynages by peofe. :
+## &amp; Whey can not lwike for better (pede, Holv did they frame theirfurniture? . Whe Done her borotyenlighthath lol, fe
+## o Soa death fo2luch to fells Iolv fit they made thet toles ¢ She wapnedas we fee : ;
+## F @odgvant the tuftice of the wozlde Wow Symon fought our engipt) Wrote Who hoped by bap of othersharmes, E
+## ie qput by the papnes of hell. Mo hapng to Romaine (coles. © full Bone once to be. B
+## &amp; F02(uchapentiuerale it is, Holy Simon Magus playd his parte, SCbe Lyon (uffrea long the wuil, 3
+## : hat Cnglith harts did dare ain Wabilon balwde pidrage: Wis noble mynd to trpe: i
+## @ io pale the boundes of duties latuc, Iolv walan bulles begon to bell, Wntpll the wWull was rageyng tod, A
+## i @2 of theircuntrie care. How Judas fought bis wage. And from bis take dia hye. vi
+## # Andmercie bath fo long releat Iolw Jannes and Jamb2es od abpde acben time ft twas to bid him tap :
+## | Dffendours (God doth knoi) aie bount of boatneficke acs, perforce, bis hoanes to cut + u
+## 4 Gnd bountic of our curteous Nuene oww Dathan, Chore, Abiram femd Andmake him leaue bis rageing tanes 4
+## ‘ ao long hath fpared ber foe. Xo path our Moyles facs. Au fcilence to be put. °
+## By But God, whole grace infpiresherbarte, Wow womaine marchant feta fret Andall the calues of Wafan kynd i
+## t WA pil not abyoe the fpight iHfs pardons beaue a fale, Are weaned from their with ; if
+## | Of Rebels rage, who rampeto reach Jor alwapes fomeagaint the ruth Whe Wircan Wigers tamed now, i‘
+## : From ber, her title quight. WMlolde d2eame afencelestale. __ Lemathon eates no fith. i
+## A Although the flowe in pitifull seale, Gods bicar from bis god receaued 4Bebholde befoze pour balefullepes i
+## L nd loueth to fucke no biwd : Gbekeyestolofcandbynds She purchace of pour parte, a
+## fH 3oet Goda caueat iyll her lend sBaals chapleinthoght bo fire wolk” ie Suruep pour forefnefozrowful fight 4
+## a © appeale thole Wipers made, Such was bis pagan mynd. With fighes of bubble barte, 4
+## B) aman that fees bts bouteon fire, Godiorre howhits thetertthete ts Lament thelackeot pour alies :
+## ol WH pli (eke to quench the fame: That faith fuch men tall he _ Religious rebells all: 2
+## i) Gls from the fpople fomeparteconucy, Au their religion hot nozcolne ABewwepe that pli fuccelle of yours, :
+## i Cis (eke the heate to tame, Of much baviette. Come curfe pour fodcine fall. “i
+## Ht who feea penthoule wether beate, And Cundey (oats of fects farts And when pe haue pour guilesoutfought #
+## : Ano beares a botttroule ipndes - iuifion thall appeare ¢ , And all pour craft app2oued, 3
+## iM sButhedefull faletie of himfelte, Againk thefather, fonnethe —7UL&gt; ppeccauimus thall be pour fong ;
+## : WA pil force him fuccour fynde 2 Gaink mother, saughter +k our ground tpozke is remoued, :
+## abe pitifull pactent Pelican, 4s {t not come to palfe trot pra? Andlokehow Poztons(pedtheivwills &amp;
+## 4 er blwd although He teas aged, battards (urethep bes _ Euen fo thetr fet all baue, bs
+## i ject inyll he femeher dateto end, Cabo our gad mother Nueneo - : po better let thenthope to gayne a;
+## : } @Da2tare her poung be fpen. &amp; lt ied see a “a $ut gallowes without graue.
+## Ll she Cagle fpngesbher pong onesdowne Canod is bengeance long retat See :
+## | What fight a at erate? eatbere bis oy feruants tele cFINIS. pee olan. a
+## i) winpertec folwles the aeadly bates, Aniurioute fights of godlede men, ey :
+## ‘ And rightly Cuch mitble, ‘ Moho turne as doth a whele 2 A Q eo CE OH iE
+## £ ‘ ie
+## a  Ampzinted at London by Alerander Lacte, foz Henrie Ayskehams, divellpng at the fiqne 4
+## HC of the blacke Move, at the midole sprozth doze of Paules church. ¢ i
+## i &#39; i</code></pre>
+<p>(Note by the way that this example used a <code>jpg</code> file. <code>ocr()</code> can handle those too.)</p>
+<p>Even though every page is an “image” to OCR, OCR struggles with imagistic or
+unconventional page layouts, as well as inset graphics. Add to that sub-par scans
+of archival documents, as in the newspaper page below, and the output will
+contain way more errors than correct matches.</p>
+<p><img src="img/chronicling_america_example.png" /></p>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="optical-character-recognition.html#cb261-1" aria-hidden="true" tabindex="-1"></a>newspaper <span class="ot">&lt;-</span> <span class="st">&quot;https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf&quot;</span></span>
+<span id="cb261-2"><a href="optical-character-recognition.html#cb261-2" aria-hidden="true" tabindex="-1"></a>newspaper_ocr <span class="ot">&lt;-</span> <span class="fu">ocr</span>(newspaper)</span></code></pre></div>
+<pre><code>## Converting page 1 to filef5983ab50c2a0599_1.png... done!</code></pre>
+<p>Beautifully messy output results:</p>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="optical-character-recognition.html#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(newspaper_ocr)</span></code></pre></div>
+<pre><code>## ai . a
+## 5 IE EI
+## UNIVERSAL KEYBOARD i DVORAK KEYBOARD
+## ne in o fu “ % Z x f= 7
+## ‘ . pA ‘ eee . . \ “a fr J s a .
+## . : , : og oF Sn ’ &lt; f &#39; » | mii } a a} )
+## &#39; © /\ e MF gp O ES nn i ; ; \2/\4 &gt; 5 |
+## | Ly FP eT a
+## oh a 7 &lt; Pa “ : : E BNED Bye ee “4 = ete 2 2 s ms a m3 = tan&quot;
+## ane SO a A os a &gt;) ny P\GGYC YR + e222
+## . 1 f A P i . ae 5 iat sc dae, Sa on a ot ai , ,} Lr AT \J CJ (JTtila
+## Si a MR aie tS eR” Mi OS
+## | ? S fis 7 eee. ae ie ate NS »)( * ) +702
+## : &gt; ~ ; sat 6 F S &gt; 2 me te oat hs F oy . ‘ ’ j 4 , }
+## a er ae See 8 ake apa wei
+## ff yee seer Ng a ‘
+## , fy Seg 33 . oe . Oy A ae . Base *) as ear , o*%
+## 7 Jt grte&#39;y® Ne i . oe . &quot; “ 4 4 nd ; : . ’ vi ’ J , = ~ ,
+## ’ Be Sa i . SEH, .
+## ff See ‘= Ps sf , ed Bad fl N . 4
+## a MA . ’ 22 ,
+## (Rr, ; uC
+## . rai / ¢: a m * , a
+## &quot; y . 4 . -— ~~ ae
+## i ° : a PA — 3 : eee 7 mer | . 3
+## ; ; neg a 7 a i ~ a ; #
+## : q 5 3 : sale LSIGOE emt ‘
+## : ee » &lt;3 ‘ a ‘
+## ; 7 Base ; \ , _ 4 . ;
+## ee SS ty * , :
+## : i ka ee Poy Les r . »* 7
+## 5S a ead _ ’ ; tA
+## ! Bea ; &lt; - 4 ;
+## ? Pe ee ta i 2B.
+## es - + 2 Bes 186. iy | : &#39;
+## os 4 &quot; . . . peas AY Be or &#39;
+## ‘ ss , bgt AAI 7.
+## } ; re er &amp; aes ¢ ;
+## | fo | a anti | Oa . Ss
+## Py . 3 . ne i. | | |
+## ; . € “ &gt; a a J )
+## “@ a ~_ . MA jj j ,
+## J . . oo b tt - + ; ; |
+## ¥ pe ‘ OMe? ) |
+## - =&lt; | ~~ . 4 Pan Pe ° . ee Pr ee oe © abe “« ~—— meheeaethae @ ‘
+## $ &lt;4 a6 : a, a m — &#39; e . x 7 |
+## : \ NG - gy oe - 2 | 2
+## h =&gt;. ” ‘“ ) .
+## &#39; &#39; ’ ; ™~, ~~ es i ro ys vv a ‘ { 20 :
+## &#39; ~~ aS ee , | &quot; - \ .
+## : : .
+## L , ‘~S —s icin j &gt; 2 }
+## = | nee ‘ner Ne
+## ——————————eV—V—ake eo ntl sant * 5 é. mm rr i en mmr
+## ~s = . . . ;
+## e “ , Standard Typewriter Key
+## : “¢ board (Left) Is the Same
+## &amp; &amp; Now as When Christopher
+## Sholes Invented the First
+## s ————- ites &#39; =
+## ) kt Typewriter (Center) in 1475,
+## ; — : But It May Give Way to
+## ; q i the New Dvorak Keyboard
+## a a ~~ (Right). Figures Indicate
+## ““% : Comparative Loads for Each
+## —— Row, Hand and Finger.
+## ’ . t ie v «
+## r ae ”
+## + ae » 2
+## | » to Tt] hedule for treamlini &#39; I post : : reek typewrite! ve
+## SO aS Sa aie . :
+## vorld: the typewriter keyboa t present is a ar. Commander Dvorak
+## . : ; ~ ; 7 on @ is
+## mn) ti¢ 2c 2 rie \ ie built f ‘ : i.? &quot; ¥ { - 3 turned his Arts ion
+## Sal jped tke adtot-ef-other things, ty Tt? &#39; ‘ . to those who lost
+## } rt il usc in t} { ™~ ivy Ts 1 { 7 Noy , 3 an arm auring the
+## ljuction a nuch a : | . as wark Working
+## n fox jumps over the ut ¥ closely with Coionel
+## il good m« in &#39; I , { &#39; ts Robert 5S a
+## f offort. en ee noted newspapel
+## 7 st ‘ ‘ ‘ ‘ man who i ’ hi .
+## nical t li | | » =f right arr is a re
+## : ne ’ ’ ult of i Ww und at
+## . a Ohrdruf, Germany,
+## the commander de
+## ‘ &#39; i vi loped a one-har s
+## ; | : m4 U typewriter. In fact
+## ‘ tha | ; he invented two ot
+## , them, one for th
+## eft hand and or
+## , ted for the rignt
+## | 5 There is no rea
+## ; | 4 iT) wrt y in arn,
+## , DULtAe—At mputee cant typ
+## ot th . is fast as the aver
+## ‘ : \ ’ ioe person * he ¢*&gt;
+## bout it q plained. “On thes
+## = Nee ee cnich make up 9
+## rt m . , pe &#39; a! (a POS. ? . . Cale
+## i 5 Ee, a Hy Ag” a -ae Pa 7 per cent of all typ
+## am 3 | eee . eS ae ae ety Oe «4 . ing —21 letters and
+## t} : coy ,eer se ’ oe, | , thie period ane
+## ‘ ,* | ‘ . &gt;} ’ re - 4 . ‘
+## , Bera &#39; i: ene 8 . Trias Att »&#39; ithin
+## &#39; the load \ 2 a i isv reach of the
+## oft eaker, |} |: that t — han Th,
+## ™ &#39; : &#39; i i
+## : | fit) ri &lt;x . oa ata , e thy, &#39; five l¢ Pere
+## : e 4 . sete ‘\)y ’ it every rir 4 ; —
+## / : in f to . c.. ence . naking Up Lie per
+## » | 4} ‘ F ‘ tir : oe -
+## | Set isis cuit acini Dl oe ee, Re on ent of typing are
+## sere are overworked while ne i, ee X. - reached with son
+## | ‘7 ; ~ 4 . . ee “ os sf
+## ers } &#39;- ala ’ — a _—™ - i 2 en h &#39; ulty, but with
+## (‘omn rier Dvorak. ee &#39; , trie hand still !
+## rwmer director of re | as he ele ice) &quot; home position.—
+## irch of the University § i ta RI fi sp ‘ om — ae By using the sp
+## : . . en 7 Sot fi a2 Pa £4 bas eh a nnn on Soe i : , 7 ’ - &#39;
+## f&gt;) VA asnineton and now a on Oe % 6 EWE: Giga , a ce, 5 Su gy er . bal Keybo il
+## ga : . — no ” &quot;s * or Re
+## naval et] f Cy expert, a ae i ra mSstirmates trat }
+## , rked out cif) ‘ tirely ee ages . a rie ty} word ;
+## iifferent arrangement ; sae ute will not hb
+## piacing the impo! tant inusual for Ol
+## kave on the “hom row. On the Dvorak Keyboard, ind typists
+## : ; : : _-
+## one on which the fin Which She Is Demonstrating, Lenore Fenton Knowing tha
+## ‘fers rest MacLain, “the Lastest Secretary in the World,” Is Able to Type 182 Net Words a Minute terans who ga&#39;
+## , : &#39; - .
+## “The differe &gt; y . Up an aft for the
+## \ +3. } ry? &#39; he ’ Poe &#39; \ | ; &#39; | f e © crert lor , ;
+## ; : fir rtiry ; ‘ t} ‘ t? &#39; &#39; fellov | i! t!
+## from 1 } i day put ol 0 &#39; it ne said
+## &#39; the new kevbhboard &#39; it wont be easy to co
+## the lard J yoard, only ; | pra thie ind Di
+## , i without : Lf ; &#39; 7 7 ; enang eetu
+## ’ : | } ° ’ ; ry : | ; }\ :) ri¢ ’ { | : if I 1% it ib
+## ent thie be laded alti
+## ) , ‘ —_
+## ) } ’ ‘) ; ; &#39; . . rie | &#39; ty
+## , . : : &quot; , c&quot;
+## aa &#39; . ! nder ad nded I&#39;ll tell
+## . 5 -F | Vv] &#39; , , ru
+## &#39; &#39; | i : | \ : ’
+## 2 December 2. IN to 7388 LMERIC AUN WEED Y
+## “</code></pre>
+<p>One strategy you might use to work with sources like this is to crop out
+everything you don’t want to OCR. This would be especially effective if, for
+example, you had a newspaper column that always appeared in the top left-hand
+corner of the page. You could preprocess your page images so that they only
+showed that part of the newspaper and left out any ads, images, or extra text.
+Doing so would likely increase the quality of your OCR output. Such a strategy
+can be achieved outside of R with software ranging from Adobe Photoshop or the
+open-source GIMP to Apple’s Automator workflows. Within R, packages like
+<code>tabulizer</code> and <code>magick</code> enable this. You won’t, however, be required to use
+these tools in the course, though we may have a chance to demonstrate some of them
+during lecture.</p>
+<p>There are several other scenarios where OCR might not be able to read text.
+Two final (and major) ones are worth highlighting. First, for a long time OCR
+support for non-alphabetic writing systems was all but nonexistent. New datasets
+have been released in recent years that mostly rectify these absences, but
+sometimes support remains spotty and your milage may vary. Second, OCR continues
+to struggle with handwriting. While it is possible to train unsupervised learning
+processes on datasets of handwriting and get good results, as of yet there is no
+general purpose method for OCRing handwritten texts. The various ways people
+write just don’t conform to the standardized methods of printing that enable
+computers to recognize text in images. If, someday, you figure out a solution
+for this, you’ll have solved one of the most challenging problems in computer
+vision and pattern recognition to date!</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="web-scraping.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/14_ocr.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/14_ocr.Rmd",
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

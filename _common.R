@@ -42,7 +42,9 @@ url39 <- "./img/basic_internet.png"
 url40 <- "./img/basic_internet_with_ip.png"
 url41 <- "./img/basic_internet_dns.png"
 url43_web_works <- "./img/basic_internet_routing.png"
-
+url42 <- "./img/blurry_page_image.png"
+url43 <- "./img/blackletter_example.jpg"
+url44 <- "./img/chronicling_america_example.png"
 
 library(knitr)
 library(stringr)
