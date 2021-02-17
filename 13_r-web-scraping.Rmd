@@ -372,7 +372,7 @@ California][wiki-cities]. Let's scrape the table to get a data frame.
 [wiki-cities]: https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California
 
 Step 1 is to download the page:
-```{r}
+```{r wiki_scrape}
 wiki_url =
   "https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California"
 
@@ -467,7 +467,197 @@ cities$population = pop
 Case Study: The CA Aggie
 ------------------------
 
-This will be posted after the in-class lecture.
+Suppose we want to scrape The California Aggie.
+
+In particular, we want to get all the links to news articles on the features
+page <https://theaggie.org/features/>. This could be one part of a larger
+scraping project where we go on to scrape individual articles.
+
+First, let's download the features page and extract the links. We know that
+links are in `a` tags, but we only want links to articles.
+
+Looking at the features page with the web developer tools, the links to
+feature articles are all inside of a `section` tag. So let's get the section
+tag:
+
+```{r aggie_features}
+url = "https://theaggie.org/features/"
+doc = read_html(url)
+
+xml_find_all(doc, "//section") # OR html_nodes(doc, "section")
+```
+
+Just to be safe, let's also use the `id` attribute, which is `"blog-grid"`.
+Usually the id of an element is unique, so this ensures that we get the right
+section even if later the web developer for The Aggie adds other `section`
+tags.
+
+We can also add in a part about getting links now:
+
+```{r}
+section = xml_find_all(doc, "//section[@id = 'blog-grid']")
+# OR html_nodes(doc, "section#blog-grid")
+
+links = xml_find_all(section, "//a")
+# OR html_nodes(section, "a")
+
+length(links)
+```
+
+That gives us `r length(links)` links, but there are only 15 articles on the
+page, so something's still not right. Inspecting the page again, there are
+actually three links to each article: on the image, on the title, and on
+"Continue Reading".
+
+Let's focus on the title link. There are a couple different ways we can
+identify the title link:
+
+* Always inside an `h2` tag
+* Always has `title` attribute that starts with "Permanent"
+
+Generally it's more robust to rely on tags (structure) than to rely on
+attributes (other than `id` and `class`). So let's use the `h2` tag here:
+
+```{r}
+links = xml_find_all(section, "//h2/a")
+# OR html_nodes(section, "h2 > a")
+
+length(links)
+```
+
+Now we've got the 15 links, so let's get the URLs from the `href` attribute.
+
+```{r}
+feature_urls = xml_attr(links, "href")
+```
+
+The other article listings (Sports, Science, etc) on The Aggie have a similar
+structure, so we can potentially reuse our code to scrape those.
+
+So let's turn our code into a function. The input will be a downloaded page,
+and the output will be the article links.
+
+```{r}
+parse_article_links = function(page) {
+  section = xml_find_all(page, "//section[@id = 'blog-grid']")
+  links = xml_find_all(section, "//h2/a")
+  xml_attr(links, "href")
+}
+```
+
+We can test this out on the Sports page:
+
+```{r aggie_sports}
+sports = read_html("https://theaggie.org/sports")
+sports_urls = head(parse_article_links(sports))
+```
+
+It looks like the function works even on other pages! We can also set up the
+function to extract the link to the next page, in case we want to scrape
+multiple pages of links.
+
+The link to the next page of features (an arrow at the bottom) is an `a` tag
+with class `next`. Let's see if that's specific enough to isolate the tag:
+
+```{r}
+next_page = xml_find_all(doc, "//a[contains(@class, 'next')]")
+# OR html_nodes(doc, "a.next")
+```
+
+It looks like it is. We use `contains` here rather than `=` because it is
+common for the `class` attribute to have many parts. It only has one here, but
+using `contains` makes our code robust against changes in the future.
+
+We can now modify our parser function to return the link to the next page:
+
+```{r}
+parse_article_links = function(page) {
+  # Get article URLs
+  section = xml_find_all(page, "//section[@id = 'blog-grid']")
+  links = xml_find_all(section, "//h2/a")
+  urls = xml_attr(links, "href")
+
+  # Get next page URL
+  next_page = xml_find_all(page, "//a[contains(@class, 'next')]")
+  next_url = xml_attr(next_page, "href")
+
+  # Using a list allows us to return two objects
+  list(urls = urls, next_url = next_url)
+}
+```
+
+Since our function gets URL for the next page, what happens on the last page?
+
+Looking at the last page in the browser, there is no link to the next page.
+Let's see what our scraper function does:
+
+```{r aggie_last}
+last_page = read_html("https://theaggie.org/features/page/180/")
+parse_article_links(last_page)
+```
+
+We get an empty character vector as the URL for the next page. This is because
+the `xml_find_all` function returns an empty node set for the next page URL, so
+there aren't any `href` fields for `xml_attr` to extract. It's convenient that
+the xml2 functions behave this way, but we could also add an if-statement to
+the function to check (and possibly return `NA` as the next URL in this case).
+
+Then the code becomes:
+
+```{r}
+parse_article_links = function(page) {
+  # Get article URLs
+  section = xml_find_all(page, "//section[@id = 'blog-grid']")
+  links = xml_find_all(section, "//h2/a")
+  urls = xml_attr(links, "href")
+
+  # Get next page URL
+  next_page = xml_find_all(page, "//a[contains(@class, 'next')]")
+  if (length(next_page) == 0) {
+    next_url = NA
+  } else {
+    next_url = xml_attr(next_page, "href")
+  }
+
+  # Using a list allows us to return two objects
+  list(urls = urls, next_url = next_url)
+}
+```
+
+Now our function should work well even on the last page.
+
+If we want to scrape links to all of the articles in the features section, we
+can use our function in a loop:
+
+```{r, eval = FALSE}
+# NOTE: This code is likely to take a while to run, and is meant more for
+# reading than for you to run and try out.
+
+url = "https://theaggie.org/features/"
+article_urls = list()
+i = 1
+
+# On the last page, the next URL will be `NA`.
+while (!is.na(url)) {
+  # Download and parse the page.
+  page = read_html(url)
+  result = parse_article_links(page)
+
+  # Save the article URLs in the `article_urls` list. The variable `i` is the
+  # page number.
+  article_urls[[i]] = result$url
+  i = i + 1
+
+  # Set the URL to the next URL.
+  url = result$next_url
+
+  # Sleep for 1/30th of a second so that we never make more than 30 requests
+  # per second.
+  Sys.sleep(1/30)
+}
+```
+
+Now we've got the basis for a simple scraper.
 
 
 CSS Selectors
@@ -507,7 +697,21 @@ translates these into XPath and passes them to xml2.
 Here are a few examples of CSS selectors, using rvest's `html_nodes` function:
 
 ```{r}
-library(rvest)
+html = r"(
+<html>
+  <head>
+    <title>This is the page title!</title>
+  </head>
+  <body>
+    <h1>This is a header!</h1>
+    <p>This is a paragraph.
+      <a href="http://www.r-project.org/">Here's a website!</a>
+    </p>
+    <p id="hello">This is another paragraph.</p>
+  </body>
+</html> )"
+
+doc = read_html(html)
 
 # Get all p elements
 html_nodes(doc, "p")
