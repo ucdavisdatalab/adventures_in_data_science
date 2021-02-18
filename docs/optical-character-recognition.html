@@ -29,7 +29,7 @@
 <meta name="author" content="Nick Ulle" />
 
 
-<meta name="date" content="2021-02-16" />
+<meta name="date" content="2021-02-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -56,7 +56,7 @@
 
 
 
-<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
 
@@ -65,7 +65,6 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
@@ -403,7 +402,7 @@ to find text.</p>
 <p>The <code>pdftools</code> package is good for working with these files:</p>
 <div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="optical-character-recognition.html#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;pdftools&quot;)</span></span>
 <span id="cb242-2"><a href="optical-character-recognition.html#cb242-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span></code></pre></div>
-<pre><code>## Using poppler version 21.01.0</code></pre>
+<pre><code>## Using poppler version 0.73.0</code></pre>
 <p>Once you’ve downloaded/installed it, you can load a <code>pdf</code> into RStudio from your
 computer by entering its filesystem location as a string and assigning that
 string to a variable, like so:</p>
@@ -423,70 +422,59 @@ can check whether a <code>pdf</code> has text data with <code>pdf_text()</code>.
 output to a variable and print it to screen with <code>cat()</code>, like so:</p>
 <div class="sourceCode" id="cb246"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb246-1"><a href="optical-character-recognition.html#cb246-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">pdf_text</span>(pdf)</span>
 <span id="cb246-2"><a href="optical-character-recognition.html#cb246-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(text_data)</span></code></pre></div>
-<pre><code>## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## 
-## 
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## 
-## 
-##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
-##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
-##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
-##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## 
-## 
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-## 
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.
-## 
-##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
-##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
-##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
-##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
-## 
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
-## 
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
-## </code></pre>
+<pre><code>## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+##                                              The  quick brown  fox jumps  over the  lazy dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+## The quick brown fox jumps over the lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+##                                                 The  quick brown  fox jumps  over the  lazy dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+## The quick brown fox jumps over the lazy dog. The  quick  brown fox  jumps over  the lazy  dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.
+##                         The quick brown fox jumps  over the  lazy dog.</code></pre>
 <p>See how the RStudio terminal recreates the original formatting from the <code>pdf</code>.
 If you were to use <code>print()</code> on the text output, you’d see all the line breaks
 and spaces <code>pdf_text()</code> created to match its output with the file. This
@@ -516,13 +504,13 @@ actually performs OCR. Download/install <code>tesseract</code>:</p>
 <div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="optical-character-recognition.html#cb249-1" aria-hidden="true" tabindex="-1"></a>new_pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://jeroen.github.io/images/ocrscan.pdf&quot;</span></span></code></pre></div>
 <p>To run OCR on this <code>pdf</code>, use the following:</p>
 <div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="optical-character-recognition.html#cb250-1" aria-hidden="true" tabindex="-1"></a>ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(new_pdf)</span></code></pre></div>
-<pre><code>## Converting page 1 to file28f3560c5bbdocrscan_1.png... done!</code></pre>
+<pre><code>## Converting page 1 to file122923211a9cbocrscan_1.png... done!</code></pre>
 <p>Print the output to screen with <code>cat()</code> and see if the process worked:</p>
 <div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="optical-character-recognition.html#cb252-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ocr_output)</span></code></pre></div>
-<pre><code>## | SAPORS LANE - BOOLE - DORSET - BH 25 8 ER
+<pre><code>## | SAPORS LANE - BOOLE - DORSET - BH25 8 ER
 ## TELEPHONE BOOLE (945 13) 51617 - TELEX 123456
 ## 
-## Our Ref. 350/PJC/EAC 18th January, 1972,
+## Our Ref. 350/PJC/EAC 18th January, 1972.
 ## Dr. P.N. Cundall,
 ## Mining Surveys Ltd.,
 ## Holroyd Road,
@@ -535,7 +523,7 @@ actually performs OCR. Download/install <code>tesseract</code>:</p>
 ## 
 ## In facsimile a photocell is caused to perform a raster scan over
 ## 
-## ‘ the subject copy. The variations of print density on the document
+## the subject copy. The variations of print density on the document
 ## cause the photocell to generate an analogous electrical video signal.
 ## This signal is used to modulate a carrier, which is transmitted to a
 ## remote destination over a radio or cable communications link.
@@ -549,11 +537,11 @@ actually performs OCR. Download/install <code>tesseract</code>:</p>
 ## Probably you have uses for this facility in your organisation.
 ## 
 ## Yours sincerely,
-## f{ {.
+## 44, f
 ## P.J. CROSS
 ## Group Leader - Facsimile Research
 ## Registered in England: No. 2038
-## No. 1 Registered Office: 680 Vicara Lane, Ilford. Esaex,</code></pre>
+## No. 1 Registered Office: GO Vicara Lane, Ilford. Eseex.</code></pre>
 <p>Voila! You’ve just digitized text. The formatting is a little off, but things
 look good overall. And most importantly, it looks like everything has been
 transcribed correctly.</p>
@@ -571,8 +559,8 @@ example, how you might put a vector of <code>pdf</code> files through a <code>fo
 them to a directory, where they can be stored until you’re ready to OCR them.</p>
 <pre><code>pdfs &lt;- c(&quot;list.pdf&quot;, &quot;of.pdf&quot;, &quot;files.pdf&quot;, &quot;to.pdf&quot;, &quot;convert.pdf&quot;)
 outfiles &lt;- c(&quot;list.png&quot;, &quot;of.png&quot;, &quot;files.png&quot;, &quot;to.png&quot;, &quot;convert.png&quot;)
-for (pdf in pdfs) {
-    pdf_convert(pdf, format=&quot;png&quot;, filenames=outfiles)
+for (i in 1:length(pdfs)) {
+    pdf_convert(pdfs[i], format=&quot;png&quot;, filenames=outfiles[i])
 }</code></pre>
 <p><code>ocr()</code> can work with a number of different image types. It takes <code>pngs</code> in the
 same way as it takes <code>pdfs</code>:</p>
@@ -584,36 +572,36 @@ same way as it takes <code>pdfs</code>:</p>
 text is messier than it was when we used <code>pdf_text_ocr()</code>.</p>
 <div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="optical-character-recognition.html#cb258-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(png_ocr_output)</span></code></pre></div>
 <pre><code>## THE SLEREXE COMPANY LIMITED
-## SAPORS LANE - BOOLE - DORSET - BH 25 $ER
-## e sous (4513) 617 - Tk 12345
-## Our Ref. 350/BIC/EAC 186 Janvary, 1972.
-## De. PN, Cundall,
-## Kining Surveys Lid.,
+## SAPORS LANE . BOOLE - DORSET . BH25 8ER
+## ‘aurrmowe noun (945 18) SU6I7 - run 123486
+## Our Ref. 350/PIC/EAC 18eh January, 1972.
+## De. P.M. Cundall,
+## Mining Surveys Ltd.,
 ## Holroyd Road,
 ## Reading,
 ## Berks.
-## Dear Pece,
+## Dear Pete,
 ## 
-## Pernit ne to introduce you to the facility of facsinile
+## Permit ne to introduce you to the facility of facsinile
 ## transmission.
 ## 
-## In facainile a photocell is coused to perforn a raster scan over
-## the subject copy. The varistions of princ density on the docunent
-## cause the photecell o generate an analogous electrical video signal.
-## This signal is used to mdulate a carrier, vhich is cransmitted to o
-## cemote destination over &amp; radio or cable communications link.
+## In facsimile @ photocell is caused to perform a raster scan over
+## the subject copy, The variations of print density on the docunent
+## cause the photocell to generate an analogous electrical video signal.
+## ‘This signal is used to modulate a carrier, which is transmitted to a
+## remote destination over @ radio or cable Communications Link.
 ## 
-## A¢ the remote cerminal, demodulation reconstructs the video
-## signal, which is used to modulate the density of print produced by @
-## printing device. Tnis device is scanning in 4 raster scan synchronised
-## Uich that at the cransmitring terminal. As &amp; result, a facsisile
-## Copy of the subject document is produced.
+## At che remote tersinal, demodulation reconstructs the video
+## signal, which is used to modulate the density of print produced by a
+## printing device. This device is scanning in a raster scan synchronised
+## ith chac at the transmitting terminal. As a result, a facsimile
+## copy of the subject docusent is produced.
 ## 
-## Probably you have uees for this facility in your organisation.
+## Probably you have uses for this facility in your organisation.
 ## 
 ## Yours sincerely,
-## P.J. cross
-## Group Leader - Facsinile Research</code></pre>
+## PJ. CROSS
+## Group Leader ~ Facsimile Research</code></pre>
 <p>This doesn’t have to do with the <code>png</code> file format per se but rather with the
 way we created our file. If you open it, you’ll see that it’s quite blurry,
 which has made it harder for <code>ocr()</code> to match the text it represents:</p>
@@ -642,234 +630,235 @@ above.</p>
 <div class="sourceCode" id="cb262"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb262-1"><a href="optical-character-recognition.html#cb262-1" aria-hidden="true" tabindex="-1"></a>ocr_data <span class="ot">&lt;-</span> <span class="fu">ocr_data</span>(hi_res_png)</span>
 <span id="cb262-2"><a href="optical-character-recognition.html#cb262-2" aria-hidden="true" tabindex="-1"></a>confidence_scores <span class="ot">&lt;-</span> ocr_data<span class="sc">$</span>confidence</span>
 <span id="cb262-3"><a href="optical-character-recognition.html#cb262-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_scores)</span></code></pre></div>
-<pre><code>##   [1] 92.13857 91.38475 91.23807 91.23807 93.29996 92.56295 93.26220 70.64086
-##   [9] 93.01996 89.35526 89.52242 89.52242 42.67688 42.67688 96.07313 92.71711
-##  [17] 87.83458 96.88795 91.54445 87.78777 87.78777 87.65559 91.62273 92.34843
-##  [25] 89.77596 90.55594 91.76022 92.06514 92.69786 89.87141 92.24236 92.18182
-##  [33] 91.00060 85.50681 92.09026 91.46124 92.45944 91.51769 91.51769 92.03702
-##  [41] 92.01013 90.96066 92.24164 92.24998 90.49390 79.35881 48.94280 91.96535
-##  [49] 91.78830 93.19865 90.28869 90.28869 91.80365 91.80365 92.41957 93.18517
-##  [57] 91.35117 91.66459 92.26031 59.55725 91.65620 92.85319 88.85143 88.85143
-##  [65] 91.43013 92.53618 91.01624 46.33485 90.00519 92.77856 92.17099 91.57552
-##  [73] 92.91947 91.35083 91.35083 89.52011 92.17740 92.17690 91.17965 92.13211
-##  [81] 90.32191 92.12690 92.57925 91.50474 92.65192 91.54854 92.03278 92.12846
-##  [89] 92.12846 92.59993 93.13262 91.75418 92.46236 92.56086 92.50134 91.19598
-##  [97] 91.44257 89.06452 92.32296 92.01079 92.46326 91.14729 90.52568 91.94347
-## [105] 91.94347 90.66655 91.42926 91.71403 86.76886 92.14970 92.17909 90.94286
-## [113] 92.76601 93.08193 92.06605 92.16745 91.70026 91.56775 91.12645 91.00975
-## [121] 92.05129 93.12570 93.27691 93.27691 91.80145 91.35611 71.01427 92.27676
-## [129] 89.75899 83.44016 89.61749 87.48296 92.16154 93.15559 92.01822 91.42703
-## [137] 91.79588 92.10561 92.70488 91.68903 90.74780 90.74780 91.49944 92.60815
-## [145] 92.56828 91.94787 92.36919 90.87371 91.16226 91.95363 91.07956 91.07956
-## [153] 91.82436 92.90215 92.83604 92.72958 91.67342 92.18327 92.68385 92.30362
-## [161] 92.14813 92.26443 90.58723 90.73596 92.27166 50.64243 59.75372 56.96629
-## [169] 85.22475 88.63677 91.58677 91.72172 93.29646 92.40235 90.71992 86.72282
-## [177] 84.96437 84.08060 91.98026 95.90424 88.61440 81.63094 90.19997 75.30827
-## [185] 82.44823 75.63014 57.31424 63.12554 44.16006</code></pre>
+<pre><code>##   [1] 92.326187 93.291992 92.390686 91.292068 90.040321 93.285721 89.960922
+##   [8] 43.996544 43.996544 82.938339 93.216827 92.747429 76.725304 92.798645
+##  [15] 92.798645 94.139832 96.169128 96.553284 91.130814 91.130814 95.643044
+##  [22] 95.643044 95.283821 91.192238 89.044609 87.802193 96.233360 93.276566
+##  [29] 92.992844 95.952171 96.681137 96.284302 95.152283 95.977455 96.308533
+##  [36] 95.692993 95.692993 95.987144 96.534164 96.897186 95.809143 96.897415
+##  [43] 96.315361 96.617821 96.508087 94.390121 95.978737 96.522850 95.214600
+##  [50] 95.642807 96.655434 96.282211 96.282211 96.361366 95.597168 95.981224
+##  [57] 96.211266 95.877457  8.440552 96.515381 95.978645 95.955009 95.685791
+##  [64] 96.777512 96.954750 96.224609 96.495888 96.877327 96.955742 96.350052
+##  [71] 96.784325 96.784325 96.262688 96.271156 96.284409 96.690887 95.752106
+##  [78] 96.577225 96.782013 95.615807 96.313568 96.293747 96.120255 96.120255
+##  [85] 96.640419 95.863403 95.929253 96.522018 96.398582 96.446907 95.803619
+##  [92] 95.803619 95.204765 96.370934 96.169952 95.475868 95.475868 96.492149
+##  [99] 96.108894 96.828568 96.650681 94.557724 94.658371 94.658371 96.770195
+## [106] 96.225060 96.670525 96.354980 96.906342 96.303818 96.014244 96.497437
+## [113] 96.302750 95.792542 95.792542 95.861221 96.304672 96.203583 96.420517
+## [120] 96.625023 96.626266 96.882683 91.595039 96.384834 95.978401 95.988167
+## [127] 96.459465 96.473129 96.613380 96.464584 96.782417 96.463692 96.355392
+## [134] 96.262489 95.908119 96.471008 95.633606 96.694962 96.391228 94.782692
+## [141] 95.936348 96.104546 96.003822 95.396400 96.081680 96.895088 96.446304
+## [148] 95.649055 96.735336 96.161446 96.006187 96.169670 96.660339 96.984940
+## [155] 96.720856 96.825615 96.421089 96.421089 96.121315 96.758072 96.483368
+## [162] 96.435646 96.783485 96.674332 43.258137 81.451591 50.273232 96.291702
+## [169] 96.013054 90.972252 90.843719 96.506401 96.685356 95.623764 94.061028
+## [176] 90.181320 96.139618 92.959770 94.400261 85.483757 70.593071 96.380119
+## [183] 66.150887 18.099655 78.519165 83.035973 31.735725</code></pre>
 <p>The mean is a good indicator of the overall OCR quality:</p>
 <div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="optical-character-recognition.html#cb264-1" aria-hidden="true" tabindex="-1"></a>confidence_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(confidence_scores)</span>
 <span id="cb264-2"><a href="optical-character-recognition.html#cb264-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_mean)</span></code></pre></div>
-<pre><code>## [1] 88.55039</code></pre>
+<pre><code>## [1] 92.51906</code></pre>
 <p>Looks pretty good, though there were a few low scores that dragged the score
 down a bit. Let’s look at the median:</p>
 <div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="optical-character-recognition.html#cb266-1" aria-hidden="true" tabindex="-1"></a>confidence_median <span class="ot">&lt;-</span> <span class="fu">median</span>(confidence_scores)</span>
 <span id="cb266-2"><a href="optical-character-recognition.html#cb266-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_median)</span></code></pre></div>
-<pre><code>## [1] 91.67342</code></pre>
+<pre><code>## [1] 96.12025</code></pre>
 <p>We can work with that!</p>
 <p>If we want to check our output a bit more closely, we can do two things. First,
 we can look directly at <code>ocr_data</code> and compare, row by row, a given word and its<br />
 confidence score.</p>
 <div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="optical-character-recognition.html#cb268-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ocr_data)</span></code></pre></div>
 <pre><code>##               word confidence               bbox
-## 1           SAPORS   92.13857    422,194,497,208
-## 2             LANE   91.38475    508,194,560,208
-## 3                -   91.23807    570,203,575,205
-## 4            BOOLE   91.23807    585,193,651,208
-## 5                -   93.29996    661,202,666,205
-## 6           DORSET   92.56295    676,193,755,208
-## 7                -   93.26220    764,203,769,205
-## 8             BH25   70.64086    780,193,831,208
-## 9                8   93.01996    842,193,850,208
-## 10              ER   89.35526    856,194,883,208
-## 11       TELEPHONE   89.52242    449,232,534,243
-## 12           BOOLE   89.52242    544,232,589,243
-## 13            (945   42.67688    600,229,634,246
-## 14             13)   42.67688    640,229,664,246
-## 15           51617   96.07313    675,229,719,244
-## 16               -   92.71711    730,237,735,240
-## 17           TELEX   87.83458    746,232,792,243
-## 18          123456   96.88795    804,228,857,244
-## 19             Our   91.54445    211,392,246,408
-## 20            Ref.   87.78777    261,391,306,407
-## 21     350/PJC/EAC   87.78777    325,389,459,409
-## 22            18th   87.65559    863,389,910,405
-## 23        January,   91.62273   924,389,1020,408
-## 24           1972.   92.34843  1038,388,1095,405
-## 25             Dr.   89.77596    212,492,244,508
-## 26            P.N.   90.55594    262,492,307,508
-## 27        Cundall,   91.76022    325,491,419,510
-## 28          Mining   92.06514    212,516,286,538
-## 29         Surveys   92.69786    301,518,383,536
-## 30           Ltd.,   89.87141    398,516,457,535
-## 31         Holroyd   92.24236    212,543,298,562
-## 32           Road,   92.18182    313,542,369,561
-## 33        Reading,   91.00060    213,566,308,587
-## 34          Berks.   85.50681    213,593,282,608
-## 35            Dear   92.09026    213,668,261,683
-## 36           Pete,   91.46124    275,668,333,686
-## 37          Permit   92.45944    276,715,348,732
-## 38              me   91.51769    362,721,386,732
-## 39              to   91.51769    402,719,423,732
-## 40       introduce   92.03702    439,715,548,731
-## 41             you   92.01013    562,720,599,735
-## 42              to   90.96066    614,718,636,731
-## 43             the   92.24164    652,716,685,731
-## 44        facility   92.24998    702,714,799,735
-## 45              of   90.49390    813,715,836,731
-## 46       facsimile   79.35881    852,713,961,731
-## 47   transmission.   48.94280    215,740,371,757
-## 48              In   91.96535    278,793,300,807
-## 49       facsimile   91.78830    316,790,424,807
-## 50               a   93.19865    439,796,450,806
-## 51       photocell   90.28869    463,791,573,811
-## 52              is   90.28869    589,790,611,806
-## 53          caused   91.80365    627,791,700,807
-## 54              to   91.80365    714,793,736,806
-## 55         perform   92.41957    751,790,839,810
-## 56               a   93.18517    852,794,862,806
-## 57          raster   91.35117    876,793,950,806
-## 58            scan   91.66459   965,794,1013,806
-## 59            over   92.26031  1026,793,1075,805
-## 60               .   59.55725      16,824,18,826
-## 61             the   91.65620    215,817,249,832
-## 62         subject   92.85319    265,815,349,836
-## 63           copy.   88.85143    364,820,421,835
-## 64             The   88.85143    451,816,486,831
-## 65      variations   91.43013    501,814,623,831
-## 66              of   92.53618    639,815,661,831
-## 67           print   91.01624    675,814,736,835
-## 68        denmsity   46.33485    752,814,837,834
-## 69              on   90.00519    851,819,875,830
-## 70             the   92.77856    890,814,924,830
-## 71        document   92.17099   939,814,1037,830
-## 72           cause   91.57552    215,846,275,857
-## 73             the   92.91947    290,841,324,857
-## 74       photocell   91.35083    338,841,449,861
-## 75              to   91.35083    465,844,487,857
-## 76        generate   89.52011    502,844,599,860
-## 77              an   92.17740    614,845,637,857
-## 78       analogous   92.17690    652,841,761,861
-## 79      electrical   91.17965    777,839,898,856
-## 80           video   92.13211    914,838,975,856
-## 81         signal.   90.32191   989,838,1071,859
-## 82            This   92.12690    215,865,261,881
-## 83          signal   92.57925    278,865,349,886
-## 84              is   91.50474    365,865,386,881
-## 85            used   92.65192    402,866,450,882
-## 86              to   91.54854    465,868,487,881
-## 87        modulate   92.03278    501,865,599,881
-## 88               a   92.12846    615,870,626,881
-## 89        carrier,   92.12846    639,865,735,884
-## 90           which   92.59993    750,864,812,881
-## 91              is   93.13262    828,864,849,881
-## 92     transmitted   91.75418   865,863,1000,881
-## 93              to   92.46236  1015,867,1037,880
-## 94               a   92.56086  1052,868,1063,879
-## 95          remote   92.50134    215,894,287,907
-## 96     destination   91.19598    302,890,438,907
-## 97            over   91.44257    451,895,500,906
-## 98               a   89.06452    514,895,525,906
-## 99           radio   92.32296    539,889,599,906
-## 100             or   92.01079    614,895,637,906
-## 101          cable   92.46326    653,891,712,906
-## 102 communications   91.14729    727,888,899,906
-## 103          link.   90.52568    915,888,972,905
-## 104             At   91.94347    277,941,300,956
-## 105            the   91.94347    316,941,350,956
-## 106         remote   90.66655    365,943,437,956
-## 107      terminal,   91.42926    453,939,560,962
-## 108   demodulation   91.71403    577,939,725,956
-## 109   reconstructs   86.76886    740,942,886,956
-## 110            the   92.14970    903,940,937,956
-## 111          video   92.17909   951,938,1013,955
-## 112        signal,   90.94286    215,964,297,986
-## 113          which   92.76601    314,964,375,981
-## 114             is   93.08193    390,964,411,981
-## 115           used   92.06605    427,965,475,981
-## 116             to   92.16745    490,968,512,981
-## 117       modulate   91.70026    526,965,625,981
-## 118            the   91.56775    641,965,675,981
-## 119        density   91.12645    690,964,775,984
-## 120             of   91.00975    789,964,812,980
-## 121          print   92.05129    826,963,887,984
-## 122       produced   93.12570   901,964,1001,984
-## 123             by   93.27691  1013,964,1038,983
-## 124              a   93.27691  1052,968,1063,979
-## 125       printing   91.80145   215,989,314,1010
-## 126        device.   91.35611   327,989,410,1006
-## 127           This   71.01427   440,989,486,1006
-## 128         device   92.27676   502,989,575,1006
-## 129             is   89.75899   590,989,611,1006
-## 130       scanning   83.44016   628,989,726,1010
-## 131             in   89.61749   741,989,763,1005
-## 132              a   87.48296   777,994,788,1005
-## 133         raster   92.16154   802,992,876,1005
-## 134           scan   93.15559   890,994,938,1005
-## 135   synchronised   92.01822  953,988,1101,1009
-## 136           with   91.42703  213,1015,263,1031
-## 137           that   91.79588  278,1015,325,1031
-## 138             at   92.10561  340,1018,362,1031
-## 139            the   92.70488  379,1015,413,1031
-## 140   transmitting   91.68903  428,1014,576,1035
-## 141      terminal.   90.74780  591,1014,697,1031
-## 142             As   90.74780  727,1015,749,1031
-## 143              a   91.49944  765,1019,775,1030
-## 144        result,   92.60815  789,1015,873,1034
-## 145              a   92.56828  890,1019,901,1030
-## 146      facsimile   91.94787 915,1012,1026,1030
-## 147           copy   92.36919  215,1045,263,1060
-## 148             of   90.87371  278,1040,300,1056
-## 149            the   91.16226  317,1041,350,1056
-## 150        subject   91.95363  365,1039,450,1060
-## 151       document   91.07956  465,1040,562,1056
-## 152             is   91.07956  578,1039,599,1055
-## 153      produced.   91.82436  614,1040,722,1060
-## 154       Probably   92.90215  278,1091,375,1110
-## 155            you   92.83604  389,1095,427,1110
-## 156           have   92.72958  439,1091,488,1106
-## 157           uses   91.67342  503,1094,550,1106
-## 158            for   92.18327  566,1090,601,1106
-## 159           this   92.68385  616,1089,662,1106
-## 160       facility   92.30362  678,1088,775,1110
-## 161             in   92.14813  792,1088,814,1105
-## 162           your   92.26443  827,1094,876,1110
-## 163  organisation.   90.58723 890,1087,1049,1110
-## 164          Yours   90.73596  678,1141,737,1156
-## 165     sincerely,   92.27166  753,1139,874,1160
-## 166             f{   50.64243  699,1202,778,1272
-## 167             &#39;/   59.75372  808,1209,823,1266
-## 168              .   56.96629  828,1257,834,1266
-## 169           P.J.   85.22475  678,1304,724,1319
-## 170          CROSS   88.63677  742,1304,802,1319
-## 171          Group   91.58677  678,1329,739,1347
-## 172         Leader   91.72172  753,1328,827,1344
-## 173              -   93.29646  840,1334,852,1338
-## 174      Facsimile   92.40235  867,1326,978,1344
-## 175       Research   90.71992 992,1327,1092,1344
-## 176     Registered   86.72282  521,1574,600,1587
-## 177             in   84.96437  607,1574,621,1584
-## 178       England:   84.08060  629,1573,695,1586
-## 179            No.   91.98026  725,1574,749,1584
-## 180           2038   95.90424  756,1574,793,1584
-## 181            No.   88.61440    72,1597,99,1610
-## 182              1   81.63094  110,1597,114,1609
-## 183     Registered   90.19997  457,1592,535,1605
-## 184        Office:   75.30827  545,1592,595,1603
-## 185             80   82.44823  627,1592,644,1602
-## 186         Vicara   75.63014  651,1592,700,1602
-## 187          Lane,   57.31424  723,1592,763,1605
-## 188        Ilford.   63.12554  771,1592,817,1602
-## 189         Esasx,   44.16006  825,1592,873,1603</code></pre>
+## 1           SAPORS  92.326187    422,194,497,208
+## 2             LANE  93.291992    508,194,560,208
+## 3                -  92.390686    570,203,575,205
+## 4            BOOLE  91.292068    585,193,651,208
+## 5                -  90.040321    661,202,666,205
+## 6           DORSET  93.285721    676,193,755,208
+## 7                -  89.960922    764,203,769,205
+## 8               BH  43.996544    780,193,808,208
+## 9               25  43.996544    807,189,831,217
+## 10             8ER  82.938339    842,193,883,208
+## 11       TELEPHONE  93.216827    449,232,534,243
+## 12           BOOLE  92.747429    544,232,589,243
+## 13         (94513)  76.725304    600,229,664,246
+## 14           51617  92.798645    675,229,719,244
+## 15               -  92.798645    730,237,735,240
+## 16           TELEX  94.139832    746,232,792,243
+## 17          123456  96.169128    804,228,857,244
+## 18             Our  96.553284    211,392,246,408
+## 19            Ref.  91.130814    261,391,306,407
+## 20     350/PJC/EAC  91.130814    325,389,459,409
+## 21            18th  95.643044    863,389,910,405
+## 22        January,  95.643044   924,389,1020,408
+## 23           1972.  95.283821  1038,388,1095,405
+## 24             Dr.  91.192238    212,492,244,508
+## 25            P.N.  89.044609    262,492,307,508
+## 26        Cundall,  87.802193    325,491,419,510
+## 27          Mining  96.233360    212,516,286,538
+## 28         Surveys  93.276566    301,518,383,536
+## 29           Ltd.,  92.992844    398,516,457,535
+## 30         Holroyd  95.952171    212,543,298,562
+## 31           Road,  96.681137    313,542,369,561
+## 32        Reading,  96.284302    213,566,308,587
+## 33          Berks.  95.152283    213,593,282,608
+## 34            Dear  95.977455    213,668,261,683
+## 35           Pete,  96.308533    275,668,333,686
+## 36          Permit  95.692993    276,715,348,732
+## 37              me  95.692993    362,721,386,732
+## 38              to  95.987144    402,719,423,732
+## 39       introduce  96.534164    439,715,548,731
+## 40             you  96.897186    562,720,599,735
+## 41              to  95.809143    614,718,636,731
+## 42             the  96.897415    652,716,685,731
+## 43        facility  96.315361    702,714,799,735
+## 44              of  96.617821    813,715,836,731
+## 45       facsimile  96.508087    852,713,961,731
+## 46   transmission.  94.390121    215,740,371,757
+## 47              In  95.978737    278,793,300,807
+## 48       facsimile  96.522850    316,790,424,807
+## 49               a  95.214600    439,796,450,806
+## 50       photocell  95.642807    463,791,573,811
+## 51              is  96.655434    589,790,611,806
+## 52          caused  96.282211    627,791,700,807
+## 53              to  96.282211    714,793,736,806
+## 54         perform  96.361366    751,790,839,810
+## 55               a  95.597168    852,794,862,806
+## 56          raster  95.981224    876,793,950,806
+## 57            scan  96.211266   965,794,1013,806
+## 58            over  95.877457  1026,793,1075,805
+## 59               :   8.440552      16,824,18,826
+## 60             the  96.515381    215,817,249,832
+## 61         subject  95.978645    265,815,349,836
+## 62           copy.  95.955009    364,820,421,835
+## 63             The  95.685791    451,816,486,831
+## 64      variations  96.777512    501,814,623,831
+## 65              of  96.954750    639,815,661,831
+## 66           print  96.224609    675,814,736,835
+## 67         density  96.495888    752,814,837,834
+## 68              on  96.877327    851,819,875,830
+## 69             the  96.955742    890,814,924,830
+## 70        document  96.350052   939,814,1037,830
+## 71           cause  96.784325    215,846,275,857
+## 72             the  96.784325    290,841,324,857
+## 73       photocell  96.262688    338,841,449,861
+## 74              to  96.271156    465,844,487,857
+## 75        generate  96.284409    502,844,599,860
+## 76              an  96.690887    614,845,637,857
+## 77       analogous  95.752106    652,841,761,861
+## 78      electrical  96.577225    777,839,898,856
+## 79           video  96.782013    914,838,975,856
+## 80         signal.  95.615807   989,838,1071,859
+## 81            This  96.313568    215,865,261,881
+## 82          signal  96.293747    278,865,349,886
+## 83              is  96.120255    365,865,386,881
+## 84            used  96.120255    402,866,450,882
+## 85              to  96.640419    465,868,487,881
+## 86        modulate  95.863403    501,865,599,881
+## 87               a  95.929253    615,870,626,881
+## 88        carrier,  96.522018    639,865,735,884
+## 89           which  96.398582    750,864,812,881
+## 90              is  96.446907    828,864,849,881
+## 91     transmitted  95.803619   865,863,1000,881
+## 92              to  95.803619  1015,867,1037,880
+## 93               a  95.204765  1052,868,1063,879
+## 94          remote  96.370934    215,894,287,907
+## 95     destination  96.169952    302,890,438,907
+## 96            over  95.475868    451,895,500,906
+## 97               a  95.475868    514,895,525,906
+## 98           radio  96.492149    539,889,599,906
+## 99              or  96.108894    614,895,637,906
+## 100          cable  96.828568    653,891,712,906
+## 101 communications  96.650681    727,888,899,906
+## 102          link.  94.557724    915,888,972,905
+## 103             At  94.658371    277,941,300,956
+## 104            the  94.658371    316,941,350,956
+## 105         remote  96.770195    365,943,437,956
+## 106      terminal,  96.225060    453,939,560,962
+## 107   demodulation  96.670525    577,939,725,956
+## 108   reconstructs  96.354980    740,942,886,956
+## 109            the  96.906342    903,940,937,956
+## 110          video  96.303818   951,938,1013,955
+## 111        signal,  96.014244    215,964,297,986
+## 112          which  96.497437    314,964,375,981
+## 113             is  96.302750    390,964,411,981
+## 114           used  95.792542    427,965,475,981
+## 115             to  95.792542    490,968,512,981
+## 116       modulate  95.861221    526,965,625,981
+## 117            the  96.304672    641,965,675,981
+## 118        density  96.203583    690,964,775,984
+## 119             of  96.420517    789,964,812,980
+## 120          print  96.625023    826,963,887,984
+## 121       produced  96.626266   901,964,1001,984
+## 122             by  96.882683  1013,964,1038,983
+## 123              a  91.595039  1052,968,1063,979
+## 124       printing  96.384834   215,989,314,1010
+## 125        device.  95.978401   327,989,410,1006
+## 126           This  95.988167   440,989,486,1006
+## 127         device  96.459465   502,989,575,1006
+## 128             is  96.473129   590,989,611,1006
+## 129       scanning  96.613380   628,989,726,1010
+## 130             in  96.464584   741,989,763,1005
+## 131              a  96.782417   777,994,788,1005
+## 132         raster  96.463692   802,992,876,1005
+## 133           scan  96.355392   890,994,938,1005
+## 134   synchronised  96.262489  953,988,1101,1009
+## 135           with  95.908119  213,1015,263,1031
+## 136           that  96.471008  278,1015,325,1031
+## 137             at  95.633606  340,1018,362,1031
+## 138            the  96.694962  379,1015,413,1031
+## 139   transmitting  96.391228  428,1014,576,1035
+## 140      terminal.  94.782692  591,1014,697,1031
+## 141             As  95.936348  727,1015,749,1031
+## 142              a  96.104546  765,1019,775,1030
+## 143        result,  96.003822  789,1015,873,1034
+## 144              a  95.396400  890,1019,901,1030
+## 145      facsimile  96.081680 915,1012,1026,1030
+## 146           copy  96.895088  215,1045,263,1060
+## 147             of  96.446304  278,1040,300,1056
+## 148            the  95.649055  317,1041,350,1056
+## 149        subject  96.735336  365,1039,450,1060
+## 150       document  96.161446  465,1040,562,1056
+## 151             is  96.006187  578,1039,599,1055
+## 152      produced.  96.169670  614,1040,722,1060
+## 153       Probably  96.660339  278,1091,375,1110
+## 154            you  96.984940  389,1095,427,1110
+## 155           have  96.720856  439,1091,488,1106
+## 156           uses  96.825615  503,1094,550,1106
+## 157            for  96.421089  566,1090,601,1106
+## 158           this  96.421089  616,1089,662,1106
+## 159       facility  96.121315  678,1088,775,1110
+## 160             in  96.758072  792,1088,814,1105
+## 161           your  96.483368  827,1094,876,1110
+## 162  organisation.  96.435646 890,1087,1049,1110
+## 163          Yours  96.783485  678,1141,737,1156
+## 164     sincerely,  96.674332  753,1139,874,1160
+## 165            Td,  43.258137  688,1198,778,1276
+## 166              /  81.451591  808,1209,823,1266
+## 167           P.J.  50.273232  678,1304,724,1319
+## 168          CROSS  96.291702  742,1304,802,1319
+## 169          Group  96.013054  678,1329,739,1347
+## 170         Leader  90.972252  753,1328,827,1344
+## 171              -  90.843719  840,1334,852,1338
+## 172      Facsimile  96.506401  867,1326,978,1344
+## 173       Research  96.685356 992,1327,1092,1344
+## 174     Registered  95.623764  521,1574,600,1587
+## 175             in  94.061028  607,1574,621,1584
+## 176       England:  90.181320  629,1573,695,1586
+## 177            No.  96.139618  725,1574,749,1584
+## 178           2038  92.959770  756,1574,793,1584
+## 179            No.  94.400261    72,1597,99,1610
+## 180              1  85.483757  110,1597,114,1609
+## 181     Registered  70.593071  457,1592,535,1605
+## 182        Office:  96.380119  545,1592,595,1603
+## 183             @O  66.150887  627,1592,644,1602
+## 184         Vicars  18.099655  651,1592,700,1602
+## 185          Lane,  78.519165  723,1592,763,1605
+## 186        Ilford.  83.035973  771,1592,817,1602
+## 187         Essex,  31.735725  825,1592,873,1603</code></pre>
 <p>That’s a lot of information though. Something a little more sparse might be
 better. We can use base R’s <code>table()</code> function to count the number of times
 unique words appear in the OCR data. We do this with the <code>word</code> column in our
@@ -880,19 +869,19 @@ unique words appear in the OCR data. We do this with the <code>word</code> colum
 <div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="optical-character-recognition.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_vocabulary, <span class="dv">30</span>)</span></code></pre></div>
 <pre><code>##              Var1 Freq
 ## 1               -    5
-## 2               .    2
-## 3              &#39;/    1
-## 4            (945    1
-## 5               1    1
-## 6          123456    1
-## 7             13)    1
+## 2               :    1
+## 3         (94513)    1
+## 4              @O    1
+## 5               /    1
+## 6               1    1
+## 7          123456    1
 ## 8            18th    1
 ## 9           1972.    1
 ## 10           2038    1
-## 11    350/PJC/EAC    1
-## 12          51617    1
-## 13              8    1
-## 14             80    1
+## 11             25    1
+## 12    350/PJC/EAC    1
+## 13          51617    1
+## 14            8ER    1
 ## 15              a    9
 ## 16             an    1
 ## 17      analogous    1
@@ -900,7 +889,7 @@ unique words appear in the OCR data. We do this with the <code>word</code> colum
 ## 19             at    1
 ## 20             At    1
 ## 21         Berks.    1
-## 22           BH25    1
+## 22             BH    1
 ## 23          BOOLE    2
 ## 24             by    1
 ## 25          cable    1
