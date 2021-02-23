@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>11 Data Structures | Adventures in Data Science</title>
-  <meta name="description" content="11 Data Structures | Adventures in Data Science" />
+  <title>15 Data Visualization | Adventures in Data Science</title>
+  <meta name="description" content="15 Data Visualization | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="11 Data Structures | Adventures in Data Science" />
+  <meta property="og:title" content="15 Data Visualization | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="11 Data Structures | Adventures in Data Science" />
+  <meta name="twitter:title" content="15 Data Visualization | Adventures in Data Science" />
   
   
   
@@ -36,8 +36,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="strings-and-regular-expressions.html"/>
-<link rel="next" href="how-the-web-works.html"/>
+<link rel="prev" href="optical-character-recognition.html"/>
+
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -364,500 +364,395 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="data-structures" class="section level1" number="11">
-<h1><span class="header-section-number">11</span> Data Structures</h1>
-<p>Merriam-Webster’s Dictionary defines data as:</p>
+<div id="data-visualization" class="section level1" number="15">
+<h1><span class="header-section-number">15</span> Data Visualization</h1>
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Explain the difference between strings and factors</li>
+<li>Convert strings to factors</li>
+<li>Explain the grammar of graphics</li>
+<li>With the ggplot2 package:
+<ul>
+<li>Make various kinds of plots</li>
+<li>Save plots</li>
+</ul></li>
+<li>Choose an appropriate kind of plot based on the data</li>
+</ul>
+<div id="factors" class="section level2" number="15.1">
+<h2><span class="header-section-number">15.1</span> Factors</h2>
+<p>A feature is <strong>categorical</strong> if it measures a qualitative category. For
+example, the genres <code>rock</code>, <code>blues</code>, <code>alternative</code>, <code>folk</code>, <code>pop</code> are
+categories.</p>
+<p>R uses the class <code>factor</code> to represent categorical data. Visualizations and
+statistical models sometimes treat factors differently than other data types,
+so it’s important to make sure you have the right data type. If you’re ever
+unsure, remember that you can check the class of an object with the <code>class</code>
+function.</p>
+<p>When you load a data set, R usually can’t tell which features are categorical.
+That means identifying and converting the categorical features is up to you.
+For beginners, it can be difficult to understand whether a feature is
+categorical or not. The key is to think about whether you want to use the
+feature to divide the data into groups. For example, if we want to know how
+many songs are in the <code>rock</code> genre, we first need to divide the songs by genre,
+and then count the number of songs in each group (or at least the <code>rock</code>
+group).</p>
+<p>As a second example, months recorded as numbers can be categorical or not,
+depending on how you want to use them. You might want to treat them as
+categorical (for example, to compute max rainfall in each month) or you might
+want to treat them as numbers (for example, to compute the number of months
+time between two events). The bottom line is that you have to think about what
+you’ll be doing in the analysis. In some cases, you might treat a feature as
+categorical only for part of the analysis.</p>
+<p>Let’s think about which features are categorical in the favorite places data
+set from an earlier lesson. There’s a copy of the data in an RDS file on
+Canvas. We can load the data with:</p>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="data-visualization.html#cb284-1" aria-hidden="true" tabindex="-1"></a>favs <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;data/fav_places.rds&quot;</span>)</span>
+<span id="cb284-2"><a href="data-visualization.html#cb284-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(favs)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    15 obs. of  7 variables:
+##  $ raw_description: chr  &quot;Mandro - Shaved Ice!&quot; &quot;Cruess Hall (the design building)&quot; &quot;The ARC&quot; &quot;Probably the CoHo. I like the croissants.&quot; ...
+##  $ location       : chr  &quot;Mandro&quot; &quot;Cruess Hall&quot; &quot;ARC&quot; &quot;CoHo&quot; ...
+##  $ address        : chr  &quot;Mandro Teahouse, 1260 Lake Blvd, Davis, CA 95616&quot; &quot;Cruess Hall, 375 California Ave, Davis, CA 95616&quot; &quot;UC Davis Activities and Recreation Center, 760 Orchard Rd, Davis, CA 95616&quot; &quot;UC Davis Activities and Recreation Center, 760 Orchard Rd, Davis, CA 95616&quot; ...
+##  $ bike_min       : num  16 3 4 2 3 1 4 3 0 7 ...
+##  $ walk_min       : num  56 11 14 5 9 3 14 9 0 22 ...
+##  $ distance_mi    : num  3.1 0.6 0.8 0.2 0.5 0.2 0.7 0.5 0 1.2 ...
+##  $ major          : chr  &quot;Nutrition&quot; &quot;Psychology&quot; &quot;Biology&quot; &quot;Political Science&quot; ...</code></pre>
+<p>The numeric columns in this data set (<code>bike_min</code>, <code>walk_min</code>, and
+<code>distance_mi</code>) are all quantitative, so they’re not categorical. That leaves
+the character columns.</p>
+<p>The <code>raw_description</code> and <code>address</code> columns mostly have unique entries. This is
+a sign that they wouldn’t make good categorical features, because if we use a
+column of unique entries to make groups, each group will only have one element!
+So we can rule these out as categorical. They are textual data.</p>
+<p>That leaves us with the <code>major</code> and <code>location</code> columns. It’s easy to imagine
+grouping the survey responses by major, we can say <code>major</code> is categorical. For
+<code>location</code>, it’s not as clear. The locations are:</p>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="data-visualization.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(favs<span class="sc">$</span>location)</span></code></pre></div>
+<pre><code>## 
+##       Arboretum             ARC            CoHo     Cruess Hall      Disneyland 
+##               2               2               1               1               1 
+##            iTea          Mandro              MU             PES Shields Library 
+##               1               1               1               1               1 
+##   Tennis Courts     Walker Hall    West Village 
+##               1               1               1</code></pre>
+<p>So there are a couple of locations that aren’t unique, but most of them are.
+For this data set, we probably shouldn’t treat <code>location</code> as categorical
+because the groups wouldn’t be interesting. However, if we had more survey
+responses (or more at each location) it might make sense to do so.</p>
+<p>Let’s convert the <code>major</code> column to a factor. To do this, use the <code>factor</code>
+function:</p>
+<div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="data-visualization.html#cb288-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(favs<span class="sc">$</span>major)</span></code></pre></div>
+<pre><code>##  [1] Nutrition               Psychology              Biology                
+##  [4] Political Science       Sociology               Sustainable Agriculture
+##  [7] Economics               Political Science       Undeclared             
+## [10] Psychology              Undeclared              Economics              
+## [13] Political Science       English                 Economics              
+## 9 Levels: Biology Economics English Nutrition Political Science ... Undeclared</code></pre>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="data-visualization.html#cb290-1" aria-hidden="true" tabindex="-1"></a>favs<span class="sc">$</span>major <span class="ot">=</span> <span class="fu">factor</span>(favs<span class="sc">$</span>major)</span></code></pre></div>
+<p>Notice that factors are printed differently than strings.</p>
+<p>The categories of a factor are called <strong>levels</strong>. You can list the levels with
+the <code>levels</code> function:</p>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="data-visualization.html#cb291-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(favs<span class="sc">$</span>major)</span></code></pre></div>
+<pre><code>## [1] &quot;Biology&quot;                 &quot;Economics&quot;              
+## [3] &quot;English&quot;                 &quot;Nutrition&quot;              
+## [5] &quot;Political Science&quot;       &quot;Psychology&quot;             
+## [7] &quot;Sociology&quot;               &quot;Sustainable Agriculture&quot;
+## [9] &quot;Undeclared&quot;</code></pre>
+<p>Factors remember all possible levels even if you take a subset:</p>
+<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb293-1"><a href="data-visualization.html#cb293-1" aria-hidden="true" tabindex="-1"></a>favs<span class="sc">$</span>major[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)]</span></code></pre></div>
+<pre><code>## [1] Nutrition  Psychology
+## 9 Levels: Biology Economics English Nutrition Political Science ... Undeclared</code></pre>
+<p>This is another way factors are different from strings. Factors “remember” all
+possible levels even if they aren’t present. This ensures that if you plot a
+factor, the missing levels will still be represented on the plot.</p>
+<p>You can make a factor forget levels that aren’t present with the <code>droplevels</code>
+function:</p>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="data-visualization.html#cb295-1" aria-hidden="true" tabindex="-1"></a>first3 <span class="ot">=</span> favs<span class="sc">$</span>major[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb295-2"><a href="data-visualization.html#cb295-2" aria-hidden="true" tabindex="-1"></a><span class="fu">droplevels</span>(first3)</span></code></pre></div>
+<pre><code>## [1] Nutrition  Psychology Biology   
+## Levels: Biology Nutrition Psychology</code></pre>
+</div>
+<div id="r-graphics-overview" class="section level2" number="15.2">
+<h2><span class="header-section-number">15.2</span> R Graphics Overview</h2>
+<p>There are three popular systems for creating visualizations in R:</p>
 <ol style="list-style-type: decimal">
-<li>factual information (such as measurements or statistics) used as a basis for reasoning, discussion, or calculation</li>
-<li>information in digital form that can be transmitted or processed</li>
-<li>information output by a sensing device or organ that includes both useful and irrelevant or redundant information and must be processed to be meaningful</li>
+<li>The base R functions (primarily the <code>plot</code> function)</li>
+<li>The lattice package</li>
+<li>The ggplot2 package</li>
 </ol>
-<p>Several key principals are introduced in the above definition:</p>
-<ol style="list-style-type: decimal">
-<li>data is an intermediary step leading towards some form of analysis or or presentation, not typically an end in itself</li>
-<li>data comes in multiple formats, both digital and analogue</li>
-<li>data can be collected by both humans and machines</li>
-<li>not all data in a given dataset is necessarily meaningful, correct nor useful</li>
-</ol>
-<p>Data Scientists (as differentiated from statisticians or computer scientists, for example) are expert in understanding the nature of data itself and the steps necessary to assess the suitability of a given data set for answering specific research questions and the work required to properly prepare data for successful analysis. In the broadest terms, we call this process <em>data forensics</em>.</p>
-<p>The first step in the data forensics process is understanding the format(s) through which data are stored and transferred.</p>
-<div id="tabular-data-1" class="section level2" number="11.1">
-<h2><span class="header-section-number">11.1</span> Tabular Data</h2>
-<p>Tabular Data is the most ubiquitous form of data storage and the one most familiar to most users. Tabular data consists of organizing data in a table of rows and columns. Traditionally, each column in the table represents a Field of Variable and each row represents an observation or entity. For example, the table below shows a tabular organization of a subset of the <em>mtcars</em> dataset:</p>
+<p>These three systems are not interoperable! Consequently, it’s best to choose
+one to use exclusively. Compared to base R, both lattice and ggplot2 are better
+at handling grouped data and generally require less code to create a
+nice-looking visualization.</p>
+<p>The ggplot2 package is so popular that there are now knockoff packages for
+other data-science-oriented programming languages like Python and Julia. The
+package is also part of the Tidyverse. Because of these advantages, we’ll use
+ggplot2 for visualizations in this and all future lessons.</p>
+</div>
+<div id="the-grammar-of-graphics" class="section level2" number="15.3">
+<h2><span class="header-section-number">15.3</span> The Grammar of Graphics</h2>
+<p>ggplot2 has detailed <a href="https://ggplot2.tidyverse.org/">documentation</a> and also a
+<a href="https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf">cheatsheet</a>.</p>
+<p>The “gg” in ggplot2 stands for <strong>grammar of graphics</strong>. The idea of a grammar
+of graphics is that visualizations can be built up in layers. In ggplot2, the
+three layers every plot must have are:</p>
+<ul>
+<li>Data</li>
+<li>Geometry</li>
+<li>Aesthetics</li>
+</ul>
+<p>There are also several optional layers. Here are a few:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-1">Table 1.1: </span></caption>
 <thead>
 <tr class="header">
-<th align="left"></th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
+<th>Layer</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Mazda RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
+<td>scales</td>
+<td>Title, label, and axis value settings</td>
 </tr>
 <tr class="even">
-<td align="left">Mazda RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
+<td>facets</td>
+<td>Side-by-side plots</td>
 </tr>
 <tr class="odd">
-<td align="left">Datsun 710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
+<td>guides</td>
+<td>Axis and legend position settings</td>
 </tr>
 <tr class="even">
-<td align="left">Hornet 4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
+<td>annotations</td>
+<td>Shapes that are not mapped to data</td>
 </tr>
 <tr class="odd">
-<td align="left">Hornet Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-</tr>
-<tr class="even">
-<td align="left">Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-</tr>
-<tr class="odd">
-<td align="left">Duster 360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-</tr>
-<tr class="odd">
-<td align="left">Merc 230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
+<td>coordinates</td>
+<td>Coordinate systems (Cartesian, logarithmic, polar)</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="tree-document-data-structures" class="section level2" number="11.2">
-<h2><span class="header-section-number">11.2</span> Tree / Document Data Structures</h2>
-<p>Another popular form of data structure is the Tree structure, sometimes referred to as a Document based data structure. Tree data structures present data in a hierarchical tree-like structure in which all items related back to a single, root node. A “Family Tree” is a good example of tree structured data:</p>
-<p><img src="img/family_tree.jpg" /></p>
-<p>The mtcars data from the above table can also be represented using a tree structure:</p>
-<p><img src="img/mtcars_tree.jpg" /></p>
-<p>The above image visually depicts the mtcars data as a tree, which works well for a human reader but is no parsable by the computer. There are a variety of ways to represent tree data as a computer file (or data stream) so that it can be read and parsed by the computer. In this class, we will cover two of the most popular formats: XML and JSON.</p>
-<div id="structuring-data-as-xml" class="section level3" number="11.2.1">
-<h3><span class="header-section-number">11.2.1</span> Structuring Data as XML</h3>
-<p>XML is stands for Extensible Markup Language. Markup languages have been around since the 1960’s and were originally developed as a means to adding structured information to an existing unstructured text. In the days of analogue text preparation, professional editors typically used a blue or red pencil to make notes on typed manuscripts. The use of a specially collored pen or pencil for “marking up” documents, as the procedure was known in the industry, easily allowed subsequent readers to distinguish between editorial comment and formatting notes placed on typed manuscripts from the texts themselves. Computerized markup languages were developed as a means of allowing data specialists to markup a text in a manner that would allow the computer to distinguish between textual content and meta-information (information about the text) about the text when both types of information appear in the same file.</p>
-<p>XML is the most widely used form of markup today. In fact, nearly every webpage that you have ever viewed is actually an XML document that contains both content to be displayed and instructions for the computer on how to display that content embedded in the file using XML <em>Tags</em>, which are simply instructions contained with the special charcters “&lt;” and “&gt;”. For example, consider the following short email text:</p>
-<pre><code>To: Tavi
-From: Jonna
-Subject: Meeting
-Date: Thursday, February 4, 2021 at 2:46 PM
-
-Don&#39;t forget about meeting with Sarah next week, 2pm in room 242.
-
-Thanks,
-
-Jonna</code></pre>
-<p>This email contains quite a bit of structured email (sender, receiver, date/time, etc.), but there is no easy way for the computer easily extract this structure. We can solve this problem by using XML to embed information about the structure directly in the document as follows:</p>
-<pre><code>&lt;head&gt;
-   &lt;to&gt;Tavi&lt;/to&gt;
-   &lt;from&gt;Jonna&lt;/from&gt;
-   &lt;subject&gt;Meeting&lt;/subject&gt;
-   &lt;datetime&gt;
-      &lt;dayofweek&gt;Thursday&lt;/dayofweek&gt;
-      &lt;month&gt;February&lt;/month&gt; 
-      &lt;day&gt;4&lt;/day&gt;
-      &lt;year&gt;2021&lt;/year&gt;
-      &lt;time&gt;2:46 PM&lt;/time&gt;
-   &lt;/datetime&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-   Don&#39;t forget about meeting with Sarah next week, 2pm in room 242.
-
-   Thanks,
-
-   &lt;signature&gt;Jonna&lt;/signuature&gt;
-&lt;/body&gt;</code></pre>
-<p>By using XML, we are able to identify specific information in the email in a way that the computer is a capable of parsing. This allows us to use computational methods to easily extract information in bulk from many emails and it also allows us to program a computer program, such as an email client, to organize and properly display all of the parts of the email.</p>
-<p>The above XML example illustrates several important aspects of XML:</p>
+<div id="making-a-plot" class="section level3" number="15.3.1">
+<h3><span class="header-section-number">15.3.1</span> Making a Plot</h3>
+<p>As an example, let’s plot the favorite places survey data. First, we need to
+load ggplot2. As always, if this is your first time using the package, you’ll
+have to install it. Then you can load the package:</p>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="data-visualization.html#cb297-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;ggplot2&quot;)</span></span>
+<span id="cb297-2"><a href="data-visualization.html#cb297-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<p>What kind of plot should we make? It depends on what data we want the plot to
+show. Let’s make a plot that shows the distance in miles (from the library)
+against the walking time in minutes for each place in the data. Both the
+distance and the walking time are recorded as numbers. A scatter plot is a good
+choice for displaying two numeric features. Later we’ll learn about other
+options, but for now we’ll make a scatter plot.</p>
+<div id="layer-1-data" class="section level4 unnumbered">
+<h4>Layer 1: Data</h4>
+<p>The data layer determines the data set used to make the plot. ggplot and most
+other Tidyverse packages are designed for working with <strong>tidy</strong> data frames.
+Tidy means:</p>
 <ol style="list-style-type: decimal">
-<li>All XML tags are enclosed in “&lt;” and “&gt;” symbols.</li>
-<li>There are 2 primary types of tags, <em>opening tags</em>, which designate the beginning character that is defined by the tag, and <em>closing tags</em>, which designate the end of the portion of the text to be associated with the opening tag.</li>
-<li>Closing tags are always indicated by slash character </tag> where tag is the name of the opening tag that is being closed.</li>
-<li>Tags be be embedded within each other in a tree-like structure. However, any tags opened within a tag must be closed before parent tag can be closed. For example, <code>&lt;name&gt;&lt;first&gt;John&lt;/first&gt; &lt;last&gt;Doe&lt;/last&gt;&lt;/name&gt;</code> is valid, but <code>&lt;name&gt;&lt;first&gt;John&lt;/first&gt; &lt;last&gt;Doe&lt;/name&gt;&lt;/last&gt;</code> is not valid.</li>
+<li>Each observation has its own row.</li>
+<li>Each feature has its own column.</li>
+<li>Each value has its own cell.</li>
 </ol>
-<p>While XML was oringinally developed as a means of embedding meta information about a text directly in a text, it also quickly evolved into a stand-alone means of representing tree-structured data for exchange between computer systems. To this end, many computer applications use XML to store, share, and retrieve data. For exmaple, we can represent the data in our truncated mtcars dataset as XML as follows:</p>
-<pre><code>&lt;cars&gt;
-   &lt;make id=&quot;mazda&quot;&gt;
-      &lt;model id=&quot;RX4&quot;&gt;
-         &lt;mpg&gt;21.0&lt;/mpg&gt;
-         &lt;cyl&gt;6&lt;/cyl&gt;
-         &lt;disp&gt;160.0&lt;/disp&gt;
-         &lt;hp&gt;110&lt;/hp&gt;
-      &lt;/model&gt;
-      &lt;model id=&quot;RX4 Wag&quot;&gt;
-         &lt;mpg&gt;21.0&lt;/mpg&gt;
-         &lt;cyl&gt;6&lt;/cyl&gt;
-         &lt;disp&gt;160.0&lt;/disp&gt;
-         &lt;hp&gt;110&lt;/hp&gt;
-      &lt;/model&gt;
-   &lt;/make&gt;
-   &lt;make id=&quot;Datsun&quot;&gt;
-      &lt;model id=&quot;710&quot;&gt;
-         &lt;mpg&gt;22.8&lt;/mpg&gt;
-         &lt;cyl&gt;4&lt;/cyl&gt;
-         &lt;disp&gt;108.0&lt;/disp&gt;
-         &lt;hp&gt;93&lt;/hp&gt;
-      &lt;/model&gt;
-   &lt;/make&gt;
-   &lt;make id=&quot;Hornet&quot;&gt;
-      &lt;model id=&quot;4 Drive&quot;&gt;
-         &lt;mpg&gt;21.4&lt;/mpg&gt;
-         &lt;cyl&gt;6&lt;/cyl&gt;
-         &lt;disp&gt;258.0&lt;/disp&gt;
-         &lt;hp&gt;110&lt;/hp&gt;
-      &lt;/model&gt;
-      &lt;model id=&quot;Sportabout&quot;&gt;
-         &lt;mpg&gt;18.7&lt;/mpg&gt;
-         &lt;cyl&gt;8&lt;/cyl&gt;
-         &lt;disp&gt;360.0&lt;/disp&gt;
-         &lt;hp&gt;175&lt;/hp&gt;
-      &lt;/model&gt;
-   &lt;/make&gt;
-   &lt;make id=&quot;Valiant&quot;&gt;
-      &lt;model id=&quot;valiant&quot;&gt;
-         &lt;mpg&gt;18.1&lt;/mpg&gt;
-         &lt;cyl&gt;6&lt;/cyl&gt;
-         &lt;disp&gt;225.0&lt;/disp&gt;
-         &lt;hp&gt;105&lt;/hp&gt;
-      &lt;/model&gt;
-   &lt;/make&gt;
-   &lt;make id=&quot;Duster&quot;&gt;
-      &lt;model id=&quot;360&quot;&gt;
-         &lt;mpg&gt;14.3&lt;/mpg&gt;
-         &lt;cyl&gt;8&lt;/cyl&gt;
-         &lt;disp&gt;360.0&lt;/disp&gt;
-         &lt;hp&gt;245&lt;/hp&gt;
-      &lt;/model&gt;
-   &lt;/make&gt;
-   &lt;make id=&quot;Merc&quot;&gt;
-      &lt;model id=&quot;240D&quot;&gt;
-         &lt;mpg&gt;24.4&lt;/mpg&gt;
-         &lt;cyl&gt;4&lt;/cyl&gt;
-         &lt;disp&gt;146.7&lt;/disp&gt;
-         &lt;hp&gt;62&lt;/hp&gt;
-      &lt;/model&gt;
-      &lt;model id=&quot;230&quot;&gt;
-         &lt;mpg&gt;22.8&lt;/mpg&gt;
-         &lt;cyl&gt;4&lt;/cyl&gt;
-         &lt;disp&gt;140.8&lt;/disp&gt;
-         &lt;hp&gt;95&lt;/hp&gt;
-      &lt;/model&gt;
-      &lt;model id=&quot;280&quot;&gt;
-         &lt;mpg&gt;19.2&lt;/mpg&gt;
-         &lt;cyl&gt;6&lt;/cyl&gt;
-         &lt;disp&gt;167.6&lt;/disp&gt;
-         &lt;hp&gt;123&lt;/hp&gt;
-      &lt;/model&gt;
-   &lt;/make&gt;
-&lt;/cars&gt;</code></pre>
-<p>For an XML dataset to be technically valid, the tags used to markup the dataset must themselves be defined according to a <em>schema</em>, another XML document that defines all tags that can be used in marking up a dataset and the allowable tree structure of the markup (for example, which tags can be parents of which other tags, etc.). You do not need to understand, or even know, the schema being used to present data in order to read and parse an XML document. However, schemas are extremely useful (and often necessary) for building applications that perform advanced processing of XML documents, such as web browsers, emial clients, etc. For more information on XML and XML Schemas see the w3schools XML Tutorial at <a href="https://www.w3schools.com/xml/">https://www.w3schools.com/xml/</a>.</p>
+<p>Tidy data sets are convenient in general. A later lesson will cover how to make
+an untidy data set tidy. Until then, we’ll take it for granted that the data
+sets we work with are tidy.</p>
+<p>To set up the data layer, call the <code>ggplot</code> function on a data frame:</p>
+<div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="data-visualization.html#cb298-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs)</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>This returns a blank plot. We still need to add a few more layers.</p>
 </div>
-<div id="structuring-data-as-json" class="section level3" number="11.2.2">
-<h3><span class="header-section-number">11.2.2</span> Structuring Data as JSON</h3>
-<p>XML provides an excellent framework for encoding, saving, and transfering all kinds of data, and it was the dominant mode of transfering data across the internet for many years. However, XML has an Achilles’ Heel from the data transfer perspective: a lack of sparcity. If you look closely at the mtcars dataset XML example above, you will note that the markup accounts for more of the total characters in the document than the data itself. In a world where data is regularly being exchanged in real time across the network, the use of XML can result in the necessity to exchange a lot more data to accomplish the same task. This adds both time and cost to every data transaction. <em>JavaScript Object Notation</em> (JSON) was developed as a standard to address this problem and provides a sparse framework for representing data that introduces minimal, non-data elements into the overal data structure.</p>
-<p>JSON uses a key/value pair structure to represent data elements:</p>
-<pre><code>&quot;model&quot;:&quot;RX4&quot;</code></pre>
-<p>Individual data elements are then grouped to reflect more complex data structures:</p>
-<pre><code>{&quot;model&quot;: {&quot;id&quot;: &quot;2&quot;, &quot;hp&quot;: &quot;120&quot;}}</code></pre>
-<p>The example below shows the subsetted mtcars dataset represented as JSON. Note the use of the “[” character to indicated repeated elements in the data:</p>
-<pre><code>{
-    &quot;cars&quot;: [{
-            &quot;make&quot;: &quot;Mazda&quot;,
-            &quot;model&quot;: [{
-                    &quot;id&quot;: &quot;RX4&quot;,
-                    &quot;mpg&quot;: &quot;21.0&quot;,
-                    &quot;cyl&quot;: &quot;6&quot;,
-                    &quot;disp&quot;: &quot;160.0&quot;,
-                    &quot;hp&quot;: &quot;110&quot;
-                },
-                {
-                    &quot;id&quot;: &quot;RX4 Wag&quot;,
-                    &quot;mpg&quot;: &quot;21.0&quot;,
-                    &quot;cyl&quot;: &quot;6&quot;,
-                    &quot;disp&quot;: &quot;160.0&quot;,
-                    &quot;hp&quot;: &quot;110&quot;
-                }
-            ]
-        },
-        {
-            &quot;make&quot;: &quot;Datsun&quot;,
-            &quot;model&quot;: {
-                &quot;id&quot;: &quot;710&quot;,
-                &quot;mpg&quot;: &quot;22.8&quot;,
-                &quot;cyl&quot;: &quot;4&quot;,
-                &quot;disp&quot;: &quot;108.0&quot;,
-                &quot;hp&quot;: &quot;93&quot;
-            }
-        },
-        {
-            &quot;make&quot;: &quot;Hornet&quot;,
-            &quot;model&quot;: [{
-                    &quot;id&quot;: &quot;4 Drive&quot;,
-                    &quot;mpg&quot;: &quot;21.4&quot;,
-                    &quot;cyl&quot;: &quot;6&quot;,
-                    &quot;disp&quot;: &quot;258.0&quot;,
-                    &quot;hp&quot;: &quot;110&quot;
-                },
-                {
-                    &quot;id&quot;: &quot;Sportabout&quot;,
-                    &quot;mpg&quot;: &quot;18.7&quot;,
-                    &quot;cyl&quot;: &quot;8&quot;,
-                    &quot;disp&quot;: &quot;360.0&quot;,
-                    &quot;hp&quot;: &quot;175&quot;
-                }
-            ]
-        },
-        {
-            &quot;make&quot;: &quot;Valiant&quot;,
-            &quot;model&quot;: {
-                &quot;id&quot;: &quot;valiant&quot;,
-                &quot;mpg&quot;: &quot;18.1&quot;,
-                &quot;cyl&quot;: &quot;6&quot;,
-                &quot;disp&quot;: &quot;225.0&quot;,
-                &quot;hp&quot;: &quot;105&quot;
-            }
-        },
-        {
-            &quot;make&quot;: &quot;Duster&quot;,
-            &quot;model&quot;: {
-                &quot;id&quot;: &quot;360&quot;,
-                &quot;mpg&quot;: &quot;14.3&quot;,
-                &quot;cyl&quot;: &quot;8&quot;,
-                &quot;disp&quot;: &quot;360.0&quot;,
-                &quot;hp&quot;: &quot;245&quot;
-            }
-        },
-        {
-            &quot;make&quot;: &quot;Merc&quot;,
-            &quot;model&quot;: [{
-                    &quot;id&quot;: &quot;240D&quot;,
-                    &quot;mpg&quot;: &quot;24.4&quot;,
-                    &quot;cyl&quot;: &quot;4&quot;,
-                    &quot;disp&quot;: &quot;146.7&quot;,
-                    &quot;hp&quot;: &quot;62&quot;
-                },
-                {
-                    &quot;id&quot;: &quot;230&quot;,
-                    &quot;mpg&quot;: &quot;22.8&quot;,
-                    &quot;cyl&quot;: &quot;4&quot;,
-                    &quot;disp&quot;: &quot;140.8&quot;,
-                    &quot;hp&quot;: &quot;95&quot;
-                },
-                {
-                    &quot;id&quot;: &quot;280&quot;,
-                    &quot;mpg&quot;: &quot;19.2&quot;,
-                    &quot;cyl&quot;: &quot;6&quot;,
-                    &quot;disp&quot;: &quot;167.6&quot;,
-                    &quot;hp&quot;: &quot;123&quot;
-                }
-            ]
-        }
-    ]
-}</code></pre>
-<p>For information on the JSON format, see the Tutorialspoint JSON Tutorial at <a href="https://www.tutorialspoint.com/json/index.htm">https://www.tutorialspoint.com/json/index.htm</a>. You can also use the JSONLint Json Validator at <a href="https://jsonlint.com/">https://jsonlint.com/</a> to check the syntax of any JSON representation.</p>
+<div id="layer-2-geometry" class="section level4 unnumbered">
+<h4>Layer 2: Geometry</h4>
+<p>The <strong>geom</strong>etry layer determines the shape or appearance of the visual
+elements of the plot. In other words, the geometry layer determines what kind
+of plot to make: one with points, lines, boxes, or something else.</p>
+<p>There are many different geometries available in ggplot2. The package provides
+a function for each geometry, always prefixed with <code>geom_</code>.</p>
+<p>To add a geometry layer to the plot, choose the <code>geom_</code> function you want and
+add it to the plot with the <code>+</code> operator:</p>
+<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="data-visualization.html#cb299-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<pre><code>## Error: geom_point requires the following missing aesthetics: x and y</code></pre>
+<p>This returns an error message that we’re missing aesthetics <code>x</code> and <code>y</code>. We’ll
+learn more about aesthetics in the next section, but this error message is
+especially helpful: it tells us exactly what we’re missing. When you use a
+geometry you’re unfamiliar with, it can be helpful to run the code for just the
+data and geometry layer like this, to see exactly which aesthetics need to be
+set.</p>
+<p>As we’ll see later, it’s possible to add multiple geometries to a plot.</p>
+</div>
+<div id="layer-3-aesthetics" class="section level4 unnumbered">
+<h4>Layer 3: Aesthetics</h4>
+<p>The <strong>aes</strong>thetic layer determines the relationship between the data and the
+geometry. Use the aesthetic layer to map features in the data to <strong>aesthetics</strong>
+(visual elements) of the geometry.</p>
+<p>The <code>aes</code> function creates an aesthetic layer. The syntax is:</p>
+<pre><code>aes(AESTHETIC = FEATURE, ...)</code></pre>
+<p>The names of the aesthetics depend on the geometry, but some common ones are
+<code>x</code>, <code>y</code>, <code>color</code>, <code>fill</code>, <code>shape</code>, and <code>size</code>. There is more information about
+and examples of aesthetic names in the documentation.</p>
+<p>For example, if we want to put the <code>distance_mi</code> feature on the x-axis, the
+aesthetic layer should be:</p>
+<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="data-visualization.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aes</span>(<span class="at">x =</span> distance_mi)</span></code></pre></div>
+<p>In the <code>aes</code> function, column names are never quoted.</p>
+<p>Unlike most layers, the aesthetic layer is not added to the plot with the <code>+</code>
+operator. Instead, you can pass the aesthetic layer as the second argument to
+the <code>ggplot</code> function:</p>
+<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="data-visualization.html#cb303-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>If you want to set an aesthetic to a constant value, rather than one that’s
+data dependent, do so <em>outside</em> of the aesthetic layer. For instance, suppose
+we want to make the points blue:</p>
+<div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="data-visualization.html#cb304-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>If you set an aesthetic to a constant value inside of the aesthetic layer, the
+results you get might not be what you expect:</p>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="data-visualization.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>This plot also demonstrates the importance of visualization. We can see that
+one of the survey response distances is around 500 miles, which is probably
+erroneous. Before we continue, let’s remove all responses that are more than
+100 miles from campus:</p>
+<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="data-visualization.html#cb306-1" aria-hidden="true" tabindex="-1"></a>favs <span class="ot">=</span> favs[favs<span class="sc">$</span>distance_mi <span class="sc">&lt;=</span> <span class="dv">100</span>, ]</span></code></pre></div>
+</div>
+<div id="per-geometry-aesthetics" class="section level4 unnumbered">
+<h4>Per-geometry Aesthetics</h4>
+<p>When you pass an aesthetic layer to the <code>ggplot</code> function, it applies to the
+entire plot. You can also set an aesthetic layer individually for each
+geometry, by passing the layer as the first argument in the <code>geom_</code> function:</p>
+<div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="data-visualization.html#cb307-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min))</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>This is really only useful when you have multiple geometries. As an example,
+let’s color-code the points by major:</p>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="data-visualization.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min, <span class="at">color =</span> major)) <span class="sc">+</span></span>
+<span id="cb308-2"><a href="data-visualization.html#cb308-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Now let’s also add labels to each point. To do this, we need to add another
+geometry:</p>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="data-visualization.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min, <span class="at">color =</span> major, <span class="at">label =</span> major)) <span class="sc">+</span></span>
+<span id="cb309-2"><a href="data-visualization.html#cb309-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>Where we put the aesthetics matters:</p>
+<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="data-visualization.html#cb310-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min, <span class="at">label =</span> major)) <span class="sc">+</span></span>
+<span id="cb310-2"><a href="data-visualization.html#cb310-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">color =</span> major), <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+<div id="layer-4-scales" class="section level4 unnumbered">
+<h4>Layer 4: Scales</h4>
+<p>The scales layer controls the title, axis labels, and axis scales of the plot.
+Most of the functions in the scales layer are prefixed with <code>scale_</code>, but not
+all of them.</p>
+<p>The <code>labs</code> function is especially important, because it’s used to set the title
+and axis labels:</p>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="data-visualization.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb311-2"><a href="data-visualization.html#cb311-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Walking Distance vs Miles&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Distance (mi)&quot;</span>,</span>
+<span id="cb311-3"><a href="data-visualization.html#cb311-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Walking Distance (min)&quot;</span>)</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 </div>
-<div id="relational-databases" class="section level2" number="11.3">
-<h2><span class="header-section-number">11.3</span> Relational Databases</h2>
-<p>Relational Databases, frequently referred to as Relational Database Management Systems (RDBMS), provide another way of structuring data. Unlike tabular, XML, and JSON data representations, RDBMS data is not easily human readable and specialized software is usually required to interact with data stored as relational data. Most programming environments (including r) provide specialized drivers for communicating with RDBMS in order to facilitate working with data stored in these systems.</p>
-<p>RDBMS have three primary purposes as a data storage format:</p>
+<div id="saving-plots" class="section level3" number="15.3.2">
+<h3><span class="header-section-number">15.3.2</span> Saving Plots</h3>
+<p>In ggplot2, use the <code>ggsave</code> function to save the most recent plot you created:</p>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="data-visualization.html#cb312-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">&quot;scatter.png&quot;</span>)</span></code></pre></div>
+<p>The file format is selected automatically based on the extension. Common
+formats are PNG and PDF.</p>
+<div id="the-plot-device" class="section level4 unnumbered">
+<h4>The Plot Device</h4>
+<p>You can also save a plot with one of R’s “plot device” functions. The steps
+are:</p>
 <ol style="list-style-type: decimal">
-<li>To reduce duplication of data;</li>
-<li>To speed-up access and insertion of new data;</li>
-<li>To insure data integrity.</li>
+<li>Call a plot device function: <code>png</code>, <code>jpeg</code>, <code>pdf</code>, <code>bmp</code>, <code>tiff</code>, or <code>svg</code>.</li>
+<li>Run your code to make the plot.</li>
+<li>Call <code>dev.off</code> to indicate that you’re done plotting.</li>
 </ol>
-<p>Items 2 and 3 above are accomplished at the software level, by deploying strict checks on data input, complex data indexing systems, and implementing redundant, automated, backup systems, to name just a few of the functionalities offered by RDBMS. Item 1 above, reducing duplication of data, is accomplished by using a specific, “relational” data structure that encourages the use of controlled lists of data mapped to individual observations. Looking at our mtcars subset data, for example, we see that while there are ten observations, there are only 6 makes of cars. To represent this in RDBMS, we first create a “Table,” a named collection of data, that contains a unique list of car makes:</p>
+<p>This strategy works with any of R’s graphics systems (not just ggplot2).</p>
+<p>Here’s an example:</p>
+<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="data-visualization.html#cb313-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run these lines in the console, not the notebook!</span></span>
+<span id="cb313-2"><a href="data-visualization.html#cb313-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jpeg</span>(<span class="st">&quot;scatter.jpeg&quot;</span>)</span>
+<span id="cb313-3"><a href="data-visualization.html#cb313-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> distance_mi, <span class="at">y =</span> walk_min)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span>
+<span id="cb313-4"><a href="data-visualization.html#cb313-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
+</div>
+<div id="example-bar-plot" class="section level3" number="15.3.3">
+<h3><span class="header-section-number">15.3.3</span> Example: Bar Plot</h3>
+<p>Let’s say we want to plot the number of responses for each major. A bar plot is
+an appropriate way to represent this visually.</p>
+<p>The geometry for a bar plot is <code>geom_bar</code>. Since bar plots are mainly used to
+display frequencies, the <code>geom_bar</code> function automatically computes frequencies
+when given mapped to a categorical feature. So we can write:</p>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="data-visualization.html#cb314-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(favs, <span class="fu">aes</span>(<span class="at">x =</span> major)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb314-2"><a href="data-visualization.html#cb314-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Majors in Responses&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Major&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="15_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>To prevent <code>geom_bar</code> from computing frequencies automatically, set <code>stat = "identity"</code>. This is mainly useful if you want to plot quantities you’ve
+computed manually on the y-axis.</p>
+</div>
+</div>
+<div id="designing-a-visualization" class="section level2" number="15.4">
+<h2><span class="header-section-number">15.4</span> Designing a Visualization</h2>
+<p>What plot is appropriate?</p>
 <table>
-<caption><span id="tab:unnamed-chunk-2">Table 1.2: </span>MAKE_TABLE</caption>
 <thead>
 <tr class="header">
-<th align="right">id</th>
-<th align="left">Make</th>
+<th>Variable</th>
+<th>Versus</th>
+<th>Plot</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">1</td>
-<td align="left">Mazda</td>
+<td>categorical</td>
+<td></td>
+<td>bar, dot</td>
 </tr>
 <tr class="even">
-<td align="right">2</td>
-<td align="left">Datsun</td>
+<td>categorical</td>
+<td>categorical</td>
+<td>bar, dot, mosaic</td>
 </tr>
 <tr class="odd">
-<td align="right">3</td>
-<td align="left">Hornet</td>
+<td>numerical</td>
+<td></td>
+<td>box, density, histogram</td>
 </tr>
 <tr class="even">
-<td align="right">4</td>
-<td align="left">Valiant</td>
+<td>numerical</td>
+<td>categorical</td>
+<td>box, density, ridge</td>
 </tr>
 <tr class="odd">
-<td align="right">5</td>
-<td align="left">Duster</td>
-</tr>
-<tr class="even">
-<td align="right">6</td>
-<td align="left">Merc</td>
+<td>numerical</td>
+<td>numerical</td>
+<td>line, scatter, smooth scatter</td>
 </tr>
 </tbody>
 </table>
-<p>Once we have a table of unique lists, we then create and populate a table of our cars, associating each car with its appropriate make from the MAKE_TABLE table:</p>
-<table>
-<caption><span id="tab:unnamed-chunk-3">Table 11.1: </span>CARS_TABLE</caption>
-<thead>
-<tr class="header">
-<th align="right">Make</th>
-<th align="left">Model</th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">1</td>
-<td align="left">RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-</tr>
-<tr class="even">
-<td align="right">1</td>
-<td align="left">RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-</tr>
-<tr class="odd">
-<td align="right">2</td>
-<td align="left">710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
-</tr>
-<tr class="even">
-<td align="right">3</td>
-<td align="left">4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
-</tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="left">Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-</tr>
-<tr class="even">
-<td align="right">4</td>
-<td align="left">Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-</tr>
-<tr class="odd">
-<td align="right">5</td>
-<td align="left">360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-</tr>
-<tr class="even">
-<td align="right">6</td>
-<td align="left">240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-</tr>
-<tr class="odd">
-<td align="right">6</td>
-<td align="left">230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-</tr>
-<tr class="even">
-<td align="right">6</td>
-<td align="left">280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
-</tr>
-</tbody>
-</table>
-<p>In the above table, we only normalized the car Make field. In a fully normalized RDBMS data structure, we would also create a control table for the Model field in anticipation of the fact that we could have more than one observation for a given model. Fully normalized RBDMS data structures use control tables for all fields that contain string data. The image below shows a sample Entry Relationship Diagram (ERD) for a more complex dataset relating to course offerings and enrollments. Each line connecting two tables marks a field in a “join” table that uses the id field in a control table (known as a foreign key) to associate information in the control table with the records in the join table.</p>
-<p><img src="img/sql_erd_example.png" /></p>
-</div>
-<div id="non-hierarchical-relational-data" class="section level2" number="11.4">
-<h2><span class="header-section-number">11.4</span> Non-Hierarchical Relational Data</h2>
-<p>In the era of the social network, it is becoming increasingly necessary to represent relationships between entities that are not hierarchical. Unlike a family tree, the fact that you are connected to someone on Facebook or Instagram does not imply any type of hierarchical relationship. Such networks are typically represented using the Graph data structure:</p>
-<p><img src="img/social_network.jpeg" /></p>
-<p>Graphs consists of collections of <em>vertices</em> or <em>nodes</em>, the entities being graphed, and <em>edges</em>, the relationships between nodes.</p>
-<p><img src="img/graph-parts.jpg" /></p>
-<p>Another important aspect of graph data is the concept of <em>directionality</em>. A directed graph indicates the direction of the relationship identified by the edge. We might, for example, wish to draw edges that indicate that one node was influenced by another node, in which case we could identify an “influence” edge and use directionality to indicate who influenced whom:</p>
-<p><img src="img/directed-vs-undirected-graph.jpg" /></p>
-<p>Graph data can be stored and or transfered using any of the data formats discussed above or using specialized graph databases management software.</p>
-</div>
-<div id="geospatial-data" class="section level2" number="11.5">
-<h2><span class="header-section-number">11.5</span> Geospatial Data</h2>
-<p>Geospatial data represents a final type of data with it’s own, unique data structure. Geospatial data unique because it always realates directly to the physical world and, because it relies on world-wide standards which have been in development and communally accepted for hundreds of years. Because of its uniqueness as a data type, geospatial data will be covered as a stand-alone topic later in the course.</p>
+<p>If you want to add a:</p>
+<ul>
+<li>3rd numerical variable, use it to change point/line sizes.</li>
+<li>3rd categorical variable, use it to change point/line styles.</li>
+<li>4th categorical variable, use side-by-side plots.</li>
+</ul>
+<p>Also:</p>
+<ul>
+<li><p>Always add a title and axis labels. These should be in plain English, not
+variable names!</p></li>
+<li><p>Specify units after the axis label if the axis has units. For instance,
+“Height (ft)”.</p></li>
+<li><p>Don’t forget that many people are colorblind! Also, plots are often printed
+in black and white. Use point and line styles to distinguish groups; color is
+optional.</p></li>
+<li><p>Add a legend whenever you’ve used more than one point or line style.</p></li>
+<li><p>Always write a few sentences explaining what the plot reveals. Don’t
+describe the plot, because the reader can just look at it. Instead,
+explain what they can learn from the plot and point out important details
+that are easily overlooked.</p></li>
+<li><p>Sometimes points get plotted on top of each other. This is called
+<em>overplotting</em>. Plots with a lot of overplotting can be hard to read and can
+even misrepresent the data by hiding how many points are present. Use a
+two-dimensional density plot or jitter the points to deal with overplotting.</p></li>
+<li><p>For side-by-side plots, use the same axis scales for both plots so that
+comparing them is not deceptive.</p></li>
+</ul>
 
 </div>
 </div>
@@ -866,8 +761,8 @@ Jonna</code></pre>
           </div>
         </div>
       </div>
-<a href="strings-and-regular-expressions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="how-the-web-works.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="optical-character-recognition.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -889,7 +784,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/11_data-structures.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/15_r-ggplot2.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -897,7 +792,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/11_data-structures.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/15_r-ggplot2.Rmd",
 "text": null
 },
 "download": null,
