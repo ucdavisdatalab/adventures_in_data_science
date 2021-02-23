@@ -372,7 +372,12 @@ California][wiki-cities]. Let's scrape the table to get a data frame.
 [wiki-cities]: https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California
 
 Step 1 is to download the page:
-```{r wiki_scrape}
+```{r wiki_scrape, echo=FALSE, results=FALSE}
+wiki_url =
+  "https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California"
+wiki_doc = .read_html_cache(wiki_url)
+```
+```{r, eval=FALSE}
 wiki_url =
   "https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California"
 
@@ -473,17 +478,22 @@ In particular, we want to get all the links to news articles on the features
 page <https://theaggie.org/features/>. This could be one part of a larger
 scraping project where we go on to scrape individual articles.
 
-First, let's download the features page and extract the links. We know that
-links are in `a` tags, but we only want links to articles.
+First, let's download the features page so we can extract the links:
 
-Looking at the features page with the web developer tools, the links to
-feature articles are all inside of a `section` tag. So let's get the section
-tag:
-
-```{r aggie_features}
+```{r aggie_features, echo=FALSE, results=FALSE}
+url = "https://theaggie.org/features/"
+doc = .read_html_cache(url)
+```
+```{r, eval=FALSE}
 url = "https://theaggie.org/features/"
 doc = read_html(url)
+```
 
+We know that links are in `a` tags, but we only want links to articles. Looking
+at the features page with the web developer tools, the links to feature
+articles are all inside of a `section` tag. So let's get the section tag:
+
+```{r}
 xml_find_all(doc, "//section") # OR html_nodes(doc, "section")
 ```
 
@@ -545,11 +555,20 @@ parse_article_links = function(page) {
 }
 ```
 
-We can test this out on the Sports page:
+We can test this out on the Sports page. First we download the page:
 
-```{r aggie_sports}
+```{r aggie_sports, echo=FALSE, results=FALSE}
+sports = .read_html_cache("https://theaggie.org/sports")
+```
+```{r, eval=FALSE}
 sports = read_html("https://theaggie.org/sports")
+```
+ 
+Then we call the function on the document:
+
+```{r}
 sports_urls = head(parse_article_links(sports))
+head(sports_urls)
 ```
 
 It looks like the function works even on other pages! We can also set up the
@@ -591,8 +610,13 @@ Since our function gets URL for the next page, what happens on the last page?
 Looking at the last page in the browser, there is no link to the next page.
 Let's see what our scraper function does:
 
-```{r aggie_last}
+```{r aggie_last, echo=FALSE, results=FALSE}
+last_page = .read_html_cache("https://theaggie.org/features/page/180/")
+```
+```{r, eval=FALSE}
 last_page = read_html("https://theaggie.org/features/page/180/")
+```
+```{r}
 parse_article_links(last_page)
 ```
 
