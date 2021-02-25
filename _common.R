@@ -46,6 +46,26 @@ url42 <- "./img/blurry_page_image.png"
 url43 <- "./img/blackletter_example.jpg"
 url44 <- "./img/chronicling_america_example.png"
 
+# network images
+
+# emojis
+net_url1 = "./img/male-teacher_emoji.png"
+net_url2 = "./img/female-student_emoji.png"
+net_url3 = "./img/female-health-worker_emoji.png"
+net_url4 = "./img/male-scientist_emoji.png"
+
+# examples
+net_url5 = "./img/who_shall_survive.png"
+net_url6 = "./img/neuronet.jpg"
+net_url7 = "./img/chem_graph.jpg"
+net_url8 = "./img/page_rank.jpg"
+net_url9 = "./img/infrastructure_net.jpg"
+net_url10 = "./img/terror_net.png"
+
+# others
+net_url11 = "./img/2mode.png"
+net_url12 = "./img/2_step.png"
+
 library(knitr)
 library(stringr)
 
