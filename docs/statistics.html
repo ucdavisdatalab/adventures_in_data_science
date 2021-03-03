@@ -30,7 +30,7 @@
 <meta name="author" content="Jared Joseph" />
 
 
-<meta name="date" content="2021-03-02" />
+<meta name="date" content="2021-03-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -522,8 +522,8 @@ remotes::install_github( &quot;ProjectMOSAIC/mosaicModel&quot; )</code></pre>
 <div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="statistics.html#cb346-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sample 20 numbers from a standard normal and draw the histogram</span></span>
 <span id="cb346-2"><a href="statistics.html#cb346-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">20</span>)</span>
 <span id="cb346-3"><a href="statistics.html#cb346-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="fu">sort</span>(x), <span class="dv">2</span>)</span></code></pre></div>
-<pre><code>##  [1] -1.18 -1.04 -0.84 -0.74 -0.74 -0.63 -0.38 -0.09  0.02  0.12  0.14  0.48
-## [13]  0.70  0.87  1.07  1.08  1.32  1.58  1.79  3.05</code></pre>
+<pre><code>##  [1] -1.42 -1.32 -1.09 -0.82 -0.80 -0.26 -0.19  0.09  0.14  0.28  0.28  0.41
+## [13]  0.48  0.50  0.53  0.79  1.06  1.34  1.71  2.27</code></pre>
 <div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="statistics.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(x)</span></code></pre></div>
 <p><img src="17_basic-stats_files/figure-html/normal-histogram-1.png" width="672" /></p>
 <p>Do the numbers seem to come from the high-density part of the Normal density curve? Are there any that don’t? It isn’t surprising if some of your <code>x</code> samples are not particularly close to zero. One out of twenty (that’s five percent) samples from a standard Normal population are greater than two or less than negative two, on average. That’s “on average” over the population. Your sample may be different.</p>
@@ -536,8 +536,8 @@ remotes::install_github( &quot;ProjectMOSAIC/mosaicModel&quot; )</code></pre>
 <div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="statistics.html#cb350-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sample 20 numbers from a histogram and plot the histogram</span></span>
 <span id="cb350-2"><a href="statistics.html#cb350-2" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">=</span> <span class="fu">rexp</span>( <span class="dv">20</span> )</span>
 <span id="cb350-3"><a href="statistics.html#cb350-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="fu">sort</span>(ex), <span class="dv">2</span>)</span></code></pre></div>
-<pre><code>##  [1] 0.03 0.03 0.07 0.09 0.10 0.11 0.15 0.17 0.27 0.28 0.35 0.46 0.50 0.61 0.74
-## [16] 0.90 1.31 1.57 2.07 3.44</code></pre>
+<pre><code>##  [1] 0.03 0.07 0.07 0.09 0.17 0.18 0.28 0.41 0.44 0.52 0.59 0.98 1.04 1.38 1.62
+## [16] 1.66 1.69 1.76 1.84 3.94</code></pre>
 <div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="statistics.html#cb352-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( ex )</span></code></pre></div>
 <p><img src="17_basic-stats_files/figure-html/exponential-histogram-1.png" width="672" /></p>
 <p>The histograms are clearly different, but it would be difficult to definitively name the distribution of the data by looking at a sample.</p>
@@ -552,7 +552,7 @@ remotes::install_github( &quot;ProjectMOSAIC/mosaicModel&quot; )</code></pre>
 <span id="cb353-2"><a href="statistics.html#cb353-2" aria-hidden="true" tabindex="-1"></a>means <span class="ot">=</span> <span class="fu">sapply</span>( nn, <span class="cf">function</span>(n) <span class="fu">mean</span>( <span class="fu">rnorm</span>(n) ) )</span>
 <span id="cb353-3"><a href="statistics.html#cb353-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nn, means, <span class="at">bty=</span><span class="st">&#39;n&#39;</span>, <span class="at">ylab =</span> <span class="st">&quot;sample mean&quot;</span>)</span>
 <span id="cb353-4"><a href="statistics.html#cb353-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code></pre></div>
-<p><img src="17_basic-stats_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="17_basic-stats_files/figure-html/lln-1.png" width="672" /></p>
 </div>
 <div id="central-limit-theorem" class="section level3" number="17.3.2">
 <h3><span class="header-section-number">17.3.2</span> Central limit theorem</h3>
@@ -588,9 +588,9 @@ And because of the identities we learned before, you can write this as
 <span id="cb357-3"><a href="statistics.html#cb357-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb357-4"><a href="statistics.html#cb357-4" aria-hidden="true" tabindex="-1"></a><span class="co"># assess normality with histogram and QQ plot</span></span>
 <span id="cb357-5"><a href="statistics.html#cb357-5" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( mice_med<span class="sc">$</span>percent_of_act )</span></code></pre></div>
-<p><img src="17_basic-stats_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="17_basic-stats_files/figure-html/mice-normality-1.png" width="672" /></p>
 <div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="statistics.html#cb358-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>( mice_med<span class="sc">$</span>percent_of_act )</span></code></pre></div>
-<p><img src="17_basic-stats_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<p><img src="17_basic-stats_files/figure-html/mice-normality-2.png" width="672" /></p>
 <div id="find-the-80-confidence-interval-for-the-population-mean" class="section level4" number="17.4.1.1">
 <h4><span class="header-section-number">17.4.1.1</span> Find the 80% confidence interval for the population mean</h4>
 <p>Now we are using our sample to make some determination about the population, so this is statistical inference. Our best guess of the population mean is the sample mean, <code>mean( mice_med$percent_of_act )</code>, which is 99.1%. But to get a confidence interval, we need to use the formula

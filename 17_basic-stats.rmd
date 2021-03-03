@@ -16,7 +16,7 @@ library( "mosaic" )
 library( "mosaicModel" )
 ```
 
-```{r load-data}
+```{r load-data, cache=TRUE}
 # load the datasets
 mice_pot = read.csv( url( "https://raw.githubusercontent.com/ucdavisdatalab/adventures_in_data_science/master/data/mice_pot.csv" ))
 barnacles = read.csv( url( "https://raw.githubusercontent.com/ucdavisdatalab/adventures_in_data_science/master/data/barnacles.csv" ))
@@ -30,7 +30,7 @@ The `mice_pot` dataset contains data on an experiment that dosed four groups of 
 
 Both of these questions can be approached in ways that relate to the particular sample, which is kind of interesting descriptions of the data. For instance, if you install the `dplyr` package in your R environment, we can make those calculations right now.
 
-```{r mice-descriptive}
+```{r mice-descriptive, cache=TRUE}
 with( mice_pot, by(percent_of_act, group, mean))
 ```
 
@@ -41,7 +41,7 @@ Because we don't see we don't see data from mice that weren't part of the study,
 ### `barnacles` dataset
 This dataset was collected by counting the barnacles in 88 grid squares on the Flower Garden Banks coral reef in the Gulf of Mexico. The counts were normalized to barnacles per square meter. Some questions that you might approach with statistical methods are, what is the average number of barnacles per square meter, and is it greater than 300?
 
-```{r barnacles-descriptive}
+```{r barnacles-descriptive, cache=TRUE}
 mean( barnacles$per_m )
 ```
 
@@ -71,7 +71,7 @@ We will use simulation-based methods extensively today.
 
 This is the density curve of a standard normal distribution:
 
-```{r annotated-density-tails}
+```{r annotated-density-tails, cache=TRUE}
 # set z to -4, 4
 z = seq(-4, 4, length.out = 1000)
 
@@ -84,7 +84,7 @@ polygon(x=c(z[z>=qnorm(0.975)], max(z), qnorm(0.975)), y=c(dnorm(z[z>=qnorm(0.97
 ```
 
 And this is a histogram of samples taken from that same distribution:
-```{r normal-histogram}
+```{r normal-histogram, cache=TRUE}
 # sample 20 numbers from a standard normal and draw the histogram
 x = rnorm(20)
 round( sort(x), 2)
@@ -95,14 +95,14 @@ Do the numbers seem to come from the high-density part of the Normal density cur
 
 
 Here is the density of the exponential distribution:
-```{r exponential-density}
+```{r exponential-density, cache=TRUE}
 # draw the desity of an Exponential distribution
 t = seq(-1, 5, length.out=1000)
 plot( x=t, y=dexp(t), bty='n', type='l')
 ```
 
 And here is a histogram of 20 samples taken from that distribution:
-```{r exponential-histogram}
+```{r exponential-histogram, cache=TRUE}
 # sample 20 numbers from a histogram and plot the histogram
 ex = rexp( 20 )
 round( sort(ex), 2)
@@ -118,7 +118,7 @@ The mean has some special properties: you've seen how we can calculate the frequ
 ### Law of large numbers
 The law of large numbers says that if the individual measurements are independent, then the mean of a sample tends toward the mean of the population as the sample size gets larger. This is what we'd expect, since we showed the rate at which the variance of the sample mean gets smaller is $1/n$.
 
-```{r}
+```{r lln, cache=TRUE}
 nn = c(1, 2, 4, 8, 12, 20, 33, 45, 66, 100)
 means = sapply( nn, function(n) mean( rnorm(n) ) )
 plot(nn, means, bty='n', ylab = "sample mean")
@@ -135,7 +135,7 @@ $$\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \rightarrow N(0, 1) $$
 
 This is significant because we can use the standard normal functions on the right, and the data on the left, to start answering questions like, "what is the 95% confidence interval for the population mean?" 
 
-```{r clt}
+```{r clt, cache=TRUE}
 # generate 20 samples from a uniform distribution and plot their histogram
 N = 20
 u = rexp( N )
@@ -159,7 +159,7 @@ hist(uu)
 
 In the `fosdata` package there is a dataset called `mice_pot`, which contains data from an experiment where mice were dosed with THC and then measured for motor activity as a percentage of their baseline activity. We are going to look at the group that got a medium dose of THC.
 
-```{r}
+```{r mice-normality, cache=TRUE}
 # extract just the mice that got the medium dose of THC
 mice_med = mice_pot[ mice_pot$group == 1, ]
 
@@ -174,7 +174,7 @@ Now we are using our sample to make some determination about the population, so 
 $$ \bar{x} \pm t_{n-1, 0.1} * S / \sqrt{n} $$
 Fortunately, R can do all the work for us:
 
-```{r on-popt-test}
+```{r on-popt-test, cache=TRUE}
 # 80% confidence interval for location of mice_med mean:
 t.test( mice_med$percent_of_act, conf.level=0.8 )
 ```
@@ -183,7 +183,7 @@ t.test( mice_med$percent_of_act, conf.level=0.8 )
 ### Two-population test
 The test of $\mu_0 = 100$ is a one-population test because it seeks to compare a single population against a specified standard. On the other hand, you may wish to assess the null hypothesis that the movement of mice in the high-THC group is equal to the movement of mice in the medium-THC group. This is called a two-population test, since there are two populations to compare against each other. The null hypothesis is $\mu_{0, med} = \mu_{0, high}$. Testing a two-population hypothesis requires first assessing normality and also checking whether the variances are equal. There are separate procedures when the variances are equal vs. unequal.
 
-```{r two-pop-t.test}
+```{r two-pop-t.test, cache=TRUE}
 #extract the samples to be compared
 a = mice_pot$percent_of_act[ mice_pot$group == 1]
 b = mice_pot$percent_of_act[ mice_pot$group == 3]
@@ -208,7 +208,7 @@ Just as with the confidence intervals, there is a bootstrap hypothesis test that
 
 Since we'e already seen that the barnacles per square meter data are not normal, I will illustrate testing the null hypothesis that $\mu_0$ = 300 barnacles per square meter. This is a one-population test, and a two-sided alternative.
 
-```{r wilcox-barnacles}
+```{r wilcox-barnacles, cache=TRUE}
 # wilcoxon test for 300 barnacles per square meter
 wilcox.test( barnacles$per_m )
 ```
@@ -220,7 +220,7 @@ Regression is a mathematical tool that allows you to estimate how some response 
 
 Linear regression means that the relationship between the predictor variable(s) and the response is a linear one. To illustrate, we'll create a plot of the relationship between the waist measurement and bmi of 81 adults:
 
-```{r regression-example} 
+```{r regression-example, cache=TRUE} 
 # plot the relationship between the waist_cm and bmi variables
 with(adipose, plot(waist_cm, bmi), bty='n' )
 ```
@@ -235,7 +235,7 @@ Here, the response variable (e.g., BMI) is called $y$ and the predictor (e.g. wa
 ### Fitting a regression line
 The R function to fit the model is called `lm()`. Let's take a look at an example:
 
-```{r bmi-vs-waist-regression}
+```{r bmi-vs-waist-regression, cache=TRUE}
 # fit the linear regression BMI vs waist_cm
 fit = lm( bmi ~ waist_cm, data=adipose )
 
@@ -259,7 +259,7 @@ The first of these conditions can't be checked - it has to do with the design of
 #### Checking that the linear model is correct
 In the cast of a simple linear regression model (one predictor variable), you can check this by plotting the predictor against the response and looking for a linear trend. If you have more than one predictor variable, then you need to plot the predictions against the response to look for a linear trend. We'll see an example by adding height as a predictor for BMI (in addition to waist measurement).
 
-```{r bmi-waist-height}
+```{r bmi-waist-height, cache=TRUE}
 # linear model for BMI using waist size and height as predictors
 fit2 = lm( bmi ~ waist_cm + stature_cm, data=adipose )
 
@@ -274,7 +274,7 @@ We have already learned about the QQ plot, which shows visually whether some val
 #### Checking that the vaiance is constant
 In an earlier part, we saw that the variance is the average of the squared error. But that would just be a single number, when we want to see if there is a trend. So like the QQ plot, you'l plot the residuals and use your eyeball to discern whether there is a trend in the residuals or if they are approximately constant - this is called the scale-location plot. The QQ plot and scale-location plot are both created by plotting the fitted model object
 
-```{r diagnostics} 
+```{r diagnostics, cache=TRUE} 
 # set up the pattern of the panels
 layout( matrix(1:4, 2, 2) )
 
@@ -287,14 +287,14 @@ The "Residuals vs. Fitted" plot is checking whether the linear model is correct.
 ### Functions for inspecting regression fits
 When you fit a linear regression model, you are estimating the parameters of the regression equation. In order to see those estimates, use the `summary()` function on the fitted model object.
 
-```{r regression-summary}
+```{r regression-summary, cache=TRUE}
 # get the model summary
 summary( fit2 )
 ```
 
 Here you can see that the average marginal effect of one additional centimeter of waist measurement is to increase BMI by `r round(coef(fit2)[[2]], 2)` and an additional centimeter of height is associated with a change to BMI of `r round(coef(fit2)[[3]], 2)`. You can get the coefficients from the fitted model object using the `coef()` function, and there are some other functions that allow you to generate the values shown in the summary table.
 
-```{r regression-coefficients}
+```{r regression-coefficients, cache=TRUE}
 # get the coefficients of the fitted regression
 beta = coef( fit2 )
 round( beta, 2 )
@@ -302,11 +302,11 @@ round( beta, 2 )
 
 
 Get the variance-covariance matrix: 
-```{r vcov-matrix}
+```{r vcov-matrix, cache=TRUE}
 round( vcov( fit2 ), 4)
 ````
 
-```{r standard-error}
+```{r standard-error, cache=TRUE}
 # compare the square root of the diagonals of the variance-covariance matrix
 # to the standard errors are reported in the summary table:
 se = sqrt( diag( vcov(fit2) ))
@@ -315,7 +315,7 @@ se = sqrt( diag( vcov(fit2) ))
 round( se, 3 )
 ```
 
-```{r t-stat}
+```{r t-stat, cache=TRUE}
 # calculate the t-statistics for the regression coefficients
 # (compare these to the t-statistics reorted in the summary table)
 t_stats = beta / se
@@ -325,13 +325,13 @@ round( t_stats, 2 )
 ```
 
 
-```{r p-values}
+```{r p-values, cache=TRUE}
 # calculate the p-values:
 pval = 2 * pt( abs(t_stats), df=78, lower.tail=FALSE )
 round(pval, 4)
 ```
 
-```{r residual-variance}
+```{r residual-variance, cache=TRUE}
 # this is the residual standard error:
 sd( fit2$residuals ) * sqrt(80 / 78)
 
@@ -345,14 +345,14 @@ round( 1 - var(fit2$residuals) / var(adipose$bmi), 3 )
 
 We've seen a model that has good diagnostics. Now let's look at one that doesn't. This time, we'll use linear regression to make a model of the relationship between waist measurement and the visceral adipose tissue fat (measured in grams). The visceral adipose tissue fat is abbreviated `vat` in the data. First, since the model uses a single predictor variable, let's look at the relationship with a pair plot.
 
-```{r vat-plot}
+```{r vat-plot, cache=TRUE}
 # plot the relationship between waist_cm and vat
 with( adipose, plot( waist_cm, vat, bty='n' ))
 ```
 
 The plot is obviously not showing a linear relationship, which will violate one of the conditions for linear regression. Also, you can see that there is less variance of vat among the observations that have smaller waist measurements. So that will violate the assumption that the residual variance has no relationship to the fitted values. To see how these will show up in the diagnostic plots, we need to fit the linear regression model.
 
-```{r vat-regression-diagnostics}
+```{r vat-regression-diagnostics, cache=TRUE}
 # estimate the model for vat
 fit_vat = lm( vat ~ waist_cm, data = adipose )
 
@@ -366,7 +366,7 @@ plot( fit_vat )
 
 There is obviously a curved pattern in the Residuals vs. Fitted plot, and in the Scale vs. Location plot. Residuals vs. Fitted shows a fan-shaped pattern, too, which reflects the increasing variance among the greater fitted values. The QQ plot is not a straight line, although the difference is not as obvious. In particular, the upper tail of residuals is heavier than expected. Together, all of these are indications that we may need to do a log transformation of the response. A log transformation helps to exaggerate the differences between smaller numbers (make the lower tail heavier) and collapse some difference among larger numbers (make the upper tail less heavy).
 
-```{r log-vat}
+```{r log-vat, cache=TRUE}
 # fit a regression model where the response is log-transformed
 fit_log = lm( log(vat) ~ waist_cm, data=adipose )
 
@@ -376,7 +376,7 @@ plot( fit_log )
 
 The diagnostics do not look good after the log transformation, but now the problem is the opposite: a too-heavy lower tail and residual variance decreases as the fitted value increases. Perhaps a better transformation is something in between the raw data and the log transform. Try a square-root transformation.
 
-```{r vat-sqrt}
+```{r vat-sqrt, cache=TRUE}
 # fit a model where the vat is square root transformed
 fit_sqrt = lm( sqrt(vat) ~ waist_cm, data=adipose )
 
@@ -390,7 +390,7 @@ These look acceptable for real-world data.
 
 There are two scales of uncertainty for a regression model: uncertainty in the fitted relationship, and the uncertainty of a predicted outcome. The uncertainty of a prediction is always greater because it is calculated by adding the uncertainty of the fitted line to the uncertainty of a single data point around that fitted line. We can illustrate using the example of the model we just created to relate the waist measurement to the square root of vat. For this block of code, we'll need the `mvtnorm` library to be loaded.
 
-```{r predictions}
+```{r predictions, cache=TRUE}
 # import mvtnorm. install it if necessary.
 library( mvtnorm )
 
@@ -409,7 +409,7 @@ for (i in 1:100) {
 
 Clearly, the variability of the data points is greater than the variability of the fitted line (that's why they lie outside the envelope of the fitted lines). We can extract a confidence interval for fitted values or predictions with the `predict()` function.
 
-```{r prediction-intervals}
+```{r prediction-intervals, cache=TRUE}
 # draw the data on the transformed scale
 with( adipose, plot(waist_cm, sqrt(vat), bty='n') )
 
@@ -455,7 +455,7 @@ It's more common to break the data into more than two parts - typically five or 
 
 Let's use cross-validation to do model selection. The model this time is a representation of the number of births per day in 1978 in the United States.
 
-```{r cv}
+```{r cv, cache=TRUE}
 # plot the data
 gf_point( births ~ day_of_year, color = ~wknd, data=Births78 )
 
