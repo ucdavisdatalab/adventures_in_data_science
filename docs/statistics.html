@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>17 Statistics | Adventures in Data Science</title>
+  <meta name="description" content="17 Statistics | Adventures in Data Science" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="17 Statistics | Adventures in Data Science" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
+  
+  
+  <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="17 Statistics | Adventures in Data Science" />
+  
+  
+  
+
+<meta name="author" content="Dr. Carl G. Stahmer" />
+<meta name="author" content="Dr. Pamela L. Reynolds" />
+<meta name="author" content="Dr. Tyler Shoemaker" />
+<meta name="author" content="Carrie Alexander" />
+<meta name="author" content="Arthur Koehl" />
+<meta name="author" content="Nick Ulle" />
+<meta name="author" content="Jared Joseph" />
+
+
+<meta name="date" content="2021-03-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="network-analysis.html"/>
+
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
+<script src="libs/str_view-binding-1.4.0/str_view.js"></script>
+<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="libs/vis-4.20.1/vis.min.js"></script>
+<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://datalab.ucdavis.edu/">
+  <img src="img/datalab-logo-full-color-rgb.png" style="height: 100%; width: 100%; object-fit: contain" />
+</a></li>
+<li><a href="./" style="font-size: 18px">Adventures in Data Science</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="1" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html"><i class="fa fa-check"></i><b>1</b> Working with the Command Line</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#interacting-with-the-command-line"><i class="fa fa-check"></i><b>1.1</b> Interacting with the Command Line</a></li>
+<li class="chapter" data-level="1.2" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#common-command-line-commands"><i class="fa fa-check"></i><b>1.2</b> Common Command Line Commands</a></li>
+<li class="chapter" data-level="1.3" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#command-line-text-editors"><i class="fa fa-check"></i><b>1.3</b> Command Line Text Editors</a></li>
+<li class="chapter" data-level="1.4" data-path="working-with-the-command-line.html"><a href="working-with-the-command-line.html#basic-vim-commands"><i class="fa fa-check"></i><b>1.4</b> Basic Vim Commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html"><i class="fa fa-check"></i><b>2</b> Introduction to Version Control</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#what-is-version-control"><i class="fa fa-check"></i><b>2.1</b> What is Version Control?</a></li>
+<li class="chapter" data-level="2.2" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#software-assisted-version-control"><i class="fa fa-check"></i><b>2.2</b> Software Assisted Version Control</a></li>
+<li class="chapter" data-level="2.3" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#local-vs-server-based-version-control"><i class="fa fa-check"></i><b>2.3</b> Local vs Server Based Version Control</a></li>
+<li class="chapter" data-level="2.4" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#central-version-control-systems"><i class="fa fa-check"></i><b>2.4</b> Central Version Control Systems</a></li>
+<li class="chapter" data-level="2.5" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#distributed-version-control-systems"><i class="fa fa-check"></i><b>2.5</b> Distributed Version Control Systems</a></li>
+<li class="chapter" data-level="2.6" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#the-best-of-both-worlds"><i class="fa fa-check"></i><b>2.6</b> The Best of Both Worlds</a></li>
+<li class="chapter" data-level="2.7" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#vcs-and-the-computer-file-system"><i class="fa fa-check"></i><b>2.7</b> VCS and the Computer File System</a></li>
+<li class="chapter" data-level="2.8" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#how-computers-store-and-access-information"><i class="fa fa-check"></i><b>2.8</b> How Computers Store and Access Information</a></li>
+<li class="chapter" data-level="2.9" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#how-vcs-manage-your-files"><i class="fa fa-check"></i><b>2.9</b> How VCS Manage Your Files</a></li>
+<li class="chapter" data-level="2.10" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#graph-based-data-management"><i class="fa fa-check"></i><b>2.10</b> Graph-Based Data Management</a></li>
+<li class="chapter" data-level="2.11" data-path="introduction-to-version-control.html"><a href="introduction-to-version-control.html#additional-resources"><i class="fa fa-check"></i><b>2.11</b> Additional Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="introduction-to-git.html"><a href="introduction-to-git.html"><i class="fa fa-check"></i><b>3</b> Introduction to Git</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="introduction-to-git.html"><a href="introduction-to-git.html#save-stage-commit"><i class="fa fa-check"></i><b>3.1</b> Save, Stage, Commit</a></li>
+<li class="chapter" data-level="3.2" data-path="introduction-to-git.html"><a href="introduction-to-git.html#creating-your-first-repo"><i class="fa fa-check"></i><b>3.2</b> Creating Your First Repo</a></li>
+<li class="chapter" data-level="3.3" data-path="introduction-to-git.html"><a href="introduction-to-git.html#checking-the-status-of-a-repo"><i class="fa fa-check"></i><b>3.3</b> Checking the Status of a Repo</a></li>
+<li class="chapter" data-level="3.4" data-path="introduction-to-git.html"><a href="introduction-to-git.html#version-of-a-file"><i class="fa fa-check"></i><b>3.4</b> Version of a File</a></li>
+<li class="chapter" data-level="3.5" data-path="introduction-to-git.html"><a href="introduction-to-git.html#view-a-history-of-your-commits"><i class="fa fa-check"></i><b>3.5</b> View a History of Your Commits</a></li>
+<li class="chapter" data-level="3.6" data-path="introduction-to-git.html"><a href="introduction-to-git.html#comparing-commits"><i class="fa fa-check"></i><b>3.6</b> Comparing Commits</a></li>
+<li class="chapter" data-level="3.7" data-path="introduction-to-git.html"><a href="introduction-to-git.html#comparing-files"><i class="fa fa-check"></i><b>3.7</b> Comparing Files</a></li>
+<li class="chapter" data-level="3.8" data-path="introduction-to-git.html"><a href="introduction-to-git.html#to-view-an-earlier-commit"><i class="fa fa-check"></i><b>3.8</b> To View an Earlier Commit</a></li>
+<li class="chapter" data-level="3.9" data-path="introduction-to-git.html"><a href="introduction-to-git.html#undoing-things"><i class="fa fa-check"></i><b>3.9</b> Undoing Things</a></li>
+<li class="chapter" data-level="3.10" data-path="introduction-to-git.html"><a href="introduction-to-git.html#when-things-go-wrong"><i class="fa fa-check"></i><b>3.10</b> When Things go Wrong!</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="git-branching.html"><a href="git-branching.html"><i class="fa fa-check"></i><b>4</b> Git Branching</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="git-branching.html"><a href="git-branching.html#merging-branches"><i class="fa fa-check"></i><b>4.1</b> Merging Branches</a></li>
+<li class="chapter" data-level="4.2" data-path="git-branching.html"><a href="git-branching.html#branching-workflows"><i class="fa fa-check"></i><b>4.2</b> Branching Workflows</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="introduction-to-r.html"><a href="introduction-to-r.html"><i class="fa fa-check"></i><b>5</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#learning-objectives"><i class="fa fa-check"></i><b>5.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="5.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#before-we-start"><i class="fa fa-check"></i><b>5.2</b> Before We Start</a></li>
+<li class="chapter" data-level="5.3" data-path="introduction-to-r.html"><a href="introduction-to-r.html#mathematical-operations"><i class="fa fa-check"></i><b>5.3</b> Mathematical Operations</a></li>
+<li class="chapter" data-level="5.4" data-path="introduction-to-r.html"><a href="introduction-to-r.html#help"><i class="fa fa-check"></i><b>5.4</b> HELP!</a></li>
+<li class="chapter" data-level="5.5" data-path="introduction-to-r.html"><a href="introduction-to-r.html#calls"><i class="fa fa-check"></i><b>5.5</b> Calls</a></li>
+<li class="chapter" data-level="5.6" data-path="introduction-to-r.html"><a href="introduction-to-r.html#variables"><i class="fa fa-check"></i><b>5.6</b> Variables</a></li>
+<li class="chapter" data-level="5.7" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-types-and-classes"><i class="fa fa-check"></i><b>5.7</b> Data Types and Classes</a></li>
+<li class="chapter" data-level="5.8" data-path="introduction-to-r.html"><a href="introduction-to-r.html#vectors"><i class="fa fa-check"></i><b>5.8</b> Vectors</a>
+<ul>
+<li class="chapter" data-level="5.8.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#basic-statistics-on-vectors"><i class="fa fa-check"></i><b>5.8.1</b> Basic Statistics on Vectors</a></li>
+</ul></li>
+<li class="chapter" data-level="5.9" data-path="introduction-to-r.html"><a href="introduction-to-r.html#matrices-arrays-lists"><i class="fa fa-check"></i><b>5.9</b> Matrices, Arrays &amp; Lists</a></li>
+<li class="chapter" data-level="5.10" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-frames"><i class="fa fa-check"></i><b>5.10</b> Data Frames</a>
+<ul>
+<li class="chapter" data-level="5.10.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#inspecting-data-frames"><i class="fa fa-check"></i><b>5.10.1</b> Inspecting Data Frames</a></li>
+</ul></li>
+<li class="chapter" data-level="5.11" data-path="introduction-to-r.html"><a href="introduction-to-r.html#subsetting"><i class="fa fa-check"></i><b>5.11</b> Subsetting</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="control-structures.html"><a href="control-structures.html"><i class="fa fa-check"></i><b>6</b> Control Structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="control-structures.html"><a href="control-structures.html#if-statement"><i class="fa fa-check"></i><b>6.1</b> <em>If</em> Statement</a></li>
+<li class="chapter" data-level="6.2" data-path="control-structures.html"><a href="control-structures.html#relationship-operators"><i class="fa fa-check"></i><b>6.2</b> Relationship Operators</a></li>
+<li class="chapter" data-level="6.3" data-path="control-structures.html"><a href="control-structures.html#if-else-statement"><i class="fa fa-check"></i><b>6.3</b> <em>If Else</em> Statement</a></li>
+<li class="chapter" data-level="6.4" data-path="control-structures.html"><a href="control-structures.html#ifelse-statement"><i class="fa fa-check"></i><b>6.4</b> <em>ifelse</em> Statement</a></li>
+<li class="chapter" data-level="6.5" data-path="control-structures.html"><a href="control-structures.html#the-switch-statement"><i class="fa fa-check"></i><b>6.5</b> The <em>switch</em> Statement</a></li>
+<li class="chapter" data-level="6.6" data-path="control-structures.html"><a href="control-structures.html#the-which-statement"><i class="fa fa-check"></i><b>6.6</b> The <em>which</em> Statement</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="iterating-loops.html"><a href="iterating-loops.html"><i class="fa fa-check"></i><b>7</b> Iterating (Loops)</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="iterating-loops.html"><a href="iterating-loops.html#for-i-in-x-loops"><i class="fa fa-check"></i><b>7.1</b> For <em>i</em> in <em>x</em> Loops</a></li>
+<li class="chapter" data-level="7.2" data-path="iterating-loops.html"><a href="iterating-loops.html#while-loops"><i class="fa fa-check"></i><b>7.2</b> <em>While</em> Loops</a></li>
+<li class="chapter" data-level="7.3" data-path="iterating-loops.html"><a href="iterating-loops.html#repeat-loops"><i class="fa fa-check"></i><b>7.3</b> <em>Repeat</em> Loops</a></li>
+<li class="chapter" data-level="7.4" data-path="iterating-loops.html"><a href="iterating-loops.html#break-and-next"><i class="fa fa-check"></i><b>7.4</b> <em>Break</em> and <em>Next</em></a></li>
+<li class="chapter" data-level="7.5" data-path="iterating-loops.html"><a href="iterating-loops.html#iterating-data.frame-rows-in-r"><i class="fa fa-check"></i><b>7.5</b> Iterating Data.Frame Rows in R</a></li>
+<li class="chapter" data-level="7.6" data-path="iterating-loops.html"><a href="iterating-loops.html#lapply"><i class="fa fa-check"></i><b>7.6</b> <em>lapply()</em></a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="packages-and-functions.html"><a href="packages-and-functions.html"><i class="fa fa-check"></i><b>8</b> Packages and Functions</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="packages-and-functions.html"><a href="packages-and-functions.html#learning-objectives-1"><i class="fa fa-check"></i><b>8.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="8.2" data-path="packages-and-functions.html"><a href="packages-and-functions.html#what-is-a-function"><i class="fa fa-check"></i><b>8.2</b> What is a function?</a></li>
+<li class="chapter" data-level="8.3" data-path="packages-and-functions.html"><a href="packages-and-functions.html#what-is-the-basic-syntax-of-a-function-in-r"><i class="fa fa-check"></i><b>8.3</b> What is the basic syntax of a function in R?</a></li>
+<li class="chapter" data-level="8.4" data-path="packages-and-functions.html"><a href="packages-and-functions.html#step-1-building-a-function"><i class="fa fa-check"></i><b>8.4</b> Step 1: Building a function</a></li>
+<li class="chapter" data-level="8.5" data-path="packages-and-functions.html"><a href="packages-and-functions.html#step-2-calling-the-function"><i class="fa fa-check"></i><b>8.5</b> Step 2: Calling the function</a></li>
+<li class="chapter" data-level="8.6" data-path="packages-and-functions.html"><a href="packages-and-functions.html#a-function-can-have-more-than-one-argument"><i class="fa fa-check"></i><b>8.6</b> A function can have more than one argument</a></li>
+<li class="chapter" data-level="8.7" data-path="packages-and-functions.html"><a href="packages-and-functions.html#using-a-package-and-function-to-graph-data-and-export-a-.png"><i class="fa fa-check"></i><b>8.7</b> Using a package and function to graph data and export a .png</a></li>
+<li class="chapter" data-level="8.8" data-path="packages-and-functions.html"><a href="packages-and-functions.html#saving-functions-and-calling-them-from-another-file"><i class="fa fa-check"></i><b>8.8</b> Saving functions and calling them from another file</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="file-input-and-output.html"><a href="file-input-and-output.html"><i class="fa fa-check"></i><b>9</b> File Input and Output</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#objectives"><i class="fa fa-check"></i><b>9.1</b> Objectives</a></li>
+<li class="chapter" data-level="9.2" data-path="file-input-and-output.html"><a href="file-input-and-output.html#basic-idea"><i class="fa fa-check"></i><b>9.2</b> Basic Idea</a></li>
+<li class="chapter" data-level="9.3" data-path="file-input-and-output.html"><a href="file-input-and-output.html#file-formats"><i class="fa fa-check"></i><b>9.3</b> File Formats</a></li>
+<li class="chapter" data-level="9.4" data-path="file-input-and-output.html"><a href="file-input-and-output.html#filesystems-and-paths"><i class="fa fa-check"></i><b>9.4</b> Filesystems and Paths</a></li>
+<li class="chapter" data-level="9.5" data-path="file-input-and-output.html"><a href="file-input-and-output.html#get-and-set-working-directory"><i class="fa fa-check"></i><b>9.5</b> get and set working directory</a></li>
+<li class="chapter" data-level="9.6" data-path="file-input-and-output.html"><a href="file-input-and-output.html#saving-and-loading-r-data"><i class="fa fa-check"></i><b>9.6</b> saving and loading R data</a>
+<ul>
+<li class="chapter" data-level="9.6.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#rds"><i class="fa fa-check"></i><b>9.6.1</b> rds</a></li>
+</ul></li>
+<li class="chapter" data-level="9.7" data-path="file-input-and-output.html"><a href="file-input-and-output.html#reading-and-writing-text-data"><i class="fa fa-check"></i><b>9.7</b> Reading and Writing Text data</a>
+<ul>
+<li class="chapter" data-level="9.7.1" data-path="file-input-and-output.html"><a href="file-input-and-output.html#tabular-data"><i class="fa fa-check"></i><b>9.7.1</b> tabular data</a></li>
+<li class="chapter" data-level="9.7.2" data-path="file-input-and-output.html"><a href="file-input-and-output.html#read-and-write-table"><i class="fa fa-check"></i><b>9.7.2</b> read and write table</a></li>
+<li class="chapter" data-level="9.7.3" data-path="file-input-and-output.html"><a href="file-input-and-output.html#csv-format"><i class="fa fa-check"></i><b>9.7.3</b> CSV format</a></li>
+<li class="chapter" data-level="9.7.4" data-path="file-input-and-output.html"><a href="file-input-and-output.html#non-tabular-data"><i class="fa fa-check"></i><b>9.7.4</b> Non tabular data</a></li>
+</ul></li>
+<li class="chapter" data-level="9.8" data-path="file-input-and-output.html"><a href="file-input-and-output.html#urls-as-files"><i class="fa fa-check"></i><b>9.8</b> URLS as files</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html"><i class="fa fa-check"></i><b>10</b> Strings and Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#printing-output"><i class="fa fa-check"></i><b>10.1</b> Printing Output</a></li>
+<li class="chapter" data-level="10.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences"><i class="fa fa-check"></i><b>10.2</b> Escape Sequences</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#raw-strings"><i class="fa fa-check"></i><b>10.2.1</b> Raw Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings"><i class="fa fa-check"></i><b>10.3</b> Character Encodings</a></li>
+<li class="chapter" data-level="10.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-tidyverse"><i class="fa fa-check"></i><b>10.4</b> The Tidyverse</a></li>
+<li class="chapter" data-level="10.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-stringr-package"><i class="fa fa-check"></i><b>10.5</b> The stringr Package</a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#splitting-strings"><i class="fa fa-check"></i><b>10.5.1</b> Splitting Strings</a></li>
+<li class="chapter" data-level="10.5.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#replacing-parts-of-strings"><i class="fa fa-check"></i><b>10.5.2</b> Replacing Parts of Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#regular-expressions"><i class="fa fa-check"></i><b>10.6</b> Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-wildcard"><i class="fa fa-check"></i><b>10.6.1</b> The Wildcard</a></li>
+<li class="chapter" data-level="10.6.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences-1"><i class="fa fa-check"></i><b>10.6.2</b> Escape Sequences</a></li>
+<li class="chapter" data-level="10.6.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#anchors"><i class="fa fa-check"></i><b>10.6.3</b> Anchors</a></li>
+<li class="chapter" data-level="10.6.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-classes"><i class="fa fa-check"></i><b>10.6.4</b> Character Classes</a></li>
+<li class="chapter" data-level="10.6.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#quantifiers"><i class="fa fa-check"></i><b>10.6.5</b> Quantifiers</a></li>
+<li class="chapter" data-level="10.6.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#groups"><i class="fa fa-check"></i><b>10.6.6</b> Groups</a></li>
+<li class="chapter" data-level="10.6.7" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#extracting-matches"><i class="fa fa-check"></i><b>10.6.7</b> Extracting Matches</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>11</b> Data Structures</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="data-structures.html"><a href="data-structures.html#tabular-data-1"><i class="fa fa-check"></i><b>11.1</b> Tabular Data</a></li>
+<li class="chapter" data-level="11.2" data-path="data-structures.html"><a href="data-structures.html#tree-document-data-structures"><i class="fa fa-check"></i><b>11.2</b> Tree / Document Data Structures</a>
+<ul>
+<li class="chapter" data-level="11.2.1" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-xml"><i class="fa fa-check"></i><b>11.2.1</b> Structuring Data as XML</a></li>
+<li class="chapter" data-level="11.2.2" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-json"><i class="fa fa-check"></i><b>11.2.2</b> Structuring Data as JSON</a></li>
+</ul></li>
+<li class="chapter" data-level="11.3" data-path="data-structures.html"><a href="data-structures.html#relational-databases"><i class="fa fa-check"></i><b>11.3</b> Relational Databases</a></li>
+<li class="chapter" data-level="11.4" data-path="data-structures.html"><a href="data-structures.html#non-hierarchical-relational-data"><i class="fa fa-check"></i><b>11.4</b> Non-Hierarchical Relational Data</a></li>
+<li class="chapter" data-level="11.5" data-path="data-structures.html"><a href="data-structures.html#geospatial-data"><i class="fa fa-check"></i><b>11.5</b> Geospatial Data</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="how-the-web-works.html"><a href="how-the-web-works.html"><i class="fa fa-check"></i><b>12</b> How the Web Works</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#client-server-architecture"><i class="fa fa-check"></i><b>12.1</b> Client-Server Architecture</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#communication-between-clients-and-servers"><i class="fa fa-check"></i><b>12.1.1</b> Communication Between Clients and Servers</a></li>
+<li class="chapter" data-level="12.1.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#domain-name-resolution"><i class="fa fa-check"></i><b>12.1.2</b> Domain Name Resolution</a></li>
+<li class="chapter" data-level="12.1.3" data-path="how-the-web-works.html"><a href="how-the-web-works.html#request-routing"><i class="fa fa-check"></i><b>12.1.3</b> Request Routing</a></li>
+<li class="chapter" data-level="12.1.4" data-path="how-the-web-works.html"><a href="how-the-web-works.html#the-server-response"><i class="fa fa-check"></i><b>12.1.4</b> The Server Response</a></li>
+<li class="chapter" data-level="12.1.5" data-path="how-the-web-works.html"><a href="how-the-web-works.html#internet-transfer-protocols"><i class="fa fa-check"></i><b>12.1.5</b> Internet Transfer Protocols</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#understanding-urls"><i class="fa fa-check"></i><b>12.2</b> Understanding URLs</a>
+<ul>
+<li class="chapter" data-level="12.2.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#dynamic-files"><i class="fa fa-check"></i><b>12.2.1</b> Dynamic Files</a></li>
+<li class="chapter" data-level="12.2.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#query-strings"><i class="fa fa-check"></i><b>12.2.2</b> Query Strings</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="web-scraping.html"><a href="web-scraping.html"><i class="fa fa-check"></i><b>13</b> Web Scraping</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="web-scraping.html"><a href="web-scraping.html#getting-data-from-the-web"><i class="fa fa-check"></i><b>13.1</b> Getting Data from the Web</a>
+<ul>
+<li class="chapter" data-level="13.1.1" data-path="web-scraping.html"><a href="web-scraping.html#whats-in-a-web-page"><i class="fa fa-check"></i><b>13.1.1</b> What’s in a Web Page?</a></li>
+</ul></li>
+<li class="chapter" data-level="13.2" data-path="web-scraping.html"><a href="web-scraping.html#rs-xml-parsers"><i class="fa fa-check"></i><b>13.2</b> R’s XML Parsers</a></li>
+<li class="chapter" data-level="13.3" data-path="web-scraping.html"><a href="web-scraping.html#xpath"><i class="fa fa-check"></i><b>13.3</b> XPath</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="web-scraping.html"><a href="web-scraping.html#predicates"><i class="fa fa-check"></i><b>13.3.1</b> Predicates</a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="web-scraping.html"><a href="web-scraping.html#the-web-scraping-workflow"><i class="fa fa-check"></i><b>13.4</b> The Web Scraping Workflow</a>
+<ul>
+<li class="chapter" data-level="13.4.1" data-path="web-scraping.html"><a href="web-scraping.html#being-polite"><i class="fa fa-check"></i><b>13.4.1</b> Being Polite</a></li>
+</ul></li>
+<li class="chapter" data-level="13.5" data-path="web-scraping.html"><a href="web-scraping.html#case-study-ca-cities"><i class="fa fa-check"></i><b>13.5</b> Case Study: CA Cities</a>
+<ul>
+<li class="chapter" data-level="13.5.1" data-path="web-scraping.html"><a href="web-scraping.html#data-cleaning"><i class="fa fa-check"></i><b>13.5.1</b> Data Cleaning</a></li>
+</ul></li>
+<li class="chapter" data-level="13.6" data-path="web-scraping.html"><a href="web-scraping.html#case-study-the-ca-aggie"><i class="fa fa-check"></i><b>13.6</b> Case Study: The CA Aggie</a></li>
+<li class="chapter" data-level="13.7" data-path="web-scraping.html"><a href="web-scraping.html#css-selectors"><i class="fa fa-check"></i><b>13.7</b> CSS Selectors</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html"><i class="fa fa-check"></i><b>14</b> Optical Character Recognition</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#loading-page-images"><i class="fa fa-check"></i><b>14.1</b> Loading Page Images</a></li>
+<li class="chapter" data-level="14.2" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#running-ocr"><i class="fa fa-check"></i><b>14.2</b> Running OCR</a></li>
+<li class="chapter" data-level="14.3" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#accuracy"><i class="fa fa-check"></i><b>14.3</b> Accuracy</a></li>
+<li class="chapter" data-level="14.4" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#unreadable-text"><i class="fa fa-check"></i><b>14.4</b> Unreadable Text</a></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>15</b> Data Visualization</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="data-visualization.html"><a href="data-visualization.html#factors"><i class="fa fa-check"></i><b>15.1</b> Factors</a></li>
+<li class="chapter" data-level="15.2" data-path="data-visualization.html"><a href="data-visualization.html#r-graphics-overview"><i class="fa fa-check"></i><b>15.2</b> R Graphics Overview</a></li>
+<li class="chapter" data-level="15.3" data-path="data-visualization.html"><a href="data-visualization.html#the-grammar-of-graphics"><i class="fa fa-check"></i><b>15.3</b> The Grammar of Graphics</a>
+<ul>
+<li class="chapter" data-level="15.3.1" data-path="data-visualization.html"><a href="data-visualization.html#making-a-plot"><i class="fa fa-check"></i><b>15.3.1</b> Making a Plot</a></li>
+<li class="chapter" data-level="15.3.2" data-path="data-visualization.html"><a href="data-visualization.html#saving-plots"><i class="fa fa-check"></i><b>15.3.2</b> Saving Plots</a></li>
+<li class="chapter" data-level="15.3.3" data-path="data-visualization.html"><a href="data-visualization.html#example-bar-plot"><i class="fa fa-check"></i><b>15.3.3</b> Example: Bar Plot</a></li>
+</ul></li>
+<li class="chapter" data-level="15.4" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>15.4</b> Designing a Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="network-analysis.html"><a href="network-analysis.html"><i class="fa fa-check"></i><b>16</b> Network Analysis</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="network-analysis.html"><a href="network-analysis.html#overview-1"><i class="fa fa-check"></i><b>16.1</b> Overview</a>
+<ul>
+<li class="chapter" data-level="16.1.1" data-path="network-analysis.html"><a href="network-analysis.html#while-you-wait"><i class="fa fa-check"></i><b>16.1.1</b> While you wait</a></li>
+<li class="chapter" data-level="16.1.2" data-path="network-analysis.html"><a href="network-analysis.html#learning-objectives-2"><i class="fa fa-check"></i><b>16.1.2</b> Learning Objectives</a></li>
+<li class="chapter" data-level="16.1.3" data-path="network-analysis.html"><a href="network-analysis.html#roadmap"><i class="fa fa-check"></i><b>16.1.3</b> Roadmap</a></li>
+</ul></li>
+<li class="chapter" data-level="16.2" data-path="network-analysis.html"><a href="network-analysis.html#what-is-network-analysis"><i class="fa fa-check"></i><b>16.2</b> What is Network Analysis</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---social-sciences"><i class="fa fa-check"></i><b>16.2.1</b> Networks in research - Social Sciences</a></li>
+<li class="chapter" data-level="16.2.2" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---neuroscience"><i class="fa fa-check"></i><b>16.2.2</b> Networks in research - Neuroscience</a></li>
+<li class="chapter" data-level="16.2.3" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---chemistry"><i class="fa fa-check"></i><b>16.2.3</b> Networks in research - Chemistry</a></li>
+<li class="chapter" data-level="16.2.4" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---the-internet"><i class="fa fa-check"></i><b>16.2.4</b> Networks in research - The Internet</a></li>
+<li class="chapter" data-level="16.2.5" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---infrastructure"><i class="fa fa-check"></i><b>16.2.5</b> Networks in research - Infrastructure</a></li>
+<li class="chapter" data-level="16.2.6" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---security"><i class="fa fa-check"></i><b>16.2.6</b> Networks in research - Security</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="network-analysis.html"><a href="network-analysis.html#network-data"><i class="fa fa-check"></i><b>16.3</b> Network Data</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="network-analysis.html"><a href="network-analysis.html#edgelist"><i class="fa fa-check"></i><b>16.3.1</b> Edgelist</a></li>
+<li class="chapter" data-level="16.3.2" data-path="network-analysis.html"><a href="network-analysis.html#adjacency-matrix"><i class="fa fa-check"></i><b>16.3.2</b> Adjacency Matrix</a></li>
+<li class="chapter" data-level="16.3.3" data-path="network-analysis.html"><a href="network-analysis.html#edge-weights"><i class="fa fa-check"></i><b>16.3.3</b> Edge Weights</a></li>
+<li class="chapter" data-level="16.3.4" data-path="network-analysis.html"><a href="network-analysis.html#attributes"><i class="fa fa-check"></i><b>16.3.4</b> Attributes</a></li>
+<li class="chapter" data-level="16.3.5" data-path="network-analysis.html"><a href="network-analysis.html#create-an-example-network"><i class="fa fa-check"></i><b>16.3.5</b> Create an Example Network</a></li>
+<li class="chapter" data-level="16.3.6" data-path="network-analysis.html"><a href="network-analysis.html#components"><i class="fa fa-check"></i><b>16.3.6</b> Components</a></li>
+<li class="chapter" data-level="16.3.7" data-path="network-analysis.html"><a href="network-analysis.html#limitations-of-network-data"><i class="fa fa-check"></i><b>16.3.7</b> Limitations of Network Data</a></li>
+<li class="chapter" data-level="16.3.8" data-path="network-analysis.html"><a href="network-analysis.html#projected-networks"><i class="fa fa-check"></i><b>16.3.8</b> Projected Networks</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="network-analysis.html"><a href="network-analysis.html#graph-level-properties"><i class="fa fa-check"></i><b>16.4</b> Graph Level Properties</a>
+<ul>
+<li class="chapter" data-level="16.4.1" data-path="network-analysis.html"><a href="network-analysis.html#directed-or-un-directed"><i class="fa fa-check"></i><b>16.4.1</b> Directed or Un-directed</a></li>
+<li class="chapter" data-level="16.4.2" data-path="network-analysis.html"><a href="network-analysis.html#density"><i class="fa fa-check"></i><b>16.4.2</b> Density</a></li>
+<li class="chapter" data-level="16.4.3" data-path="network-analysis.html"><a href="network-analysis.html#centralization"><i class="fa fa-check"></i><b>16.4.3</b> Centralization</a></li>
+</ul></li>
+<li class="chapter" data-level="16.5" data-path="network-analysis.html"><a href="network-analysis.html#node-level-properties"><i class="fa fa-check"></i><b>16.5</b> Node Level Properties</a>
+<ul>
+<li class="chapter" data-level="16.5.1" data-path="network-analysis.html"><a href="network-analysis.html#degree"><i class="fa fa-check"></i><b>16.5.1</b> Degree</a></li>
+<li class="chapter" data-level="16.5.2" data-path="network-analysis.html"><a href="network-analysis.html#geodesic-distance"><i class="fa fa-check"></i><b>16.5.2</b> Geodesic Distance</a></li>
+<li class="chapter" data-level="16.5.3" data-path="network-analysis.html"><a href="network-analysis.html#centrality"><i class="fa fa-check"></i><b>16.5.3</b> Centrality</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="network-analysis.html"><a href="network-analysis.html#network-workflow"><i class="fa fa-check"></i><b>16.6</b> Network Workflow</a></li>
+<li class="chapter" data-level="16.7" data-path="network-analysis.html"><a href="network-analysis.html#network-tools"><i class="fa fa-check"></i><b>16.7</b> Network Tools</a>
+<ul>
+<li class="chapter" data-level="16.7.1" data-path="network-analysis.html"><a href="network-analysis.html#network-models"><i class="fa fa-check"></i><b>16.7.1</b> Network Models</a></li>
+<li class="chapter" data-level="16.7.2" data-path="network-analysis.html"><a href="network-analysis.html#network-visualization"><i class="fa fa-check"></i><b>16.7.2</b> Network Visualization</a></li>
+</ul></li>
+<li class="chapter" data-level="16.8" data-path="network-analysis.html"><a href="network-analysis.html#references"><i class="fa fa-check"></i><b>16.8</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="statistics.html"><a href="statistics.html"><i class="fa fa-check"></i><b>17</b> Statistics</a>
+<ul>
+<li class="chapter" data-level="17.1" data-path="statistics.html"><a href="statistics.html#introduction"><i class="fa fa-check"></i><b>17.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="17.1.1" data-path="statistics.html"><a href="statistics.html#mice_pot-dataset"><i class="fa fa-check"></i><b>17.1.1</b> <code>mice_pot</code> dataset</a></li>
+<li class="chapter" data-level="17.1.2" data-path="statistics.html"><a href="statistics.html#barnacles-dataset"><i class="fa fa-check"></i><b>17.1.2</b> <code>barnacles</code> dataset</a></li>
+<li class="chapter" data-level="17.1.3" data-path="statistics.html"><a href="statistics.html#sample-and-population"><i class="fa fa-check"></i><b>17.1.3</b> Sample and population</a></li>
+</ul></li>
+<li class="chapter" data-level="17.2" data-path="statistics.html"><a href="statistics.html#uses-of-simulation"><i class="fa fa-check"></i><b>17.2</b> Uses of simulation</a></li>
+<li class="chapter" data-level="17.3" data-path="statistics.html"><a href="statistics.html#mathematical-statistics"><i class="fa fa-check"></i><b>17.3</b> Mathematical statistics</a>
+<ul>
+<li class="chapter" data-level="17.3.1" data-path="statistics.html"><a href="statistics.html#law-of-large-numbers"><i class="fa fa-check"></i><b>17.3.1</b> Law of large numbers</a></li>
+<li class="chapter" data-level="17.3.2" data-path="statistics.html"><a href="statistics.html#central-limit-theorem"><i class="fa fa-check"></i><b>17.3.2</b> Central limit theorem</a></li>
+</ul></li>
+<li class="chapter" data-level="17.4" data-path="statistics.html"><a href="statistics.html#statistical-inference"><i class="fa fa-check"></i><b>17.4</b> Statistical inference</a>
+<ul>
+<li class="chapter" data-level="17.4.1" data-path="statistics.html"><a href="statistics.html#confidence-intervals"><i class="fa fa-check"></i><b>17.4.1</b> Confidence intervals</a></li>
+<li class="chapter" data-level="17.4.2" data-path="statistics.html"><a href="statistics.html#two-population-test"><i class="fa fa-check"></i><b>17.4.2</b> Two-population test</a></li>
+<li class="chapter" data-level="17.4.3" data-path="statistics.html"><a href="statistics.html#hypothesis-tests-for-non-normal-data"><i class="fa fa-check"></i><b>17.4.3</b> Hypothesis tests for non-normal data</a></li>
+</ul></li>
+<li class="chapter" data-level="17.5" data-path="statistics.html"><a href="statistics.html#regression"><i class="fa fa-check"></i><b>17.5</b> Regression</a>
+<ul>
+<li class="chapter" data-level="17.5.1" data-path="statistics.html"><a href="statistics.html#fitting-a-regression-line"><i class="fa fa-check"></i><b>17.5.1</b> Fitting a regression line</a></li>
+<li class="chapter" data-level="17.5.2" data-path="statistics.html"><a href="statistics.html#assumptions-and-diagnostics"><i class="fa fa-check"></i><b>17.5.2</b> Assumptions and diagnostics</a></li>
+<li class="chapter" data-level="17.5.3" data-path="statistics.html"><a href="statistics.html#functions-for-inspecting-regression-fits"><i class="fa fa-check"></i><b>17.5.3</b> Functions for inspecting regression fits</a></li>
+<li class="chapter" data-level="17.5.4" data-path="statistics.html"><a href="statistics.html#a-model-that-fails-diagnostics"><i class="fa fa-check"></i><b>17.5.4</b> A model that fails diagnostics</a></li>
+<li class="chapter" data-level="17.5.5" data-path="statistics.html"><a href="statistics.html#predictions-and-variability"><i class="fa fa-check"></i><b>17.5.5</b> Predictions and variability</a></li>
+</ul></li>
+<li class="chapter" data-level="17.6" data-path="statistics.html"><a href="statistics.html#model-selection"><i class="fa fa-check"></i><b>17.6</b> Model selection</a></li>
+<li class="chapter" data-level="17.7" data-path="statistics.html"><a href="statistics.html#cross-validation"><i class="fa fa-check"></i><b>17.7</b> Cross-validation</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Adventures in Data Science</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="statistics" class="section level1" number="17">
+<h1><span class="header-section-number">17</span> Statistics</h1>
+<div id="introduction" class="section level2" number="17.1">
+<h2><span class="header-section-number">17.1</span> Introduction</h2>
+<p>It is useful to begin with some concrete examples of statistical questions to motivate the material that we’ll cover in the workshop. This will also help confirm that your R environment is working. These data files come from the <code>fosdata</code> package, which you can optionally install to your computer in order to get access to all the associated metadata in the help files. I will show loading the data from the workshop website.</p>
+<pre><code># optional: install the fosdata and mosaicModels packages using remotes::install_github
+install.packages( &quot;remotes&quot; )
+remotes::install_github( &quot;speegled/fosdata&quot; )
+remotes::install_github( &quot;ProjectMOSAIC/mosaicModel&quot; )</code></pre>
+<div class="sourceCode" id="cb339"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb339-1"><a href="statistics.html#cb339-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>( <span class="st">&quot;ggformula&quot;</span> )</span>
+<span id="cb339-2"><a href="statistics.html#cb339-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>( <span class="st">&quot;mosaic&quot;</span> )</span>
+<span id="cb339-3"><a href="statistics.html#cb339-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>( <span class="st">&quot;mosaicModel&quot;</span> )</span></code></pre></div>
+<div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="statistics.html#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load the datasets</span></span>
+<span id="cb340-2"><a href="statistics.html#cb340-2" aria-hidden="true" tabindex="-1"></a>mice_pot <span class="ot">=</span> <span class="fu">read.csv</span>( <span class="fu">url</span>( <span class="st">&quot;https://raw.githubusercontent.com/ucdavisdatalab/adventures_in_data_science/master/data/mice_pot.csv&quot;</span> ))</span>
+<span id="cb340-3"><a href="statistics.html#cb340-3" aria-hidden="true" tabindex="-1"></a>barnacles <span class="ot">=</span> <span class="fu">read.csv</span>( <span class="fu">url</span>( <span class="st">&quot;https://raw.githubusercontent.com/ucdavisdatalab/adventures_in_data_science/master/data/barnacles.csv&quot;</span> ))</span>
+<span id="cb340-4"><a href="statistics.html#cb340-4" aria-hidden="true" tabindex="-1"></a>Births78 <span class="ot">=</span> <span class="fu">read.csv</span>( <span class="fu">url</span>(<span class="st">&quot;https://raw.githubusercontent.com/ucdavisdatalab/adventures_in_data_science/master/data/births.csv&quot;</span>))</span>
+<span id="cb340-5"><a href="statistics.html#cb340-5" aria-hidden="true" tabindex="-1"></a>smoking <span class="ot">=</span> <span class="fu">read.csv</span>( <span class="fu">url</span>(<span class="st">&quot;https://raw.githubusercontent.com/ucdavisdatalab/adventures_in_data_science/master/data/smoking.csv&quot;</span>))</span>
+<span id="cb340-6"><a href="statistics.html#cb340-6" aria-hidden="true" tabindex="-1"></a>adipose <span class="ot">=</span> <span class="fu">read.csv</span>( <span class="fu">url</span>(<span class="st">&quot;https://raw.githubusercontent.com/ucdavisdatalab/adventures_in_data_science/master/data/adipose.csv&quot;</span>))</span></code></pre></div>
+<div id="mice_pot-dataset" class="section level3" number="17.1.1">
+<h3><span class="header-section-number">17.1.1</span> <code>mice_pot</code> dataset</h3>
+<p>The <code>mice_pot</code> dataset contains data on an experiment that dosed four groups of mice with different levels of THC. There was a low, medium, and high dosage group, as well as a control group that got no THC. The mice were were then observed for a while and their total movement was quantified as a percentage of the baseline group mean. Some statistical questions that might arise here are: were there differences in the typical amount of movement between mice of different groups? What was the average amount of movement by mice in the medium dose group?</p>
+<p>Both of these questions can be approached in ways that relate to the particular sample, which is kind of interesting descriptions of the data. For instance, if you install the <code>dplyr</code> package in your R environment, we can make those calculations right now.</p>
+<div class="sourceCode" id="cb341"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb341-1"><a href="statistics.html#cb341-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>( mice_pot, <span class="fu">by</span>(percent_of_act, group, mean))</span></code></pre></div>
+<pre><code>## group: 0.3
+## [1] 97.3225
+## ------------------------------------------------------------ 
+## group: 1
+## [1] 99.05235
+## ------------------------------------------------------------ 
+## group: 3
+## [1] 70.66787
+## ------------------------------------------------------------ 
+## group: VEH
+## [1] 100</code></pre>
+<p>The means aren’t identical - there are clearly differences between all of the groups? Yes, <strong>in terms of the sample</strong>. But if you want to generalize your conclusion to cover what would happen to other mice that weren’t in the study, then you need to think about the <strong>population</strong>. In this case, that’s the population of all the mice that could have been dosed with THC.</p>
+<p>Because we don’t see we don’t see data from mice that weren’t part of the study, we rely on statistical <strong>inference</strong> to reach conclusions about the population. How is that possible? Well, some theorems from <strong>mathematical statistics</strong> can tell us about the <strong>distribution</strong> of the sample, relative to the population</p>
+</div>
+<div id="barnacles-dataset" class="section level3" number="17.1.2">
+<h3><span class="header-section-number">17.1.2</span> <code>barnacles</code> dataset</h3>
+<p>This dataset was collected by counting the barnacles in 88 grid squares on the Flower Garden Banks coral reef in the Gulf of Mexico. The counts were normalized to barnacles per square meter. Some questions that you might approach with statistical methods are, what is the average number of barnacles per square meter, and is it greater than 300?</p>
+<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="statistics.html#cb343-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>( barnacles<span class="sc">$</span>per_m )</span></code></pre></div>
+<pre><code>## [1] 332.0186</code></pre>
+<p>From that calculation, we see that the mean is 332 barnacles per square meter, which is greater than 300. But again, the first calculation has told us only about the mean of the particular locations that were sampled. Wouldn’t it be better to answer the questions by reference to the number of barnaces per square meter of reef, rather than square meter of measurement? Here, the <strong>population</strong> is then entire area of the Flower Garden Banks reef. Again, we will be able to answer the questions relative to the entire reef by working out the sample mean’s distribution, relative to the population.</p>
+</div>
+<div id="sample-and-population" class="section level3" number="17.1.3">
+<h3><span class="header-section-number">17.1.3</span> Sample and population</h3>
+<p>I’ve made reference to samples and populations, and they are fundamental concepts in statistics. A sample is a pretty easy thing to understand - it is the data, the hard numbers that go into your calculations. The population is trickier. It’s the units to which you are able to generalize your conclusions.</p>
+<p>For the barnacle data, in order for the population to be the entire Flower Garden Banks reef, the sample must have been carefully selected to ensure it was representative of the entire reef (for instance, randomly sampling locations so that any location on the reef might have been selected).</p>
+<p>For the mice on THC, the population is all the mice that might have been selected for use in the experiment. How big that population is depends on how the mice were selected for the experiment. Randomly selecting the experimental units from a group is a common way of ensuring that the results can generalize to that whole group.</p>
+<p>A non-random sample tends to mean that the population to which you can generalize is quite limited. What sort of population do you think we could generalize about if we recorded the age of everyone in this class?</p>
+</div>
+</div>
+<div id="uses-of-simulation" class="section level2" number="17.2">
+<h2><span class="header-section-number">17.2</span> Uses of simulation</h2>
+<p>The study of statistics started in the 1800s but only barely. The field’s modern version was almost entirely developed during the first half of the 20th century - notably a time when data and processing power were in short supply. Today, that’s not so much the case and if you did the assigned reading then you saw that statisticians are very much still grappling with how to teach statistics in light of the developments in computational power over the past 40 years.</p>
+<p>Traditionally, statisticians are very concerned with assessing the normality of a sample, because the conclusions you get from traditional statistical methods depend on a sample coming from a normal distribution. Nowadays, there are a lot of clever methods that can avoid the need to assume normality. I’m going to show you some of those methods, because they help avoid getting into mathematical statistics. If you want to know more, one of the assigned readings was the introduction to a book that would be a great reference for self-guided study.</p>
+<p>We will use simulation-based methods extensively today.</p>
+<p>This is the density curve of a standard normal distribution:</p>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="statistics.html#cb345-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set z to -4, 4</span></span>
+<span id="cb345-2"><a href="statistics.html#cb345-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">1000</span>)</span>
+<span id="cb345-3"><a href="statistics.html#cb345-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb345-4"><a href="statistics.html#cb345-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the standard normal density function with some annotations</span></span>
+<span id="cb345-5"><a href="statistics.html#cb345-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="at">x=</span>z, <span class="at">y=</span><span class="fu">dnorm</span>(z), <span class="at">bty=</span><span class="st">&#39;n&#39;</span>, <span class="at">type=</span><span class="st">&#39;l&#39;</span>, <span class="at">main=</span><span class="st">&quot;standard normal density&quot;</span>)</span>
+<span id="cb345-6"><a href="statistics.html#cb345-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb345-7"><a href="statistics.html#cb345-7" aria-hidden="true" tabindex="-1"></a><span class="co"># annotate the density function with the 5% probability mass tails</span></span>
+<span id="cb345-8"><a href="statistics.html#cb345-8" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(z[z<span class="sc">&lt;=</span><span class="fu">qnorm</span>(<span class="fl">0.025</span>)], <span class="fu">qnorm</span>(<span class="fl">0.025</span>), <span class="fu">min</span>(z)), <span class="at">y=</span><span class="fu">c</span>(<span class="fu">dnorm</span>(z[z<span class="sc">&lt;=</span><span class="fu">qnorm</span>(<span class="fl">0.025</span>)]), <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">col=</span><span class="fu">grey</span>(<span class="fl">0.8</span>))</span>
+<span id="cb345-9"><a href="statistics.html#cb345-9" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="at">x=</span><span class="fu">c</span>(z[z<span class="sc">&gt;=</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)], <span class="fu">max</span>(z), <span class="fu">qnorm</span>(<span class="fl">0.975</span>)), <span class="at">y=</span><span class="fu">c</span>(<span class="fu">dnorm</span>(z[z<span class="sc">&gt;=</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)]), <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">col=</span><span class="fu">grey</span>(<span class="fl">0.8</span>))</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/annotated-density-tails-1.png" width="672" /></p>
+<p>And this is a histogram of samples taken from that same distribution:</p>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="statistics.html#cb346-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sample 20 numbers from a standard normal and draw the histogram</span></span>
+<span id="cb346-2"><a href="statistics.html#cb346-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">20</span>)</span>
+<span id="cb346-3"><a href="statistics.html#cb346-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="fu">sort</span>(x), <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>##  [1] -2.20 -1.93 -1.54 -1.36 -1.30 -0.90 -0.58 -0.38 -0.32 -0.31 -0.10  0.47
+## [13]  0.52  0.52  0.74  0.75  0.79  1.18  1.28  1.76</code></pre>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="statistics.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(x)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/normal-histogram-1.png" width="672" /></p>
+<p>Do the numbers seem to come from the high-density part of the Normal density curve? Are there any that don’t? It isn’t surprising if some of your <code>x</code> samples are not particularly close to zero. One out of twenty (that’s five percent) samples from a standard Normal population are greater than two or less than negative two, on average. That’s “on average” over the population. Your sample may be different.</p>
+<p>Here is the density of the exponential distribution:</p>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="statistics.html#cb349-1" aria-hidden="true" tabindex="-1"></a><span class="co"># draw the desity of an Exponential distribution</span></span>
+<span id="cb349-2"><a href="statistics.html#cb349-2" aria-hidden="true" tabindex="-1"></a>t <span class="ot">=</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">5</span>, <span class="at">length.out=</span><span class="dv">1000</span>)</span>
+<span id="cb349-3"><a href="statistics.html#cb349-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( <span class="at">x=</span>t, <span class="at">y=</span><span class="fu">dexp</span>(t), <span class="at">bty=</span><span class="st">&#39;n&#39;</span>, <span class="at">type=</span><span class="st">&#39;l&#39;</span>)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/exponential-density-1.png" width="672" /></p>
+<p>And here is a histogram of 20 samples taken from that distribution:</p>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="statistics.html#cb350-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sample 20 numbers from a histogram and plot the histogram</span></span>
+<span id="cb350-2"><a href="statistics.html#cb350-2" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">=</span> <span class="fu">rexp</span>( <span class="dv">20</span> )</span>
+<span id="cb350-3"><a href="statistics.html#cb350-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="fu">sort</span>(ex), <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>##  [1] 0.01 0.08 0.13 0.28 0.39 0.52 0.57 0.58 0.60 0.72 0.83 0.88 0.91 0.94 1.20
+## [16] 1.50 1.69 1.77 2.19 2.71</code></pre>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="statistics.html#cb352-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( ex )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/exponential-histogram-1.png" width="672" /></p>
+<p>The histograms are clearly different, but it would be difficult to definitively name the distribution of the data by looking at a sample.</p>
+</div>
+<div id="mathematical-statistics" class="section level2" number="17.3">
+<h2><span class="header-section-number">17.3</span> Mathematical statistics</h2>
+<p>The mean has some special properties: you’ve seen how we can calculate the frequency of samples being within an interval based on known distributions. But we need to know the distribution. It turns out that the distribution of the sample mean approaches the Normal distribution as the sample size increases, for almost any independent data. That allows us to create intervals and reason about the distribution of real data, even though the data’s distribution is unknown.</p>
+<div id="law-of-large-numbers" class="section level3" number="17.3.1">
+<h3><span class="header-section-number">17.3.1</span> Law of large numbers</h3>
+<p>The law of large numbers says that if the individual measurements are independent, then the mean of a sample tends toward the mean of the population as the sample size gets larger. This is what we’d expect, since we showed the rate at which the variance of the sample mean gets smaller is <span class="math inline">\(1/n\)</span>.</p>
+<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="statistics.html#cb353-1" aria-hidden="true" tabindex="-1"></a>nn <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">20</span>, <span class="dv">33</span>, <span class="dv">45</span>, <span class="dv">66</span>, <span class="dv">100</span>)</span>
+<span id="cb353-2"><a href="statistics.html#cb353-2" aria-hidden="true" tabindex="-1"></a>means <span class="ot">=</span> <span class="fu">sapply</span>( nn, <span class="cf">function</span>(n) <span class="fu">mean</span>( <span class="fu">rnorm</span>(n) ) )</span>
+<span id="cb353-3"><a href="statistics.html#cb353-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nn, means, <span class="at">bty=</span><span class="st">&#39;n&#39;</span>, <span class="at">ylab =</span> <span class="st">&quot;sample mean&quot;</span>)</span>
+<span id="cb353-4"><a href="statistics.html#cb353-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="dv">0</span>, <span class="at">lty=</span><span class="dv">2</span>)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="central-limit-theorem" class="section level3" number="17.3.2">
+<h3><span class="header-section-number">17.3.2</span> Central limit theorem</h3>
+<p>The most important mathematical result in statistics, the Central Limit Theorem says that if you take (almost) any sample of random numbers and calculate its mean, the distribution of the mean tends toward a normal distribution. We illustrate the “tending toward” with an arrow and it indicates that the distribution of a sample mean is only <em>approximately</em> Normal. But if the original samples were from a Normal distribution then the sample mean has an <em>exactly</em> Normal distribution. From here, I’ll start writing the mean of a random variable <span class="math inline">\(X\)</span> as <span class="math inline">\(\bar{X}\)</span> and the mean of a sample <span class="math inline">\(x\)</span> as <span class="math inline">\(\bar{x}\)</span>.</p>
+<p><span class="math display">\[ \bar{X} \rightarrow N(\mu, \frac{\sigma^2}{n}) \]</span>
+And because of the identities we learned before, you can write this as
+<span class="math display">\[\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \rightarrow N(0, 1) \]</span></p>
+<p>This is significant because we can use the standard normal functions on the right, and the data on the left, to start answering questions like, “what is the 95% confidence interval for the population mean?”</p>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="statistics.html#cb354-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate 20 samples from a uniform distribution and plot their histogram</span></span>
+<span id="cb354-2"><a href="statistics.html#cb354-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">=</span> <span class="dv">20</span></span>
+<span id="cb354-3"><a href="statistics.html#cb354-3" aria-hidden="true" tabindex="-1"></a>u <span class="ot">=</span> <span class="fu">rexp</span>( N )</span>
+<span id="cb354-4"><a href="statistics.html#cb354-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( u )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/clt-1.png" width="672" /></p>
+<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="statistics.html#cb355-1" aria-hidden="true" tabindex="-1"></a><span class="co"># generate 100 repeated samples of the same size, calculate the mean of each one, and plot the histogram of the means.</span></span>
+<span id="cb355-2"><a href="statistics.html#cb355-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">=</span> <span class="dv">100</span></span>
+<span id="cb355-3"><a href="statistics.html#cb355-3" aria-hidden="true" tabindex="-1"></a>uu <span class="ot">=</span> <span class="fu">numeric</span>( B )</span>
+<span id="cb355-4"><a href="statistics.html#cb355-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ( i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>B ) {</span>
+<span id="cb355-5"><a href="statistics.html#cb355-5" aria-hidden="true" tabindex="-1"></a>  uu[[i]] <span class="ot">=</span> <span class="fu">mean</span>( <span class="fu">rexp</span>(N) )</span>
+<span id="cb355-6"><a href="statistics.html#cb355-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb355-7"><a href="statistics.html#cb355-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb355-8"><a href="statistics.html#cb355-8" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(uu)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/clt-2.png" width="672" /></p>
+<div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb356-1"><a href="statistics.html#cb356-1" aria-hidden="true" tabindex="-1"></a><span class="co"># what happens as B and N get larger and smaller? Do they play different roles?</span></span></code></pre></div>
+</div>
+</div>
+<div id="statistical-inference" class="section level2" number="17.4">
+<h2><span class="header-section-number">17.4</span> Statistical inference</h2>
+<div id="confidence-intervals" class="section level3" number="17.4.1">
+<h3><span class="header-section-number">17.4.1</span> Confidence intervals</h3>
+<p>In the <code>fosdata</code> package there is a dataset called <code>mice_pot</code>, which contains data from an experiment where mice were dosed with THC and then measured for motor activity as a percentage of their baseline activity. We are going to look at the group that got a medium dose of THC.</p>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="statistics.html#cb357-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract just the mice that got the medium dose of THC</span></span>
+<span id="cb357-2"><a href="statistics.html#cb357-2" aria-hidden="true" tabindex="-1"></a>mice_med <span class="ot">=</span> mice_pot[ mice_pot<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">1</span>, ]</span>
+<span id="cb357-3"><a href="statistics.html#cb357-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb357-4"><a href="statistics.html#cb357-4" aria-hidden="true" tabindex="-1"></a><span class="co"># assess normality with histogram and QQ plot</span></span>
+<span id="cb357-5"><a href="statistics.html#cb357-5" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>( mice_med<span class="sc">$</span>percent_of_act )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="statistics.html#cb358-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>( mice_med<span class="sc">$</span>percent_of_act )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<div id="find-the-80-confidence-interval-for-the-population-mean" class="section level4" number="17.4.1.1">
+<h4><span class="header-section-number">17.4.1.1</span> Find the 80% confidence interval for the population mean</h4>
+<p>Now we are using our sample to make some determination about the population, so this is statistical inference. Our best guess of the population mean is the sample mean, <code>mean( mice_med$percent_of_act )</code>, which is 99.1%. But to get a confidence interval, we need to use the formula
+<span class="math display">\[ \bar{x} \pm t_{n-1, 0.1} * S / \sqrt{n} \]</span>
+Fortunately, R can do all the work for us:</p>
+<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="statistics.html#cb359-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 80% confidence interval for location of mice_med mean:</span></span>
+<span id="cb359-2"><a href="statistics.html#cb359-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>( mice_med<span class="sc">$</span>percent_of_act, <span class="at">conf.level=</span><span class="fl">0.8</span> )</span></code></pre></div>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  mice_med$percent_of_act
+## t = 13.068, df = 11, p-value = 4.822e-08
+## alternative hypothesis: true mean is not equal to 0
+## 80 percent confidence interval:
+##   88.71757 109.38712
+## sample estimates:
+## mean of x 
+##  99.05235</code></pre>
+</div>
+</div>
+<div id="two-population-test" class="section level3" number="17.4.2">
+<h3><span class="header-section-number">17.4.2</span> Two-population test</h3>
+<p>The test of <span class="math inline">\(\mu_0 = 100\)</span> is a one-population test because it seeks to compare a single population against a specified standard. On the other hand, you may wish to assess the null hypothesis that the movement of mice in the high-THC group is equal to the movement of mice in the medium-THC group. This is called a two-population test, since there are two populations to compare against each other. The null hypothesis is <span class="math inline">\(\mu_{0, med} = \mu_{0, high}\)</span>. Testing a two-population hypothesis requires first assessing normality and also checking whether the variances are equal. There are separate procedures when the variances are equal vs. unequal.</p>
+<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="statistics.html#cb361-1" aria-hidden="true" tabindex="-1"></a><span class="co">#extract the samples to be compared</span></span>
+<span id="cb361-2"><a href="statistics.html#cb361-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> mice_pot<span class="sc">$</span>percent_of_act[ mice_pot<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">1</span>]</span>
+<span id="cb361-3"><a href="statistics.html#cb361-3" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> mice_pot<span class="sc">$</span>percent_of_act[ mice_pot<span class="sc">$</span>group <span class="sc">==</span> <span class="dv">3</span>]</span>
+<span id="cb361-4"><a href="statistics.html#cb361-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb361-5"><a href="statistics.html#cb361-5" aria-hidden="true" tabindex="-1"></a><span class="co"># check for equal variances - these are close enough</span></span>
+<span id="cb361-6"><a href="statistics.html#cb361-6" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(a)</span></code></pre></div>
+<pre><code>## [1] 689.4729</code></pre>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="statistics.html#cb363-1" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(b)</span></code></pre></div>
+<pre><code>## [1] 429.4551</code></pre>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="statistics.html#cb365-1" aria-hidden="true" tabindex="-1"></a><span class="co"># confirm equal variances with a boxplot</span></span>
+<span id="cb365-2"><a href="statistics.html#cb365-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(a, b)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/two-pop-t.test-1.png" width="672" /></p>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="statistics.html#cb366-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check whether the high-THC mice movement is Normal</span></span>
+<span id="cb366-2"><a href="statistics.html#cb366-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (we already checked for the medium-dose mice)</span></span>
+<span id="cb366-3"><a href="statistics.html#cb366-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(b)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/two-pop-t.test-2.png" width="672" /></p>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="statistics.html#cb367-1" aria-hidden="true" tabindex="-1"></a><span class="co"># two pop test</span></span>
+<span id="cb367-2"><a href="statistics.html#cb367-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(a, b, <span class="at">var.equal=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  a and b
+## t = 2.7707, df = 20, p-value = 0.0118
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##   7.014608 49.754345
+## sample estimates:
+## mean of x mean of y 
+##  99.05235  70.66787</code></pre>
+</div>
+<div id="hypothesis-tests-for-non-normal-data" class="section level3" number="17.4.3">
+<h3><span class="header-section-number">17.4.3</span> Hypothesis tests for non-normal data</h3>
+<p>Just as with the confidence intervals, there is a bootstrap hypothesis test that can be used where the data are not normal. There are other options, too, with clever derivations. The one I’ll show you is the Wilcoxon test, which is based on the ranks of the data.</p>
+<p>Since we’e already seen that the barnacles per square meter data are not normal, I will illustrate testing the null hypothesis that <span class="math inline">\(\mu_0\)</span> = 300 barnacles per square meter. This is a one-population test, and a two-sided alternative.</p>
+<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="statistics.html#cb369-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wilcoxon test for 300 barnacles per square meter</span></span>
+<span id="cb369-2"><a href="statistics.html#cb369-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wilcox.test</span>( barnacles<span class="sc">$</span>per_m )</span></code></pre></div>
+<pre><code>## 
+##  Wilcoxon signed rank test with continuity correction
+## 
+## data:  barnacles$per_m
+## V = 3916, p-value = 3.797e-16
+## alternative hypothesis: true location is not equal to 0</code></pre>
+</div>
+</div>
+<div id="regression" class="section level2" number="17.5">
+<h2><span class="header-section-number">17.5</span> Regression</h2>
+<p>Regression is a mathematical tool that allows you to estimate how some response variable is related to some predictor variable(s). There are methods that handle continuous or discrete responses of many different distributions, but we are going to focus on linear regression here.</p>
+<p>Linear regression means that the relationship between the predictor variable(s) and the response is a linear one. To illustrate, we’ll create a plot of the relationship between the waist measurement and bmi of 81 adults:</p>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="statistics.html#cb371-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the relationship between the waist_cm and bmi variables</span></span>
+<span id="cb371-2"><a href="statistics.html#cb371-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(adipose, <span class="fu">plot</span>(waist_cm, bmi), <span class="at">bty=</span><span class="st">&#39;n&#39;</span> )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/regression-example-1.png" width="672" /></p>
+<p>The relationship between the two is apparently linear (you can imagine drawing a straight line through the data). The general mathematical form of a linear regression line is</p>
+<p><span class="math display">\[ y = a + \beta x + \epsilon \]</span></p>
+<p>Here, the response variable (e.g., BMI) is called <span class="math inline">\(y\)</span> and the predictor (e.g. waist measurement) is <span class="math inline">\(x\)</span>. The coefficient <span class="math inline">\(\beta\)</span> indicates how much the response changes for a change in the predictors (e.g., the expected change in BMI with a 1cm change in waist measurement). Variable <span class="math inline">\(a\)</span> denotes the intercept, which is a constant offset that aligns the mean of <span class="math inline">\(y\)</span> with the mean of <span class="math inline">\(x\)</span>. Finally, <span class="math inline">\(\epsilon\)</span> is the so-called residual error in the relationship. It represents the variation in the response that is not due to the predictor(s).</p>
+<div id="fitting-a-regression-line" class="section level3" number="17.5.1">
+<h3><span class="header-section-number">17.5.1</span> Fitting a regression line</h3>
+<p>The R function to fit the model is called <code>lm()</code>. Let’s take a look at an example:</p>
+<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb372-1"><a href="statistics.html#cb372-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit the linear regression BMI vs waist_cm</span></span>
+<span id="cb372-2"><a href="statistics.html#cb372-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">lm</span>( bmi <span class="sc">~</span> waist_cm, <span class="at">data=</span>adipose )</span>
+<span id="cb372-3"><a href="statistics.html#cb372-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb372-4"><a href="statistics.html#cb372-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the fitted regression: begin with the raw data</span></span>
+<span id="cb372-5"><a href="statistics.html#cb372-5" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>( adipose, <span class="fu">plot</span>(waist_cm, bmi, <span class="at">bty=</span><span class="st">&#39;n&#39;</span>) )</span>
+<span id="cb372-6"><a href="statistics.html#cb372-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb372-7"><a href="statistics.html#cb372-7" aria-hidden="true" tabindex="-1"></a><span class="co">#now plot the fitted regression line (in red)</span></span>
+<span id="cb372-8"><a href="statistics.html#cb372-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>( <span class="fu">coef</span>(fit)[[<span class="dv">1</span>]], <span class="fu">coef</span>(fit)[[<span class="dv">2</span>]], <span class="at">col=</span><span class="st">&#39;red&#39;</span> )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/bmi-vs-waist-regression-1.png" width="672" /></p>
+</div>
+<div id="assumptions-and-diagnostics" class="section level3" number="17.5.2">
+<h3><span class="header-section-number">17.5.2</span> Assumptions and diagnostics</h3>
+<p>“Fitting” a linear regression model involves estimating <span class="math inline">\(a\)</span> and <span class="math inline">\(\beta\)</span> in the regression equation. You can can do this fitting procedure using any data, but the results won’t be reliable unless some conditions are met. The conditions are:</p>
+<ol style="list-style-type: decimal">
+<li>Observations are independent.</li>
+<li>The linear model is correct.</li>
+<li>The residual error is Normally distributed.</li>
+<li>The variance of the residual error is constant for all observations.</li>
+</ol>
+<p>The first of these conditions can’t be checked - it has to do with the design of the experiment. The rest can be checked, though, and I’ll take them in order.</p>
+<div id="checking-that-the-linear-model-is-correct" class="section level4" number="17.5.2.1">
+<h4><span class="header-section-number">17.5.2.1</span> Checking that the linear model is correct</h4>
+<p>In the cast of a simple linear regression model (one predictor variable), you can check this by plotting the predictor against the response and looking for a linear trend. If you have more than one predictor variable, then you need to plot the predictions against the response to look for a linear trend. We’ll see an example by adding height as a predictor for BMI (in addition to waist measurement).</p>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="statistics.html#cb373-1" aria-hidden="true" tabindex="-1"></a><span class="co"># linear model for BMI using waist size and height as predictors</span></span>
+<span id="cb373-2"><a href="statistics.html#cb373-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">=</span> <span class="fu">lm</span>( bmi <span class="sc">~</span> waist_cm <span class="sc">+</span> stature_cm, <span class="at">data=</span>adipose )</span>
+<span id="cb373-3"><a href="statistics.html#cb373-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb373-4"><a href="statistics.html#cb373-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the fitted versus the predicted values</span></span>
+<span id="cb373-5"><a href="statistics.html#cb373-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( fit2<span class="sc">$</span>fitted.values, adipose<span class="sc">$</span>bmi, <span class="at">bty=</span><span class="st">&#39;n&#39;</span> )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/bmi-waist-height-1.png" width="672" /></p>
+</div>
+<div id="checking-that-the-residuals-are-normally-distributed" class="section level4" number="17.5.2.2">
+<h4><span class="header-section-number">17.5.2.2</span> Checking that the residuals are normally distributed</h4>
+<p>We have already learned about the QQ plot, which shows visually whether some values are Normally distributed. In order to depend upon the fit from a linear regression model, we need to see that the residuals are Normally distributed, and we use the QQ plot to check.</p>
+</div>
+<div id="checking-that-the-vaiance-is-constant" class="section level4" number="17.5.2.3">
+<h4><span class="header-section-number">17.5.2.3</span> Checking that the vaiance is constant</h4>
+<p>In an earlier part, we saw that the variance is the average of the squared error. But that would just be a single number, when we want to see if there is a trend. So like the QQ plot, you’l plot the residuals and use your eyeball to discern whether there is a trend in the residuals or if they are approximately constant - this is called the scale-location plot. The QQ plot and scale-location plot are both created by plotting the fitted model object</p>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="statistics.html#cb374-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the pattern of the panels</span></span>
+<span id="cb374-2"><a href="statistics.html#cb374-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>( <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>) )</span>
+<span id="cb374-3"><a href="statistics.html#cb374-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb374-4"><a href="statistics.html#cb374-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make the diagnostic plots</span></span>
+<span id="cb374-5"><a href="statistics.html#cb374-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( fit )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/diagnostics-1.png" width="672" /></p>
+<p>The “Residuals vs. Fitted” plot is checking whether the linear model is correct. There should be no obvious pattern if the data are linear (as is the casre here). The Scale-Location plot will have no obvios pattern if the variance of the residuals is constant, as is the case here (you might see a slight pattern in the smoothed red line but it isn’t obvious). And the QQ plot will look like a straight line if the residuals are from a Normal distribution, as is the case here. So this model is good. The fourth diagnostic plot is the Residuals vs. Leverage plot, which is used to identify influential outliers. We won’t get into that here.</p>
+</div>
+</div>
+<div id="functions-for-inspecting-regression-fits" class="section level3" number="17.5.3">
+<h3><span class="header-section-number">17.5.3</span> Functions for inspecting regression fits</h3>
+<p>When you fit a linear regression model, you are estimating the parameters of the regression equation. In order to see those estimates, use the <code>summary()</code> function on the fitted model object.</p>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="statistics.html#cb375-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get the model summary</span></span>
+<span id="cb375-2"><a href="statistics.html#cb375-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>( fit2 )</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = bmi ~ waist_cm + stature_cm, data = adipose)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1290 -1.0484 -0.2603  1.2661  5.2572 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 14.38196    3.82700   3.758 0.000329 ***
+## waist_cm     0.29928    0.01461  20.491  &lt; 2e-16 ***
+## stature_cm  -0.08140    0.02300  -3.539 0.000680 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.724 on 78 degrees of freedom
+## Multiple R-squared:  0.844,  Adjusted R-squared:   0.84 
+## F-statistic:   211 on 2 and 78 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Here you can see that the average marginal effect of one additional centimeter of waist measurement is to increase BMI by 0.3 and an additional centimeter of height is associated with a change to BMI of -0.08. You can get the coefficients from the fitted model object using the <code>coef()</code> function, and there are some other functions that allow you to generate the values shown in the summary table.</p>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="statistics.html#cb377-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get the coefficients of the fitted regression</span></span>
+<span id="cb377-2"><a href="statistics.html#cb377-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">=</span> <span class="fu">coef</span>( fit2 )</span>
+<span id="cb377-3"><a href="statistics.html#cb377-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( beta, <span class="dv">2</span> )</span></code></pre></div>
+<pre><code>## (Intercept)    waist_cm  stature_cm 
+##       14.38        0.30       -0.08</code></pre>
+<p>Get the variance-covariance matrix:</p>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="statistics.html#cb379-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="fu">vcov</span>( fit2 ), <span class="dv">4</span>)</span></code></pre></div>
+<pre><code>##             (Intercept) waist_cm stature_cm
+## (Intercept)     14.6459  -0.0039    -0.0836
+## waist_cm        -0.0039   0.0002    -0.0001
+## stature_cm      -0.0836  -0.0001     0.0005</code></pre>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="statistics.html#cb381-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare the square root of the diagonals of the variance-covariance matrix</span></span>
+<span id="cb381-2"><a href="statistics.html#cb381-2" aria-hidden="true" tabindex="-1"></a><span class="co"># to the standard errors are reported in the summary table:</span></span>
+<span id="cb381-3"><a href="statistics.html#cb381-3" aria-hidden="true" tabindex="-1"></a>se <span class="ot">=</span> <span class="fu">sqrt</span>( <span class="fu">diag</span>( <span class="fu">vcov</span>(fit2) ))</span>
+<span id="cb381-4"><a href="statistics.html#cb381-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb381-5"><a href="statistics.html#cb381-5" aria-hidden="true" tabindex="-1"></a><span class="co"># here are the standard errors:</span></span>
+<span id="cb381-6"><a href="statistics.html#cb381-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( se, <span class="dv">3</span> )</span></code></pre></div>
+<pre><code>## (Intercept)    waist_cm  stature_cm 
+##       3.827       0.015       0.023</code></pre>
+<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb383-1"><a href="statistics.html#cb383-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the t-statistics for the regression coefficients</span></span>
+<span id="cb383-2"><a href="statistics.html#cb383-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (compare these to the t-statistics reorted in the summary table)</span></span>
+<span id="cb383-3"><a href="statistics.html#cb383-3" aria-hidden="true" tabindex="-1"></a>t_stats <span class="ot">=</span> beta <span class="sc">/</span> se</span>
+<span id="cb383-4"><a href="statistics.html#cb383-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb383-5"><a href="statistics.html#cb383-5" aria-hidden="true" tabindex="-1"></a><span class="co"># show the t-statistics:</span></span>
+<span id="cb383-6"><a href="statistics.html#cb383-6" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( t_stats, <span class="dv">2</span> )</span></code></pre></div>
+<pre><code>## (Intercept)    waist_cm  stature_cm 
+##        3.76       20.49       -3.54</code></pre>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="statistics.html#cb385-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the p-values:</span></span>
+<span id="cb385-2"><a href="statistics.html#cb385-2" aria-hidden="true" tabindex="-1"></a>pval <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pt</span>( <span class="fu">abs</span>(t_stats), <span class="at">df=</span><span class="dv">78</span>, <span class="at">lower.tail=</span><span class="cn">FALSE</span> )</span>
+<span id="cb385-3"><a href="statistics.html#cb385-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(pval, <span class="dv">4</span>)</span></code></pre></div>
+<pre><code>## (Intercept)    waist_cm  stature_cm 
+##       3e-04       0e+00       7e-04</code></pre>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="statistics.html#cb387-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this is the residual standard error:</span></span>
+<span id="cb387-2"><a href="statistics.html#cb387-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>( fit2<span class="sc">$</span>residuals ) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">80</span> <span class="sc">/</span> <span class="dv">78</span>)</span></code></pre></div>
+<pre><code>## [1] 1.72357</code></pre>
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="statistics.html#cb389-1" aria-hidden="true" tabindex="-1"></a><span class="co"># R-squared is the proportion of variance</span></span>
+<span id="cb389-2"><a href="statistics.html#cb389-2" aria-hidden="true" tabindex="-1"></a><span class="co"># explained by the regression model</span></span>
+<span id="cb389-3"><a href="statistics.html#cb389-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>( <span class="dv">1</span> <span class="sc">-</span> <span class="fu">var</span>(fit2<span class="sc">$</span>residuals) <span class="sc">/</span> <span class="fu">var</span>(adipose<span class="sc">$</span>bmi), <span class="dv">3</span> )</span></code></pre></div>
+<pre><code>## [1] 0.844</code></pre>
+</div>
+<div id="a-model-that-fails-diagnostics" class="section level3" number="17.5.4">
+<h3><span class="header-section-number">17.5.4</span> A model that fails diagnostics</h3>
+<p>We’ve seen a model that has good diagnostics. Now let’s look at one that doesn’t. This time, we’ll use linear regression to make a model of the relationship between waist measurement and the visceral adipose tissue fat (measured in grams). The visceral adipose tissue fat is abbreviated <code>vat</code> in the data. First, since the model uses a single predictor variable, let’s look at the relationship with a pair plot.</p>
+<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="statistics.html#cb391-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the relationship between waist_cm and vat</span></span>
+<span id="cb391-2"><a href="statistics.html#cb391-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>( adipose, <span class="fu">plot</span>( waist_cm, vat, <span class="at">bty=</span><span class="st">&#39;n&#39;</span> ))</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/vat-plot-1.png" width="672" /></p>
+<p>The plot is obviously not showing a linear relationship, which will violate one of the conditions for linear regression. Also, you can see that there is less variance of vat among the observations that have smaller waist measurements. So that will violate the assumption that the residual variance has no relationship to the fitted values. To see how these will show up in the diagnostic plots, we need to fit the linear regression model.</p>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="statistics.html#cb392-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate the model for vat</span></span>
+<span id="cb392-2"><a href="statistics.html#cb392-2" aria-hidden="true" tabindex="-1"></a>fit_vat <span class="ot">=</span> <span class="fu">lm</span>( vat <span class="sc">~</span> waist_cm, <span class="at">data =</span> adipose )</span>
+<span id="cb392-3"><a href="statistics.html#cb392-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb392-4"><a href="statistics.html#cb392-4" aria-hidden="true" tabindex="-1"></a><span class="co"># there is no problem creating the summary table:</span></span>
+<span id="cb392-5"><a href="statistics.html#cb392-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>( fit_vat )</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = vat ~ waist_cm, data = adipose)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -996.25 -265.96  -61.87  191.24 1903.46 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -3604.196    334.241  -10.78   &lt;2e-16 ***
+## waist_cm       51.353      3.937   13.04   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 479 on 79 degrees of freedom
+## Multiple R-squared:  0.6829, Adjusted R-squared:  0.6789 
+## F-statistic: 170.2 on 1 and 79 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="statistics.html#cb394-1" aria-hidden="true" tabindex="-1"></a><span class="co"># show the diagnostic plots</span></span>
+<span id="cb394-2"><a href="statistics.html#cb394-2" aria-hidden="true" tabindex="-1"></a><span class="fu">layout</span>( <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>) )</span>
+<span id="cb394-3"><a href="statistics.html#cb394-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( fit_vat )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/vat-regression-diagnostics-1.png" width="672" /></p>
+<p>There is obviously a curved pattern in the Residuals vs. Fitted plot, and in the Scale vs. Location plot. Residuals vs. Fitted shows a fan-shaped pattern, too, which reflects the increasing variance among the greater fitted values. The QQ plot is not a straight line, although the difference is not as obvious. In particular, the upper tail of residuals is heavier than expected. Together, all of these are indications that we may need to do a log transformation of the response. A log transformation helps to exaggerate the differences between smaller numbers (make the lower tail heavier) and collapse some difference among larger numbers (make the upper tail less heavy).</p>
+<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="statistics.html#cb395-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit a regression model where the response is log-transformed</span></span>
+<span id="cb395-2"><a href="statistics.html#cb395-2" aria-hidden="true" tabindex="-1"></a>fit_log <span class="ot">=</span> <span class="fu">lm</span>( <span class="fu">log</span>(vat) <span class="sc">~</span> waist_cm, <span class="at">data=</span>adipose )</span>
+<span id="cb395-3"><a href="statistics.html#cb395-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb395-4"><a href="statistics.html#cb395-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the diagnostics for the log-transformed model</span></span>
+<span id="cb395-5"><a href="statistics.html#cb395-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( fit_log )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/log-vat-1.png" width="672" /><img src="17_basic-stats_files/figure-html/log-vat-2.png" width="672" /><img src="17_basic-stats_files/figure-html/log-vat-3.png" width="672" /><img src="17_basic-stats_files/figure-html/log-vat-4.png" width="672" /></p>
+<p>The diagnostics do not look good after the log transformation, but now the problem is the opposite: a too-heavy lower tail and residual variance decreases as the fitted value increases. Perhaps a better transformation is something in between the raw data and the log transform. Try a square-root transformation.</p>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="statistics.html#cb396-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit a model where the vat is square root transformed</span></span>
+<span id="cb396-2"><a href="statistics.html#cb396-2" aria-hidden="true" tabindex="-1"></a>fit_sqrt <span class="ot">=</span> <span class="fu">lm</span>( <span class="fu">sqrt</span>(vat) <span class="sc">~</span> waist_cm, <span class="at">data=</span>adipose )</span>
+<span id="cb396-3"><a href="statistics.html#cb396-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-4"><a href="statistics.html#cb396-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the diagnostics for the log-transformed model</span></span>
+<span id="cb396-5"><a href="statistics.html#cb396-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>( fit_sqrt )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/vat-sqrt-1.png" width="672" /><img src="17_basic-stats_files/figure-html/vat-sqrt-2.png" width="672" /><img src="17_basic-stats_files/figure-html/vat-sqrt-3.png" width="672" /><img src="17_basic-stats_files/figure-html/vat-sqrt-4.png" width="672" /></p>
+<p>These look acceptable for real-world data.</p>
+</div>
+<div id="predictions-and-variability" class="section level3" number="17.5.5">
+<h3><span class="header-section-number">17.5.5</span> Predictions and variability</h3>
+<p>There are two scales of uncertainty for a regression model: uncertainty in the fitted relationship, and the uncertainty of a predicted outcome. The uncertainty of a prediction is always greater because it is calculated by adding the uncertainty of the fitted line to the uncertainty of a single data point around that fitted line. We can illustrate using the example of the model we just created to relate the waist measurement to the square root of vat. For this block of code, we’ll need the <code>mvtnorm</code> library to be loaded.</p>
+<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb397-1"><a href="statistics.html#cb397-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import mvtnorm. install it if necessary.</span></span>
+<span id="cb397-2"><a href="statistics.html#cb397-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>( mvtnorm )</span>
+<span id="cb397-3"><a href="statistics.html#cb397-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-4"><a href="statistics.html#cb397-4" aria-hidden="true" tabindex="-1"></a><span class="co"># draw the data on the transformed scale</span></span>
+<span id="cb397-5"><a href="statistics.html#cb397-5" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>( adipose, <span class="fu">plot</span>(waist_cm, <span class="fu">sqrt</span>(vat), <span class="at">bty=</span><span class="st">&#39;n&#39;</span>) )</span>
+<span id="cb397-6"><a href="statistics.html#cb397-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-7"><a href="statistics.html#cb397-7" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the fitted regression line</span></span>
+<span id="cb397-8"><a href="statistics.html#cb397-8" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>( <span class="fu">coef</span>(fit_sqrt)[[<span class="dv">1</span>]], <span class="fu">coef</span>(fit_sqrt)[[<span class="dv">2</span>]], <span class="at">col=</span><span class="st">&#39;red&#39;</span> )</span>
+<span id="cb397-9"><a href="statistics.html#cb397-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb397-10"><a href="statistics.html#cb397-10" aria-hidden="true" tabindex="-1"></a><span class="co"># plot 100 samples from the distributon of the regression line.</span></span>
+<span id="cb397-11"><a href="statistics.html#cb397-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>) {</span>
+<span id="cb397-12"><a href="statistics.html#cb397-12" aria-hidden="true" tabindex="-1"></a>  cc <span class="ot">=</span> <span class="fu">rmvnorm</span>( <span class="at">n=</span><span class="dv">1</span>, <span class="at">mean=</span><span class="fu">coef</span>(fit_sqrt), <span class="at">sigma=</span><span class="fu">vcov</span>(fit_sqrt) )</span>
+<span id="cb397-13"><a href="statistics.html#cb397-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>( cc[[<span class="dv">1</span>]], cc[[<span class="dv">2</span>]], <span class="at">col=</span><span class="fu">grey</span>(<span class="fl">0.8</span>))</span>
+<span id="cb397-14"><a href="statistics.html#cb397-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/predictions-1.png" width="672" /></p>
+<p>Clearly, the variability of the data points is greater than the variability of the fitted line (that’s why they lie outside the envelope of the fitted lines). We can extract a confidence interval for fitted values or predictions with the <code>predict()</code> function.</p>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="statistics.html#cb398-1" aria-hidden="true" tabindex="-1"></a><span class="co"># draw the data on the transformed scale</span></span>
+<span id="cb398-2"><a href="statistics.html#cb398-2" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>( adipose, <span class="fu">plot</span>(waist_cm, <span class="fu">sqrt</span>(vat), <span class="at">bty=</span><span class="st">&#39;n&#39;</span>) )</span>
+<span id="cb398-3"><a href="statistics.html#cb398-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb398-4"><a href="statistics.html#cb398-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the fitted regression line</span></span>
+<span id="cb398-5"><a href="statistics.html#cb398-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>( <span class="fu">coef</span>(fit_sqrt)[[<span class="dv">1</span>]], <span class="fu">coef</span>(fit_sqrt)[[<span class="dv">2</span>]], <span class="at">col=</span><span class="st">&#39;red&#39;</span> )</span>
+<span id="cb398-6"><a href="statistics.html#cb398-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb398-7"><a href="statistics.html#cb398-7" aria-hidden="true" tabindex="-1"></a><span class="co"># define some waist measurements where we&#39;ll construct confidence intervals</span></span>
+<span id="cb398-8"><a href="statistics.html#cb398-8" aria-hidden="true" tabindex="-1"></a>pred_pts <span class="ot">=</span> <span class="fu">data.frame</span>( <span class="at">waist_cm =</span> <span class="fu">c</span>(<span class="dv">70</span>, <span class="dv">85</span>, <span class="dv">110</span>) )</span>
+<span id="cb398-9"><a href="statistics.html#cb398-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb398-10"><a href="statistics.html#cb398-10" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the 90% CI at each of the pred_pts</span></span>
+<span id="cb398-11"><a href="statistics.html#cb398-11" aria-hidden="true" tabindex="-1"></a>ff <span class="ot">=</span> <span class="fu">predict</span>(fit_sqrt, pred_pts, <span class="at">interval=</span><span class="st">&quot;confidence&quot;</span>, <span class="at">level=</span><span class="fl">0.9</span>)</span>
+<span id="cb398-12"><a href="statistics.html#cb398-12" aria-hidden="true" tabindex="-1"></a>pp <span class="ot">=</span> <span class="fu">predict</span>(fit_sqrt, pred_pts, <span class="at">interval=</span><span class="st">&quot;prediction&quot;</span>, <span class="at">level=</span><span class="fl">0.9</span>)</span>
+<span id="cb398-13"><a href="statistics.html#cb398-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb398-14"><a href="statistics.html#cb398-14" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the confidence intervals to data.frames</span></span>
+<span id="cb398-15"><a href="statistics.html#cb398-15" aria-hidden="true" tabindex="-1"></a>ff <span class="ot">=</span> <span class="fu">as.data.frame</span>(ff)</span>
+<span id="cb398-16"><a href="statistics.html#cb398-16" aria-hidden="true" tabindex="-1"></a>pp <span class="ot">=</span> <span class="fu">as.data.frame</span>(pp)</span>
+<span id="cb398-17"><a href="statistics.html#cb398-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb398-18"><a href="statistics.html#cb398-18" aria-hidden="true" tabindex="-1"></a><span class="co"># add the three confidence intervals to the plots</span></span>
+<span id="cb398-19"><a href="statistics.html#cb398-19" aria-hidden="true" tabindex="-1"></a><span class="co"># (offset them a bit for clarity in the plot)</span></span>
+<span id="cb398-20"><a href="statistics.html#cb398-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) {</span>
+<span id="cb398-21"><a href="statistics.html#cb398-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>( <span class="at">x=</span><span class="fu">rep</span>( pred_pts<span class="sc">$</span>waist_cm[[i]] <span class="sc">-</span> <span class="fl">0.5</span>, <span class="dv">2</span>),</span>
+<span id="cb398-22"><a href="statistics.html#cb398-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">y=</span><span class="fu">c</span>( ff<span class="sc">$</span>lwr[[i]], ff<span class="sc">$</span>upr[[i]] ), <span class="at">col=</span><span class="st">&#39;blue&#39;</span>, <span class="at">lwd=</span><span class="dv">2</span> )</span>
+<span id="cb398-23"><a href="statistics.html#cb398-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb398-24"><a href="statistics.html#cb398-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lines</span>( <span class="at">x=</span><span class="fu">rep</span>( pred_pts<span class="sc">$</span>waist_cm[[i]] <span class="sc">+</span> <span class="fl">0.5</span>, <span class="dv">2</span>),</span>
+<span id="cb398-25"><a href="statistics.html#cb398-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">y=</span><span class="fu">c</span>( pp<span class="sc">$</span>lwr[[i]], pp<span class="sc">$</span>upr[[i]] ), <span class="at">col=</span><span class="st">&#39;orange&#39;</span>, <span class="at">lwd=</span><span class="dv">2</span> )</span>
+<span id="cb398-26"><a href="statistics.html#cb398-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb398-27"><a href="statistics.html#cb398-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb398-28"><a href="statistics.html#cb398-28" aria-hidden="true" tabindex="-1"></a><span class="co"># add a legend</span></span>
+<span id="cb398-29"><a href="statistics.html#cb398-29" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="fu">c</span>(<span class="st">&quot;90% CI (fitted values)&quot;</span>, <span class="st">&quot;90% CI (predicted values)&quot;</span>),</span>
+<span id="cb398-30"><a href="statistics.html#cb398-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">x=</span><span class="st">&quot;topleft&quot;</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;orange&quot;</span>), <span class="at">bty=</span><span class="st">&#39;n&#39;</span>)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/prediction-intervals-1.png" width="672" /></p>
+<p>One thing to notice about the confidence intervals is that the interval is smallest (so the precision of the estimation is greatest) at the mean of the predictor variable. This is a general rule of fitting regression.</p>
+</div>
+</div>
+<div id="model-selection" class="section level2" number="17.6">
+<h2><span class="header-section-number">17.6</span> Model selection</h2>
+<p>Choosing how to represent your data is a common task in statistics. The most common target is to choose the representation (or model) that does the best job of predicting new data. We set this target because if we have a representation that predicts the future, then we can say it must accurately represent the process that generates the data.</p>
+</div>
+<div id="cross-validation" class="section level2" number="17.7">
+<h2><span class="header-section-number">17.7</span> Cross-validation</h2>
+<p>Unfortunately, we rarely have information about the future, so there isn’t new data to predict. One way to do prediction with the available data is to break it into a training part and a testing part. You make represent the training part with a model, and then use it to predict the left-out testing part. If you then swap the to parts and repeat the process, you’ll have a prediction for every data point. This would be called two-fold cross valdation because the data was broken into two parts.</p>
+<p>It’s more common to break the data into more than two parts - typically five or ten or one per data point. Then one part is taken as the testing part and all the others go into the training part. The result is five-fold or ten-fold, or leave-one-out cross validation.</p>
+<p>Let’s use cross-validation to do model selection. The model this time is a representation of the number of births per day in 1978 in the United States.</p>
+<div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb399-1"><a href="statistics.html#cb399-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the data</span></span>
+<span id="cb399-2"><a href="statistics.html#cb399-2" aria-hidden="true" tabindex="-1"></a><span class="fu">gf_point</span>( births <span class="sc">~</span> day_of_year, <span class="at">color =</span> <span class="sc">~</span>wknd, <span class="at">data=</span>Births78 )</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/cv-1.png" width="672" /></p>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb400-1"><a href="statistics.html#cb400-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make models with two through ten knots in the spline for day_of_year</span></span>
+<span id="cb400-2"><a href="statistics.html#cb400-2" aria-hidden="true" tabindex="-1"></a>bmod2 <span class="ot">=</span> <span class="fu">lm</span>( births <span class="sc">~</span> wknd <span class="sc">+</span> <span class="fu">ns</span>(day_of_year, <span class="dv">2</span>), <span class="at">data=</span>Births78 )</span>
+<span id="cb400-3"><a href="statistics.html#cb400-3" aria-hidden="true" tabindex="-1"></a>bmod4 <span class="ot">=</span> <span class="fu">lm</span>( births <span class="sc">~</span> wknd <span class="sc">+</span> <span class="fu">ns</span>(day_of_year, <span class="dv">4</span>), <span class="at">data=</span>Births78 )</span>
+<span id="cb400-4"><a href="statistics.html#cb400-4" aria-hidden="true" tabindex="-1"></a>bmod6 <span class="ot">=</span> <span class="fu">lm</span>( births <span class="sc">~</span> wknd <span class="sc">+</span> <span class="fu">ns</span>(day_of_year, <span class="dv">6</span>), <span class="at">data=</span>Births78 )</span>
+<span id="cb400-5"><a href="statistics.html#cb400-5" aria-hidden="true" tabindex="-1"></a>bmod8 <span class="ot">=</span> <span class="fu">lm</span>( births <span class="sc">~</span> wknd <span class="sc">+</span> <span class="fu">ns</span>(day_of_year, <span class="dv">8</span>), <span class="at">data=</span>Births78 )</span>
+<span id="cb400-6"><a href="statistics.html#cb400-6" aria-hidden="true" tabindex="-1"></a>bmod10 <span class="ot">=</span> <span class="fu">lm</span>( births <span class="sc">~</span> wknd <span class="sc">+</span> <span class="fu">ns</span>(day_of_year, <span class="dv">10</span>), <span class="at">data=</span>Births78 )</span>
+<span id="cb400-7"><a href="statistics.html#cb400-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb400-8"><a href="statistics.html#cb400-8" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the 2 and 10 knot models</span></span>
+<span id="cb400-9"><a href="statistics.html#cb400-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_plot</span>(bmod2, births<span class="sc">~</span>day_of_year <span class="sc">+</span> wknd) <span class="sc">+</span></span>
+<span id="cb400-10"><a href="statistics.html#cb400-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping=</span><span class="fu">aes</span>(<span class="at">x=</span>day_of_year, <span class="at">y=</span>births, <span class="at">color=</span>wknd), <span class="at">data=</span>Births78)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/cv-2.png" width="672" /></p>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="statistics.html#cb401-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_plot</span>(bmod10, births<span class="sc">~</span>day_of_year <span class="sc">+</span> wknd) <span class="sc">+</span></span>
+<span id="cb401-2"><a href="statistics.html#cb401-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping=</span><span class="fu">aes</span>(<span class="at">x=</span>day_of_year, <span class="at">y=</span>births, <span class="at">color=</span>wknd), <span class="at">data=</span>Births78)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/cv-3.png" width="672" /></p>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb402-1"><a href="statistics.html#cb402-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cross-validate to choose the best model</span></span>
+<span id="cb402-2"><a href="statistics.html#cb402-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_cv</span>( bmod2, bmod4, bmod6, bmod8, bmod10, <span class="at">k=</span><span class="fu">nrow</span>(Births78), <span class="at">ntrials=</span><span class="dv">1</span> )</span></code></pre></div>
+<pre><code>##        mse  model
+## 1 190815.9  bmod2
+## 2 143305.1  bmod4
+## 3 104875.7  bmod6
+## 4 106094.2  bmod8
+## 5 107130.5 bmod10</code></pre>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="statistics.html#cb404-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the data</span></span>
+<span id="cb404-2"><a href="statistics.html#cb404-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mod_plot</span>(bmod6, births<span class="sc">~</span>day_of_year <span class="sc">+</span> wknd) <span class="sc">+</span></span>
+<span id="cb404-3"><a href="statistics.html#cb404-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping=</span><span class="fu">aes</span>(<span class="at">x=</span>day_of_year, <span class="at">y=</span>births, <span class="at">color=</span>wknd), <span class="at">data=</span>Births78)</span></code></pre></div>
+<p><img src="17_basic-stats_files/figure-html/cv-4.png" width="672" /></p>
+<p>Cross-validation suggests that six knots is the ideal number, because it has the smallest mean-squared error (mse). The resulting model looks good, too.</p>
+
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-anKeyplayerPackageLocating2016" class="csl-entry">
+An, Weihua, and Yu-Hsin Liu. 2016. <span>“Keyplayer: <span>An R Package</span> for <span>Locating Key Players</span> in <span>Social Networks</span>.”</span> <em>The R Journal</em> 8 (1): 257. <a href="https://doi.org/10.32614/RJ-2016-018">https://doi.org/10.32614/RJ-2016-018</a>.
+</div>
+<div id="ref-balabanApplicationsGraphTheory1985" class="csl-entry">
+Balaban, Alexandru T. 1985. <span>“Applications of Graph Theory in Chemistry.”</span> <em>Journal of Chemical Information and Modeling</em> 25 (3): 334–43. <a href="https://doi.org/10.1021/ci00047a033">https://doi.org/10.1021/ci00047a033</a>.
+</div>
+<div id="ref-bassettNetworkNeuroscience2017" class="csl-entry">
+Bassett, Danielle S., and Olaf Sporns. 2017. <span>“Network Neuroscience.”</span> <em>Nature Neuroscience</em> 20 (3): 353–64. <a href="https://doi.org/10.1038/nn.4502">https://doi.org/10.1038/nn.4502</a>.
+</div>
+<div id="ref-fanGraphbasedMethodSocial2019" class="csl-entry">
+Fan, Chao, and Ali Mostafavi. 2019. <span>“A Graph-Based Method for Social Sensing of Infrastructure Disruptions in Disasters.”</span> <em>Computer-Aided Civil and Infrastructure Engineering</em> 34 (12): 1055–70. <a href="https://doi.org/10.1111/mice.12457">https://doi.org/10.1111/mice.12457</a>.
+</div>
+<div id="ref-kadushinUnderstandingSocialNetworks2012" class="csl-entry">
+Kadushin, Charles. 2012. <em>Understanding <span>Social Networks</span>: <span>Theories</span>, <span>Concepts</span>, and <span>Findings</span></em>. <span>New York, NY</span>: <span>Oxford University Press</span>.
+</div>
+<div id="ref-krebsMappingNetworksTerrorist2002" class="csl-entry">
+Krebs, Valdis E. 2002. <span>“Mapping Networks of Terrorist Cells.”</span> <em>Connections</em> 24 (3): 43–52.
+</div>
+<div id="ref-morenoWhoShallSurvive1953" class="csl-entry">
+Moreno, Jacob L. 1953. <span>“Who <span>Shall Survive</span>?: <span>Foundations</span> of <span>Sociometry</span>, <span>Group Psychotherapy</span> and <span>Sociodrama</span>.”</span> In. <span>Beacon, N.Y.</span>: <span>Beacon House Inc.</span>
+</div>
+<div id="ref-pageMethodNodeRanking2001" class="csl-entry">
+Page, Lawrence. 2001. Method for node ranking in a linked database. US6285999B1, issued September 2001. <a href="https://patents.google.com/patent/US6285999/en">https://patents.google.com/patent/US6285999/en</a>.
+</div>
+<div id="ref-robinsIntroductionExponentialRandom2007" class="csl-entry">
+Robins, Garry, Pip Pattison, Yuval Kalish, and Dean Lusher. 2007. <span>“An Introduction to Exponential Random Graph (p*) Models for Social Networks.”</span> <em>Social Networks</em>, Special <span>section</span>: <span>Advances</span> in <span>Exponential Random Graph</span> (p*) <span>Models</span>, 29 (2): 173–91. <a href="https://doi.org/10.1016/j.socnet.2006.08.002">https://doi.org/10.1016/j.socnet.2006.08.002</a>.
+</div>
+<div id="ref-robinsRecentDevelopmentsExponential2007" class="csl-entry">
+Robins, Garry, Tom Snijders, Peng Wang, Mark Handcock, and Philippa Pattison. 2007. <span>“Recent Developments in Exponential Random Graph (p*) Models for Social Networks.”</span> <em>Social Networks</em>, Special <span>section</span>: <span>Advances</span> in <span>Exponential Random Graph</span> (p*) <span>Models</span>, 29 (2): 192–215. <a href="https://doi.org/10.1016/j.socnet.2006.08.003">https://doi.org/10.1016/j.socnet.2006.08.003</a>.
+</div>
+<div id="ref-wassermanSocialNetworkAnalysis1994" class="csl-entry">
+Wasserman, Stanley, and Katherine Faust. 1994. <em>Social Network Analysis: <span>Methods</span> and Applications</em>. <span>Cambridge, UK</span>: <span>Cambridge University Press</span>.
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="network-analysis.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/17_basic-stats.rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/17_basic-stats.rmd",
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
