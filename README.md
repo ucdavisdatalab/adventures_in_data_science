@@ -20,21 +20,19 @@ readings should be uploaded directly to Canvas or linked from the syllabus.
 To make alterations to the reader:
 
 1. Clone this repo.
-2. Edit one of the existing chapter `.Rmd` files or create a new one. The
+2. Create a new R markdown file (`.rmd`) for your chapter, or edit one of the existing ones. The
    chapter files are at the top level of the repository. They follow the naming
    scheme `##_topic-of-chapter.Rmd` (an exception to this naming scheme is
    `index.Rmd`, which contains the reader's index page). You should enter your
    text, links, and any supporting media directly into the file.
-3. Run the script `gen_html.R` to regenerate the HTML files in the `docs/`
+3. Make sure your R markdown file begins with a first-level header (like `# This`), as this is how your chapter will be named in the navigation sidebar. Further section titles should be hierarchically under this one, so begin with second-level headers (like `## This`) or below (just keep adding a `#` symbol for each level of hierarchy.)
+4. Run the script `gen_html.R` to regenerate the HTML files in the `docs/`
    directory. You can do this in the shell with `./gen_html.R` or in R with
    `source("gen_html.R")`.
-4. Once you have made your changes, commit and push both the files you edited
+5. Once you have made your changes, commit and push both the files you edited
    and the `docs/` directory. The live web page will update accordingly.
 
-Follow the established style and formatting conventions in chapter files,
-including those for linking to media on the `ds.lib` server. On the `ds.lib`
-server, the course media directory is in the public-facing portion of the
-DataLab website (`ds.lib.ucdavis.edu`). Outbound URLs that point to course
+You can put course media in the `data` and `img` folders. Images that are generated within your R markdown will be automatically given a location in the `docs/` folder, which is handled by step (5) above, so there is no need to specifically link to those. Outbound URLs that point to course
 media should be given their own, sequentially numbered variable (`url1`,
 `url2`, ..., `url26`, etc.) in the file `_common.R` and should then be called
 from that variable in the body text of the chapter files.
@@ -46,7 +44,20 @@ every time you re-generate the website. To cache a code block, add
 blocks, like so: `{r code_block_label, cache=TRUE}`. Cached files will 
 live under the `_bookdown_files/` directory.
 
-Summary of important files:
+## Required packages:
+When building the course reader, all of the code used to make all of the chapters will be run in your local R environment. That means you need to be able to run all of the code for chapters that were developed by any of the instructors. In particular, you will need to have installed all of the R packages that are used anywhere in the reader. During the site build process, R will quit with an error when it is asked to used a package that isn't installed on your machine. When this happens, you can look at what package was called for, and then install it before attempting a new build. However, this is a slow and frustrating process, so the following list of packages should be installed before trying to build the site (please add any that your chapter uses):
+
+- `pdftools`
+- `tesseract`
+- `statnet`
+- `kableExtra`
+- `visNetwork`
+- `remotes`
+- `mosaic`
+- `mosaicModels` : best installed from Github to avoid a bug on the CRAN version. `remotes::install_github( "MOSAICProject/mosaicModels" )`
+- `ggformula`
+
+## Summary of important files:
 
 * `docs` -- output HTML files
 * `img` -- image files used in chapters
