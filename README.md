@@ -29,8 +29,10 @@ To make alterations to the reader:
 4. Run the script `gen_html.R` to regenerate the HTML files in the `docs/`
    directory. You can do this in the shell with `./gen_html.R` or in R with
    `source("gen_html.R")`.
-5. Once you have made your changes, commit and push both the files you edited
-   and the `docs/` directory. The live web page will update accordingly.
+5. Once you have made your changes, commit and push the following. The live web page will update automatically after a few minutes.
+  - Files you directly edited
+  - The `docs/` directory.
+  - The `_bookdown_files/` directory (contains the R markdown cache)
 
 You can put course media in the `data` and `img` folders. Images that are generated within your R markdown will be automatically given a location in the `docs/` folder, which is handled by step (5) above, so there is no need to specifically link to those. Outbound URLs that point to course
 media should be given their own, sequentially numbered variable (`url1`,
