@@ -58,6 +58,8 @@ When building the course reader, all of the code used to make all of the chapter
 - `mosaic`
 - `mosaicModels` : best installed from Github to avoid a bug on the CRAN version. `remotes::install_github( "MOSAICProject/mosaicModels" )`
 - `ggformula`
+* ggplot2
+* tidyr
 
 ## Summary of important files:
 

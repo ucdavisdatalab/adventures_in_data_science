@@ -1,0 +1,583 @@
+Data Forensics
+==============
+
+After this lesson, you should be able to:
+
+* Cleaning:
+  + Explain what it means for a data set to be "tidy"
+  + Pivot columns in a data set to make it tidy
+  + Separate values in a column that contains multiple values per cell
+  + Convert columns to appropriate data types
+* Forensics:
+  + Locate and count missing values in a data set
+  + Explain what it means for a value to be an "outlier"
+  + Locate and count outliers in a data set
+
+
+
+Introduction
+------------
+
+This lesson focuses on how to identify, diagnose, and fix potential problems in
+tabular data sets. There are several different kinds of problems that can
+arise:
+
+* Structural (data are transposed or rotated)
+* Data types (some columns have the wrong types)
+* Missing values
+* Outliers (extreme values)
+
+We'll see examples of each of these.
+
+
+
+Tidy Data
+---------
+
+The Tidyverse is so named because many functions in Tidyverse packages require
+data frames that are in _tidy_ form. Before we see the requirements for a data
+set to be tidy, we need to define or review some terminology from statistics.
+
+A _feature_ (also called a _covariate_ or a _variable_) is measurement of
+something, usually across multiple subjects. For example, we might decide to
+measure the heights of everyone in the class. Each person in the class is a
+subject, and the height measurement is a feature. Features don't have to be
+quantitative. If we also asked each person their favorite color, then favorite
+color would be another feature in our data set. Features are usually, but not
+always, the columns in a tabular data set.
+
+An _observation_ is a set of features measured for a single subject or at a
+single time. So in the preceding example, the combined height and favorite
+color measurement for one student is one observation. Observations are usually,
+but not always, the rows in a tabular data set.
+
+Now we can define what it means to be tidy. A tabular data set is tidy if and
+only if:
+
+1. Each observation has its own row.
+2. Each feature has its own column.
+3. Each value has its own cell.
+
+These rules ensure that all of the values are visually organized and are easy
+to access with R's built-in indexing operations. For instance, the `$` operator
+gets a column, and in a tidy data set, columns are features. The rules also
+reflect the way statisticians traditionally arrange tabular data sets.
+
+Let's look at some examples of tidy and untidy data sets. The **tidyr** package
+provides examples, and as we'll see later, it also provides functions to make
+untidy data sets tidy. As usual, we first need to load the package:
+
+```{r}
+# install.packages("tidyr")
+library(tidyr)
+```
+
+Let's start with an example of tidy data. This data set is included in the
+**tidyr** package and records the number of tuberculosis cases across several
+different countries and years:
+
+```{r}
+table1
+```
+
+When you first look at a data set, think about what the observations are and
+what the features are. If the data set comes with documentation, it may help
+you figure this out. Since this data set is a tidy data set, we already know
+each row is an observation and each column is a feature.
+
+Features in a data set tend to take one of two roles. Some features are
+_identifiers_ that describe the observed subject. These are usually not what
+the researcher collecting the data is trying to find out. For example, in the
+tuberculosis data set, the `country` and `year` columns are identifiers.
+
+Other features are _measurements_. These are usually the reason the researcher
+collected the data. For the tuberculosis data set, the `cases` and `population`
+columns are measurements.
+
+Thinking about whether features are identifiers or measurements can be helpful
+when you need to use **tidyr** to rearrange a data set.
+
+
+### Columns into Rows
+
+Tidy data rule 1 says each observation must have its own row. Here's a table
+that breaks rule 1:
+
+```{r}
+table4a
+```
+
+All of the numbers measure the same thing: cases. To make the data tidy, we
+must rotate the `1999` and `2000` column names into rows, one for each value in
+the columns. The new columns are `year` and `cases`.
+
+This process means less columns (generally) and more rows, so the data set
+becomes longer.
+
+We can use the `pivot_longer` function to rotate columns into rows. We need to
+specify:
+
+* Columns to rotate as `cols`.
+* Name(s) of new identifier column(s) as `names_to`.
+* Name(s) of new measuerment column(s) as `values_to`.
+
+Here's the code:
+```{r}
+pivot_longer(table4a, -country, names_to = "year", values_to = "cases")
+```
+
+
+#### How to Pivot Longer without **tidyr**
+
+You also can do this without **tidyr**:
+
+1. Subset columns to separate `1999` and `2000` into two data frames.
+2. Add a `year` column to each.
+3. Rename the `1999` and `2000` columns to `cases`.
+4. Stack the two data frames with `rbind`.
+
+```{r}
+# Step 1
+df99 = table4a[-3]
+df00 = table4a[-2]
+
+# Step 2
+df99$year = "1999"
+df00$year = "2000"
+
+# Step 3
+names(df99)[2] = "cases"
+names(df00)[2] = "cases"
+
+# Step 4
+rbind(df99, df00)
+```
+
+
+### Rows into Columns
+
+Tidy data rule 2 says each feature must have its own column. Let's look at a
+table that breaks rule 2:
+
+```{r}
+table2
+```
+
+Here the `count` column contains two different features: cases and population.
+To make the data tidy, we must rotate the `count` values into columns, one for
+each `type` value. New columns are `cases` and `population`.
+
+This process means less rows and more columns, so the data set becomes wider.
+
+We can use `pivot_wider` to rotate rows into columns. We need to specify:
+
+* Column names to rotate as `names_from`.
+* Measurements to rotate as `values_from`.
+
+Here's the code:
+
+```{r}
+pivot_wider(table2, names_from = type, values_from = count)
+```
+
+#### How to Pivot Wider without **tidyr**
+
+You can also do this without **tidyr**:
+
+1. Subset rows to separate `cases` and `population` values.
+2. Remove the `type` column from each.
+3. Rename the `count` column to `cases` and `population`.
+4. Merge the two subsets by matching `country` and `year`.
+
+```{r}
+# Step 1
+cases = table2[table2$type == "cases", ]
+pop = table2[table2$type == "population", ]
+
+# Step 2
+cases = cases[-3]
+pop = pop[-3]
+
+# Step 3
+names(cases)[3] = "cases"
+names(pop)[3] = "population"
+
+# Step 4
+tidy = cbind(cases, pop[3])
+```
+
+This code uses the `cbind` function to merge the two subsets, but it would be
+better to use the `merge` function. The `cbind` function does not use
+identifier columns to check that the rows in each subset are from the same
+observations.
+
+Run `vignette("pivot")` for more examples of how to use **tidyr**.
+
+
+### Separating Values
+
+Tidy data rule 3 says each value must have its own cell. Here's a table that
+breaks rule 3:
+
+```{r}
+table3
+```
+
+Cells in the `rate` column contain two values: cases and population. These are
+two different features, so to make the data set tidy, we need to separate them
+into two different columns.
+
+So how can we separate the `rate` column? The rate column is a character vector
+(you can check this with `str(table3)`), so we can use the string processing
+functions in the **stringr** package. In particular, we can use the
+`str_split_fixed` function:
+
+```{r}
+library(stringr)
+
+columns = str_split_fixed(table3$rate, fixed("/"), 2)
+```
+
+Now we have a character matrix where the values are in separate columns. Now we
+need to combine these with the original data frame. There are several ways to
+approach this, but to be safe, let's make a new data frame rather than
+overwrite the original. First we make a copy of the original:
+
+```{r}
+tidy_tb = table3
+```
+
+Next, we need to assign each column in the character matrix to a column in the
+`tidy_tb` data frame. Since the columns contain numbers, we can also use the
+`as.numeric` function to convert them to the correct data type:
+
+```{r}
+tidy_tb$cases = as.numeric(columns[, 1])
+tidy_tb$population = as.numeric(columns[, 2])
+```
+
+Extracting values, converting to appropriate data types, and then combining
+everything into a single data frame is an extremely common pattern in data
+science.
+
+Using **stringr** functions is the most general way to separate out values in a
+column, but the **tidyr** package also provides a function `separate`
+specifically for the case we just worked through. Either package is appropriate
+for solving this problem.
+
+
+
+Data Types
+----------
+
+Another problem that can arise with a data set is the data types of the
+columns. Recall that R's most common data types are:
+
+* character
+* complex
+* numeric
+* integer
+* logical
+
+For each of these data types, there's a corresponding `as.` function to convert
+to that data type. For instance, `as.character` converts an object to a string:
+
+```{r}
+x = 3.1
+class(x)
+
+y = as.character(x)
+y
+class(y)
+```
+
+It's also a good idea to convert categorical columns into factors with the
+`factor` function, and to convert columns of dates into dates (more about this
+in the next section).
+
+Let's look at some examples using a data set collected from the classified
+advertisements website Craigslist. The data set contains information from ads
+for rentals in the Sacramento area. First we need to load the data set:
+
+```{r}
+cl = read.csv("data/cl_rentals.csv")
+```
+
+Now we can use the `str` function to check the classes of the columns:
+```{r}
+str(cl)
+```
+
+Some of the columns have the wrong types. For instancce, the `pets`, `laundry`,
+and `parking` columns all contain categorical data, so they should be factors.
+Let's convert these:
+
+```{r}
+cl$pets = factor(cl$pets)
+cl$laundry = factor(cl$laundry)
+cl$parking = factor(cl$parking)
+```
+
+There's another way we could've done this that uses only two lines of code, no
+matter how many columns there are:
+
+```{r, eval = FALSE}
+cols = c("pets", "laundry", "parking")
+cl[cols] = lapply(cl[cols], factor)
+```
+
+You can use whichever approach is more convenient and makes more sense to you.
+If there were other columns to convert, we'd go through the same steps with the
+appropriate conversion function.
+
+The `read.csv` function does a good job at identifying columns of numbers, so
+it's rarely necessary to convert columns of numbers manually. However, you may
+have to do this for data you got some other way (rather than loading a file).
+For instance, it's common to make these conversions when scraping data from the
+web.
+
+
+### Dates
+
+The `as.Date` function converts times and dates to R's `Date` class. This is
+data type allows us to do computations on dates, such as sorting by date or
+finding the number of days between two dates.
+
+How does `as.Date` work? We can use it to convert just about any date. The
+syntax is:
+
+```
+as.Date(x, format)
+```
+
+The parameter `x` is a string to convert to a date. The parameter `format` is a
+string that explains how the date is formatted. In the format string, a percent
+sign `%` followed by a character is called a specification and has special
+meaning. The most useful are:
+
+Specification | Description      | January 29, 2015
+------------- | ---------------  | ----------------
+%Y            | 4-digit year     | 2015
+%y            | 2-digit year     | 15
+%m            | 2-digit month    | 01
+%B            | full month name  | January
+%b            | short month name | Jan
+%d            | day of month     | 29
+%%            | literal %        | %
+
+You can find a complete list in `?strptime`.
+
+Let's look at some examples:
+
+```r
+as.Date("January 29, 2015", "%B %d, %Y")
+
+as.Date("01292015", "%m%d%Y")
+
+x = c("Dec 13, 98", "Dec 12, 99", "Jan 1, 16")
+class(x)
+y = as.Date(x, "%b %d, %y")
+class(y)
+y
+
+# You can do arithmetic on dates.
+y[2] - y[1]
+```
+
+Now let's convert the `date_posted` column in the Craigslist data. It's always
+a good idea to test your format string before saving the results back into the
+data frame:
+```{r}
+dates = as.Date(cl$date_posted, "%Y-%m-%d %H:%M:%S")
+head(dates)
+```
+
+The `as.Date` function returns `NA` if conversion failed, so in this case it
+looks like the dates were converted correctly. Now we can save the dates back
+into the data frame. We can also do the same thing for the other column of
+dates, `date_updated`:
+
+```{r}
+cl$date_posted = dates
+
+dates = as.Date(cl$date_updated, "%Y-%m-%d %H:%M:%S")
+head(dates) # some NAs here because the column already contained NAs
+
+cl$date_updated = dates
+```
+
+
+Special Values
+--------------
+
+R has four special values:
+
+1. `NA`, which represents a _missing value_.
+2. `Inf`, which represents an infinite value.
+3. `NaN`, read as "not a number," which represents a value that's not defined
+   mathematically. For example: `0 / 0` or `sqrt(-1)`.
+4. `NULL`, which represents a value that's not defined in R.
+
+Any R vector can contain a missing value `NA`. Only numeric and complex vectors
+can contain `Inf` and `NaN` values. Vectors can't contain `NULL` values, but
+lists can. In a data frame, each column is a vector, so you'll generally only
+have to deal with `NA`, `Inf`, and `NaN`. Missing values are what you're most
+likely to encounter.
+
+Missing values represent unknown information. Using an unknown value in a
+computation produces an unknown result, so we say that missing values are
+contagious. Here's an example:
+
+```{r}
+NA + 3
+```
+
+Because of this property, testing equality on missing values with `==` returns
+a missing value! So if we want to check whether an object is the missing value,
+we have to use the `is.na` function instead:
+
+```{r}
+is.na(3)
+
+is.na(NA)
+```
+
+There are analogous functions `is.infinite`, `is.nan`, and `is.null` for
+checking whether an object is one of the other special values.
+
+The first time you work with a data set, it's a good idea to check for special
+values. If too much data is missing, it might not be possible to produce useful
+visualizations and statistics.
+
+We can use `is.na` together with the `table` function to check how many values
+are missing in a column. Let's try it with some of the columns in the
+Craigslist data:
+
+```{r}
+table(is.na(cl$parking))
+
+table(is.na(cl$sqft))
+```
+
+Some people prefer to use `is.na` with the `sum` function to count missing
+values, so you may see that as well. The `summary` function is another way to
+count missing values, but keep in mind that it only shows the missing values
+for some data types:
+
+```{r}
+summary(cl)
+```
+
+Finally, you can use `is.na` with the `which` function to get the specific
+positions of elements that are missing in a vector or column:
+
+```{r}
+which(is.na(cl$sqft))
+
+cl[14, ]
+```
+
+
+### Reasoning about Missing Values
+
+If your data contains missing values, it's important to think about why the
+values are missing. Statisticians use two different terms to describe why data
+is missing:
+
+* missing at random (MAR)
+* missing not at random (MNAR) - causes bias!
+
+When values are _missing at random_, the cause for missingness is not related
+to any of the other features. This is rare in practice. For example, if people
+in a food survey accidentally overlook some questions.
+
+When values are _missing not at random_, the cause for missingness depends on
+other features. These features may or may not be in the data set. Think of this
+as a form of censorship. For example, if people in a food survey refuse to
+report how much sugar they ate on days where they ate junk food, data is
+missing not at random. Values MNAR can bias an analysis.
+
+The default way to handle missing values in R is to ignore them. This is just a
+default, not necessarily the best or even an appropriate way to deal with them.
+You can remove missing values from a data set by indexing:
+
+```{r}
+cl_no_sqft_na = cl[!is.na(cl$sqft), ]
+
+head(cl_no_sqft_na)
+```
+
+The `na.omit` function is less precise than indexing, because it removes rows
+that have a missing value in _any_ column. This means lots of information gets
+lost.
+
+Another way to handle missing values is to _impute_, or fill in, the values
+with estimates based on other data in the data set. We won't get into the
+details of how to impute missing values here, since it is a fairly deep
+subject. Generally it is safe to impute MAR values, but not MNAR values.
+
+
+
+Outliers
+--------
+
+An _outlier_ is an anomalous or extreme value in a data set. We can picture
+this as a value that's far away from most of the other values. Sometimes
+outliers are a natural part of the data set. In other situations, outliers can
+indicate errors in how the data were measured, recorded, or cleaned.
+
+There's no specific definition for "extreme" or "far away". A good starting
+point for detecting outliers is to make a plot that shows how the values are
+distributed. Box plots and density plots work especially well for this:
+
+```{r}
+library(ggplot2)
+
+ggplot(cl, aes(x = sqft)) + geom_boxplot()
+```
+
+Statisticians tend to use the rule of thumb that any value more than 3 standard
+deviations away from the mean is an outlier. You can use the `scale` function
+to compute how many standard deviations the elements in a column are from their
+mean:
+
+```{r}
+z = scale(cl$sqft)
+head(z)
+
+which(z <= -3 | 3 <= z)
+```
+
+Be careful to think about what your specific data set measures, as this
+definition isn't appropriate in every situation.
+
+How can you handle outliers? First, try inspecting other features from the row
+to determine whether the outlier is a valid measurement or an error. When an
+outlier is valid, keep it.
+
+If the outlier interferes with a plot you want to make, you can adjust the x
+and y limits on plots as needed to "ignore" the outlier. Make sure to mention
+this in the plot's title or caption.
+
+When an outlier is not valid, first try to correct it. For example:
+
+* Correct with a different covariate from the _same observation_.
+* Estimate with a mean or median of similar observations. This is another
+  example of imputing values.
+
+For example, in the Craigslist data, we can use the `text` column to try to
+correct outliers:
+
+```{r}
+cat(cl$text[1261])
+```
+
+Based on the text, this apartment is 819 square feet, not 8190 square feet. So
+we can reassign the value:
+```{r}
+cl$sqft[1261] = 819
+```
+
+If other features don't help with correction, try getting information from
+external sources. If you can't correct the outlier but know it's invalid,
+replace it with a missing value `NA`.
