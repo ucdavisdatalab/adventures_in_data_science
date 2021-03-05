@@ -7,6 +7,38 @@
 * Course reader: <https://ucdavisdatalab.github.io/adventures_in_data_science/index.html>
 * Course reader storage: <https://datalab.ucdavis.edu/adventures-in-datascience>
 
+## Requirements & Setup
+
+This repo uses [Git Large File Storage][git-lfs] (git LFS) for large files. If
+you don't have git LFS installed, [download it][git-lfs] and run the installer.
+Then in the shell (in any directory), run:
+
+```sh
+git lfs install
+```
+
+Then your one-time setup of git LFS is done. Next, clone this repo with `git
+clone`. The large files will be downloaded automatically with the rest of the
+repo.
+
+[git-lfs]: https://git-lfs.github.com/
+
+When building the course reader, all of the code used to make all of the chapters will be run in your local R environment. That means you need to be able to run all of the code for chapters that were developed by any of the instructors. In particular, you will need to have installed all of the R packages that are used anywhere in the reader. During the site build process, R will quit with an error when it is asked to used a package that isn't installed on your machine. When this happens, you can look at what package was called for, and then install it before attempting a new build. However, this is a slow and frustrating process, so the following list of packages should be installed before trying to build the site (please add any that your chapter uses):
+
+- `pdftools`
+- `tesseract`
+- `statnet`
+- `kableExtra`
+- `visNetwork`
+- `remotes`
+- `mosaic`
+- `mosaicModels` : best installed from Github to avoid a bug on the CRAN
+  version. `remotes::install_github("ProjectMOSAIC/mosaicModel")`
+- `ggformula`
+- ggplot2
+- tidyr
+
+
 ## Protocols
 
 The course reader is a live webpage, hosted through GitHub. While you are free
@@ -109,38 +141,6 @@ automatically intercede as needed.
 GitHub provides 1 GB of storage and 1 GB of monthly bandwidth free per repo for
 large files. If your large file is more than 50 MB, check with the other
 contributors before adding it.
-
-
-## Requirements & Setup
-
-This repo uses [Git Large File Storage][git-lfs] (git LFS) for large files. If
-you don't have git LFS installed, [download it][git-lfs] and run the installer.
-Then in the shell (in any directory), run:
-
-```sh
-git lfs install
-```
-
-Then your one-time setup of git LFS is done. Next, clone this repo with `git
-clone`. The large files will be downloaded automatically with the rest of the
-repo.
-
-[git-lfs]: https://git-lfs.github.com/
-
-When building the course reader, all of the code used to make all of the chapters will be run in your local R environment. That means you need to be able to run all of the code for chapters that were developed by any of the instructors. In particular, you will need to have installed all of the R packages that are used anywhere in the reader. During the site build process, R will quit with an error when it is asked to used a package that isn't installed on your machine. When this happens, you can look at what package was called for, and then install it before attempting a new build. However, this is a slow and frustrating process, so the following list of packages should be installed before trying to build the site (please add any that your chapter uses):
-
-- `pdftools`
-- `tesseract`
-- `statnet`
-- `kableExtra`
-- `visNetwork`
-- `remotes`
-- `mosaic`
-- `mosaicModels` : best installed from Github to avoid a bug on the CRAN
-  version. `remotes::install_github("ProjectMOSAIC/mosaicModel")`
-- `ggformula`
-- ggplot2
-- tidyr
 
 ## Repository Layout
 
