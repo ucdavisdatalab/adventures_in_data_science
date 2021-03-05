@@ -106,6 +106,10 @@ Now that your large is registered with git LFS, you can add, commit, and push
 the file with git the same way you would any other file, and git LFS will
 automatically intercede as needed.
 
+GitHub provides 1 GB of storage and 1 GB of monthly bandwidth free per repo for
+large files. If your large file is more than 50 MB, check with the other
+contributors before adding it.
+
 
 ## Requirements & Setup
 
