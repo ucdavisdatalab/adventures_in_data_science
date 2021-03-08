@@ -793,6 +793,17 @@ Here's _Dracula_:
 rownames(tfidf_df[order(tfidf_df$Dracula, decreasing=TRUE)[1:50],])
 ```
 
+Note here that some contractions have slipped through. Lemmatizing would take 
+care of this, though we could also go back to the corpus object and add in 
+another step with `tm_map()` and then make another DTM:
+
+```{r eval=FALSE}
+cleaned_corpus <- tm_map(cleaned_corpus, function(x) str_remove_all(x, "\\'s", " "))
+```
+
+We won't bother to do this whole process now, but it's a good example of how 
+iterative the preprocessing workflow is.
+
 Here's _Frankenstein_:
 
 ```{r}

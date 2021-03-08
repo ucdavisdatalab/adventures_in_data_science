@@ -901,7 +901,7 @@ term frequency.</p>
 <span id="cb511-3"><a href="working-with-unstructured-data.html#cb511-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb511-4"><a href="working-with-unstructured-data.html#cb511-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span> </span>
 <span id="cb511-5"><a href="working-with-unstructured-data.html#cb511-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;Top 50 words in Wuthering Heights&quot;</span>, <span class="at">x=</span><span class="st">&quot;Word&quot;</span>, <span class="at">y=</span><span class="st">&quot;Term Frequency&quot;</span>)</span></code></pre></div>
-<p><img src="19_unstructured_data_files/figure-html/unnamed-chunk-27-1.png" width="960" /></p>
+<p><img src="19_unstructured-data_files/figure-html/unnamed-chunk-27-1.png" width="960" /></p>
 <p>This is a good start for creating a high-level view of the novel, but further
 tuning might be in order. We’ve already mentioned “mrs” and “mr” as two words
 that we could cut out of the text. Another option would be to collapse these
@@ -1223,7 +1223,7 @@ cover the entire corpus:</p>
 <span id="cb540-2"><a href="working-with-unstructured-data.html#cb540-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb540-3"><a href="working-with-unstructured-data.html#cb540-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span> </span>
 <span id="cb540-4"><a href="working-with-unstructured-data.html#cb540-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;Top 50 words in 18 Nineteenth-Century Novels&quot;</span>, <span class="at">x=</span><span class="st">&quot;Word&quot;</span>, <span class="at">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
-<p><img src="19_unstructured_data_files/figure-html/unnamed-chunk-46-1.png" width="960" /></p>
+<p><img src="19_unstructured-data_files/figure-html/unnamed-chunk-46-1.png" width="960" /></p>
 <p>This looks good, though the words here are all pretty common. In fact, many of
 them are simply the most common words in the English language. “Time” is the
 64th-most frequent word in English; “make” is the 50th. As it stands, then,
@@ -1269,7 +1269,7 @@ their tf–idf scores.</p>
 <span id="cb543-2"><a href="working-with-unstructured-data.html#cb543-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
 <span id="cb543-3"><a href="working-with-unstructured-data.html#cb543-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span> </span>
 <span id="cb543-4"><a href="working-with-unstructured-data.html#cb543-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;Words with the 50-highest tf--idf scores in 18 Nineteenth-Century Novels&quot;</span>, <span class="at">x=</span><span class="st">&quot;Word&quot;</span>, <span class="at">y=</span><span class="st">&quot;TF-IDF&quot;</span>)</span></code></pre></div>
-<p><img src="19_unstructured_data_files/figure-html/unnamed-chunk-49-1.png" width="960" /></p>
+<p><img src="19_unstructured-data_files/figure-html/unnamed-chunk-49-1.png" width="960" /></p>
 <p>Lots of names! That makes sense: heavily weighted terms in these novels are
 going to be terms that are unique to each text. Main characters’ names are used
 a lot in novels, and the main character names in these novels are all unique.</p>
@@ -1353,8 +1353,14 @@ the top most <em>unique</em> terms in that novel.</p>
 ## [36] &quot;wolves&quot;       &quot;tomorrow&quot;     &quot;czarina&quot;      &quot;telegram&quot;     &quot;boxes&quot;       
 ## [41] &quot;today&quot;        &quot;holmwood&quot;     &quot;hypnotic&quot;     &quot;garlic&quot;       &quot;vampire&quot;     
 ## [46] &quot;phonograph&quot;   &quot;transylvania&quot; &quot;cliff&quot;        &quot;piccadilly&quot;   &quot;slovaks&quot;</code></pre>
+<p>Note here that some contractions have slipped through. Lemmatizing would take
+care of this, though we could also go back to the corpus object and add in
+another step with <code>tm_map()</code> and then make another DTM:</p>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="working-with-unstructured-data.html#cb551-1" aria-hidden="true" tabindex="-1"></a>cleaned_corpus <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(cleaned_corpus, <span class="cf">function</span>(x) <span class="fu">str_remove_all</span>(x, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&#39;s&quot;</span>, <span class="st">&quot; &quot;</span>))</span></code></pre></div>
+<p>We won’t bother to do this whole process now, but it’s a good example of how
+iterative the preprocessing workflow is.</p>
 <p>Here’s <em>Frankenstein</em>:</p>
-<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="working-with-unstructured-data.html#cb551-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>Frankenstein, <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],])</span></code></pre></div>
+<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="working-with-unstructured-data.html#cb552-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>Frankenstein, <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],])</span></code></pre></div>
 <pre><code>##  [1] &quot;clerval&quot;      &quot;justine&quot;      &quot;elizabeth&quot;    &quot;felix&quot;        &quot;geneva&quot;      
 ##  [6] &quot;frankenstein&quot; &quot;safie&quot;        &quot;cottagers&quot;    &quot;dæmon&quot;        &quot;ingolstadt&quot;  
 ## [11] &quot;kirwin&quot;       &quot;agatha&quot;       &quot;victor&quot;       &quot;ernest&quot;       &quot;mont&quot;        
@@ -1366,7 +1372,7 @@ the top most <em>unique</em> terms in that novel.</p>
 ## [41] &quot;leghorn&quot;      &quot;monster&quot;      &quot;rhine&quot;        &quot;magistrate&quot;   &quot;belrive&quot;     
 ## [46] &quot;lavenza&quot;      &quot;salêve&quot;       &quot;saville&quot;      &quot;strasburgh&quot;   &quot;werter&quot;</code></pre>
 <p>And here’s <em>Sense and Sensibility</em>:</p>
-<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="working-with-unstructured-data.html#cb553-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>SenseandSensibility, <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],])</span></code></pre></div>
+<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="working-with-unstructured-data.html#cb554-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>SenseandSensibility, <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],])</span></code></pre></div>
 <pre><code>##  [1] &quot;elinor&quot;       &quot;marianne&quot;     &quot;dashwood&quot;     &quot;jennings&quot;     &quot;willoughby&quot;  
 ##  [6] &quot;lucy&quot;         &quot;brandon&quot;      &quot;barton&quot;       &quot;ferrars&quot;      &quot;colonel&quot;     
 ## [11] &quot;mrs&quot;          &quot;marianne&#39;s&quot;   &quot;edward&quot;       &quot;middleton&quot;    &quot;elinor&#39;s&quot;    
@@ -1448,7 +1454,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/19_unstructured_data.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/19_unstructured-data.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -1456,7 +1462,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/19_unstructured_data.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/19_unstructured-data.Rmd",
 "text": null
 },
 "download": null,
