@@ -28,6 +28,7 @@ repo.
 ### Install Necessary Packages
 When building the course reader, all of the code used to make all of the chapters will be run in your local R environment. That means you need to be able to run all of the code for chapters that were developed by any of the instructors. In particular, you will need to have installed all of the R packages that are used anywhere in the reader. During the site build process, R will quit with an error when it is asked to used a package that isn't installed on your machine. When this happens, you can look at what package was called for, and then install it before attempting a new build. However, this is a slow and frustrating process, so the following list of packages should be installed before trying to build the site (please add any that your chapter uses):
 
+* bookdown
 * cluster
 * dplyr
 * ggforce
