@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>9 File Input and Output | Adventures in Data Science</title>
-  <meta name="description" content="9 File Input and Output | Adventures in Data Science" />
+  <title>20 Data Forensics and Cleaning - Geospatial Data | Adventures in Data Science</title>
+  <meta name="description" content="20 Data Forensics and Cleaning - Geospatial Data | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="9 File Input and Output | Adventures in Data Science" />
+  <meta property="og:title" content="20 Data Forensics and Cleaning - Geospatial Data | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="9 File Input and Output | Adventures in Data Science" />
+  <meta name="twitter:title" content="20 Data Forensics and Cleaning - Geospatial Data | Adventures in Data Science" />
   
   
   
@@ -32,15 +32,15 @@
 <meta name="author" content="Dr. Michele Tobias" />
 
 
-<meta name="date" content="2021-03-09" />
+<meta name="date" content="2021-03-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="packages-and-functions.html"/>
-<link rel="next" href="strings-and-regular-expressions.html"/>
+<link rel="prev" href="working-with-unstructured-data.html"/>
+
 <script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -525,161 +525,514 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="file-input-and-output" class="section level1" number="9">
-<h1><span class="header-section-number">9</span> File Input and Output</h1>
-<p>This lesson will cover some standard functions for reading and writing data in R.</p>
-<div id="objectives" class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> Objectives</h2>
+<div id="data-forensics-and-cleaning---geospatial-data" class="section level1" number="20">
+<h1><span class="header-section-number">20</span> Data Forensics and Cleaning - Geospatial Data</h1>
+<div id="learning-objectives-3" class="section level2" number="20.1">
+<h2><span class="header-section-number">20.1</span> Learning Objectives</h2>
+<p>This lecture is designed to introduce you to the basics of geospatial data.</p>
+<p>By the end of this lecture you will</p>
 <ul>
-<li>getting and setting working directory</li>
-<li>save and load R objects to/from disk</li>
-<li>read and write tabular data</li>
-<li>read data from a url</li>
+<li>understand the main components of geospatial data are locations, attributes, and a coordinate reference system</li>
+<li>understand how geospatial data can be represented with different data models</li>
+<li>understand that the data structures we were already familiar with can be modified to contain spatial data.</li>
+<li>learn some common processes for cleaning our geospatial data</li>
 </ul>
 </div>
-<div id="basic-idea" class="section level2" number="9.2">
-<h2><span class="header-section-number">9.2</span> Basic Idea</h2>
-<p>As a data scientist, you will constantly be reading from and writing to files.
-Generally you are given some dataset that you need to analyze and report on.
-This means that you need to load the data into R, run some code, and finally save some outputs.
-This is all done with files.</p>
+<div id="what-is-geospatial-data" class="section level2" number="20.2">
+<h2><span class="header-section-number">20.2</span> What is Geospatial Data?</h2>
+<p>Geospatial data (also known as spatial data, GIS data, and other names) is information that can be attributed to a real-world location or can relate to each other in space.</p>
+<p>Technically, “geospatial” refers to locations on Earth, while “spatial” can be locations anywhere, including other planets or even ficticious places (like J.R.R. Tolkien’s hand-drawn maps for his novels), but quite often the terms are used interchangably.</p>
+<p>You use geospatial data every day on your smart phone through spatially-enabled apps like Google Maps, food delivery apps, fitness trackers, weather, or games like Pokemon Go.</p>
+<p><strong>(geo)Spatial Data = Attributes + Locations</strong></p>
+<p><strong>Location = Coordinate Reference System (CRS) + Coordinates</strong></p>
+<p>So…</p>
+<p><strong>(geo)Spatial Data = Attributes + Coordinate Reference System (CRS) + Coordinates</strong></p>
+<div id="attributes-1" class="section level3" number="20.2.1">
+<h3><span class="header-section-number">20.2.1</span> Attributes</h3>
+<p>Attributes are pieces of information about a location. For example, if I’m mapping gas stations, my attributes might be something like the price of gas, the address of the station, and the company that runs it (Shell, Arco, etc.). This isn’t the same thing as metadata, which is information about the entire dataset such as who made the data, when they made it, and how the data was created.</p>
 </div>
-<div id="file-formats" class="section level2" number="9.3">
-<h2><span class="header-section-number">9.3</span> File Formats</h2>
-<p>When people talk about binary files, vs text files what they really mean is - is it human readable?
-A text file should have text data that a human can read with a text editor.
-A binary file has binary data that a human can’t really read, but the appropriate software can.</p>
+<div id="coordinate-reference-system" class="section level3" number="20.2.2">
+<h3><span class="header-section-number">20.2.2</span> Coordinate Reference System</h3>
+<p>The earth is generally round. Maps are generally flat, with a few exceptions. If you were to try to flatten out the earth, you would create some fairly major distortions. Next time you eat an orange or a tangerine, try taking off the peel and then try to create a flat solid sheet of peel from it. You’ll end up needing to cut it or smash it to get a flat surface. The same things happens to geospatial data when we try to translate it from a round globe to a flat map. But, there are ways to minimize distortions.</p>
+<p>A <strong>coordinate reference system</strong> (sometimes called a <strong>projection</strong>) is a set of mathematical formulas that translate measurements on a round globe to a flat piece of paper. The coordinate reference system also specifies the linear units of measure (i.e. feet, meters, decimal degrees, or something else) and a set of reference lines.</p>
+<p>For our purposes, we can think of coordinate reference systems coming in two flavors. One is <strong>geographic coordinate systems</strong>. For simplicity’s sake, we can think of these as coordinate reference systems that apply to latitude and longitude coordinates. <strong>Projected coordinate systems</strong> translate latitude and longitude coordinates into linear units from a specified baseline and aim to reduce some aspect of the distortion introduced in the round to flat translation. (I am very much simplifying this concept so we can learn the basics without getting overwhelmed.)</p>
+<p>To work with more than one digital spatial dataset, the coordinate reference systems must match. If they don’t match, you can transform your data into a different coordinate reference system.</p>
 </div>
-<div id="filesystems-and-paths" class="section level2" number="9.4">
-<h2><span class="header-section-number">9.4</span> Filesystems and Paths</h2>
-<p>At a high level, files are information stored on a computer.
-Each file has a name, and a unique file path.
-A filepath is the location of the file in the storage device.
-A file name as two parts: the name and the file extension.</p>
-<p>The file extension (everything after the .) is meant to indicate to the user (you) and the operating system what the file contains.
-This hint means you often times don’t need to open the file to know what kind of data it has.
-However, the extension is not enforced by anything, its just a useful suggestion.</p>
-<p>Paths can be relative or absolute.
-An absolute path is the full path through the filesystem to reach a file.
-A relative path is the path from some starting point to the file you want to reach.
-You can consider a relative path as something that needs to be combined with another path to reach a file.</p>
-</div>
-<div id="get-and-set-working-directory" class="section level2" number="9.5">
-<h2><span class="header-section-number">9.5</span> get and set working directory</h2>
-<p>Before we begin, we will get and set our working directory in R.
-You can think of the working directory as the part that gets combined with the relative path.</p>
-<p><code>getwd()</code> will return the absolute file path of the working directory</p>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="file-input-and-output.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
-<p>Call setwd to set the working directory to a path you specify as an input argument.</p>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="file-input-and-output.html#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;~/Documents/file_io/&quot;</span>) <span class="co"># notice the argument</span></span>
-<span id="cb83-2"><a href="file-input-and-output.html#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
-<p>A really useful function in R is list.files(), which lists all the files at a given path.
-Listing the files should confirm for us that we are in the right place.</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="file-input-and-output.html#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>() </span></code></pre></div>
-</div>
-<div id="saving-and-loading-r-data" class="section level2" number="9.6">
-<h2><span class="header-section-number">9.6</span> saving and loading R data</h2>
-<div id="rds" class="section level3" number="9.6.1">
-<h3><span class="header-section-number">9.6.1</span> rds</h3>
-<p>A simple way to save an R object directly to a file, such that it can be loaded into another R session is with the <code>saveRDS</code> function.
-<code>saveRDS</code> will write a single object to a specified file path.
-By default, it will save the object as a binary representation.
-This can be very useful for large objects, as the binary format will be significantly more space efficient.</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="file-input-and-output.html#cb85-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</span>
-<span id="cb85-2"><a href="file-input-and-output.html#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(y, <span class="at">file=</span><span class="st">&quot;myvectors.rds&quot;</span>)</span></code></pre></div>
-<p>Confirm that it worked.</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="file-input-and-output.html#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>()</span></code></pre></div>
-<p>The counterpart to <code>saveRDS</code> is <code>readRDS</code>.
-With <code>readRDS</code>, you can load in an rds file, which by definition contains a single R object, and assign it to a variable in your session.</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="file-input-and-output.html#cb87-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;myvector.rds&quot;</span>)</span></code></pre></div>
-<p>This will work for any R object.
-For example.</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="file-input-and-output.html#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(mtcars, <span class="at">file=</span><span class="st">&quot;mtcars.rds&quot;</span>)</span>
-<span id="cb88-2"><a href="file-input-and-output.html#cb88-2" aria-hidden="true" tabindex="-1"></a>my_cars <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;mtcars.rds&quot;</span>)</span></code></pre></div>
-<p>Saving and loading using <code>readRDS</code> is really powerful to save data.
-However, it does have a pretty significant drawback - its useless outside of R.
-For someone to explore the data, they would need to load R.</p>
+<div id="coordinates" class="section level3" number="20.2.3">
+<h3><span class="header-section-number">20.2.3</span> Coordinates</h3>
+<p>Coordinates are given in the distance (in the linear units specified in the CRS) from the baselines (specified in the CRS). Coordinates can be plotted just like coordinates on a graph (cartesian coordinate system). Sometimes we refer to these as X and Y, just like a graph, but sometimes you’ll hear people refer to the cardinal directions (north, south, east, and west).</p>
+<p>Let’s take a moment to talk about latitude and longitude. You’re probably at least a little familiar with latitude (Y) and longitude (X), but this is a special case that’s more complex than we probably initially realize. Latitude and longitude are angular measurements (with units in degrees) from a set of baselines - usually the Equator and the Greenwhich Meridian. We can plot latitude and longitude on a cartesian coordinate system, but this introduces major distortions increasing as you approach the poles. You never want to use straight latitude/longitude coordinates (commonly in North America, you’ll see data in the geographic coordinate reference system called WGS84) for an analysis. Always translate them into a projected coordinate system first. In addition, because the units are degrees, they are rather hard for us to interpret when we make measurements. How many degrees is it from the UC Davis campus to your appartment? It’s probably a very small fraction of a degree. Area measurements make even less sense. (What is a square degree and what does that look like?) Latitude/longitude coordinates are a great starting place, we just need to handle them correctly.</p>
 </div>
 </div>
-<div id="reading-and-writing-text-data" class="section level2" number="9.7">
-<h2><span class="header-section-number">9.7</span> Reading and Writing Text data</h2>
-<p>In addition to <code>saveRDS</code> and <code>readRDS</code>,
-R has functions for working with text files.</p>
-<p>These are commonly used for getting external data into R.
-And for exporting your data so that it can be used by other people.</p>
-<div id="tabular-data" class="section level3" number="9.7.1">
-<h3><span class="header-section-number">9.7.1</span> tabular data</h3>
-<p>Generally the data you work with in R will be tabular.
-Dataframes are an example of tabular data.</p>
+<div id="geospatial-data-models" class="section level2" number="20.3">
+<h2><span class="header-section-number">20.3</span> Geospatial Data Models</h2>
+<p>Now we have an idea of what makes data spatial, but what does spatial data look like in a computer? There are two common data models for geospatial data: Vector and Raster.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Data Model</th>
+<th>Geometry</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Vector</td>
+<td>Points</td>
+<td>Very small things, like cities at world scale</td>
+</tr>
+<tr class="even">
+<td>.</td>
+<td>Lines</td>
+<td>Linear things, like roads at city scale</td>
+</tr>
+<tr class="odd">
+<td>.</td>
+<td>Polygons</td>
+<td>Larger things that take up space, like parks at a city scale</td>
+</tr>
+<tr class="even">
+<td>Raster</td>
+<td>Grid</td>
+<td>Digital Photo</td>
+</tr>
+</tbody>
+</table>
+<div class="figure">
+<img src="img/geometries_data_types.png" alt="" />
+<p class="caption">A visual table of raster vs. vector data as continuous and discrete data.</p>
 </div>
-<div id="read-and-write-table" class="section level3" number="9.7.2">
-<h3><span class="header-section-number">9.7.2</span> read and write table</h3>
-<p>To write tabular data from a text file use the write.table function.
-Before running it, lets look at the documentation and understand the key arguments.</p>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="file-input-and-output.html#cb89-1" aria-hidden="true" tabindex="-1"></a>?write.table </span></code></pre></div>
-<p>The important arguments are x, file, and sep.</p>
-<p><strong>x</strong> is the dataframe you are saving.
-<strong>file</strong> is the name of the file you want to create and write to.
-<strong>sep</strong> is the field separator, also called delimiter.</p>
-<p>Notice that if file is left blank, then R will just print the results to the console, instead of into a file.
-Lets use this to explore what the <strong>sep</strong> argument does.</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="file-input-and-output.html#cb90-1" aria-hidden="true" tabindex="-1"></a>small <span class="ot">=</span> <span class="fu">head</span>(my_cars)</span>
-<span id="cb90-2"><a href="file-input-and-output.html#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small)</span>
-<span id="cb90-3"><a href="file-input-and-output.html#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot; &quot;</span>)</span>
-<span id="cb90-4"><a href="file-input-and-output.html#cb90-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot;.&quot;</span>)</span>
-<span id="cb90-5"><a href="file-input-and-output.html#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot;,&quot;</span>)</span></code></pre></div>
-<p>Lets write our data to a file.</p>
-<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="file-input-and-output.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(my_cars, <span class="at">file=</span><span class="st">&quot;cars.txt&quot;</span>) </span>
-<span id="cb91-2"><a href="file-input-and-output.html#cb91-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>() <span class="co"># confirm it worked</span></span></code></pre></div>
-<p>Now lets read the data back in.</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="file-input-and-output.html#cb92-1" aria-hidden="true" tabindex="-1"></a>from_cars.txt <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">&quot;cars.txt&quot;</span>) </span></code></pre></div>
-<p>Always inspect your data to make sure everything worked</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="file-input-and-output.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(from_cars.txt)</span>
-<span id="cb93-2"><a href="file-input-and-output.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(from_cars.txt)</span>
-<span id="cb93-3"><a href="file-input-and-output.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(from_cars.txt)</span></code></pre></div>
+<div id="vector-data" class="section level3" number="20.3.1">
+<h3><span class="header-section-number">20.3.1</span> Vector Data</h3>
+<p>Vector data represents discrete objects in the real world with points, lines, and polygons in the dataset.</p>
+<p>If you were to draw a map to your house for a friend, you would typically use vector data - roads would be lines, a shopping center included as an important landmark might be a rectangle of sorts, and your house might be a point (perhaps represented by a star or a house icon).</p>
+<p>For this lecture, <strong>we will focus on point data</strong>.</p>
 </div>
-<div id="csv-format" class="section level3" number="9.7.3">
-<h3><span class="header-section-number">9.7.3</span> CSV format</h3>
-<p>A CSV (comma separated values) file is a text file that uses ‘,’ as the field separator.
-This is probably the most commonly used format for plain text tabular data.</p>
-<p>To write a csv in R use the <code>write.csv</code> function.
-This is equivalent to <code>write.table(from_cars.txt, file="cars.csv", sep=",")</code></p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="file-input-and-output.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(from_cars.txt, <span class="at">file=</span><span class="st">&quot;cars.csv&quot;</span>) </span>
-<span id="cb94-2"><a href="file-input-and-output.html#cb94-2" aria-hidden="true" tabindex="-1"></a>from_cars.csv <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;cars.csv&quot;</span>)</span></code></pre></div>
-<p>Again, double check that everything worked.</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="file-input-and-output.html#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(from_cars.csv)</span>
-<span id="cb95-2"><a href="file-input-and-output.html#cb95-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(from_cars.csv)</span>
-<span id="cb95-3"><a href="file-input-and-output.html#cb95-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(from_cars.csv)</span></code></pre></div>
-<p>What went wrong here?
-In this case it was ambiguous if the first column was rownames or actual values.</p>
-<p>Lets fix it</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="file-input-and-output.html#cb96-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">=</span> from_cars.csv[, <span class="dv">2</span><span class="sc">:</span><span class="dv">12</span>]</span>
-<span id="cb96-2"><a href="file-input-and-output.html#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(temp) <span class="ot">=</span> from_cars.csv[,<span class="dv">1</span>]</span>
-<span id="cb96-3"><a href="file-input-and-output.html#cb96-3" aria-hidden="true" tabindex="-1"></a>fixed <span class="ot">=</span> temp</span></code></pre></div>
-<p>With these sorts of problems, you can generally fix them by using the appropriate arguments to the function calls of the read and write functions.
-Notice the argument in this function call.
-It specifies that the rownames can be read in from the first column of the tabular data in the file.</p>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="file-input-and-output.html#cb97-1" aria-hidden="true" tabindex="-1"></a>from_cars.csv <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;cars.csv&quot;</span>, <span class="at">row.names =</span><span class="dv">1</span>) </span></code></pre></div>
-</div>
-<div id="non-tabular-data" class="section level3" number="9.7.4">
-<h3><span class="header-section-number">9.7.4</span> Non tabular data</h3>
-<p>There are functions in R for reading and writing text data that doesn’t represent tabular data.
-A common one is <code>writeLines</code> and <code>readLines</code>.</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="file-input-and-output.html#cb98-1" aria-hidden="true" tabindex="-1"></a>texts <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;line one&quot;</span>, <span class="st">&quot;line two&quot;</span>)</span>
-<span id="cb98-2"><a href="file-input-and-output.html#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(texts, <span class="st">&quot;raw.txt&quot;</span>)</span>
-<span id="cb98-3"><a href="file-input-and-output.html#cb98-3" aria-hidden="true" tabindex="-1"></a>texts2 <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">&quot;raw.txt&quot;</span>)</span></code></pre></div>
+<div id="raster-data" class="section level3" number="20.3.2">
+<h3><span class="header-section-number">20.3.2</span> Raster Data</h3>
+<p>Raster data represents continuous fields or discrete objects on a grid, storing measurements or category codes in each cell of the grid.</p>
+<p>Digital photos are raster data you are already familiar with. If you zoom in far enough on a digital photo, you’ll see that photo is made up of pixels, which appear as colored squares. Pixels are cells in a regular grid and each contains the digital code that corresponds to the color that should be displayed there. Satellite images (like you see in Google Maps) are a very similar situation.</p>
 </div>
 </div>
-<div id="urls-as-files" class="section level2" number="9.8">
-<h2><span class="header-section-number">9.8</span> URLS as files</h2>
-<p>Files can be transferred over the internet.
-<strong>URLs</strong> are a type of filepath, that denotes a filepath, and the computer that file is stored on.
-Many functions in R that involve reading and writing from files, can be given a url as the filepath argument.
-In that case, the file will be transferred over the internet, onto your computer, and then read into R.</p>
-<p>Here is an example of reading in a file from a url, using the <code>readLines</code> function.</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="file-input-and-output.html#cb99-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://datalab.ucdavis.edu&quot;</span></span>
-<span id="cb99-2"><a href="file-input-and-output.html#cb99-2" aria-hidden="true" tabindex="-1"></a>t <span class="ot">=</span> <span class="fu">readLines</span>(url)</span></code></pre></div>
+<div id="data-structures-applied-to-geospatial-data" class="section level2" number="20.4">
+<h2><span class="header-section-number">20.4</span> Data Structures Applied to Geospatial Data</h2>
+<p>In the lecture on Data Structures (week 6), you learned that data can be structured in a number of ways, including <strong>tabular</strong>, <strong>tree</strong> (XML and JSON), <strong>relational databases</strong>, and <strong>non-hierarchical data</strong>. All of these structures can include spatial information.</p>
+<table>
+<colgroup>
+<col width="48%" />
+<col width="29%" />
+<col width="21%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Data Structure</th>
+<th>Example File Type</th>
+<th>How it’s implemented</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Tabular</td>
+<td>CSV</td>
+<td>One or more columns hold spatial data (like Latitude &amp; Longitude)</td>
+</tr>
+<tr class="even">
+<td>Tree</td>
+<td>geoJSON</td>
+<td>Tags in the structure indicate spatial information like geometry type and vertex locations</td>
+</tr>
+<tr class="odd">
+<td>Relational Database</td>
+<td>PostGIS or Spatialite</td>
+<td>One column holds the “geometry” information (vertexes &amp; CRS)</td>
+</tr>
+<tr class="even">
+<td>Non-Hierarchical Relational Data</td>
+<td>Spatial Graph Databases</td>
+<td>Nodes have locations associated with them, edges represent flow (think: transportation networks or stream networks)</td>
+</tr>
+</tbody>
+</table>
+<p>For visualization purposes, geospatial software typically show all of these data structures as a map where each entity is linked with a table of the attribute data - one row of data in the table relates to one entity on the map. So regardless of the underlying data structure, you can think of these as interactive maps like you find on Google Maps.</p>
+</div>
+<div id="cleaning-geospatial-data" class="section level2" number="20.5">
+<h2><span class="header-section-number">20.5</span> Cleaning Geospatial Data</h2>
+<p>What Can Go Wrong?</p>
+<ol style="list-style-type: decimal">
+<li>Location data isn’t usable</li>
+<li>Location data is incorrect</li>
+<li>Attribute data is incorrect</li>
+<li>Coordinate Reference System (CRS) is improperly defined</li>
+</ol>
+<div id="example-data" class="section level3" number="20.5.1">
+<h3><span class="header-section-number">20.5.1</span> Example Data</h3>
+<p>The dataset we’ll be working with as an example contains locations and attributes about lake monsters. Lake monsters are fictional creatures like sea monsters, but they live in lakes and not the ocean. The most famous lake monster is probably Nessie, who lives in Loch Ness. The dataset we’re working with today is the early stages of a now much cleaner dataset. This data came from a Wikipedia page and the locations were geocoded (a process that matches text locations with real-world locations). We’ll walk through some common processes and challenges with point data stored in a csv file.</p>
+</div>
+<div id="making-location-data-usable" class="section level3" number="20.5.2">
+<h3><span class="header-section-number">20.5.2</span> Making Location Data Usable</h3>
+<p>Someone sends you a CSV file. At first glance, nothing looks amiss. There is a column for latitude and another for longitude, but how is it formatted? It’s degrees-minutes-seconds (DMS)! DMS looks like this: 34° 36’ 31.774" - 34 degrees, 36 minutes, 31.447 seconds - and sometimes people put in the symbols for degree (°), minutes (’), and seconds ("), and sometimes not. The computer can’t read this format, especially the symbols. It has to be converted to decimal degrees (DD), which looks like this: 34.60882611</p>
+<p>To convert it, we need to know that there are 60 minutes in a degree and 60 seconds in a minute.</p>
+<p><strong>Decimal Degrees = Degrees + (Minutes/60) + (Seconds/3600)</strong></p>
+<p>34.60882611 = 34 + (36/60) + (31.447/3600)</p>
+<p>First, we need to load the libraries we’ll need and then load the data.</p>
+<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb557-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb557-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries ----------------------------------------------------------</span></span>
+<span id="cb557-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb557-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;sf&quot;</span>)</span></code></pre></div>
+<pre><code>## Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1</code></pre>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;mapview&quot;</span>)</span>
+<span id="cb559-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;gdtools&quot;</span>) <span class="co">#makes the display... dependency of mapview but it&#39;s not loading</span></span>
+<span id="cb559-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;leafem&quot;</span>) <span class="co">#makes the labels work... dependency of mapview but it&#39;s not loading</span></span>
+<span id="cb559-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;leaflet&quot;</span>)</span>
+<span id="cb559-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb559-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Read Data ---------------------------------------------------------------</span></span>
+<span id="cb559-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb559-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-8" aria-hidden="true" tabindex="-1"></a>monsters.raw<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;data/lake_monsters.csv&quot;</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">encoding =</span> <span class="st">&quot;latin1&quot;</span>)</span>
+<span id="cb559-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb559-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb559-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-11" aria-hidden="true" tabindex="-1"></a><span class="co">#Explore the data</span></span>
+<span id="cb559-12"><a href="data-forensics-and-cleaning-geospatial-data.html#cb559-12" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(monsters.raw)</span></code></pre></div>
+<pre><code>##   fid field_1               Lake        Area        Country     Continent
+## 1   1       1      Arenal Lagoon    Alajuela     Costa Rica North America
+## 2   2       2    Bangweulu Swamp                     Zambia        Africa
+## 3   3       3 Bassenthwaite Lake     England United Kingdom        Europe
+## 4   4       4          Bear Lake Idaho, Utah            USA North America
+## 5   5       5        Brosno Lake Tver Oblast         Russia        Europe
+## 6   6       6   Bueng Khong Long   Bueng Kan       Thailand          Asia
+##                          Name       lat         lon        lat_dms
+## 1                     unnamed  10.49143  -84.851696 10°29?29.1304?
+## 2                      Nsanga -11.14741   29.784582 -11°8?50.6760?
+## 3                       Eachy  54.65279   -3.213612 54°39?10.0359?
+## 4 Bear Lake Monster, Isabella  42.21721 -111.319881  42°13?1.9643?
+## 5               Brosno Dragon  56.82407   31.914652 56°49?26.6520?
+## 6                  Phaya Naga  18.02363  104.014360  18°1?25.0676?
+##            lon_dms                                 coords_3395    lon_3395
+## 1   -84°51?6.1069?  Point (-9445647.63285386 1166706.48735204)  -9445647.6
+## 2    29°47?4.4935?  Point (3315604.44829715 -1240572.14607131)   3315604.4
+## 3   -3°12?49.0016?   Point (-357737.60213262 7259890.14217639)   -357737.6
+## 4 -111°19?11.5709? Point (-12392072.44582391 5164853.16566773) -12392072.4
+## 5   31°54?52.7472?   Point (3552722.80948453 7688451.06249625)   3552722.8
+## 6   104°0?51.6974?  Point (11578825.63491604 2027100.69217741)  11578825.6
+##   lat_3395
+## 1  1166706
+## 2 -1240572
+## 3  7259890
+## 4  5164853
+## 5  7688451
+## 6  2027101</code></pre>
+<p>Next, we need to write some functions to deal with our specific DMS data and how its formatted.</p>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions ---------------------------------------------------------------</span></span>
+<span id="cb561-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb561-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-3" aria-hidden="true" tabindex="-1"></a><span class="co">#This function splits up the DMS column into three columns - D, M, &amp; S</span></span>
+<span id="cb561-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-4" aria-hidden="true" tabindex="-1"></a>split.dms<span class="ot">&lt;-</span><span class="cf">function</span>(dms.column){</span>
+<span id="cb561-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#separate the pieces of the DMS column</span></span>
+<span id="cb561-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb561-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-7" aria-hidden="true" tabindex="-1"></a>  variable<span class="ot">&lt;-</span><span class="fu">do.call</span>(rbind, <span class="at">args=</span><span class="fu">c</span>(<span class="fu">strsplit</span>(dms.column, <span class="st">&#39;[°?]+&#39;</span>))) <span class="co">#makes a matrix of characters</span></span>
+<span id="cb561-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mode</span>(variable)<span class="ot">=</span><span class="st">&quot;numeric&quot;</span>  <span class="co">#assigning the data type to numeric instead of character</span></span>
+<span id="cb561-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-9" aria-hidden="true" tabindex="-1"></a>  dms.split<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(variable)</span>
+<span id="cb561-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb561-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-11" aria-hidden="true" tabindex="-1"></a>  split.string<span class="ot">&lt;-</span><span class="fu">strsplit</span>(dms.column, <span class="st">&#39;[°?]+&#39;</span>)</span>
+<span id="cb561-12"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb561-13"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb561-14"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   naming the columns</span></span>
+<span id="cb561-15"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(dms.split)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;M&quot;</span>, <span class="st">&quot;S&quot;</span>)</span>
+<span id="cb561-16"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb561-17"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dms.split)</span>
+<span id="cb561-18"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb561-19"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb561-20"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb561-21"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-21" aria-hidden="true" tabindex="-1"></a><span class="co"># this function coverts a 3 column dataframe of DMS to DD, like the data created by split.dms()</span></span>
+<span id="cb561-22"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-22" aria-hidden="true" tabindex="-1"></a>decimaldegrees<span class="ot">&lt;-</span><span class="cf">function</span>(dms.df){</span>
+<span id="cb561-23"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-23" aria-hidden="true" tabindex="-1"></a>  dd<span class="ot">&lt;-</span><span class="fu">data.frame</span>()</span>
+<span id="cb561-24"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb561-25"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(dms.df)[<span class="dv">1</span>]){</span>
+<span id="cb561-26"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (dms.df[i, <span class="dv">1</span>]<span class="sc">&gt;</span><span class="dv">0</span>){</span>
+<span id="cb561-27"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-27" aria-hidden="true" tabindex="-1"></a>      <span class="co">#Decimal Degrees = Degrees + (Minutes/60) + (Seconds/3600)</span></span>
+<span id="cb561-28"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-28" aria-hidden="true" tabindex="-1"></a>      dd.row<span class="ot">&lt;-</span>dms.df[i,<span class="dv">1</span>]<span class="sc">+</span>(dms.df[i,<span class="dv">2</span>]<span class="sc">/</span><span class="dv">60</span>)<span class="sc">+</span>(dms.df[i,<span class="dv">3</span>]<span class="sc">/</span><span class="dv">3600</span>)</span>
+<span id="cb561-29"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-29" aria-hidden="true" tabindex="-1"></a>      dd<span class="ot">&lt;-</span><span class="fu">rbind</span>(dd, dd.row)</span>
+<span id="cb561-30"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-30" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb561-31"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>{</span>
+<span id="cb561-32"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-32" aria-hidden="true" tabindex="-1"></a>      <span class="co">#-Decimal Degrees = Degrees - (Minutes/60) - (Seconds/3600)</span></span>
+<span id="cb561-33"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-33" aria-hidden="true" tabindex="-1"></a>      dd.row<span class="ot">&lt;-</span>dms.df[i,<span class="dv">1</span>]<span class="sc">-</span>(dms.df[i,<span class="dv">2</span>]<span class="sc">/</span><span class="dv">60</span>)<span class="sc">-</span>(dms.df[i,<span class="dv">3</span>]<span class="sc">/</span><span class="dv">3600</span>)</span>
+<span id="cb561-34"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-34" aria-hidden="true" tabindex="-1"></a>      dd<span class="ot">&lt;-</span><span class="fu">rbind</span>(dd, dd.row)</span>
+<span id="cb561-35"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb561-36"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-36" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb561-37"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dd)</span>
+<span id="cb561-38"><a href="data-forensics-and-cleaning-geospatial-data.html#cb561-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Finally, we can process our DMS data to convert it to Decimal Degreess (DD).</p>
+<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Process Latitude</span></span>
+<span id="cb562-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-2" aria-hidden="true" tabindex="-1"></a>dms.split<span class="ot">&lt;-</span><span class="fu">split.dms</span>(monsters.raw<span class="sc">$</span>lat_dms)</span>
+<span id="cb562-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-3" aria-hidden="true" tabindex="-1"></a>dd<span class="ot">&lt;-</span><span class="fu">decimaldegrees</span>(dms.split)</span>
+<span id="cb562-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-4" aria-hidden="true" tabindex="-1"></a>monsters.df<span class="ot">&lt;-</span><span class="fu">cbind</span>(monsters.raw, dd)</span>
+<span id="cb562-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.df)[<span class="dv">15</span>]<span class="ot">&lt;-</span><span class="st">&quot;lat_dd&quot;</span></span>
+<span id="cb562-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb562-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   Process Longitude</span></span>
+<span id="cb562-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-8" aria-hidden="true" tabindex="-1"></a>dms.split<span class="ot">&lt;-</span><span class="fu">split.dms</span>(monsters.raw<span class="sc">$</span>lon_dms)</span>
+<span id="cb562-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-9" aria-hidden="true" tabindex="-1"></a>dd<span class="ot">&lt;-</span><span class="fu">decimaldegrees</span>(dms.split)</span>
+<span id="cb562-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-10" aria-hidden="true" tabindex="-1"></a>monsters.df<span class="ot">&lt;-</span><span class="fu">cbind</span>(monsters.df, dd)</span>
+<span id="cb562-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.df)[<span class="dv">16</span>]<span class="ot">&lt;-</span><span class="st">&quot;lon_dd&quot;</span></span>
+<span id="cb562-12"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb562-13"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   Look at the data</span></span>
+<span id="cb562-14"><a href="data-forensics-and-cleaning-geospatial-data.html#cb562-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(monsters.df)</span></code></pre></div>
+<pre><code>##   fid field_1               Lake        Area        Country     Continent
+## 1   1       1      Arenal Lagoon    Alajuela     Costa Rica North America
+## 2   2       2    Bangweulu Swamp                     Zambia        Africa
+## 3   3       3 Bassenthwaite Lake     England United Kingdom        Europe
+## 4   4       4          Bear Lake Idaho, Utah            USA North America
+## 5   5       5        Brosno Lake Tver Oblast         Russia        Europe
+## 6   6       6   Bueng Khong Long   Bueng Kan       Thailand          Asia
+##                          Name       lat         lon        lat_dms
+## 1                     unnamed  10.49143  -84.851696 10°29?29.1304?
+## 2                      Nsanga -11.14741   29.784582 -11°8?50.6760?
+## 3                       Eachy  54.65279   -3.213612 54°39?10.0359?
+## 4 Bear Lake Monster, Isabella  42.21721 -111.319881  42°13?1.9643?
+## 5               Brosno Dragon  56.82407   31.914652 56°49?26.6520?
+## 6                  Phaya Naga  18.02363  104.014360  18°1?25.0676?
+##            lon_dms                                 coords_3395    lon_3395
+## 1   -84°51?6.1069?  Point (-9445647.63285386 1166706.48735204)  -9445647.6
+## 2    29°47?4.4935?  Point (3315604.44829715 -1240572.14607131)   3315604.4
+## 3   -3°12?49.0016?   Point (-357737.60213262 7259890.14217639)   -357737.6
+## 4 -111°19?11.5709? Point (-12392072.44582391 5164853.16566773) -12392072.4
+## 5   31°54?52.7472?   Point (3552722.80948453 7688451.06249625)   3552722.8
+## 6   104°0?51.6974?  Point (11578825.63491604 2027100.69217741)  11578825.6
+##   lat_3395    lat_dd      lon_dd
+## 1  1166706  10.49143  -84.851696
+## 2 -1240572 -11.14741   29.784582
+## 3  7259890  54.65279   -3.213612
+## 4  5164853  42.21721 -111.319881
+## 5  7688451  56.82407   31.914652
+## 6  2027101  18.02363  104.014360</code></pre>
+<p>Another common issue with point data is that the latitude and longitude are not in any form of degrees, but instead are in a projected coordinate system with linear units (usually feet or meters). If the data doesn’t come with metadata, you may be left guessing which coordinate system it is in. With experience, you’ll get better at guessing, but sometimes the data is not usable. Our monsters dataset has latitude and longitude in the World Mercator (EPSG: 3395) projection as well. Let’s briefly look at that here, but we’ll play with that more later in this document.</p>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb564-1" aria-hidden="true" tabindex="-1"></a>monsters.df[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>]</span></code></pre></div>
+<pre><code>##       lon_3395 lat_3395    lat_dd      lon_dd
+## 1   -9445647.6  1166706  10.49143  -84.851696
+## 2    3315604.4 -1240572 -11.14741   29.784582
+## 3    -357737.6  7259890  54.65279   -3.213612
+## 4  -12392072.4  5164853  42.21721 -111.319881
+## 5    3552722.8  7688451  56.82407   31.914652
+## 6   11578825.6  2027101  18.02363  104.014360
+## 7   -7845463.9  5433619  43.98618  -70.477001
+## 8  -12704546.6  6054836  47.87777 -114.126884
+## 9   -9467608.2  5128572  41.97447  -85.048971
+## 10 -12525669.2  5011829  41.18707 -112.520000</code></pre>
+<p>Note that data preparation and cleaning is the vast majority of the work for all data, not just spatial data. All of the code we just looked at was just to get the data in a usable format. We’ll convert it to a spatial data type and map it in the next section.</p>
+</div>
+<div id="cleaning-location-data" class="section level3" number="20.5.3">
+<h3><span class="header-section-number">20.5.3</span> Cleaning Location Data</h3>
+<p>Sometimes, the locations in your dataset are incorrect. This can happen for a number of reasons.</p>
+<p>For example, it’s fairly common for data to get truncated or rounded if you open a CSV in Excel. Removing decimal places from coordinate data loses precision.</p>
+<p>People often swap their latitude and longitude columns as well, which make data show up in the wrong cartesian coordinate, for example, (-119, 34) is a verry different location than (34, -119)… -119 is actually out of the range of latitude data and will often break your code.</p>
+<p>Another common source of error is in the way the data was made. If data is produced by geocoding, turning an address or place name into a coordinate, the location may have been matched badly. If the data was made by an analysis process, an unexpected aspect of the data could cause problems, like a one-to-many join when you thought you had a one-to-one join in a database.</p>
+<p>Regardless of how the errors came about, how do we find incorrect locations? Start by mapping the data and see where it lands. Is it where you expect the data to be? Sometimes you can’t tell it’s wrong because the data looks normal.</p>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Convert the monsters dataframe into an SF (spatial) object</span></span>
+<span id="cb566-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     Note: x is the dataframe, not longitude.</span></span>
+<span id="cb566-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     Coordinate Reference System (CRS) - we&#39;re using lat/long here so we need WGS84 which is EPSG code 4326 - we just need to tell R what the CRS is, we don&#39;t change it this way.  If we want to change it, we need to use st_transform().</span></span>
+<span id="cb566-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-4" aria-hidden="true" tabindex="-1"></a>monsters.sf<span class="ot">&lt;-</span><span class="fu">st_as_sf</span>(<span class="at">x=</span>monsters.df, </span>
+<span id="cb566-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;lon_dd&quot;</span>, <span class="st">&quot;lat_dd&quot;</span>), </span>
+<span id="cb566-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb566-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb566-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     Notice we added a geometry column!</span></span>
+<span id="cb566-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb566-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.sf)</span></code></pre></div>
+<pre><code>##  [1] &quot;fid&quot;         &quot;field_1&quot;     &quot;Lake&quot;        &quot;Area&quot;        &quot;Country&quot;    
+##  [6] &quot;Continent&quot;   &quot;Name&quot;        &quot;lat&quot;         &quot;lon&quot;         &quot;lat_dms&quot;    
+## [11] &quot;lon_dms&quot;     &quot;coords_3395&quot; &quot;lon_3395&quot;    &quot;lat_3395&quot;    &quot;geometry&quot;</code></pre>
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb568-1" aria-hidden="true" tabindex="-1"></a><span class="co">#     Plot a map</span></span>
+<span id="cb568-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb568-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(monsters.sf)</span></code></pre></div>
+<div class="figure">
+<img src="img/mapview_monsters.png" alt="" />
+<p class="caption">This is a screen capture of the output for the mapview function. Running this code in a regular R session (i.e. not in knitr or bookdown like we need to for this reader) will make an interactive map.</p>
+</div>
+<p>In the interactive version of this map, you can pan and zoom to different areas to see more detail. Clicking on a point will open a popup with attribute information.</p>
+<p>First impressions: This map looks good! The points are all on land masses, none in the ocean. Let’s see if they are on the correct continent…</p>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb569-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Continent&quot;</span>, <span class="at">legend=</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="figure">
+<img src="img/mapview_monsters_byContinent.png" alt="" />
+<p class="caption">Map of monster locations by continent</p>
+</div>
+<p>It’s hard to see, but there’s a point in Michigan that’s the wrong color for North America!</p>
+<div class="figure">
+<img src="img/mapview_monsters_byContinent_zoom.png" alt="" />
+<p class="caption">Map of monster locations by continent zoomed in to the Great Lakes</p>
+</div>
+<p>Whoops! Lakes of Killarney isn’t in Michigan! That point should be in Ireland! If we zoom in, we can see why the geocoder got confused. The lake names are very similar.</p>
+</div>
+<div id="cleaning-attribute-data" class="section level3" number="20.5.4">
+<h3><span class="header-section-number">20.5.4</span> Cleaning Attribute Data</h3>
+<p>Attribute data can be proofed in much the same way tabular data can be proofed. You can look at the statistical properties of numeric data or the unique entities in a list of categorical variables to see if any values are odd or out of place.</p>
+<p>With spatial data, we can also map the data and visualize it by attribute values to see if anything is out of place spatially. Labels are another helpful tool. Sometimes cleaning attributes uncovers issues with the locations.</p>
+<p>Let’s make sure the lake names match the lakes the points are in. We’ll make a map and if you zoom in enough, the lake names will appear in the background map data.</p>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb570-1" aria-hidden="true" tabindex="-1"></a>my.label.options<span class="ot">&lt;-</span><span class="fu">labelOptions</span>(<span class="at">clickable=</span><span class="cn">TRUE</span>) <span class="co">#makes a popup with attribute information</span></span>
+<span id="cb570-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb570-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb570-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb570-3" aria-hidden="true" tabindex="-1"></a>map.lakename<span class="ot">&lt;-</span><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Lake&quot;</span>, <span class="at">legend=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb570-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb570-4" aria-hidden="true" tabindex="-1"></a>labels.lakename<span class="ot">&lt;-</span><span class="fu">addStaticLabels</span>(map.lakename, </span>
+<span id="cb570-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb570-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">label=</span>monsters.sf<span class="sc">$</span>Lake,</span>
+<span id="cb570-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb570-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labelOption=</span>my.label.options)</span>
+<span id="cb570-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb570-7" aria-hidden="true" tabindex="-1"></a>labels.lakename</span></code></pre></div>
+<div class="figure">
+<img src="img/mapview_monsters_byLake.png" alt="" />
+<p class="caption">Map of monster locations by lake name zoomed in to the Great Lakes</p>
+</div>
+<div class="figure">
+<img src="img/mapview_monsters_byLake_zoom.png" alt="" />
+<p class="caption">Map of monster locations by lake name zoomed in to the Great Lakes</p>
+</div>
+<p>And for fun, let’s look at the monster names:</p>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb571-1" aria-hidden="true" tabindex="-1"></a>map.monstername<span class="ot">&lt;-</span><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Name&quot;</span>, <span class="at">legend=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb571-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb571-2" aria-hidden="true" tabindex="-1"></a>labels.monstername<span class="ot">&lt;-</span><span class="fu">addStaticLabels</span>(map.monstername, </span>
+<span id="cb571-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb571-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">label=</span>monsters.sf<span class="sc">$</span>Name,</span>
+<span id="cb571-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb571-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labelOption=</span>my.label.options)</span>
+<span id="cb571-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb571-5" aria-hidden="true" tabindex="-1"></a>labels.monstername</span></code></pre></div>
+<div class="figure">
+<img src="img/mapview_monsters_byName.png" alt="" />
+<p class="caption">Map of monster locations by monster name zoomed in to the Great Lakes</p>
+</div>
+<div class="figure">
+<img src="img/mapview_monsters_byName_zoom.png" alt="" />
+<p class="caption">Map of monster locations by monster name zoomed in to the Great Lakes</p>
+</div>
+<p>Yikes! That needs some clean-up too! The name column is missing some names and some records have extra information in them.</p>
+</div>
+<div id="checking-coordinate-reference-systems" class="section level3" number="20.5.5">
+<h3><span class="header-section-number">20.5.5</span> Checking Coordinate Reference Systems</h3>
+<p>“Why is my California data showing up in Arizona?” is a common question UC Davis researchers ask on the Geospatial email list. Why does this happen? It’s usually because the CRS for their data is impropperly defined. Someone changed the defnition but didn’t reproject the data (the mathematical process of switching CRSs). Using the wrong CRS will often shift data just enough to look really funny on a map, but sometimes it won’t show up at all.</p>
+<p>“Why don’t my datasets line up in my map?” Again, it’s your CRS. In this case, they could be correct for all of the datasets you’re using, but each dataset has a different CRS. You can think of CRSs as different dimensions in your favorite SciFi story. Sometimes you can see the other person in the other dimension (CRS), but usually they are too different and you’re nowhere near each other. Datasets have to have the same CRS to make a map or do any analysis.</p>
+<p>Our data came with lat/long data in another coordinate reference system - EPSG 3395 “World Mercator,” a world projection centered on Europe. Notice how the coordinates look very different from the lat/long coordinates in EPSG 4326 “WGS 84”</p>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb572-1" aria-hidden="true" tabindex="-1"></a>monsters.df[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>]</span></code></pre></div>
+<pre><code>##       lon_3395 lat_3395    lat_dd      lon_dd
+## 1   -9445647.6  1166706  10.49143  -84.851696
+## 2    3315604.4 -1240572 -11.14741   29.784582
+## 3    -357737.6  7259890  54.65279   -3.213612
+## 4  -12392072.4  5164853  42.21721 -111.319881
+## 5    3552722.8  7688451  56.82407   31.914652
+## 6   11578825.6  2027101  18.02363  104.014360
+## 7   -7845463.9  5433619  43.98618  -70.477001
+## 8  -12704546.6  6054836  47.87777 -114.126884
+## 9   -9467608.2  5128572  41.97447  -85.048971
+## 10 -12525669.2  5011829  41.18707 -112.520000</code></pre>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb574-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Let&#39;s make our World Mercator data spatial so we can explore its CRS</span></span>
+<span id="cb574-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb574-2" aria-hidden="true" tabindex="-1"></a>monsters.sf<span class="fl">.3395</span><span class="ot">&lt;-</span><span class="fu">st_as_sf</span>(<span class="at">x=</span>monsters.df, </span>
+<span id="cb574-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb574-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;lon_3395&quot;</span>, <span class="st">&quot;lat_3395&quot;</span>), </span>
+<span id="cb574-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb574-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">crs =</span> <span class="dv">3395</span>)</span>
+<span id="cb574-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb574-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb574-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb574-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   st_crs tells us what the CRS is in well known text (WKT) and EPSG (if it&#39;s avaialble)</span></span>
+<span id="cb574-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb574-7" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(monsters.sf)</span></code></pre></div>
+<pre><code>## Coordinate Reference System:
+##   User input: EPSG:4326 
+##   wkt:
+## GEOGCRS[&quot;WGS 84&quot;,
+##     DATUM[&quot;World Geodetic System 1984&quot;,
+##         ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##             LENGTHUNIT[&quot;metre&quot;,1]]],
+##     PRIMEM[&quot;Greenwich&quot;,0,
+##         ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##     CS[ellipsoidal,2],
+##         AXIS[&quot;geodetic latitude (Lat)&quot;,north,
+##             ORDER[1],
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##         AXIS[&quot;geodetic longitude (Lon)&quot;,east,
+##             ORDER[2],
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##     USAGE[
+##         SCOPE[&quot;unknown&quot;],
+##         AREA[&quot;World&quot;],
+##         BBOX[-90,-180,90,180]],
+##     ID[&quot;EPSG&quot;,4326]]</code></pre>
+<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb576-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(monsters.sf<span class="fl">.3395</span>)</span></code></pre></div>
+<pre><code>## Coordinate Reference System:
+##   User input: EPSG:3395 
+##   wkt:
+## PROJCRS[&quot;WGS 84 / World Mercator&quot;,
+##     BASEGEOGCRS[&quot;WGS 84&quot;,
+##         DATUM[&quot;World Geodetic System 1984&quot;,
+##             ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563,
+##                 LENGTHUNIT[&quot;metre&quot;,1]]],
+##         PRIMEM[&quot;Greenwich&quot;,0,
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433]],
+##         ID[&quot;EPSG&quot;,4326]],
+##     CONVERSION[&quot;World Mercator&quot;,
+##         METHOD[&quot;Mercator (variant A)&quot;,
+##             ID[&quot;EPSG&quot;,9804]],
+##         PARAMETER[&quot;Latitude of natural origin&quot;,0,
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##             ID[&quot;EPSG&quot;,8801]],
+##         PARAMETER[&quot;Longitude of natural origin&quot;,0,
+##             ANGLEUNIT[&quot;degree&quot;,0.0174532925199433],
+##             ID[&quot;EPSG&quot;,8802]],
+##         PARAMETER[&quot;Scale factor at natural origin&quot;,1,
+##             SCALEUNIT[&quot;unity&quot;,1],
+##             ID[&quot;EPSG&quot;,8805]],
+##         PARAMETER[&quot;False easting&quot;,0,
+##             LENGTHUNIT[&quot;metre&quot;,1],
+##             ID[&quot;EPSG&quot;,8806]],
+##         PARAMETER[&quot;False northing&quot;,0,
+##             LENGTHUNIT[&quot;metre&quot;,1],
+##             ID[&quot;EPSG&quot;,8807]]],
+##     CS[Cartesian,2],
+##         AXIS[&quot;(E)&quot;,east,
+##             ORDER[1],
+##             LENGTHUNIT[&quot;metre&quot;,1]],
+##         AXIS[&quot;(N)&quot;,north,
+##             ORDER[2],
+##             LENGTHUNIT[&quot;metre&quot;,1]],
+##     USAGE[
+##         SCOPE[&quot;unknown&quot;],
+##         AREA[&quot;World - between 80Â°S and 84Â°N&quot;],
+##         BBOX[-80,-180,84,180]],
+##     ID[&quot;EPSG&quot;,3395]]</code></pre>
+<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb578-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Check to see if they are identical, returning a logical vector</span></span>
+<span id="cb578-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb578-2" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">st_crs</span>(monsters.sf),</span>
+<span id="cb578-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb578-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">st_crs</span>(monsters.sf<span class="fl">.3395</span>))</span></code></pre></div>
+<pre><code>## [1] FALSE</code></pre>
+</div>
+</div>
+<div id="conclusions" class="section level2" number="20.6">
+<h2><span class="header-section-number">20.6</span> Conclusions</h2>
+<p>We’ve learned some of the basics of geospatial data. We learned that the main components of geospatial data are locations, attributes, and a coordinate reference system. We saw how geospatial data can be represented with different data models, but we focused on point vector data. We learned that the data structures we were already familiar with can be modified to contain spatial data. And finally, we looked at some common processes for cleaning our geospatial data.</p>
+<p>This was a lot to cover, but we just scratched the surface of all your can do with geospatial data science! If you want to learn more, UC Davis has some fantastic introductory classes for GIS (Geographic Information Systems/Science) and Remote Sensing (working satelite data and air photos).</p>
+</div>
+<div id="optional-further-reading" class="section level2" number="20.7">
+<h2><span class="header-section-number">20.7</span> Optional Further Reading:</h2>
+<ol style="list-style-type: decimal">
+<li>Bolstad, P. 2019. <em>GIS Fundamentals: A first text on geographic information systems</em>. Sixth Edition. XanEdu. Ann Arbor, MI. 764 pp.</li>
+<li>Sutton, T., O. Dassau, &amp; M. Sutton. 2021. <em>A Gentle Introduction to GIS</em>. <a href="https://docs.qgis.org/3.16/en/docs/gentle_gis_introduction/preamble.html" class="uri">https://docs.qgis.org/3.16/en/docs/gentle_gis_introduction/preamble.html</a> (accessed on 2021-02-11)</li>
+</ol>
+</div>
+<div id="citations" class="section level2" number="20.8">
+<h2><span class="header-section-number">20.8</span> Citations</h2>
 
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-anKeyplayerPackageLocating2016" class="csl-entry">
+An, Weihua, and Yu-Hsin Liu. 2016. <span>“Keyplayer: <span>An R Package</span> for <span>Locating Key Players</span> in <span>Social Networks</span>.”</span> <em>The R Journal</em> 8 (1): 257. <a href="https://doi.org/10.32614/RJ-2016-018">https://doi.org/10.32614/RJ-2016-018</a>.
+</div>
+<div id="ref-balabanApplicationsGraphTheory1985" class="csl-entry">
+Balaban, Alexandru T. 1985. <span>“Applications of Graph Theory in Chemistry.”</span> <em>Journal of Chemical Information and Modeling</em> 25 (3): 334–43. <a href="https://doi.org/10.1021/ci00047a033">https://doi.org/10.1021/ci00047a033</a>.
+</div>
+<div id="ref-bassettNetworkNeuroscience2017" class="csl-entry">
+Bassett, Danielle S., and Olaf Sporns. 2017. <span>“Network Neuroscience.”</span> <em>Nature Neuroscience</em> 20 (3): 353–64. <a href="https://doi.org/10.1038/nn.4502">https://doi.org/10.1038/nn.4502</a>.
+</div>
+<div id="ref-fanGraphbasedMethodSocial2019" class="csl-entry">
+Fan, Chao, and Ali Mostafavi. 2019. <span>“A Graph-Based Method for Social Sensing of Infrastructure Disruptions in Disasters.”</span> <em>Computer-Aided Civil and Infrastructure Engineering</em> 34 (12): 1055–70. <a href="https://doi.org/10.1111/mice.12457">https://doi.org/10.1111/mice.12457</a>.
+</div>
+<div id="ref-kadushinUnderstandingSocialNetworks2012" class="csl-entry">
+Kadushin, Charles. 2012. <em>Understanding <span>Social Networks</span>: <span>Theories</span>, <span>Concepts</span>, and <span>Findings</span></em>. <span>New York, NY</span>: <span>Oxford University Press</span>.
+</div>
+<div id="ref-krebsMappingNetworksTerrorist2002" class="csl-entry">
+Krebs, Valdis E. 2002. <span>“Mapping Networks of Terrorist Cells.”</span> <em>Connections</em> 24 (3): 43–52.
+</div>
+<div id="ref-morenoWhoShallSurvive1953" class="csl-entry">
+Moreno, Jacob L. 1953. <span>“Who <span>Shall Survive</span>?: <span>Foundations</span> of <span>Sociometry</span>, <span>Group Psychotherapy</span> and <span>Sociodrama</span>.”</span> In. <span>Beacon, N.Y.</span>: <span>Beacon House Inc.</span>
+</div>
+<div id="ref-pageMethodNodeRanking2001" class="csl-entry">
+Page, Lawrence. 2001. Method for node ranking in a linked database. US6285999B1, issued September 2001. <a href="https://patents.google.com/patent/US6285999/en">https://patents.google.com/patent/US6285999/en</a>.
+</div>
+<div id="ref-robinsIntroductionExponentialRandom2007" class="csl-entry">
+Robins, Garry, Pip Pattison, Yuval Kalish, and Dean Lusher. 2007. <span>“An Introduction to Exponential Random Graph (p*) Models for Social Networks.”</span> <em>Social Networks</em>, Special <span>section</span>: <span>Advances</span> in <span>Exponential Random Graph</span> (p*) <span>Models</span>, 29 (2): 173–91. <a href="https://doi.org/10.1016/j.socnet.2006.08.002">https://doi.org/10.1016/j.socnet.2006.08.002</a>.
+</div>
+<div id="ref-robinsRecentDevelopmentsExponential2007" class="csl-entry">
+Robins, Garry, Tom Snijders, Peng Wang, Mark Handcock, and Philippa Pattison. 2007. <span>“Recent Developments in Exponential Random Graph (p*) Models for Social Networks.”</span> <em>Social Networks</em>, Special <span>section</span>: <span>Advances</span> in <span>Exponential Random Graph</span> (p*) <span>Models</span>, 29 (2): 192–215. <a href="https://doi.org/10.1016/j.socnet.2006.08.003">https://doi.org/10.1016/j.socnet.2006.08.003</a>.
+</div>
+<div id="ref-wassermanSocialNetworkAnalysis1994" class="csl-entry">
+Wasserman, Stanley, and Katherine Faust. 1994. <em>Social Network Analysis: <span>Methods</span> and Applications</em>. <span>Cambridge, UK</span>: <span>Cambridge University Press</span>.
+</div>
+</div>
 </div>
 </div>
             </section>
@@ -687,8 +1040,8 @@ In that case, the file will be transferred over the internet, onto your computer
           </div>
         </div>
       </div>
-<a href="packages-and-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="strings-and-regular-expressions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="working-with-unstructured-data.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -710,7 +1063,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/09_r-input-output.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/20_data-forensics-geospatial.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -718,7 +1071,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/09_r-input-output.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/20_data-forensics-geospatial.Rmd",
 "text": null
 },
 "download": null,
