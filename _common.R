@@ -1,74 +1,7 @@
 # Common code to run before knitting each chapter.
 
-url <- "./img/mac_finder_1.png"
-url2 <- "./img/mac_window_2.png"
-url3 <- "./img/spoke_and_where_cloud.png"
-url4 <- "./img/distributed_network.png"
-url5 <- "./img/hybrid_network.png"
-url6 <- "./img/empty_sectors.png"
-url7 <- "./img/filled_bits.png"
-url8 <- "./img/directory.png"
-url9 <- "./img/mac_finder_3.png"
-url10 <- "./img/version_tree.png"
-url11 <- "./img/TT_tree_mobile.jpg"
-url12 <- "./img/mac_terminal.png"
-url13 <- "./img/bash.png"
-url14 <- "./img/GIT-Branchand-its-Operations.png"
-url15 <- "./img/datalab-logo-full-color-rgb.png"
-url16 <- "./img/save_stage_commit.png"
-url17 <- "./img/git_for_teams.png"
-url18 <- "./img/branching_workflows.png"
-url19 <- "./img/terminal.png"
-url20 <- "./img/terminal_machine_identifier.png"
-url21 <- "./img/terminal_file_path.png"
-url22 <- "./img/terminal_user.png"
-url23 <- "./img/terminal_command_prompt.png"
-url24 <- "./img/terminal_cursor_position.png"
-url25 <- "./img/terminal_echo_command.png"
-url26 <- "./img/terminal_echo_outptu.png"
-url27 <- "./img/vim_open.png"
-url28 <- "./img/vim_insert_mode.png"
-url29 <- "./img/vim_save.png"
-url30 <- "https://www.r-project.org/Rlogo.png"
-url31 <- "./img/sample_lec7.png"
-url32 <- "./img/graph_time_dist_mydata.png"
-url33 <- "./img/family_tree.jpg"
-url34 <- "./img/mtcars_tree.jpg"
-url35 <- "./img/social_network.jpeg"
-url36 <- "./img/graph-parts.jpg"
-url37 <- "./img/directed-vs-undirected-graph.jpg"
-url38 <- "./img/sql_erd_example.png"
-url39 <- "./img/basic_internet.png"
-url40 <- "./img/basic_internet_with_ip.png"
-url41 <- "./img/basic_internet_dns.png"
-url43_web_works <- "./img/basic_internet_routing.png"
-url42 <- "./img/blurry_page_image.png"
-url43 <- "./img/blackletter_example.jpg"
-url44 <- "./img/chronicling_america_example.png"
-
-# network images
-
-# emojis
-net_url1 = "./img/male-teacher_emoji.png"
-net_url2 = "./img/female-student_emoji.png"
-net_url3 = "./img/female-health-worker_emoji.png"
-net_url4 = "./img/male-scientist_emoji.png"
-
-# examples
-net_url5 = "./img/who_shall_survive.png"
-net_url6 = "./img/neuronet.jpg"
-net_url7 = "./img/chem_graph.jpg"
-net_url8 = "./img/page_rank.jpg"
-net_url9 = "./img/infrastructure_net.jpg"
-net_url10 = "./img/terror_net.png"
-
-# others
-net_url11 = "./img/2mode.png"
-net_url12 = "./img/2_step.png"
-
 library(knitr)
 library(stringr)
-
 
 .read_html_cache = function(url, cache = "html_cache") {
   # This function reads an HTML document from a local cache directory. If the
