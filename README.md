@@ -108,14 +108,6 @@ To make alterations to the reader:
     Then `git commit` and `git push`. The live web page will update
     automatically after a few minutes.
 
-
-
-Outbound URLs that point to course media should be given their own,
-sequentially numbered variable (`url1`, `url2`, ..., `url26`, etc.) in the file
-`_common.R` and should then be called from that variable in the body text of
-the chapter files.
-
-
 ### Resource-intensive Code
 
 If one of your code chunks takes a lot of time or memory to run, consider
