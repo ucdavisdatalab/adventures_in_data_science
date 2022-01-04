@@ -180,19 +180,18 @@ vec2
 class(vec2)
 ```
 
-R has some built in functions to help you inspect a vector and calculate basic statistics.
+R has some built in functions to help you inspect vectors.
 
 ```{r echo=T, results='hide'}
 length(v)   # returns how many elements are within the object
 length(place)
 ```
+Here are a few functions for calucating basic statistics on a vector (we'll go into more detail on this later):
 
 ```{r echo=T, results='hide'}
-min(v)   	# minimum value
-max(v)  		# maximum value
-mean(v)
-median(v)
-sd(v) 		# standard deviation
+mean(v)   # mean
+median(v) # median
+sd(v) 		  # standard deviation
 ```
 
 ## Matrices, Arrays & Lists
@@ -201,9 +200,11 @@ sd(v) 		# standard deviation
 
 ## Data Frames
 
-We frequently work with 2-dimensional tables of data. For a tabular data set, typically each row corresponds to a single subject and is called an observation. Each column corresponds to the data measures or responses -- a feature or covariable. (Sometimes people will also refer to these as variables, but that can be confusing as "variable" means something else in R, so here we'll try to avoid that term.)  R's structure for tabular data is the **data frame.**
+We frequently work with 2-dimensional tables of data. For a tabular data set, typically each row corresponds to a single subject and is called an observation. Each column corresponds to the data measures or responses -- a feature or covariable. (Sometimes people will also refer to these as variables, but that can be confusing as "variable" means something else in R, so here we'll try to avoid that term.) R's structure for tabular data is the **data frame.**
 
-A data frame is a list of column vectors. Thus, elements of a column must all have the same type (like a vector), but elements of a row can have different types (like a list). Additionally, every row must be the same length. To make a data frame in R, you can combine vectors using the data.frame() command.
+A data frame is composed of vectors and lists. The columns are vectors and thus are composed of elements of the same data type. The rows are **lists**, and can contain elements of different data types. A data frame can have any number of columns, but every row must be the same length. 
+
+To make a data frame in R, you can combine vectors using the data.frame() command.
 
 ```{r echo=T, results='hide'}
 distance.mi <- c(3.1, 0.6, 0.8, 0.2, 0.5, 0.2, 0.7, 0.5, 0, 1.2, 1.2, 501, 1.6,
@@ -219,18 +220,32 @@ my.data <- data.frame(place, distance.mi, time.min, major)
 
 ### Inspecting Data Frames
 
-You can print a small dataset, but it can be slow and hard to read especially if there are a lot of coumns. R has many other functions to inspect objects:
+You can print a small dataset, but it can be slow and hard to read especially if there are a lot of coumns. R has many built in functions to inspect objects:
 
 ```{r echo=T, results='hide'}
-head(my.data)
-tail(my.data)
-nrow(my.data)
-ncol(my.data)
-ls(my.data)
-rownames(my.data)
-str(my.data)
+head(my.data) # this prints only the beginning of the dataset
+tail(my.data) # this prints only the end of the dataset
+nrow(my.data) # number of rows
+ncol(my.data) # number of columns
+ls(my.data) # 
+rownames(my.data) # names of the rows
+```
+
+Two highly informative functions for inspecting a data frame are **str** and **summary**.
+
+```{r echo=T, results='hide'}
+str(my.data)  
 summary(my.data)
 ```
+You can also inspect objects within your data frame. **Factors*** are the class that R uses to represent categorical data. ***Levels*** can be used to return the different categories of a specified factor. 
+
+```{r echo=T, results='hide'}
+levels(my.data$major)
+```
+
+Additional reading: Check out this DataLab workshop on ["Keeping Your Data Tidy"](https://ucdavisdatalab.github.io/workshop_keeping_data_tidy/#spreadsheet-best-practices) that covers best practices for structuring, naming and organizing your data frames (and spreadsheets).
+
+
 
 ## Subsetting
 
@@ -277,8 +292,3 @@ You can also use `$`  to create an element within the data frame.
 my.data$mpm <- my.data$distance.mi / my.data$time.min
 ```
 
-**Factors*** are the class that R uses to represent categorical data. ***Levels*** are categories of a factor.
-
-```{r echo=T, results='hide'}
-levels(my.data$major)
-```
