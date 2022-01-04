@@ -10,6 +10,7 @@ After this lecture, you should be able to:
   * solve simple mathematical operations in R
   * create variables and dataframes
   * inspect the contents of vectors in R and manipulate their content
+  * identify the data type and class of an object and vector
   * subset and extract values from vectors
   * use the help function
 
@@ -102,12 +103,12 @@ To see the complete order of operations, use the help command:
 ?Syntax
 ```
 
-**Tip**: You can write R expressions with any number of spaces (including none) around the operators and R will still compute the result. Nevertheless, putting spaces in your code makes it easier for you and others to read, so it's good to make it a habit. Put spaces around most operators, after commas, and after keywords.
+*Tip: You can write R expressions with any number of spaces (including none) around the operators and R will still compute the result. Nevertheless, putting spaces in your code makes it easier for you and others to read, so it's good to make it a habit. Put spaces around most operators, after commas, and after keywords.*
 
 
 ## Variables
 
-Since R is designed for mathematics and statistics, you might expect that it provides a better appoximation for $\pi$ than `3.14`. R and most other programming languages allow you to create and store values, or **variables**. Variables allow you to reuse the result of a computation, write general expressions (such as `a*x + b`), and break up your code into smaller steps so it's easier to test and understand. 
+Since R is designed for mathematics and statistics, you might expect that it provides a better appoximation for $\pi$ than `3.14`. R and most other programming languages allow you to create and store values called **variables**. Variables allow you to reuse the result of a computation, write general expressions (such as `a*x + b`), and break up your code into smaller steps so it's easier to test and understand. 
 
 R has a built in variable called 'pi' for the value of $\pi$. You can display a variable's value by entering its name in the console:
 
@@ -121,7 +122,7 @@ You can also use variables in mathematical expressions. Here's a more precise ca
 pi *3^2
 ```
 
-You can define your own variables with the assignment operator '=' or '<-'. Variable names can contain letters, numbers, dots `.`, and underscores `_`, but they *cannot* begin with a number. Spaces and other symbols are not allowed in variable names. In general, variable names should be descriptive but concise, and should not use the same name as common (base R) functions like mean, T, median, sum, etc.
+You can define your own variables with the assignment operator '=' or '<-'. Variable names can contain letters, numbers, dots `.`, and underscores `_`, but they *cannot* begin with a number. Spaces and other symbols are not allowed in variable names. In general, variable names should be descriptive but concise, and should not use the same name as common (base R) functions like mean, T, median, sum, etc..
 
 Let's make some more variables:
 
@@ -140,6 +141,8 @@ y = x
 x = 16
 y
 ```
+
+Why do you think copy-on-write is helpful? Where do you think it could trip you up?
 
 
 ## Calling Functions
@@ -178,13 +181,13 @@ log(base = 2, x= 64)
 *Tip: Both of these expressions are equivalent, so which one should you use? When you write code, choose whatever seems the clearest to you. Leaving parameter names out of calls saves typing, but including some or all of them can make the code easier to understand.*
 
 
-Not sure what parameters a specific function needs? Read on for some tips on getting...
+Not sure what parameters a specific function needs? Read on for how to get...
 
 ## HELP! 
 
-This is just the beginning, and there are lots of resources to help you learn more. R has built-in help files that can be accessed with the **`?`** and **`help()`** commands. You can also search within the help documentation using the **`??`** commands. There's also a vibrant online help community. Here are some examples of how you can use all this help to help yourself.
+This is just the beginning, and there are lots of resources to help you learn more. R has built-in help files that can be accessed with the **`?`** and **`help()`** commands. You can also search within the help documentation using the **`??`** commands. There's also a vibrant online help community. Here are some examples of how you can use all this help to help yourself:
 
-**?** There are help pages for all of R's built-in functions, usually with the same name as the function itself. For functions, help pages usually include a brief description, a list of parameters, a description of the return value, and some examples. To open the help page for the `log` function:
+**?** The help pages for all of R's built-in functions usually have the same name as the function itself. Function help pages usually include a brief description, a list of parameters, a description of the return value, and some examples. To open the help page for the `log` function:
 
 ```{r, eval = FALSE}
 ?log
@@ -196,7 +199,7 @@ There are also help pages for other topics, such as built-in mathematical consta
 ?"+"
 ```
 
-*Gotcha tip: It's always okay to put single or double quotes around the name of the page when you use `?`, but they're only required if it contains arthmetic commands or non-alphabetic characters. So `?sqrt`, `?'sqrt'`, and `?"sqrt"` all open the documentation for `sqrt`, the square root function. Why does this work?  R treats anything inside single or double quotes as literal text rather than as an expression to evaluate. In programming jargon, a piece of literal text is called a _string_. You can use whichever kind of quotes you prefer, but the quote at the beginning of the string must match the quote at the end. We'll learn more about strings when we cover working with unstructured data.*
+*Tip: It's always okay to put single or double quotes around the name of the page when you use `?`, but they're only required if it contains arthmetic commands or non-alphabetic characters. So `?sqrt`, `?'sqrt'`, and `?"sqrt"` all open the documentation for `sqrt`, the square root function. Why does this work?  R treats anything inside single or double quotes as literal text rather than as an expression to evaluate. In programming jargon, a piece of literal text is called a _string_. You can use whichever kind of quotes you prefer, but the quote at the beginning of the string must match the quote at the end. We'll learn more about strings in later lessons when we cover working with unstructured data.*
 
 **??** Sometimes you might not know the name of the help page you want to look up. You can do a general search of R's help pages with `??` followed by a string of search terms. For example, to get a list of all help pages related to linear models:
 
@@ -224,13 +227,12 @@ Stay calm and try going through these steps:
 
 **If all else fails, just Google it.** Stack Overflow [r] is a popular question and answer website and you can often find solutions to your problems there, or pick up tips to help you tackle your problem in a new way. On CRAN, check out the [Intro to R Manual](http://cran.r-project.org/doc/manuals/R-intro.pdf) and [R FAQ](http://cran.r-project.org/doc/FAQ/R-FAQ.html). Many regions also have grassroots R-Users Groups that you can join and ask for help. Just remember to pay it forward and use your newfound R prowess to help others in the community on their learning journies!
 
-*Pro Tip: When asking for help, clearly state the problem and provide a [reproducible example](http://adv-r.had.co.nz/Reproducibility.html). [R also has a posting guide](http://www.r-project.org/posting-guide.html) to help you write questions that are more likely to get a helpful reply. It's also a good idea to save your `sessionInfo()` so you can show others how your machine and session was configured. Doing this before coming to office hours for a programming class is also highly recommended!*
+*Tip: When asking for help, clearly state the problem and provide a [reproducible example](http://adv-r.had.co.nz/Reproducibility.html). [R also has a posting guide](http://www.r-project.org/posting-guide.html) to help you write questions that are more likely to get a helpful reply. It's also a good idea to save your `sessionInfo()` so you can show others how your machine and session was configured. Doing this before coming to office hours for a programming class is also highly recommended!*
 
 
 ## Data Types and Classes
 
-R categorizes data into different types that specify how the object is stored
-in memory. Some common types are:
+R categorizes data into different types that specify how the object is stored in its memory. Some common types are:
 
 1. character (`"marie curie"`, `"grace hooper"`)
 2. complex (`3i`)
@@ -238,17 +240,9 @@ in memory. Some common types are:
 4. integer (`2L`, `4L`)
 5. logical (`TRUE`, `FALSE`)
 
-Types higher in the list are more general than types lower in the list. For
-instance, we can represent a logical value as a character string (`"TRUE"`,
-`"FALSE"`), but can't represent an arbitrary character string as a logical
-value. R will automatically convert objects to more general types as needed
-(but not to less general types!).
+Types higher in the list are more general than types lower in the list. For instance, we can represent a logical value as a character string (`"TRUE"`, `"FALSE"`), but can't represent an arbitrary character string as a logical value. R will automatically convert objects to more general types as needed (but not to less general types!).
 
-Perhaps more useful than types for day-to-day programming is an object's
-**class**, which specifies how it behaves in R. There are classes that
-correspond to each of the data types above, with the same name (exception: the
-class for type double is called numeric). Other classes also exist, and an
-object can have multiple classes.
+Perhaps more useful than types for day-to-day programming is an object's **class**, which specifies how it behaves in R. There are classes that correspond to each of the data types above, with the same name (exception: the class for type double is called numeric). Other classes also exist, and an object can have multiple classes.
 
 You can check the class of an object with `class()`:
 
@@ -302,13 +296,15 @@ vec2
 class(vec2)
 ```
 
+## Inspecting Vectors
+
 R has some built in functions to help you inspect vectors.
 
 ```{r echo=T, results='hide'}
 length(v)   # returns how many elements are within the object
 length(place)
 ```
-Here are a few functions for calucating basic statistics on a vector (we'll go into more detail on this later):
+Here are a few functions for calucating basic statistics on a vector (we'll go into more detail on statistics during a later lesson):
 
 ```{r echo=T, results='hide'}
 mean(v)   # mean
@@ -365,8 +361,7 @@ You can also inspect objects within your data frame. **Factors*** are the class 
 levels(my.data$major)
 ```
 
-Additional reading: Check out this DataLab workshop on ["Keeping Your Data Tidy"](https://ucdavisdatalab.github.io/workshop_keeping_data_tidy/#spreadsheet-best-practices) that covers best practices for structuring, naming and organizing your data frames (and spreadsheets).
-
+*Additional reading: Check out this DataLab workshop on ["Keeping Your Data Tidy"](https://ucdavisdatalab.github.io/workshop_keeping_data_tidy/#spreadsheet-best-practices) that covers best practices for structuring, naming, and organizing your data frames (and spreadsheets).*
 
 
 ## Subsetting
