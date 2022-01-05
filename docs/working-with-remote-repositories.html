@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>10 File Input and Output | Adventures in Data Science</title>
-  <meta name="description" content="10 File Input and Output | Adventures in Data Science" />
+  <title>5 Working with Remote Repositories | Adventures in Data Science</title>
+  <meta name="description" content="5 Working with Remote Repositories | Adventures in Data Science" />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="10 File Input and Output | Adventures in Data Science" />
+  <meta property="og:title" content="5 Working with Remote Repositories | Adventures in Data Science" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ucdavisdatalab.github.io/adventures_in_data_science/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="10 File Input and Output | Adventures in Data Science" />
+  <meta name="twitter:title" content="5 Working with Remote Repositories | Adventures in Data Science" />
   
   
   
@@ -39,8 +39,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="packages-and-functions.html"/>
-<link rel="next" href="strings-and-regular-expressions.html"/>
+<link rel="prev" href="git-branching.html"/>
+<link rel="next" href="introduction-to-r.html"/>
 <script src="libs/header-attrs-2.9/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -574,161 +574,366 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="file-input-and-output" class="section level1" number="10">
-<h1><span class="header-section-number">10</span> File Input and Output</h1>
-<p>This lesson will cover some standard functions for reading and writing data in R.</p>
-<div id="objectives" class="section level2" number="10.1">
-<h2><span class="header-section-number">10.1</span> Objectives</h2>
+<div id="working-with-remote-repositories" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Working with Remote Repositories</h1>
+<p>One of the advantages of working with a version control system like Git is the ability to maintain and sync repositories across multiple computers and users. While there a variety of available, internet accesible remote repository hosting options, in this course, we will work with the <a href="https://github.com/">Github</a> platform.</p>
+<div id="github-basics" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> GitHub Basics</h2>
+<p>At its simplest, GitHub is a hosting service for Git repositories. Much like
+Dropbox or Google Drive, it gives you a space to remotely store your code and
+related files. This can be useful when working on projects that require, for
+example, some kind of server, whether for the purposes of running large,
+potentially time-consuming data analyses or for serving up public-facing content
+(like a website). For such projects, GitHub acts as a reference point with which
+you can add, or <strong>push</strong>, changes on one computer and bring them down, or
+<strong>pull</strong> them, onto another. The process would look something like the following,
+where pushing and pulling from a remote branch entails keeping a reference point
+for a project that you’re developing locally:</p>
+<img src="img/github_workflow.png" />
+<center>
+<a href="https://www.reddit.com/r/git/comments/99ul9f/git_workflow_diagram_showcasing_the_role_of/">Image source.</a>
+</center>
+<p><br></p>
+<p>With this diagram in mind, it’s not much of a conceptual leap to imagine how two
+or more people could work from the same remote repository. Each would pull that
+repository onto their respective local computers, make a branch, implement their
+changes, and push those changes back to the remote source. That way, multiple
+parts of a project could be under development simultaneously, and any such
+changes made to that project would be trackable according to the logic of version
+control.</p>
+<p>Simultaneously pushing and pulling on multiple computers would look something
+like the following:</p>
+<p><img src="img/github_as_hub.png" /></p>
+<center>
+<a href="https://gist.github.com/fentontaylor/c6110b2e20e29a656645ce03d1848964">Image source.</a>
+</center>
+<div id="communicating-through-github" class="section level3" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Communicating Through GitHub</h3>
+<p>What makes GitHub special is the fact that, more than being
+simply a place to store files, the service is above all a <em>communication channel</em>.
+Where GitHub extends the functionality of version control is not just where it
+offers various forms of cloud hosting; it is also where GitHub provides tools
+that let people talk about the code they’re working on. It’s a place where team
+members can propose and explain the changes they make, look at changes others
+have made, track and discuss any bugs that might come up, get feedback from
+others, and plan for any future changes the team intends to make.</p>
+<p>Learning how to use GitHub, then, is as much about learning how to communicate
+effectively through the different facets of the service as it is about
+acquainting yourself with new technical skills (i.e., using your computer to
+track code remotely).</p>
+<p>A short summary of the different facets of communication GitHub provides
+includes:</p>
 <ul>
-<li>getting and setting working directory</li>
-<li>save and load R objects to/from disk</li>
-<li>read and write tabular data</li>
-<li>read data from a url</li>
+<li>Documentation, often through README files</li>
+<li>Issue tracking for bug reporting and assigning tasks</li>
+<li>Pull requests for proposing and discussing changes</li>
+<li>Wikis, which may feature additional documentation, tutorials, etc.</li>
+<li>Project boards for long-term planning</li>
+<li>Various graph visualizations for project overview</li>
 </ul>
+<p>Additionally, GitHub users can monitor and modify other projects’ code using
+“Watch,” “Star,” and “Fork” functionalities. The service also provides teams
+with the ability to specify licensing information for their projects.</p>
 </div>
-<div id="basic-idea" class="section level2" number="10.2">
-<h2><span class="header-section-number">10.2</span> Basic Idea</h2>
-<p>As a data scientist, you will constantly be reading from and writing to files.
-Generally you are given some dataset that you need to analyze and report on.
-This means that you need to load the data into R, run some code, and finally save some outputs.
-This is all done with files.</p>
-</div>
-<div id="file-formats" class="section level2" number="10.3">
-<h2><span class="header-section-number">10.3</span> File Formats</h2>
-<p>When people talk about binary files, vs text files what they really mean is - is it human readable?
-A text file should have text data that a human can read with a text editor.
-A binary file has binary data that a human can’t really read, but the appropriate software can.</p>
-</div>
-<div id="filesystems-and-paths" class="section level2" number="10.4">
-<h2><span class="header-section-number">10.4</span> Filesystems and Paths</h2>
-<p>At a high level, files are information stored on a computer.
-Each file has a name, and a unique file path.
-A filepath is the location of the file in the storage device.
-A file name as two parts: the name and the file extension.</p>
-<p>The file extension (everything after the .) is meant to indicate to the user (you) and the operating system what the file contains.
-This hint means you often times don’t need to open the file to know what kind of data it has.
-However, the extension is not enforced by anything, its just a useful suggestion.</p>
-<p>Paths can be relative or absolute.
-An absolute path is the full path through the filesystem to reach a file.
-A relative path is the path from some starting point to the file you want to reach.
-You can consider a relative path as something that needs to be combined with another path to reach a file.</p>
-</div>
-<div id="get-and-set-working-directory" class="section level2" number="10.5">
-<h2><span class="header-section-number">10.5</span> get and set working directory</h2>
-<p>Before we begin, we will get and set our working directory in R.
-You can think of the working directory as the part that gets combined with the relative path.</p>
-<p><code>getwd()</code> will return the absolute file path of the working directory</p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="file-input-and-output.html#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
-<p>Call setwd to set the working directory to a path you specify as an input argument.</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="file-input-and-output.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;~/Documents/file_io/&quot;</span>) <span class="co"># notice the argument</span></span>
-<span id="cb112-2"><a href="file-input-and-output.html#cb112-2" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code></pre></div>
-<p>A really useful function in R is list.files(), which lists all the files at a given path.
-Listing the files should confirm for us that we are in the right place.</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="file-input-and-output.html#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>() </span></code></pre></div>
-</div>
-<div id="saving-and-loading-r-data" class="section level2" number="10.6">
-<h2><span class="header-section-number">10.6</span> saving and loading R data</h2>
-<div id="rds" class="section level3" number="10.6.1">
-<h3><span class="header-section-number">10.6.1</span> rds</h3>
-<p>A simple way to save an R object directly to a file, such that it can be loaded into another R session is with the <code>saveRDS</code> function.
-<code>saveRDS</code> will write a single object to a specified file path.
-By default, it will save the object as a binary representation.
-This can be very useful for large objects, as the binary format will be significantly more space efficient.</p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="file-input-and-output.html#cb114-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</span>
-<span id="cb114-2"><a href="file-input-and-output.html#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(y, <span class="at">file=</span><span class="st">&quot;myvectors.rds&quot;</span>)</span></code></pre></div>
-<p>Confirm that it worked.</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="file-input-and-output.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>()</span></code></pre></div>
-<p>The counterpart to <code>saveRDS</code> is <code>readRDS</code>.
-With <code>readRDS</code>, you can load in an rds file, which by definition contains a single R object, and assign it to a variable in your session.</p>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="file-input-and-output.html#cb116-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;myvector.rds&quot;</span>)</span></code></pre></div>
-<p>This will work for any R object.
-For example.</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="file-input-and-output.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(mtcars, <span class="at">file=</span><span class="st">&quot;mtcars.rds&quot;</span>)</span>
-<span id="cb117-2"><a href="file-input-and-output.html#cb117-2" aria-hidden="true" tabindex="-1"></a>my_cars <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;mtcars.rds&quot;</span>)</span></code></pre></div>
-<p>Saving and loading using <code>readRDS</code> is really powerful to save data.
-However, it does have a pretty significant drawback - its useless outside of R.
-For someone to explore the data, they would need to load R.</p>
+<div id="what-should-i-push-to-github" class="section level3" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> What Should I Push to GitHub?</h3>
+<p>A quick word about what should and shouldn’t be pushed to a remote repository,
+especially with an eye toward what we’ve said about communication. You can, of
+course, host large data files on GitHub, but there are a few caveats. For one,
+the site does have a storage limit, and it can also become quite inefficient to
+have team members constantly push/pull large files to/from GitHub. Further,
+hosting data files might not be particularly relevant to what a team might need
+to discuss. Data may change often over the course of a project, but tracking
+individual observations might not be necessary—more meaningful would be a
+conversation about how code has made, or might make, such changes. The latter
+is likely to be something that GitHub is better suited to facilitate.</p>
+<p>It’s best, then, to host your data files separately from GitHub, either by way
+of a remote database or some kind of cloud service like Google Drive. Exceptions
+may come up, however, so the decision about what to track should ultimately be
+one made by the team.</p>
+<p>Examples of what should be tracked with GitHub:</p>
+<ul>
+<li>Code</li>
+<li>Documentation</li>
+<li>Make files</li>
+<li>Some supporting media (small images, for example)</li>
+</ul>
+<p>Finally, note that even though you can set a repository to either “Public” or
+“Private” (which controls who can see your project), it’s recommended that you
+refrain from uploading various access credentials (API keys, database passwords,
+etc.) to GitHub.</p>
 </div>
 </div>
-<div id="reading-and-writing-text-data" class="section level2" number="10.7">
-<h2><span class="header-section-number">10.7</span> Reading and Writing Text data</h2>
-<p>In addition to <code>saveRDS</code> and <code>readRDS</code>,
-R has functions for working with text files.</p>
-<p>These are commonly used for getting external data into R.
-And for exporting your data so that it can be used by other people.</p>
-<div id="tabular-data" class="section level3" number="10.7.1">
-<h3><span class="header-section-number">10.7.1</span> tabular data</h3>
-<p>Generally the data you work with in R will be tabular.
-Dataframes are an example of tabular data.</p>
+<div id="basic-github-account-setup" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Basic GitHub Account Setup</h2>
+<p>To use GitHub, you need to make a (free) account. You can do so by going to
+<a href="https://github.com/">github.com</a>. Once you’re there, click “Sign Up” in the
+top-right corner of the page. This should take you to a form, which asks you to
+enter a <strong>username</strong>, <strong>email address</strong>, and <strong>password</strong>. After you’ve entered
+in this information (and completed a quick CAPTCHA), GitHub will make you an
+account. Then, the site will prompt you to complete an optional survey. Fill it
+out, or scroll to the bottom to skip it.</p>
+<p>Either way, you’ll need to then verify your email address. Go to your inbox and
+look for an email from GitHub. Click the “Verify email address” button. Doing so
+will take you to your homepage, where, if you’d like, you can add a few details
+about yourself.</p>
+<p><img src="img/github_new_homepage.png" /></p>
+<p>You now have a GitHub account!</p>
+<div id="locally-setting-up-your-git-credentials" class="section level3" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Locally Setting Up Your Git Credentials</h3>
+<p>Regardless of how you make your commits, you will need to use the command line
+to provide Git with some information about who will be making commits. You
+may have already done this, however (and sometimes your computer does it
+automatically). To check, enter the following two commands in either Terminal
+(Mac) or Git Bash (Windows):</p>
+<pre><code>git config --global user.name
+git config --global user.email</code></pre>
+<p>If you see your name (or some kind of username) and your email after entering
+the above commands, you’re set. If nothing happens when you type them, you’ll
+need to provide this information with the following:</p>
+<pre><code>git config --global user.name &quot;&lt;your name&gt;&quot;
+git config --global user.email &quot;&lt;your email&gt;&quot;</code></pre>
+<p>You can check whether this was successful by simply calling either, or both, of
+the first two commands. They should echo back the information you’ve just
+entered.</p>
 </div>
-<div id="read-and-write-table" class="section level3" number="10.7.2">
-<h3><span class="header-section-number">10.7.2</span> read and write table</h3>
-<p>To write tabular data from a text file use the write.table function.
-Before running it, lets look at the documentation and understand the key arguments.</p>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="file-input-and-output.html#cb118-1" aria-hidden="true" tabindex="-1"></a>?write.table </span></code></pre></div>
-<p>The important arguments are x, file, and sep.</p>
-<p><strong>x</strong> is the dataframe you are saving.
-<strong>file</strong> is the name of the file you want to create and write to.
-<strong>sep</strong> is the field separator, also called delimiter.</p>
-<p>Notice that if file is left blank, then R will just print the results to the console, instead of into a file.
-Lets use this to explore what the <strong>sep</strong> argument does.</p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="file-input-and-output.html#cb119-1" aria-hidden="true" tabindex="-1"></a>small <span class="ot">=</span> <span class="fu">head</span>(my_cars)</span>
-<span id="cb119-2"><a href="file-input-and-output.html#cb119-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small)</span>
-<span id="cb119-3"><a href="file-input-and-output.html#cb119-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot; &quot;</span>)</span>
-<span id="cb119-4"><a href="file-input-and-output.html#cb119-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot;.&quot;</span>)</span>
-<span id="cb119-5"><a href="file-input-and-output.html#cb119-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(small, <span class="at">sep=</span><span class="st">&quot;,&quot;</span>)</span></code></pre></div>
-<p>Lets write our data to a file.</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="file-input-and-output.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(my_cars, <span class="at">file=</span><span class="st">&quot;cars.txt&quot;</span>) </span>
-<span id="cb120-2"><a href="file-input-and-output.html#cb120-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>() <span class="co"># confirm it worked</span></span></code></pre></div>
-<p>Now lets read the data back in.</p>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="file-input-and-output.html#cb121-1" aria-hidden="true" tabindex="-1"></a>from_cars.txt <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">&quot;cars.txt&quot;</span>) </span></code></pre></div>
-<p>Always inspect your data to make sure everything worked</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="file-input-and-output.html#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(from_cars.txt)</span>
-<span id="cb122-2"><a href="file-input-and-output.html#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(from_cars.txt)</span>
-<span id="cb122-3"><a href="file-input-and-output.html#cb122-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(from_cars.txt)</span></code></pre></div>
+<div id="ssh-keys-and-github" class="section level3" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> SSH Keys and GitHub</h3>
+<p>When you work with remote repositories on GitHub, you’ll often need to enter
+your username/password to identify yourself. This is for two reasons: 1) it
+allows GitHub to track who has made changes to what files; 2) it adds a layer
+of security to projects, letting teams control who can make changes to their
+files. Repositories can be either public or private, and this layer of security
+helps teams control who has access to files in the first place.</p>
+<p>It can be a pain, though, to have to enter and re-enter your credentials when
+making changes. More, passwords can be lost or worse, stolen. To avoid these
+problems, we can set up an <strong>SSH key</strong>. SSH keys (short for “Secure Shell”)
+are special, machine-readable credentials that allow users to safely connect
+and authenticate with remote servers over unsecure networks.</p>
+<p>An SSH key has two parts:</p>
+<ol style="list-style-type: decimal">
+<li>A <em>public key</em>, which encrypts messages intended for a particular recipient.
+This can be stored on remote servers, or even shared with others, to facilitate
+secure data transfers</li>
+<li>A <em>private key</em>, which deciphers messages encrypted by the public key. Your
+private key is the only thing capable of unlocking what is sent with your public
+key. It stays on your computer and should never be shared with anyone</li>
+</ol>
+<p>Beyond what security measures an SSH key brings, it also acts as your digital
+signature. GitHub uses this internally to verify that you are, in fact, who
+you say you are when you commit code to a repository.</p>
 </div>
-<div id="csv-format" class="section level3" number="10.7.3">
-<h3><span class="header-section-number">10.7.3</span> CSV format</h3>
-<p>A CSV (comma separated values) file is a text file that uses ‘,’ as the field separator.
-This is probably the most commonly used format for plain text tabular data.</p>
-<p>To write a csv in R use the <code>write.csv</code> function.
-This is equivalent to <code>write.table(from_cars.txt, file="cars.csv", sep=",")</code></p>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="file-input-and-output.html#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(from_cars.txt, <span class="at">file=</span><span class="st">&quot;cars.csv&quot;</span>) </span>
-<span id="cb123-2"><a href="file-input-and-output.html#cb123-2" aria-hidden="true" tabindex="-1"></a>from_cars.csv <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;cars.csv&quot;</span>)</span></code></pre></div>
-<p>Again, double check that everything worked.</p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="file-input-and-output.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(from_cars.csv)</span>
-<span id="cb124-2"><a href="file-input-and-output.html#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(from_cars.csv)</span>
-<span id="cb124-3"><a href="file-input-and-output.html#cb124-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(from_cars.csv)</span></code></pre></div>
-<p>What went wrong here?
-In this case it was ambiguous if the first column was rownames or actual values.</p>
-<p>Lets fix it</p>
-<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="file-input-and-output.html#cb125-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">=</span> from_cars.csv[, <span class="dv">2</span><span class="sc">:</span><span class="dv">12</span>]</span>
-<span id="cb125-2"><a href="file-input-and-output.html#cb125-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(temp) <span class="ot">=</span> from_cars.csv[,<span class="dv">1</span>]</span>
-<span id="cb125-3"><a href="file-input-and-output.html#cb125-3" aria-hidden="true" tabindex="-1"></a>fixed <span class="ot">=</span> temp</span></code></pre></div>
-<p>With these sorts of problems, you can generally fix them by using the appropriate arguments to the function calls of the read and write functions.
-Notice the argument in this function call.
-It specifies that the rownames can be read in from the first column of the tabular data in the file.</p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="file-input-and-output.html#cb126-1" aria-hidden="true" tabindex="-1"></a>from_cars.csv <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;cars.csv&quot;</span>, <span class="at">row.names =</span><span class="dv">1</span>) </span></code></pre></div>
-</div>
-<div id="non-tabular-data" class="section level3" number="10.7.4">
-<h3><span class="header-section-number">10.7.4</span> Non-tabular data</h3>
-<p>There are functions in R for reading and writing text data that doesn’t represent tabular data.
-A common one is <code>writeLines</code> and <code>readLines</code>.</p>
-<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="file-input-and-output.html#cb127-1" aria-hidden="true" tabindex="-1"></a>texts <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;line one&quot;</span>, <span class="st">&quot;line two&quot;</span>)</span>
-<span id="cb127-2"><a href="file-input-and-output.html#cb127-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(texts, <span class="st">&quot;raw.txt&quot;</span>)</span>
-<span id="cb127-3"><a href="file-input-and-output.html#cb127-3" aria-hidden="true" tabindex="-1"></a>texts2 <span class="ot">=</span> <span class="fu">readLines</span>(<span class="st">&quot;raw.txt&quot;</span>)</span></code></pre></div>
+<div id="connecting-to-github-with-ssh" class="section level3" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span> Connecting to GitHub with SSH</h3>
+<p>GitHub offers thorough, straightforward documentation for setting up an SSH key
+with its services, which we won’t repeat here. Instead, please visit the link
+below and follow the step-by-step instructions there to get yourself set up
+with a key.</p>
+<p><a href="https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh">Connecting to GitHub with SSH</a></p>
+<p>The following steps at the link above are required:</p>
+<ul>
+<li>Checking for existing SSH keys</li>
+<li>Generating a new SSH key and adding it to the ssh-agent</li>
+<li>Adding a new SSH key to your GitHub account</li>
+<li>Testing your SSH connection</li>
+</ul>
+<p>Once you have completed these steps, be sure you can successfully run the
+following command:</p>
+<pre><code>ssh -T git@github.com</code></pre>
+<p>If your connection is successful, you will see this message (a warning may first
+appear—see the documentation on GitHub for more information):</p>
+<pre><code>Hi &lt;your username&gt;! You&#39;ve successfully authenticated, but GitHub does not 
+provide shell access.</code></pre>
 </div>
 </div>
-<div id="urls-as-files" class="section level2" number="10.8">
-<h2><span class="header-section-number">10.8</span> URLS as files</h2>
-<p>Files can be transferred over the internet.
-<strong>URLs</strong> are a type of filepath, that denotes a filepath, and the computer that file is stored on.
-Many functions in R that involve reading and writing from files, can be given a url as the filepath argument.
-In that case, the file will be transferred over the internet, onto your computer, and then read into R.</p>
-<p>Here is an example of reading in a file from a url, using the <code>readLines</code> function.</p>
-<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="file-input-and-output.html#cb128-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://datalab.ucdavis.edu&quot;</span></span>
-<span id="cb128-2"><a href="file-input-and-output.html#cb128-2" aria-hidden="true" tabindex="-1"></a>t <span class="ot">=</span> <span class="fu">readLines</span>(url)</span></code></pre></div>
+<div id="github-desktop-or-the-command-line" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> GitHub Desktop, or the Command Line?</h2>
+<p>Remember that Git is separate from GitHub. The latter is a service that’s been
+built around the former. One part of the services that GitHub offers is an
+application called <a href="https://desktop.github.com/">GitHub Desktop</a>, which allows
+users to manage their local repositories with a point-and-click graphical user
+interface (or GUI). Ultimately, it’s a matter of preference whether you use the
+GUI or stick with the command line for your own projects, but it is generally a good idea to become proficent at interacting with GitHub via the command line. One of the primary
+reasons for this has to do with the fact that not every computer you use will
+have GitHub’s GUI installed—or even have a screen! Many remote servers offer
+command line-only access, and if you ever want to sync your files with these
+machines, you’ll need to do so without GitHub Desktop. Luckily, GitHub
+seamlessly extends Git commands, so using the service without the GUI is, as
+we’ll see, quite straightforward.</p>
+</div>
+<div id="sync-with-github" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Sync with GitHub</h2>
+<p>Now that you’re all set up with GitHub, it’s time to sync the website with a
+local repository on your computer. We’ll start by creating a test repository on your local Git intance.</p>
+<p>First, use the command line to make a new directory in your Home folder:</p>
+<pre><code>mkdir ~/my_first_remote_directory</code></pre>
+<p>Put this directory under version control with Git:</p>
+<pre><code>cd ~/my_first_remote_directory
+git init</code></pre>
+<p>With Vim, make a README markdown file:</p>
+<pre><code>vim README.md</code></pre>
+<p>Write and save “Hello world!” in the file. You should see something like the
+following:</p>
+<p><img src="img/hello_world.png" /></p>
+<p>Exit Vim. Then, add README.md to Git and commit your changes. Don’t forget to
+write a short note in the commit message.</p>
+<pre><code>git add README.md
+git commit -m &#39;Add a README file&#39;</code></pre>
+<p>You should see the following:</p>
+<p><img src="img/commit_readme.png" /></p>
+<div id="preparing-to-sync-your-repository" class="section level3" number="5.4.1">
+<h3><span class="header-section-number">5.4.1</span> Preparing to Sync Your Repository</h3>
+<p>So far so good! All we’ve done is repeat the normal workflow for putting files
+under version control. But now we need to step away from the command line for
+a moment and prepare a space for receiving this repository on GitHub.</p>
+<p>To do so, go to github.com and, on your homepage, click the “Create repository”
+button. You’ll be taken to this page:</p>
+<p><img src="img/new_repository.png" /></p>
+<p>There are a few things of note here:</p>
+<ul>
+<li>Repository name: your repository’s name, which should be the same as what’s on your computer</li>
+<li>Description: a short (1-2 sentence) explanation of what’s in this repository</li>
+<li>Public/private setting: repositories may be either “public” (viewable by anyone) or “private” (only viewable by you and those to whom you grant access)</li>
+<li>Initialize with details, including:
+<ul>
+<li>A README file: a form of documentation; provides information about the files in the repository</li>
+<li>A .gitignore file: instructs Git to ignore specific files or filetypes</li>
+<li>A license: governs the use or redistribution of your files</li>
+</ul></li>
+</ul>
+<p>Because we’re initializing this repository from an existing directory, we won’t
+bother with most of the extra details. But we do need a title, which should be
+the same as what’s on your local computer (“my_first_remote_directory”). A
+description is helpful but not necessary for our purposes; the same goes for a
+license. Finally, we will choose to make this a public repository (meaning
+anyone can see it).</p>
+<p><img src="img/new_repository_details.png" /></p>
+</div>
+<div id="pushing-a-local-repository" class="section level3" number="5.4.2">
+<h3><span class="header-section-number">5.4.2</span> Pushing a Local Repository</h3>
+<p>Once you’ve entered the above information, click “Create repository.” GitHub
+will take you to a new screen, which gives you a number of options for making or
+uploading new files to the repository.</p>
+<p><img src="img/new_repository_options.png" /></p>
+<p>Since we already have a repository made, we need to use the “Push an existing
+repository from the command line.” Pushing our repository is as easy as
+sequentially entering into the command line the three commands GitHub provides.</p>
+<pre><code>git remote add origin git@github.com:&lt;your user account&gt;/my_first_remote_directory.git
+git branch -M main
+git push -u origin</code></pre>
+<p>On the command line, that looks like this:</p>
+<p><img src="img/push_repository_command_line.png" /></p>
+<p>To summarize the above, we’ve done the following:</p>
+<ol style="list-style-type: decimal">
+<li>Associated GitHub’s remote repository with our local repository (<code>git remote</code> etc.)</li>
+<li>Made a new branch in our local repository called “main” (<code>git branch -M main</code>)</li>
+<li>Pushed the contents of main (from <code>origin</code>) to a new, corresponding remote branch on GitHub</li>
+</ol>
+<p>From here on out, when you want to update the remote repository with further
+changes, you can simply use the shorthand <code>git push</code> after the usual save, add,
+commit steps. Importantly, Git will only update the branch you’re on when you
+enter <code>git push</code>, so before making any pushes, it’s a good idea to run a quick
+<code>git status</code> command to make sure you’re on the branch you want to be on.</p>
+<p>When you make your changes, the GitHub site won’t immediately refresh itself,
+but if you click on the “&lt; &gt; Code” tab or on the name of the directory, you’ll
+see that the repository has been synced and your README.md file is now online.</p>
+<p><img src="img/new_repository_synced.png" /></p>
+<p>Note that GitHub automatically looks for a README file in your repository. If it
+finds one that contains renderable <a href="https://guides.github.com/features/mastering-markdown/">markdown</a> code, it will
+render the file on your repository’s main page. (More information about writing
+effective README files is available through the DataLab’s data documentation
+<a href="https://ucdavisdatalab.github.io/workshop_how-to-data-documentation/">workshop</a>.)</p>
+</div>
+<div id="tracking-files-remotely" class="section level3" number="5.4.3">
+<h3><span class="header-section-number">5.4.3</span> Tracking Files Remotely</h3>
+<p>With this repository made, GitHub can start tracking changes you make to your
+files, much as Git does locally. The process works exactly like the one you
+do for Git, though it requires one more step.</p>
+<p>First, we’ll alter our README.md. Reopen the file with vim, skip a line down
+from the line you’ve already written, and add “My name is <your name>.” Save and
+quit.</p>
+<p><img src="img/hello_world_changed.png" /></p>
+<p>Then, add the file and commit your changes.</p>
+<p><img src="img/commit_readme_update.png" /></p>
+<p>If you want to push these changes to your remote repository, simply enter <code>git push</code>.
+You’ll see a similar message appear about enumerating, counting, and writing
+objects to GitHub. Afterwards, if you refresh your file on GitHub, you should
+see your changes:</p>
+<p><img src="img/new_repository_synced_updated.png" /></p>
+<p>Note that your commit message appears here as well:</p>
+<p><img src="img/new_repository_synced_message_highlight.png" /></p>
+<p>If you click the commit tag:</p>
+<p><img src="img/new_repository_synced_commit_tag.png" /></p>
+<p>You’ll be taken to another page, which shows you the differences between your
+old version and the new one:</p>
+<p><img src="img/github_vdiff.png" /></p>
+</div>
+<div id="pulling-changes-from-a-remote-repository" class="section level3" number="5.4.4">
+<h3><span class="header-section-number">5.4.4</span> Pulling Changes from a Remote Repository</h3>
+<p>Before moving on, it’s also worth noting that we can pull changes directly from
+GitHub. If a file has been altered on the remote version of a project, GitHub
+offers functionality for syncing that file with your local copy (or creating a
+new file altogether, if need be).</p>
+<p>For example, if you return to the main page of “my_first_remote_directory,” you
+can alter the README directly on GitHub. Click the pencil in the right-hand
+corner of the rendered file.</p>
+<p><img src="img/new_repository_pencil_highlight.png" /></p>
+<p>This will open up a text editor interface. Using it, add “What’s yours?” on the
+fifth line of the document. The complete document should look like this:</p>
+<pre><code>Hello world!
 
+My name is &lt;your name&gt;
+
+What&#39;s yours?</code></pre>
+<p>Scroll to the bottom and click the green “Commit changes” button. This is the
+equivalent of doing <code>git add &lt;file&gt;</code> and <code>git commit -m &lt;message&gt;</code> on the
+command line.</p>
+<p>You’ll see something like the following:</p>
+<p><img src="img/updated_readme.png" /></p>
+<p>Back on the command line, if you type <code>git status</code>, you’ll see that your local
+repository is now out of sync.</p>
+<p><img src="img/branch_behind.png" /></p>
+<p>If you haven’t made any changes to your directory, syncing it with the remote
+version can be achieved with a straighforward pull command:</p>
+<pre><code>git pull</code></pre>
+<p>Once you enter this command, your command line should look something like this:</p>
+<p><img src="img/git_pull.png" /></p>
+<p>Your files are now synced. A later portion of this reader will discuss how to
+handle this process when you <em>have</em> made changes to your directory between the
+time the remote was altered and the time you go to make a pull.</p>
+</div>
+</div>
+<div id="cloning-a-repository" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> Cloning a Repository</h2>
+<p>While tracking your own files remotely with GitHub is great for managing and
+storing your files, this doesn’t quite tap into the full use of the service.
+Remember, GitHub is above all a communication channel, in which people can share
+and discuss the code/files they’re working on. We haven’t yet taken advantage of
+much of what makes GitHub useful: getting files for a project, modifying them,
+discussing the changes with team members, and implementing those changes.</p>
+<div id="how-to-clone-a-repository" class="section level3" number="5.5.1">
+<h3><span class="header-section-number">5.5.1</span> How to Clone a Repository</h3>
+<p>To start using GitHub collaboratively, we need to retrieve, or <strong>clone</strong>, a
+repository. This will create a local copy of project files.</p>
+<p>First, go back to your Home directory. You’ll be putting a repository here (in
+command line speak, the repository will be a “child” of Home).</p>
+<pre><code>cd ~</code></pre>
+<p>Then, go to the following link: <a href="https://github.com/ucdavis-datalab-training/workshop_git_for_teams_sandbox">https://github.com/ucdavis-datalab-training/workshop_git_for_teams_sandbox</a></p>
+<p>Once there, click on the green “Code” button, which should show the following:</p>
+<p><img src="img/clone_repository_github_view.png" /></p>
+<p>Since you have SSH keys, select the “SSH” option. Copy the text GitHub provides
+to your clipboard. Then, in the command line, type <code>git clone</code>, add a space,
+and paste in the line of text GitHub generated for you. The full command should
+look like this:</p>
+<pre><code>git clone git@github.com:ucdavis-datalab-training/workshop_git_for_teams_sandbox.git</code></pre>
+<p>Hit “Enter.” If you’d like, you can use <code>ls</code> to see the newly made directory.
+You should see something like the following:</p>
+<p><img src="img/clone_repository_command_line_view.png" /></p>
+<p>If you <code>cd</code> into the directory and then type <code>ls -a</code>, you’ll see a README.md
+file and a .git file, which contains all the logging info for the repository.</p>
+<p><img src="img/clone_repository_lsa.png" /></p>
+
+</div>
 </div>
 </div>
             </section>
@@ -736,8 +941,8 @@ In that case, the file will be transferred over the internet, onto your computer
           </div>
         </div>
       </div>
-<a href="packages-and-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="strings-and-regular-expressions.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="git-branching.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="introduction-to-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -759,7 +964,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/09_r-input-output.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/04_git-remote.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -767,7 +972,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/09_r-input-output.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/04_git-remote.Rmd",
 "text": null
 },
 "download": null,
