@@ -274,12 +274,14 @@ R's types and classes differ from how we categorize data in statistics:
 A **vector** is an ordered collection of values. Essentially everything that you've worked with in R is a vector. The elements in a vector must have the same data type. (While class and type are independent, for vectors they are typically the same and thus you can expect that they typically should have the same class.) You can combine or concatenate values to create a vector using `c()`.
                                                                                                                           
 ```{r echo=T, results='hide'}
-v<-c(16, 3, 4, 2, 3, 1, 4, 2, 0, 7, 7, 8, 8, 2, 25)
+v<-c(5, 4, 4, 12, 10, 2, 3, 4, 4, 5, 19)
 class(v)
 
-place <- c("Mandro", "Cruess", "ARC", "CoHo", "PES", "Walker", "ARC",
-  "Tennis Courts", "Library", "Arboretum", "Arboretum", "Disneyland", "West
-  Village", "iTea", "MU")
+logi<-c("woof","woof","cat","woof","woof","cat","woof","woof","woof","woof","woof")
+class(logi)
+
+place <- c("Temple", "Yakitori", "Panera", "Yakitori", "Guads", "Home", "Tea List",
+  "Raising Canes", "Pachamama", "Lazi Cow", "Wok of Flame")
 class(place)
 ```
 
@@ -312,10 +314,6 @@ median(v) # median
 sd(v) 		  # standard deviation
 ```
 
-## Matrices, Arrays & Lists
-
-**Matrices** are two-dimensional containers for values. All elements within a matrix must have the same data type. Arrays generalize vectors and matrices to higher dimensions. In contrast, **lists** are containers for elements with different data types.
-
 ## Data Frames
 
 We frequently work with 2-dimensional tables of data. For a tabular data set, typically each row corresponds to a single subject and is called an observation. Each column corresponds to the data measures or responses -- a feature or covariable. (Sometimes people will also refer to these as variables, but that can be confusing as "variable" means something else in R, so here we'll try to avoid that term.) R's structure for tabular data is the **data frame.**
@@ -325,13 +323,9 @@ A data frame is composed of vectors and lists. The columns are vectors and thus 
 To make a data frame in R, you can combine vectors using the data.frame() command.
 
 ```{r echo=T, results='hide'}
-distance.mi <- c(3.1, 0.6, 0.8, 0.2, 0.5, 0.2, 0.7, 0.5, 0, 1.2, 1.2, 501, 1.6,
-  0.4, 4.7)
+distance.mi <- c(0.9, 0.6, 0.8, 0.6, 2, 100, 0.6, 0.7, 0.8, 1, 3.7)
 time.min <- v
-major <- c("nutrition", "psychology", "global disease", "political science",
-  "sociology", "sustainable agriculture", "economics", "political science",
-  "undeclared", "psychology", "undeclared","economics","political science",
-  "english", "economics")
+major <- c("chicanix studies", "human development", "economics", "undeclared", "psychology", "MMM", "psychology", "undeclared", "human development", "undeclared", "GG")
 
 my.data <- data.frame(place, distance.mi, time.min, major)
 ```
@@ -387,13 +381,13 @@ distances3<-my.data[[2]]
 
 ```
 
-What are the responses for political science majors?
+What are the responses for psychology majors?
 
 ```{r echo=T, eval=F}
-polisci_majors <- my.data[which(my.data$major == 'political science'), ]
+psyc_major <- my.data[which(my.data$major == 'psychology'), ]
 View(polisci_majors)
 
-which(my.data$major == "political science")
+which(my.data$major == "psychology")
 shortframe<-my.data[c(4,8,13),]
 ```
 
