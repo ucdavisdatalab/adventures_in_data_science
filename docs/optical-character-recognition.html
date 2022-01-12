@@ -237,14 +237,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.8" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-frames"><i class="fa fa-check"></i><b>6.8</b> Data Frames</a>
 <ul>
 <li class="chapter" data-level="6.8.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#selecting-columns"><i class="fa fa-check"></i><b>6.8.1</b> Selecting Columns</a></li>
+<li class="chapter" data-level="6.8.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#inspecting-data"><i class="fa fa-check"></i><b>6.8.2</b> Inspecting Data</a></li>
 </ul></li>
-<li class="chapter" data-level="6.9" data-path="introduction-to-r.html"><a href="introduction-to-r.html#inspecting-data"><i class="fa fa-check"></i><b>6.9</b> Inspecting Data</a></li>
-<li class="chapter" data-level="6.10" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-types-classes"><i class="fa fa-check"></i><b>6.10</b> Data Types &amp; Classes</a>
+<li class="chapter" data-level="6.9" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-types-classes"><i class="fa fa-check"></i><b>6.9</b> Data Types &amp; Classes</a>
 <ul>
-<li class="chapter" data-level="6.10.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#lists"><i class="fa fa-check"></i><b>6.10.1</b> Lists</a></li>
-<li class="chapter" data-level="6.10.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#implicit-coercion"><i class="fa fa-check"></i><b>6.10.2</b> Implicit Coercion</a></li>
+<li class="chapter" data-level="6.9.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#lists"><i class="fa fa-check"></i><b>6.9.1</b> Lists</a></li>
+<li class="chapter" data-level="6.9.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#implicit-coercion"><i class="fa fa-check"></i><b>6.9.2</b> Implicit Coercion</a></li>
+<li class="chapter" data-level="6.9.3" data-path="introduction-to-r.html"><a href="introduction-to-r.html#factors"><i class="fa fa-check"></i><b>6.9.3</b> Factors</a></li>
 </ul></li>
-<li class="chapter" data-level="6.11" data-path="introduction-to-r.html"><a href="introduction-to-r.html#factors"><i class="fa fa-check"></i><b>6.11</b> Factors</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="control-structures.html"><a href="control-structures.html"><i class="fa fa-check"></i><b>7</b> Control Structures</a>
 <ul>
@@ -607,8 +607,8 @@ common page image formats you’ll encounter are <code>pdf</code> and <code>png<
 lightweight, portable, and usually retain the image quality OCR software needs
 to find text.</p>
 <p>The <code>pdftools</code> package is good for working with these files:</p>
-<div class="sourceCode" id="cb343"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb343-1"><a href="optical-character-recognition.html#cb343-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;pdftools&quot;)</span></span>
-<span id="cb343-2"><a href="optical-character-recognition.html#cb343-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span></code></pre></div>
+<div class="sourceCode" id="cb342"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb342-1"><a href="optical-character-recognition.html#cb342-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;pdftools&quot;)</span></span>
+<span id="cb342-2"><a href="optical-character-recognition.html#cb342-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span></code></pre></div>
 <pre><code>## Using poppler version 21.08.0</code></pre>
 <p>Once you’ve downloaded/installed it, you can load a <code>pdf</code> into RStudio from your
 computer by entering its filesystem location as a string and assigning that
@@ -621,14 +621,14 @@ whatever function you want to call, but we’ll keep our <code>pdf</code> locati
 for the sake of clarity.)</p>
 <p>The same method works with web addresses. We’ll be using web material. First,
 write out an address and assign it to a variable.</p>
-<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="optical-character-recognition.html#cb346-1" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://datalab.ucdavis.edu/adventures-in-datascience/pdf_sample.pdf&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb345"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb345-1"><a href="optical-character-recognition.html#cb345-1" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://datalab.ucdavis.edu/adventures-in-datascience/pdf_sample.pdf&quot;</span></span></code></pre></div>
 <p>Some <code>pdf</code> files will have text data already encoded into them. This is
 especially the case if someone made a file with word processing software (like
 when you write a paper in Word and email a <code>pdf</code> to your TA or professor). You
 can check whether a <code>pdf</code> has text data with <code>pdf_text()</code>. Assign this function’s
 output to a variable and print it to screen with <code>cat()</code>, like so:</p>
-<div class="sourceCode" id="cb347"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb347-1"><a href="optical-character-recognition.html#cb347-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">pdf_text</span>(pdf)</span>
-<span id="cb347-2"><a href="optical-character-recognition.html#cb347-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(text_data)</span></code></pre></div>
+<div class="sourceCode" id="cb346"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb346-1"><a href="optical-character-recognition.html#cb346-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">pdf_text</span>(pdf)</span>
+<span id="cb346-2"><a href="optical-character-recognition.html#cb346-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(text_data)</span></code></pre></div>
 <pre><code>## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
 ## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
 ## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
@@ -716,15 +716,15 @@ a blank character string, you’ll need to OCR it. The next section shows you ho
 <p>First, you’ll need to download/install another package, <code>tesseract</code>, which
 complements <code>pdftools</code>. The latter only loads/reads <code>pdfs</code>, whereas <code>tesseract</code>
 actually performs OCR. Download/install <code>tesseract</code>:</p>
-<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="optical-character-recognition.html#cb349-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tesseract&quot;)</span></span>
-<span id="cb349-2"><a href="optical-character-recognition.html#cb349-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tesseract)</span></code></pre></div>
+<div class="sourceCode" id="cb348"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb348-1"><a href="optical-character-recognition.html#cb348-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tesseract&quot;)</span></span>
+<span id="cb348-2"><a href="optical-character-recognition.html#cb348-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tesseract)</span></code></pre></div>
 <p>And assign a new <code>pdf</code> to a new variable:</p>
-<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="optical-character-recognition.html#cb350-1" aria-hidden="true" tabindex="-1"></a>new_pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://jeroen.github.io/images/ocrscan.pdf&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb349"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb349-1"><a href="optical-character-recognition.html#cb349-1" aria-hidden="true" tabindex="-1"></a>new_pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://jeroen.github.io/images/ocrscan.pdf&quot;</span></span></code></pre></div>
 <p>To run OCR on this <code>pdf</code>, use the following:</p>
-<div class="sourceCode" id="cb351"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb351-1"><a href="optical-character-recognition.html#cb351-1" aria-hidden="true" tabindex="-1"></a>ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(new_pdf)</span></code></pre></div>
+<div class="sourceCode" id="cb350"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb350-1"><a href="optical-character-recognition.html#cb350-1" aria-hidden="true" tabindex="-1"></a>ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(new_pdf)</span></code></pre></div>
 <pre><code>## Converting page 1 to fileb17260387640ocrscan_1.png... done!</code></pre>
 <p>Print the output to screen with <code>cat()</code> and see if the process worked:</p>
-<div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="optical-character-recognition.html#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ocr_output)</span></code></pre></div>
+<div class="sourceCode" id="cb352"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb352-1"><a href="optical-character-recognition.html#cb352-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ocr_output)</span></code></pre></div>
 <pre><code>## | SAPORS LANE - BOOLE - DORSET - BH25 8 ER
 ## TELEPHONE BOOLE (945 13) 51617 - TELEX 123456
 ## 
@@ -769,7 +769,7 @@ under the hood as part of its pre-processing work and then silently deletes that
 <code>png</code> when it outputs its matches. If you have a collection of <code>pdf</code> files that
 you’d like to OCR, it can sometimes be faster and less memory intensive to
 convert them all to <code>png</code> first. You can perform this conversion like so:</p>
-<div class="sourceCode" id="cb355"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb355-1"><a href="optical-character-recognition.html#cb355-1" aria-hidden="true" tabindex="-1"></a>png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">filenames=</span><span class="st">&quot;./img/png_example.png&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb354"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb354-1"><a href="optical-character-recognition.html#cb354-1" aria-hidden="true" tabindex="-1"></a>png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">filenames=</span><span class="st">&quot;./img/png_example.png&quot;</span>)</span></code></pre></div>
 <pre><code>## Converting page 1 to ./img/png_example.png... done!</code></pre>
 <p>In addition to making a <code>png</code> object in your RStudio environment, <code>pdf_convert()</code>
 will also save that file directly to your working directory. Imagine, for
@@ -782,13 +782,13 @@ for (i in 1:length(pdfs)) {
 }</code></pre>
 <p><code>ocr()</code> can work with a number of different image types. It takes <code>pngs</code> in the
 same way as it takes <code>pdfs</code>:</p>
-<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="optical-character-recognition.html#cb358-1" aria-hidden="true" tabindex="-1"></a>png_ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(png)</span></code></pre></div>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="optical-character-recognition.html#cb357-1" aria-hidden="true" tabindex="-1"></a>png_ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(png)</span></code></pre></div>
 </div>
 <div id="accuracy" class="section level2" number="15.3">
 <h2><span class="header-section-number">15.3</span> Accuracy</h2>
 <p>If you <code>cat()</code> the output from the above <code>png</code> file, you might notice that the
 text is messier than it was when we used <code>pdf_text_ocr()</code>.</p>
-<div class="sourceCode" id="cb359"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb359-1"><a href="optical-character-recognition.html#cb359-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(png_ocr_output)</span></code></pre></div>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="optical-character-recognition.html#cb358-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(png_ocr_output)</span></code></pre></div>
 <pre><code>## THE SLEREXE COMPANY LIMITED
 ## SAPORS LANE - BOOLE - DORSET - BH 25 $ER
 ## e sous (4513) 617 - Tk 12345
@@ -834,7 +834,7 @@ your documents were printed with technologies like typewriters, dot matrix
 printers, and so on and if they feature fairly legible typefaces (Times New Roman,
 for example). A dpi of 300, however, is ideal. You can set the dpi in
 <code>pdf_convert()</code> by adding a dpi argument in the function:</p>
-<div class="sourceCode" id="cb361"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb361-1"><a href="optical-character-recognition.html#cb361-1" aria-hidden="true" tabindex="-1"></a>hi_res_png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">dpi=</span><span class="dv">150</span>, <span class="at">filenames=</span><span class="st">&quot;./img/hi_res_png_example.png&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="optical-character-recognition.html#cb360-1" aria-hidden="true" tabindex="-1"></a>hi_res_png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">dpi=</span><span class="dv">150</span>, <span class="at">filenames=</span><span class="st">&quot;./img/hi_res_png_example.png&quot;</span>)</span></code></pre></div>
 <pre><code>## Converting page 1 to ./img/hi_res_png_example.png... done!</code></pre>
 <p>Another function, <code>ocr_data()</code>outputs a data frame that contains all of the words
 <code>tesseract</code> found when it scanned through your image, along with a column of
@@ -845,9 +845,9 @@ OCRing them (more on this below). Generally, you can trust scores of 93 and
 above.</p>
 <p>To get confidence scores for an OCR job, call <code>ocr_data()</code> and subset the
 <code>confidence</code> column, like so:</p>
-<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="optical-character-recognition.html#cb363-1" aria-hidden="true" tabindex="-1"></a>ocr_data <span class="ot">&lt;-</span> <span class="fu">ocr_data</span>(hi_res_png)</span>
-<span id="cb363-2"><a href="optical-character-recognition.html#cb363-2" aria-hidden="true" tabindex="-1"></a>confidence_scores <span class="ot">&lt;-</span> ocr_data<span class="sc">$</span>confidence</span>
-<span id="cb363-3"><a href="optical-character-recognition.html#cb363-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_scores)</span></code></pre></div>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="optical-character-recognition.html#cb362-1" aria-hidden="true" tabindex="-1"></a>ocr_data <span class="ot">&lt;-</span> <span class="fu">ocr_data</span>(hi_res_png)</span>
+<span id="cb362-2"><a href="optical-character-recognition.html#cb362-2" aria-hidden="true" tabindex="-1"></a>confidence_scores <span class="ot">&lt;-</span> ocr_data<span class="sc">$</span>confidence</span>
+<span id="cb362-3"><a href="optical-character-recognition.html#cb362-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_scores)</span></code></pre></div>
 <pre><code>##   [1] 92.13857 91.38475 91.23807 91.23807 93.29996 92.56295 93.26220 70.64086
 ##   [9] 93.01996 89.35526 89.52242 89.52242 42.67688 42.67688 96.07313 92.71711
 ##  [17] 87.83458 96.88795 91.54445 87.78777 87.78777 87.65559 91.62273 92.34843
@@ -873,19 +873,19 @@ above.</p>
 ## [177] 84.96437 84.08060 91.98026 95.90424 88.61440 81.63094 90.19997 75.30827
 ## [185] 82.44823 75.63014 57.31424 63.12554 44.16006</code></pre>
 <p>The mean is a good indicator of the overall OCR quality:</p>
-<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="optical-character-recognition.html#cb365-1" aria-hidden="true" tabindex="-1"></a>confidence_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(confidence_scores)</span>
-<span id="cb365-2"><a href="optical-character-recognition.html#cb365-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_mean)</span></code></pre></div>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="optical-character-recognition.html#cb364-1" aria-hidden="true" tabindex="-1"></a>confidence_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(confidence_scores)</span>
+<span id="cb364-2"><a href="optical-character-recognition.html#cb364-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_mean)</span></code></pre></div>
 <pre><code>## [1] 88.55039</code></pre>
 <p>Looks pretty good, though there were a few low scores that dragged the score
 down a bit. Let’s look at the median:</p>
-<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="optical-character-recognition.html#cb367-1" aria-hidden="true" tabindex="-1"></a>confidence_median <span class="ot">&lt;-</span> <span class="fu">median</span>(confidence_scores)</span>
-<span id="cb367-2"><a href="optical-character-recognition.html#cb367-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_median)</span></code></pre></div>
+<div class="sourceCode" id="cb366"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb366-1"><a href="optical-character-recognition.html#cb366-1" aria-hidden="true" tabindex="-1"></a>confidence_median <span class="ot">&lt;-</span> <span class="fu">median</span>(confidence_scores)</span>
+<span id="cb366-2"><a href="optical-character-recognition.html#cb366-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_median)</span></code></pre></div>
 <pre><code>## [1] 91.67342</code></pre>
 <p>We can work with that!</p>
 <p>If we want to check our output a bit more closely, we can do two things. First,
 we can look directly at <code>ocr_data</code> and compare, row by row, a given word and its<br />
 confidence score.</p>
-<div class="sourceCode" id="cb369"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb369-1"><a href="optical-character-recognition.html#cb369-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ocr_data)</span></code></pre></div>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="optical-character-recognition.html#cb368-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ocr_data)</span></code></pre></div>
 <pre><code>##               word confidence               bbox
 ## 1           SAPORS   92.13857    422,194,497,208
 ## 2             LANE   91.38475    508,194,560,208
@@ -1080,10 +1080,10 @@ confidence score.</p>
 better. We can use base R’s <code>table()</code> function to count the number of times
 unique words appear in the OCR data. We do this with the <code>word</code> column in our
 <code>ocr_data</code> variable from above:</p>
-<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="optical-character-recognition.html#cb371-1" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">table</span>(ocr_data<span class="sc">$</span>word)</span>
-<span id="cb371-2"><a href="optical-character-recognition.html#cb371-2" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ocr_vocabulary)</span></code></pre></div>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="optical-character-recognition.html#cb370-1" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">table</span>(ocr_data<span class="sc">$</span>word)</span>
+<span id="cb370-2"><a href="optical-character-recognition.html#cb370-2" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ocr_vocabulary)</span></code></pre></div>
 <p>Let’s look at the first 30 words:</p>
-<div class="sourceCode" id="cb372"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb372-1"><a href="optical-character-recognition.html#cb372-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_vocabulary, <span class="dv">30</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="optical-character-recognition.html#cb371-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_vocabulary, <span class="dv">30</span>)</span></code></pre></div>
 <pre><code>##              Var1 Freq
 ## 1               -    5
 ## 2               .    2
@@ -1154,10 +1154,10 @@ Now, OCR is much better at handling a variety of text styling, but systems still
 struggle with old print materials like <strong>blackletter</strong>.</p>
 <p><img src="img/blackletter_example.jpg" /></p>
 <p>Running:</p>
-<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="optical-character-recognition.html#cb374-1" aria-hidden="true" tabindex="-1"></a>ballad <span class="ot">&lt;-</span> <span class="st">&quot;https://ebba.english.ucsb.edu/images/cache/hunt_1_18305_2448x2448.jpg&quot;</span></span>
-<span id="cb374-2"><a href="optical-character-recognition.html#cb374-2" aria-hidden="true" tabindex="-1"></a>ballad_out <span class="ot">&lt;-</span> <span class="fu">ocr</span>(ballad)</span></code></pre></div>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="optical-character-recognition.html#cb373-1" aria-hidden="true" tabindex="-1"></a>ballad <span class="ot">&lt;-</span> <span class="st">&quot;https://ebba.english.ucsb.edu/images/cache/hunt_1_18305_2448x2448.jpg&quot;</span></span>
+<span id="cb373-2"><a href="optical-character-recognition.html#cb373-2" aria-hidden="true" tabindex="-1"></a>ballad_out <span class="ot">&lt;-</span> <span class="fu">ocr</span>(ballad)</span></code></pre></div>
 <p>Produces:</p>
-<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="optical-character-recognition.html#cb375-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ballad_out)</span></code></pre></div>
+<div class="sourceCode" id="cb374"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb374-1"><a href="optical-character-recognition.html#cb374-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ballad_out)</span></code></pre></div>
 <pre><code>##  CAditeription of Qoptons falcehoo )
 ## nf Doge thyze, and of bis fatall farewell,
 ## ache fatal fineof Sratteurs lees :
@@ -1248,11 +1248,11 @@ unconventional page layouts, as well as inset graphics. Add to that sub-par scan
 of archival documents, as in the newspaper page below, and the output will
 contain way more errors than correct matches.</p>
 <p><img src="img/chronicling_america_example.png" /></p>
-<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="optical-character-recognition.html#cb377-1" aria-hidden="true" tabindex="-1"></a>newspaper <span class="ot">&lt;-</span> <span class="st">&quot;https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf&quot;</span></span>
-<span id="cb377-2"><a href="optical-character-recognition.html#cb377-2" aria-hidden="true" tabindex="-1"></a>newspaper_ocr <span class="ot">&lt;-</span> <span class="fu">ocr</span>(newspaper)</span></code></pre></div>
+<div class="sourceCode" id="cb376"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb376-1"><a href="optical-character-recognition.html#cb376-1" aria-hidden="true" tabindex="-1"></a>newspaper <span class="ot">&lt;-</span> <span class="st">&quot;https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf&quot;</span></span>
+<span id="cb376-2"><a href="optical-character-recognition.html#cb376-2" aria-hidden="true" tabindex="-1"></a>newspaper_ocr <span class="ot">&lt;-</span> <span class="fu">ocr</span>(newspaper)</span></code></pre></div>
 <pre><code>## Converting page 1 to filef5983ab50c2a0599_1.png... done!</code></pre>
 <p>Beautifully messy output results:</p>
-<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="optical-character-recognition.html#cb379-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(newspaper_ocr)</span></code></pre></div>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="optical-character-recognition.html#cb378-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(newspaper_ocr)</span></code></pre></div>
 <pre><code>## ai . a
 ## 5 IE EI
 ## UNIVERSAL KEYBOARD i DVORAK KEYBOARD
