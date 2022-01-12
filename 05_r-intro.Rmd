@@ -215,7 +215,7 @@ This search function doesn't always work well, and it's often more efficient to 
 In later lessons we'll learn about packages, which are sharable bundles of code. You'll often need to look up the documentation to get help figuring out how to work with a new package. You can view a package's help documentation using `packageDescription("Name")`. 
 
 
-## When Something Goes Wrong (and it will)
+### When Something Goes Wrong (and it will)
 
 Sooner or later you'll run some code and get an error message or result you didn't expect. Don't panic! Even experienced programmers make mistakes regularly, so learning how to diagnose and fix problems is vital. We call this troubleshooting or debugging. 
 
@@ -229,44 +229,6 @@ Stay calm and try going through these steps:
 
 *Tip: When asking for help, clearly state the problem and provide a [reproducible example](http://adv-r.had.co.nz/Reproducibility.html). [R also has a posting guide](http://www.r-project.org/posting-guide.html) to help you write questions that are more likely to get a helpful reply. It's also a good idea to save your `sessionInfo()` so you can show others how your machine and session was configured. Doing this before coming to office hours for a programming class is also highly recommended!*
 
-
-## Data Types and Classes
-
-R categorizes data into different types that specify how the object is stored in its memory. Some common types are:
-
-1. character (`"marie curie"`, `"grace hooper"`)
-2. complex (`3i`)
-3. double (`2`, `3`, `5.7`)
-4. integer (`2L`, `4L`)
-5. logical (`TRUE`, `FALSE`)
-
-Types higher in the list are more general than types lower in the list. For instance, we can represent a logical value as a character string (`"TRUE"`, `"FALSE"`), but can't represent an arbitrary character string as a logical value. R will automatically convert objects to more general types as needed (but not to less general types!).
-
-Perhaps more useful than types for day-to-day programming is an object's **class**, which specifies how it behaves in R. There are classes that correspond to each of the data types above, with the same name (exception: the class for type double is called numeric). Other classes also exist, and an object can have multiple classes.
-
-You can check the class of an object with `class()`:
-
-```{r echo=T, results='hide'}
-x <- 2
-class(x)
-
-y <- "two"
-class(y)
-
-class(TRUE)
-
-class(mean)
-```
-
-R's types and classes differ from how we categorize data in statistics:
-
-* continuous (real numbers)
-* discrete (integers, or finite number of values)
-* logical (1 or 0, T or F)
-* nominal (unordered categorical values)
-* ordinal (ordered categorical values)
-* graph (network data)
-* character (text data) 
 
 
 ## Vectors
@@ -298,21 +260,6 @@ vec2
 class(vec2)
 ```
 
-## Inspecting Vectors
-
-R has some built in functions to help you inspect vectors.
-
-```{r echo=T, results='hide'}
-length(v)   # returns how many elements are within the object
-length(place)
-```
-Here are a few functions for calucating basic statistics on a vector (we'll go into more detail on statistics during a later lesson):
-
-```{r echo=T, results='hide'}
-mean(v)   # mean
-median(v) # median
-sd(v) 		  # standard deviation
-```
 
 ## Data Frames
 
@@ -330,7 +277,23 @@ major <- c("chicanix studies", "human development", "economics", "undeclared", "
 my.data <- data.frame(place, distance.mi, time.min, major)
 ```
 
-### Inspecting Data Frames
+
+
+## Inspecting Data
+
+R has some built in functions to help you inspect vectors.
+
+```{r echo=T, results='hide'}
+length(v)   # returns how many elements are within the object
+length(place)
+```
+Here are a few functions for calucating basic statistics on a vector (we'll go into more detail on statistics during a later lesson):
+
+```{r echo=T, results='hide'}
+mean(v)   # mean
+median(v) # median
+sd(v) 		  # standard deviation
+```
 
 You can print a small dataset, but it can be slow and hard to read especially if there are a lot of coumns. R has many built in functions to inspect objects:
 
@@ -356,6 +319,227 @@ levels(my.data$major)
 ```
 
 *Additional reading: Check out this DataLab workshop on ["Keeping Your Data Tidy"](https://ucdavisdatalab.github.io/workshop_keeping_data_tidy/#spreadsheet-best-practices) that covers best practices for structuring, naming, and organizing your data frames (and spreadsheets).*
+
+
+
+Data Types & Classes
+--------------------
+
+Data can be categorized into different _types_ based on sets of shared
+characteristics. For instance, statisticians tend to think about whether data
+are numeric or categorical:
+
+* numeric
+    + continuous (real or complex numbers)
+    + discrete (integers)
+* categorical
+    + nominal (categories with no ordering)
+    + ordinal (categories with some ordering)
+
+Of course, other types of data, like graphs (networks) and natural language
+(books, speech, and so on), are also possible. Categorizing data this way is
+useful for reasoning about which methods to apply to which data.
+
+In R, data objects are categorized in two different ways:
+
+1. The _class_ of an R object describes what the object does, or the role that
+   it plays. Sometimes objects can do more than one thing, so objects can have
+   more than one class. The `class` function, which debuted in Section
+   \@ref(data-frames), returns the classes of its argument.
+
+2. The _type_ of an R object describes what the object is. Technically, the
+   type corresponds to how the object is stored in your computer's memory. Each
+   object has exactly one type. The `typeof` function returns the type of its
+   argument.
+
+Of the two, classes tend to be more important than types. If you aren't sure
+what an object is, checking its classes should be the first thing you do.
+
+The built-in classes you'll use all the time correspond to vectors and lists
+(which we'll learn more about in Section \@ref(lists)):
+
+| Class     | Example               | Description
+| :----     | :------               | :----------
+| logical   | `TRUE`, `FALSE`       | Logical (or Boolean) values
+| integer   | `-1L`, `1L`, `2L`     | Integer numbers
+| numeric   | `-2.1`, `7`, `34.2`   | Real numbers
+| complex   | `3-2i`, `-8+0i`       | Complex numbers
+| character | `"hi"`, `"YAY"`       | Text strings
+| list      | `list(TRUE, 1, "hi")` | Ordered collection of heterogeneous elements
+
+R doesn't distinguish between scalars and vectors (see Section \@ref(vectors)),
+so the class of a vector is the same as the class of its elements:
+
+```{r}
+class("hi")
+class(c("hello", "hi"))
+```
+
+In addition, for ordinary vectors, the class and the type are the same:
+
+```{r}
+x = c(TRUE, FALSE)
+class(x)
+typeof(x)
+```
+
+The exception to this rule is numeric vectors, which have type `double` for
+historical reasons:
+
+```{r}
+class(pi)
+typeof(pi)
+typeof(3)
+```
+
+The word "double" here stands for [_double-precision floating point
+number_][double], a standard way to represent real numbers on computers.
+
+[double]: https://en.wikipedia.org/wiki/Double-precision_floating-point_format
+
+By default, R assumes any numbers you enter in code are numeric, even if
+they're integer-valued.
+
+The class `integer` also represents integer numbers, but it's not used as often
+as `numeric`. A few functions, such as the sequence operator `:` and the
+`length` function, return integers. You can also force R to create an integer
+by adding the suffix `L` to a number, but there are no major drawbacks to using
+the `double` default:
+
+```{r}
+class(1:3)
+class(3)
+class(3L)
+```
+
+Besides the classes for vectors and lists, there are several built-in classes
+that represent more sophisticated data structures:
+
+| Class      | Description
+| :----      | :----------
+| function   | Functions
+| factor     | Categorical values
+| matrix     | Two-dimensional ordered collection of homogeneous elements
+| array      | Multi-dimensional ordered collection of homogeneous elements
+| data.frame | Data frames
+
+For these, the class is usually different from the type. We'll learn more about
+most of these later on.
+
+
+### Lists
+
+```{r, echo = FALSE}
+#earn = read.csv("data/earn.csv")
+```
+
+A _list_ is an ordered data structure where the elements can have different
+types (they are _heterogeneous_). This differs from a vector, where the
+elements all have to have the same type, as we saw in Section \@ref(vectors).
+The tradeoff is that most vectorized functions do not work with lists.
+
+You can make an ordinary list with the `list` function:
+
+```{r}
+x = list(1, c("hi", "bye"))
+class(x)
+typeof(x)
+```
+
+For ordinary lists, the type and the class are both `list`. In Section
+\@ref(indexing), we'll learn how to get and set list elements, and in later
+sections we'll learn more about when and why to use lists.
+
+You've already seen one list, the `my.data` data frame:
+
+```{r}
+class(my.data)
+typeof(my.data)
+```
+
+Under the hood, data frames are lists, and each column is a list element.
+Because the class is `data.frame` rather than `list`, R treats data frames
+differently from ordinary lists. This difference is apparent in how data frames
+are printed compared to ordinary lists.
+
+
+### Implicit Coercion
+
+R's types fall into a natural hierarchy of expressiveness:
+
+<img src="img/implicit_coercion.png">
+
+Each type on the right is more expressive than the ones to its left. That is,
+with the convention that `FALSE` is `0` and `TRUE` is `1`, we can represent any
+logical value as an integer. In turn, we can represent any integer as a double,
+and any double as a complex number. By writing the number out, we can also
+represent any complex number as a string.
+
+The point is that no information is lost as we follow the arrows from left to
+right along the types in the hierarchy. In fact, R will automatically and
+silently convert from types on the left to types on the right as needed. This
+is called _implicit coercion_.
+
+As an example, consider what happens if we add a logical value to a number:
+
+```{r}
+TRUE + 2
+```
+
+R automatically converts the `TRUE` to the numeric value `1`, and then carries
+out the arithmetic as usual.
+
+We've already seen implicit coercion at work once before, when we learned the
+`c` function. Since the elements of a vector all have to have the same type, if
+you pass several different types to `c`, then R tries to use implicit coercion
+to make them the same:
+
+```{r}
+x = c(TRUE, "hi", 1, 1+3i)
+class(x)
+x
+```
+
+Implicit coercion is strictly one-way; it never occurs in the other direction.
+If you want to coerce a type on the right to one on the left, you can do it
+explicitly with one of the `as.TYPE` functions. For instance, the `as.numeric`
+(or `as.double`) function coerces to numeric:
+
+```{r}
+as.numeric("3.1")
+```
+
+There are a few types that fall outside of the hierarchy entirely, like
+functions. Implicit coercion doesn't apply to these. If you try to use these
+types where it doesn't make sense to, R generally returns an error:
+
+```{r, error = TRUE}
+sin + 3
+```
+
+If you try to use these types as elements of a vector, you get back a list
+instead:
+
+```{r}
+x = c(1, 2, sum)
+class(x)
+```
+
+Understanding how implicit coercion works will help you avoid bugs, and can
+also be a time-saver. For example, we can use implicit coercion to succinctly
+count how many elements of a vector satisfy a some condition:
+
+```{r}
+x = c(1, 3, -1, 10, -2, 3, 8, 2)
+condition = x < 4
+sum(condition)    # or sum(x < 4)
+```
+
+If you still don't quite understand how the code above works, try inspecting
+each variable. In general, inspecting each step or variable is a good strategy
+for understanding why a piece of code works (or doesn't work!). Here the
+implicit coercion happens in the third line.
+
 
 
 ## Subsetting
