@@ -45,7 +45,7 @@ The exact presentation of the panes might be slightly different depending on you
 * **Environment/history** lists all the objects you have created (including your data) and the commands you have run. 
 * **Files/plots/packages/help/viewer** pane is useful for locating files on your machine to read into R, inspecting any graphics you create, seeing a list of available packages, and getting help.
    
-To interact with R, compose your code in the source pane and use the commands execute (or run) to send them to the console. ([Shortcuts](https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf): You can use the shortcut Ctrl + Enter, or Cmd + Return, to run a line of code.)
+To interact with R, compose your code in the source pane and use the execute (or run) command to send them to the console. ([Shortcuts](https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf): You can use the shortcut Ctrl + Enter, or Cmd + Return, to run a line of code.)
 
 *_Create a script file for today's lecture and save it to your lecture_3 folder under ist008_2022 in your home directory. (It's good practice to keep your projects organized., Some suggested sub-folders for a research project might be: data, documents, scripts, and, depending on your needs, other relevant outputs or products such as figures._*
 
@@ -54,12 +54,12 @@ To interact with R, compose your code in the source pane and use the commands ex
 R works by the process of "REPL": Read-Evaluate-Print-Loop:
 
 1. R waits for you to type an expression (a single piece of code) and press `Enter`.
-2. R then **reads** in your commands and parses them. It reads whether the command is syntactically correct. If so, it will then
+2. R then **reads** in your expressions and parses them. It reads whether the expression is syntactically correct. If so, it will then
 3. **evaluate** the code to compute a result.
 4. R then **prints** the result in the console and
-5. **loops** back around to wait for your next command.
+5. **loops** back around to wait for your next expression.
 
-You can use R like a calculator to see how it processes commands. 
+You can use R like a calculator to see how it processes expressions. 
 
 ```{r echo=T, results='hide'}
 7 + 2
@@ -137,15 +137,15 @@ Let's make some more variables:
 x <- 10
 y <- 24
 fantastic.variable2 = x
-x<-y/2
+x <- y / 2
 ```
 
 In R, variables are **copy-on-write**.  When we change a variable (a "write"), R automatically copies the original value so dependent variables are unchanged until they are re-run.
 
 ```{r echo=T, results='hide'}
-x = 13
-y = x
-x = 16
+x <- 13
+y <- x
+x <- 16
 y
 ```
 
@@ -192,7 +192,7 @@ Not sure what parameters a specific function needs? Read on for how to get...
 
 ## HELP! 
 
-This is just the beginning, and there are lots of resources to help you learn more. R has built-in help files that can be accessed with the **`?`** and **`help()`** commands. You can also search within the help documentation using the **`??`** commands. There's also a vibrant online help community. Here are some examples of how you can use all this help to help yourself:
+This is just the beginning, and there are lots of resources to help you learn more. R has built-in help files that can be accessed with the **`?`** and **`help`** commands. You can also search within the help documentation using the **`??`** commands. There's also a vibrant online help community. Here are some examples of how you can use all this help to help yourself:
 
 **?** The help pages for all of R's built-in functions usually have the same name as the function itself. Function help pages usually include a brief description, a list of parameters, a description of the return value, and some examples. To open the help page for the `log` function:
 
@@ -270,24 +270,9 @@ function:
 ```{r}
 length(3)
 length("hello")
-length(integers)
+length(time.min)
 length(logi)
 ```
-
-<!--
-What happens if you make a typo or try to combine different data types in the same vector? R resolves this for you and automatically converts elements within the vector to be the same data type. It does so through *implicit coercion* where it conserves the most information possible (logical -> integer -> numeric -> complex -> character). Sometimes this is very helpful, and sometimes it isn't. Here are some examples.
-
-```{r echo=T, results='hide'}
-vec<-c(1,2,3,4,'five')
-class(vec)
-```
-
-```{r echo=T, results='hide'}
-vec2<-c(1+TRUE)
-vec2
-class(vec2)
-```
--->
 
 
 ### Indexing Vectors
@@ -317,16 +302,6 @@ Now let's get the 3rd and 1st element:
 ```{r}
 place[c(3, 1)]
 ```
-
-<!--
-You can use the indexing operator together with the assignment operator to
-assign elements of a vector:
-
-```{r}
-#place[3] <- 0
-#place
-```
--->
 
 Indexing is among the most frequently used operations in R, so take some time
 to try it out with few different vectors and indexes. We'll revisit indexing in
@@ -440,16 +415,6 @@ column:
 ```{r}
 sum(my.data$distance.mi)
 ```
-
-<!--
-You can also use the dollar sign operator to create new columns or assign
-values to columns. For instance, to create a column `pet`:
-
-```{r}
-#my.data$pet <- logi
-```
--->
-
 
 
 ### Inspecting Data
@@ -586,8 +551,8 @@ most of these later on.
 
 ### Lists
 
-A _list_ is an ordered data structure where the elements can have different
-types (they are _heterogeneous_). This differs from a vector, where the
+A **list** is an ordered data structure where the elements can have different
+types (they are **heterogeneous**). This differs from a vector, where the
 elements all have to have the same type, as we saw in Section \@ref(vectors).
 The tradeoff is that most vectorized functions do not work with lists.
 
@@ -682,21 +647,6 @@ class(x)
 Understanding how implicit coercion works will help you avoid bugs, and can
 also be a time-saver.
 
-<!--
-For example, we can use implicit coercion to succinctly
-count how many elements of a vector satisfy a some condition:
-
-```{r}
-#x <- c(1, 3, -1, 10, -2, 3, 8, 2)
-#condition <- x < 4
-#sum(condition)    # or sum(x < 4)
-```
-
-If you still don't quite understand how the code above works, try inspecting
-each variable. In general, inspecting each step or variable is a good strategy
-for understanding why a piece of code works (or doesn't work!). Here the
-implicit coercion happens in the third line.
--->
 
 
 ### Factors
@@ -738,36 +688,6 @@ summary:
 ```{r}
 str(my.data)
 ```
-
-<!--
-The columns `n_persons` and `median_weekly_earn` are quantitative rather than
-categorical, since they measure quantities of people and dollars, respectively.
-
-The `sex`, `race`, `ethnic_origin`, and `age` columns are all categorical,
-since they are all qualitative measurements. We can see this better if we use
-the `table` function to compute frequencies for the values in the columns:
-
-```{r}
-#table(earn$sex)
-#
-#table(earn$race)
-#
-#table(earn$ethnic_origin)
-#
-#table(earn$age)
-```
-
-Each column has only a few unique values, repeated many times. These are ideal
-for grouping the data. If age had been recorded as a number, rather than a
-range, it would probably be better to treat it as quantitative, since there
-would be far more unique values. Columns with many unique values don't make
-good categorical features, because each group will only have a few elements!
-
-That leaves us with the `year` and `quarter` columns. It's easy to imagine
-grouping the data by year or quarter, but these are also clearly numbers. These
-columns can be treated as quantitative or categorical data, depending on how we
-want to use them to analyze the data.
--->
 
 Let's convert the `place` column to a factor. To do this, use the `factor`
 function:
