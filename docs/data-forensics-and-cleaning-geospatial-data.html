@@ -32,7 +32,7 @@
 <meta name="author" content="Jared Joseph" />
 
 
-<meta name="date" content="2022-01-11" />
+<meta name="date" content="2022-01-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -243,7 +243,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="6.9.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#lists"><i class="fa fa-check"></i><b>6.9.1</b> Lists</a></li>
 <li class="chapter" data-level="6.9.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#implicit-coercion"><i class="fa fa-check"></i><b>6.9.2</b> Implicit Coercion</a></li>
-<li class="chapter" data-level="6.9.3" data-path="introduction-to-r.html"><a href="introduction-to-r.html#factors"><i class="fa fa-check"></i><b>6.9.3</b> Factors</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="control-structures.html"><a href="control-structures.html"><i class="fa fa-check"></i><b>7</b> Control Structures</a>
@@ -379,7 +378,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="16" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>16</b> Data Visualization</a>
 <ul>
-<li class="chapter" data-level="16.1" data-path="data-visualization.html"><a href="data-visualization.html#factors-1"><i class="fa fa-check"></i><b>16.1</b> Factors</a></li>
+<li class="chapter" data-level="16.1" data-path="data-visualization.html"><a href="data-visualization.html#factors"><i class="fa fa-check"></i><b>16.1</b> Factors</a></li>
 <li class="chapter" data-level="16.2" data-path="data-visualization.html"><a href="data-visualization.html#r-graphics-overview"><i class="fa fa-check"></i><b>16.2</b> R Graphics Overview</a></li>
 <li class="chapter" data-level="16.3" data-path="data-visualization.html"><a href="data-visualization.html#the-grammar-of-graphics"><i class="fa fa-check"></i><b>16.3</b> The Grammar of Graphics</a>
 <ul>
@@ -708,27 +707,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><strong>Decimal Degrees = Degrees + (Minutes/60) + (Seconds/3600)</strong></p>
 <p>34.60882611 = 34 + (36/60) + (31.447/3600)</p>
 <p>First, we need to load the libraries we’ll need and then load the data.</p>
-<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb654-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries ----------------------------------------------------------</span></span>
-<span id="cb654-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb654-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;sf&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb649"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb649-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb649-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries ----------------------------------------------------------</span></span>
+<span id="cb649-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb649-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;sf&quot;</span>)</span></code></pre></div>
 <pre><code>## Registered S3 methods overwritten by &#39;tibble&#39;:
 ##   method     from  
 ##   format.tbl pillar
 ##   print.tbl  pillar</code></pre>
 <pre><code>## Linking to GEOS 3.9.1, GDAL 3.3.1, PROJ 8.0.1</code></pre>
-<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;mapview&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb652"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb652-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb652-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;mapview&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning: multiple methods tables found for &#39;crop&#39;</code></pre>
 <pre><code>## Warning: multiple methods tables found for &#39;extend&#39;</code></pre>
-<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;gdtools&quot;</span>) <span class="co">#makes the display... dependency of mapview but it&#39;s not loading</span></span>
-<span id="cb660-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;leafem&quot;</span>) <span class="co">#makes the labels work... dependency of mapview but it&#39;s not loading</span></span>
-<span id="cb660-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;leaflet&quot;</span>)</span>
-<span id="cb660-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb660-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read Data ---------------------------------------------------------------</span></span>
-<span id="cb660-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb660-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-7" aria-hidden="true" tabindex="-1"></a>monsters.raw<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;data/lake_monsters.csv&quot;</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span>)</span>
-<span id="cb660-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb660-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb660-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Explore the data</span></span>
-<span id="cb660-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(monsters.raw)</span></code></pre></div>
+<div class="sourceCode" id="cb655"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb655-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;gdtools&quot;</span>) <span class="co">#makes the display... dependency of mapview but it&#39;s not loading</span></span>
+<span id="cb655-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;leafem&quot;</span>) <span class="co">#makes the labels work... dependency of mapview but it&#39;s not loading</span></span>
+<span id="cb655-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;leaflet&quot;</span>)</span>
+<span id="cb655-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb655-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read Data ---------------------------------------------------------------</span></span>
+<span id="cb655-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb655-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-7" aria-hidden="true" tabindex="-1"></a>monsters.raw<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">&quot;data/lake_monsters.csv&quot;</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">encoding =</span> <span class="st">&quot;utf-8&quot;</span>)</span>
+<span id="cb655-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb655-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb655-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Explore the data</span></span>
+<span id="cb655-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb655-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(monsters.raw)</span></code></pre></div>
 <pre><code>##   fid field_1               Lake        Area        Country     Continent
 ## 1   1       1      Arenal Lagoon    Alajuela     Costa Rica North America
 ## 2   2       2    Bangweulu Swamp                     Zambia        Africa
@@ -758,59 +757,59 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5  7688451
 ## 6  2027101</code></pre>
 <p>Next, we need to write some functions to deal with our specific DMS data and how its formatted.</p>
-<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions ---------------------------------------------------------------</span></span>
-<span id="cb662-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb662-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-3" aria-hidden="true" tabindex="-1"></a><span class="co">#This function splits up the DMS column into three columns - D, M, &amp; S</span></span>
-<span id="cb662-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-4" aria-hidden="true" tabindex="-1"></a>split.dms<span class="ot">&lt;-</span><span class="cf">function</span>(dms.column){</span>
-<span id="cb662-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#separate the pieces of the DMS column</span></span>
-<span id="cb662-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb662-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-7" aria-hidden="true" tabindex="-1"></a>  variable<span class="ot">&lt;-</span><span class="fu">do.call</span>(rbind, <span class="at">args=</span><span class="fu">c</span>(<span class="fu">strsplit</span>(dms.column, <span class="st">&#39;[°?]+&#39;</span>))) <span class="co">#makes a matrix of characters</span></span>
-<span id="cb662-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mode</span>(variable)<span class="ot">=</span><span class="st">&quot;numeric&quot;</span>  <span class="co">#assigning the data type to numeric instead of character</span></span>
-<span id="cb662-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-9" aria-hidden="true" tabindex="-1"></a>  dms.split<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(variable)</span>
-<span id="cb662-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb662-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-11" aria-hidden="true" tabindex="-1"></a>  split.string<span class="ot">&lt;-</span><span class="fu">strsplit</span>(dms.column, <span class="st">&#39;[°?]+&#39;</span>)</span>
-<span id="cb662-12"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb662-13"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb662-14"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   naming the columns</span></span>
-<span id="cb662-15"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(dms.split)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;M&quot;</span>, <span class="st">&quot;S&quot;</span>)</span>
-<span id="cb662-16"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb662-17"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dms.split)</span>
-<span id="cb662-18"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb662-19"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb662-20"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb662-21"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-21" aria-hidden="true" tabindex="-1"></a><span class="co"># this function coverts a 3 column dataframe of DMS to DD, like the data created by split.dms()</span></span>
-<span id="cb662-22"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-22" aria-hidden="true" tabindex="-1"></a>decimaldegrees<span class="ot">&lt;-</span><span class="cf">function</span>(dms.df){</span>
-<span id="cb662-23"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-23" aria-hidden="true" tabindex="-1"></a>  dd<span class="ot">&lt;-</span><span class="fu">data.frame</span>()</span>
-<span id="cb662-24"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb662-25"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(dms.df)[<span class="dv">1</span>]){</span>
-<span id="cb662-26"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (dms.df[i, <span class="dv">1</span>]<span class="sc">&gt;</span><span class="dv">0</span>){</span>
-<span id="cb662-27"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-27" aria-hidden="true" tabindex="-1"></a>      <span class="co">#Decimal Degrees = Degrees + (Minutes/60) + (Seconds/3600)</span></span>
-<span id="cb662-28"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-28" aria-hidden="true" tabindex="-1"></a>      dd.row<span class="ot">&lt;-</span>dms.df[i,<span class="dv">1</span>]<span class="sc">+</span>(dms.df[i,<span class="dv">2</span>]<span class="sc">/</span><span class="dv">60</span>)<span class="sc">+</span>(dms.df[i,<span class="dv">3</span>]<span class="sc">/</span><span class="dv">3600</span>)</span>
-<span id="cb662-29"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-29" aria-hidden="true" tabindex="-1"></a>      dd<span class="ot">&lt;-</span><span class="fu">rbind</span>(dd, dd.row)</span>
-<span id="cb662-30"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-30" aria-hidden="true" tabindex="-1"></a>    } </span>
-<span id="cb662-31"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>{</span>
-<span id="cb662-32"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-32" aria-hidden="true" tabindex="-1"></a>      <span class="co">#-Decimal Degrees = Degrees - (Minutes/60) - (Seconds/3600)</span></span>
-<span id="cb662-33"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-33" aria-hidden="true" tabindex="-1"></a>      dd.row<span class="ot">&lt;-</span>dms.df[i,<span class="dv">1</span>]<span class="sc">-</span>(dms.df[i,<span class="dv">2</span>]<span class="sc">/</span><span class="dv">60</span>)<span class="sc">-</span>(dms.df[i,<span class="dv">3</span>]<span class="sc">/</span><span class="dv">3600</span>)</span>
-<span id="cb662-34"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-34" aria-hidden="true" tabindex="-1"></a>      dd<span class="ot">&lt;-</span><span class="fu">rbind</span>(dd, dd.row)</span>
-<span id="cb662-35"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-35" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb662-36"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-36" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb662-37"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dd)</span>
-<span id="cb662-38"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions ---------------------------------------------------------------</span></span>
+<span id="cb657-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb657-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-3" aria-hidden="true" tabindex="-1"></a><span class="co">#This function splits up the DMS column into three columns - D, M, &amp; S</span></span>
+<span id="cb657-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-4" aria-hidden="true" tabindex="-1"></a>split.dms<span class="ot">&lt;-</span><span class="cf">function</span>(dms.column){</span>
+<span id="cb657-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#separate the pieces of the DMS column</span></span>
+<span id="cb657-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb657-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-7" aria-hidden="true" tabindex="-1"></a>  variable<span class="ot">&lt;-</span><span class="fu">do.call</span>(rbind, <span class="at">args=</span><span class="fu">c</span>(<span class="fu">strsplit</span>(dms.column, <span class="st">&#39;[°?]+&#39;</span>))) <span class="co">#makes a matrix of characters</span></span>
+<span id="cb657-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mode</span>(variable)<span class="ot">=</span><span class="st">&quot;numeric&quot;</span>  <span class="co">#assigning the data type to numeric instead of character</span></span>
+<span id="cb657-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-9" aria-hidden="true" tabindex="-1"></a>  dms.split<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(variable)</span>
+<span id="cb657-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb657-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-11" aria-hidden="true" tabindex="-1"></a>  split.string<span class="ot">&lt;-</span><span class="fu">strsplit</span>(dms.column, <span class="st">&#39;[°?]+&#39;</span>)</span>
+<span id="cb657-12"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb657-13"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb657-14"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   naming the columns</span></span>
+<span id="cb657-15"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(dms.split)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;D&quot;</span>, <span class="st">&quot;M&quot;</span>, <span class="st">&quot;S&quot;</span>)</span>
+<span id="cb657-16"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb657-17"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dms.split)</span>
+<span id="cb657-18"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb657-19"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb657-20"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb657-21"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-21" aria-hidden="true" tabindex="-1"></a><span class="co"># this function coverts a 3 column dataframe of DMS to DD, like the data created by split.dms()</span></span>
+<span id="cb657-22"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-22" aria-hidden="true" tabindex="-1"></a>decimaldegrees<span class="ot">&lt;-</span><span class="cf">function</span>(dms.df){</span>
+<span id="cb657-23"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-23" aria-hidden="true" tabindex="-1"></a>  dd<span class="ot">&lt;-</span><span class="fu">data.frame</span>()</span>
+<span id="cb657-24"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb657-25"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">dim</span>(dms.df)[<span class="dv">1</span>]){</span>
+<span id="cb657-26"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (dms.df[i, <span class="dv">1</span>]<span class="sc">&gt;</span><span class="dv">0</span>){</span>
+<span id="cb657-27"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-27" aria-hidden="true" tabindex="-1"></a>      <span class="co">#Decimal Degrees = Degrees + (Minutes/60) + (Seconds/3600)</span></span>
+<span id="cb657-28"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-28" aria-hidden="true" tabindex="-1"></a>      dd.row<span class="ot">&lt;-</span>dms.df[i,<span class="dv">1</span>]<span class="sc">+</span>(dms.df[i,<span class="dv">2</span>]<span class="sc">/</span><span class="dv">60</span>)<span class="sc">+</span>(dms.df[i,<span class="dv">3</span>]<span class="sc">/</span><span class="dv">3600</span>)</span>
+<span id="cb657-29"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-29" aria-hidden="true" tabindex="-1"></a>      dd<span class="ot">&lt;-</span><span class="fu">rbind</span>(dd, dd.row)</span>
+<span id="cb657-30"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-30" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb657-31"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>{</span>
+<span id="cb657-32"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-32" aria-hidden="true" tabindex="-1"></a>      <span class="co">#-Decimal Degrees = Degrees - (Minutes/60) - (Seconds/3600)</span></span>
+<span id="cb657-33"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-33" aria-hidden="true" tabindex="-1"></a>      dd.row<span class="ot">&lt;-</span>dms.df[i,<span class="dv">1</span>]<span class="sc">-</span>(dms.df[i,<span class="dv">2</span>]<span class="sc">/</span><span class="dv">60</span>)<span class="sc">-</span>(dms.df[i,<span class="dv">3</span>]<span class="sc">/</span><span class="dv">3600</span>)</span>
+<span id="cb657-34"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-34" aria-hidden="true" tabindex="-1"></a>      dd<span class="ot">&lt;-</span><span class="fu">rbind</span>(dd, dd.row)</span>
+<span id="cb657-35"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb657-36"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-36" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb657-37"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dd)</span>
+<span id="cb657-38"><a href="data-forensics-and-cleaning-geospatial-data.html#cb657-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Finally, we can process our DMS data to convert it to Decimal Degreess (DD).</p>
-<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Process Latitude</span></span>
-<span id="cb663-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-2" aria-hidden="true" tabindex="-1"></a>dms.split<span class="ot">&lt;-</span><span class="fu">split.dms</span>(monsters.raw<span class="sc">$</span>lat_dms)</span>
-<span id="cb663-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-3" aria-hidden="true" tabindex="-1"></a>dd<span class="ot">&lt;-</span><span class="fu">decimaldegrees</span>(dms.split)</span>
-<span id="cb663-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-4" aria-hidden="true" tabindex="-1"></a>monsters.df<span class="ot">&lt;-</span><span class="fu">cbind</span>(monsters.raw, dd)</span>
-<span id="cb663-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.df)[<span class="dv">15</span>]<span class="ot">&lt;-</span><span class="st">&quot;lat_dd&quot;</span></span>
-<span id="cb663-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb663-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   Process Longitude</span></span>
-<span id="cb663-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-8" aria-hidden="true" tabindex="-1"></a>dms.split<span class="ot">&lt;-</span><span class="fu">split.dms</span>(monsters.raw<span class="sc">$</span>lon_dms)</span>
-<span id="cb663-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-9" aria-hidden="true" tabindex="-1"></a>dd<span class="ot">&lt;-</span><span class="fu">decimaldegrees</span>(dms.split)</span>
-<span id="cb663-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-10" aria-hidden="true" tabindex="-1"></a>monsters.df<span class="ot">&lt;-</span><span class="fu">cbind</span>(monsters.df, dd)</span>
-<span id="cb663-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.df)[<span class="dv">16</span>]<span class="ot">&lt;-</span><span class="st">&quot;lon_dd&quot;</span></span>
-<span id="cb663-12"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb663-13"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   Look at the data</span></span>
-<span id="cb663-14"><a href="data-forensics-and-cleaning-geospatial-data.html#cb663-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(monsters.df)</span></code></pre></div>
+<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb658-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Process Latitude</span></span>
+<span id="cb658-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-2" aria-hidden="true" tabindex="-1"></a>dms.split<span class="ot">&lt;-</span><span class="fu">split.dms</span>(monsters.raw<span class="sc">$</span>lat_dms)</span>
+<span id="cb658-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-3" aria-hidden="true" tabindex="-1"></a>dd<span class="ot">&lt;-</span><span class="fu">decimaldegrees</span>(dms.split)</span>
+<span id="cb658-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-4" aria-hidden="true" tabindex="-1"></a>monsters.df<span class="ot">&lt;-</span><span class="fu">cbind</span>(monsters.raw, dd)</span>
+<span id="cb658-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.df)[<span class="dv">15</span>]<span class="ot">&lt;-</span><span class="st">&quot;lat_dd&quot;</span></span>
+<span id="cb658-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb658-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   Process Longitude</span></span>
+<span id="cb658-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-8" aria-hidden="true" tabindex="-1"></a>dms.split<span class="ot">&lt;-</span><span class="fu">split.dms</span>(monsters.raw<span class="sc">$</span>lon_dms)</span>
+<span id="cb658-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-9" aria-hidden="true" tabindex="-1"></a>dd<span class="ot">&lt;-</span><span class="fu">decimaldegrees</span>(dms.split)</span>
+<span id="cb658-10"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-10" aria-hidden="true" tabindex="-1"></a>monsters.df<span class="ot">&lt;-</span><span class="fu">cbind</span>(monsters.df, dd)</span>
+<span id="cb658-11"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.df)[<span class="dv">16</span>]<span class="ot">&lt;-</span><span class="st">&quot;lon_dd&quot;</span></span>
+<span id="cb658-12"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb658-13"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   Look at the data</span></span>
+<span id="cb658-14"><a href="data-forensics-and-cleaning-geospatial-data.html#cb658-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(monsters.df)</span></code></pre></div>
 <pre><code>##   fid field_1               Lake        Area        Country     Continent
 ## 1   1       1      Arenal Lagoon    Alajuela     Costa Rica North America
 ## 2   2       2    Bangweulu Swamp                     Zambia        Africa
@@ -840,7 +839,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5  7688451  56.82407   31.914652
 ## 6  2027101  18.02363  104.014360</code></pre>
 <p>Another common issue with point data is that the latitude and longitude are not in any form of degrees, but instead are in a projected coordinate system with linear units (usually feet or meters). If the data doesn’t come with metadata, you may be left guessing which coordinate system it is in. With experience, you’ll get better at guessing, but sometimes the data is not usable. Our monsters dataset has latitude and longitude in the World Mercator (EPSG: 3395) projection as well. Let’s briefly look at that here, but we’ll play with that more later in this document.</p>
-<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb665-1" aria-hidden="true" tabindex="-1"></a>monsters.df[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb660-1" aria-hidden="true" tabindex="-1"></a>monsters.df[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>]</span></code></pre></div>
 <pre><code>##       lon_3395 lat_3395    lat_dd      lon_dd
 ## 1   -9445647.6  1166706  10.49143  -84.851696
 ## 2    3315604.4 -1240572 -11.14741   29.784582
@@ -861,27 +860,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>People often swap their latitude and longitude columns as well, which make data show up in the wrong cartesian coordinate, for example, (-119, 34) is a verry different location than (34, -119)… -119 is actually out of the range of latitude data and will often break your code.</p>
 <p>Another common source of error is in the way the data was made. If data is produced by geocoding, turning an address or place name into a coordinate, the location may have been matched badly. If the data was made by an analysis process, an unexpected aspect of the data could cause problems, like a one-to-many join when you thought you had a one-to-one join in a database.</p>
 <p>Regardless of how the errors came about, how do we find incorrect locations? Start by mapping the data and see where it lands. Is it where you expect the data to be? Sometimes you can’t tell it’s wrong because the data looks normal.</p>
-<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Convert the monsters dataframe into an SF (spatial) object</span></span>
-<span id="cb667-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     Note: x is the dataframe, not longitude.</span></span>
-<span id="cb667-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     Coordinate Reference System (CRS) - we&#39;re using lat/long here so we need WGS84 which is EPSG code 4326 - we just need to tell R what the CRS is, we don&#39;t change it this way.  If we want to change it, we need to use st_transform().</span></span>
-<span id="cb667-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-4" aria-hidden="true" tabindex="-1"></a>monsters.sf<span class="ot">&lt;-</span><span class="fu">st_as_sf</span>(<span class="at">x=</span>monsters.df, </span>
-<span id="cb667-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;lon_dd&quot;</span>, <span class="st">&quot;lat_dd&quot;</span>), </span>
-<span id="cb667-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">crs =</span> <span class="dv">4326</span>)</span>
-<span id="cb667-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb667-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     Notice we added a geometry column!</span></span>
-<span id="cb667-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.sf)</span></code></pre></div>
+<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Convert the monsters dataframe into an SF (spatial) object</span></span>
+<span id="cb662-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     Note: x is the dataframe, not longitude.</span></span>
+<span id="cb662-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     Coordinate Reference System (CRS) - we&#39;re using lat/long here so we need WGS84 which is EPSG code 4326 - we just need to tell R what the CRS is, we don&#39;t change it this way.  If we want to change it, we need to use st_transform().</span></span>
+<span id="cb662-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-4" aria-hidden="true" tabindex="-1"></a>monsters.sf<span class="ot">&lt;-</span><span class="fu">st_as_sf</span>(<span class="at">x=</span>monsters.df, </span>
+<span id="cb662-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;lon_dd&quot;</span>, <span class="st">&quot;lat_dd&quot;</span>), </span>
+<span id="cb662-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb662-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb662-8"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     Notice we added a geometry column!</span></span>
+<span id="cb662-9"><a href="data-forensics-and-cleaning-geospatial-data.html#cb662-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(monsters.sf)</span></code></pre></div>
 <pre><code>##  [1] &quot;fid&quot;         &quot;field_1&quot;     &quot;Lake&quot;        &quot;Area&quot;        &quot;Country&quot;    
 ##  [6] &quot;Continent&quot;   &quot;Name&quot;        &quot;lat&quot;         &quot;lon&quot;         &quot;lat_dms&quot;    
 ## [11] &quot;lon_dms&quot;     &quot;coords_3395&quot; &quot;lon_3395&quot;    &quot;lat_3395&quot;    &quot;geometry&quot;</code></pre>
-<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb669-1" aria-hidden="true" tabindex="-1"></a><span class="co">#     Plot a map</span></span>
-<span id="cb669-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb669-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(monsters.sf)</span></code></pre></div>
+<div class="sourceCode" id="cb664"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb664-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb664-1" aria-hidden="true" tabindex="-1"></a><span class="co">#     Plot a map</span></span>
+<span id="cb664-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb664-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(monsters.sf)</span></code></pre></div>
 <div class="figure">
 <img src="img/mapview_monsters.png" alt="" />
 <p class="caption">This is a screen capture of the output for the mapview function. Running this code in a regular R session (i.e. not in knitr or bookdown like we need to for this reader) will make an interactive map.</p>
 </div>
 <p>In the interactive version of this map, you can pan and zoom to different areas to see more detail. Clicking on a point will open a popup with attribute information.</p>
 <p>First impressions: This map looks good! The points are all on land masses, none in the ocean. Let’s see if they are on the correct continent…</p>
-<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Continent&quot;</span>, <span class="at">legend=</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb665-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Continent&quot;</span>, <span class="at">legend=</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <div class="figure">
 <img src="img/mapview_monsters_byContinent.png" alt="" />
 <p class="caption">Map of monster locations by continent</p>
@@ -898,13 +897,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Attribute data can be proofed in much the same way tabular data can be proofed. You can look at the statistical properties of numeric data or the unique entities in a list of categorical variables to see if any values are odd or out of place.</p>
 <p>With spatial data, we can also map the data and visualize it by attribute values to see if anything is out of place spatially. Labels are another helpful tool. Sometimes cleaning attributes uncovers issues with the locations.</p>
 <p>Let’s make sure the lake names match the lakes the points are in. We’ll make a map and if you zoom in enough, the lake names will appear in the background map data.</p>
-<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb671-1" aria-hidden="true" tabindex="-1"></a>my.label.options<span class="ot">&lt;-</span><span class="fu">labelOptions</span>(<span class="at">clickable=</span><span class="cn">TRUE</span>) <span class="co">#makes a popup with attribute information</span></span>
-<span id="cb671-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb671-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb671-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb671-3" aria-hidden="true" tabindex="-1"></a>map.lakename<span class="ot">&lt;-</span><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Lake&quot;</span>, <span class="at">legend=</span> <span class="cn">FALSE</span>)</span>
-<span id="cb671-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb671-4" aria-hidden="true" tabindex="-1"></a>labels.lakename<span class="ot">&lt;-</span><span class="fu">addStaticLabels</span>(map.lakename, </span>
-<span id="cb671-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb671-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">label=</span>monsters.sf<span class="sc">$</span>Lake,</span>
-<span id="cb671-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb671-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labelOption=</span>my.label.options)</span>
-<span id="cb671-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb671-7" aria-hidden="true" tabindex="-1"></a>labels.lakename</span></code></pre></div>
+<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb666-1" aria-hidden="true" tabindex="-1"></a>my.label.options<span class="ot">&lt;-</span><span class="fu">labelOptions</span>(<span class="at">clickable=</span><span class="cn">TRUE</span>) <span class="co">#makes a popup with attribute information</span></span>
+<span id="cb666-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb666-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb666-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb666-3" aria-hidden="true" tabindex="-1"></a>map.lakename<span class="ot">&lt;-</span><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Lake&quot;</span>, <span class="at">legend=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb666-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb666-4" aria-hidden="true" tabindex="-1"></a>labels.lakename<span class="ot">&lt;-</span><span class="fu">addStaticLabels</span>(map.lakename, </span>
+<span id="cb666-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb666-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">label=</span>monsters.sf<span class="sc">$</span>Lake,</span>
+<span id="cb666-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb666-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labelOption=</span>my.label.options)</span>
+<span id="cb666-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb666-7" aria-hidden="true" tabindex="-1"></a>labels.lakename</span></code></pre></div>
 <div class="figure">
 <img src="img/mapview_monsters_byLake.png" alt="" />
 <p class="caption">Map of monster locations by lake name zoomed in to the Great Lakes</p>
@@ -914,11 +913,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p class="caption">Map of monster locations by lake name zoomed in to the Great Lakes</p>
 </div>
 <p>And for fun, let’s look at the monster names:</p>
-<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb672-1" aria-hidden="true" tabindex="-1"></a>map.monstername<span class="ot">&lt;-</span><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Name&quot;</span>, <span class="at">legend=</span> <span class="cn">FALSE</span>)</span>
-<span id="cb672-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb672-2" aria-hidden="true" tabindex="-1"></a>labels.monstername<span class="ot">&lt;-</span><span class="fu">addStaticLabels</span>(map.monstername, </span>
-<span id="cb672-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb672-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">label=</span>monsters.sf<span class="sc">$</span>Name,</span>
-<span id="cb672-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb672-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labelOption=</span>my.label.options)</span>
-<span id="cb672-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb672-5" aria-hidden="true" tabindex="-1"></a>labels.monstername</span></code></pre></div>
+<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-1" aria-hidden="true" tabindex="-1"></a>map.monstername<span class="ot">&lt;-</span><span class="fu">mapview</span>(monsters.sf, <span class="at">zcol=</span><span class="st">&quot;Name&quot;</span>, <span class="at">legend=</span> <span class="cn">FALSE</span>)</span>
+<span id="cb667-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-2" aria-hidden="true" tabindex="-1"></a>labels.monstername<span class="ot">&lt;-</span><span class="fu">addStaticLabels</span>(map.monstername, </span>
+<span id="cb667-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">label=</span>monsters.sf<span class="sc">$</span>Name,</span>
+<span id="cb667-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-4" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">labelOption=</span>my.label.options)</span>
+<span id="cb667-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb667-5" aria-hidden="true" tabindex="-1"></a>labels.monstername</span></code></pre></div>
 <div class="figure">
 <img src="img/mapview_monsters_byName.png" alt="" />
 <p class="caption">Map of monster locations by monster name zoomed in to the Great Lakes</p>
@@ -934,7 +933,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>“Why is my California data showing up in Arizona?” is a common question UC Davis researchers ask on the Geospatial email list. Why does this happen? It’s usually because the CRS for their data is impropperly defined. Someone changed the defnition but didn’t reproject the data (the mathematical process of switching CRSs). Using the wrong CRS will often shift data just enough to look really funny on a map, but sometimes it won’t show up at all.</p>
 <p>“Why don’t my datasets line up in my map?” Again, it’s your CRS. In this case, they could be correct for all of the datasets you’re using, but each dataset has a different CRS. You can think of CRSs as different dimensions in your favorite SciFi story. Sometimes you can see the other person in the other dimension (CRS), but usually they are too different and you’re nowhere near each other. Datasets have to have the same CRS to make a map or do any analysis.</p>
 <p>Our data came with lat/long data in another coordinate reference system - EPSG 3395 “World Mercator,” a world projection centered on Europe. Notice how the coordinates look very different from the lat/long coordinates in EPSG 4326 “WGS 84”</p>
-<div class="sourceCode" id="cb673"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb673-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb673-1" aria-hidden="true" tabindex="-1"></a>monsters.df[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb668"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb668-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb668-1" aria-hidden="true" tabindex="-1"></a>monsters.df[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>]</span></code></pre></div>
 <pre><code>##       lon_3395 lat_3395    lat_dd      lon_dd
 ## 1   -9445647.6  1166706  10.49143  -84.851696
 ## 2    3315604.4 -1240572 -11.14741   29.784582
@@ -946,13 +945,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 8  -12704546.6  6054836  47.87777 -114.126884
 ## 9   -9467608.2  5128572  41.97447  -85.048971
 ## 10 -12525669.2  5011829  41.18707 -112.520000</code></pre>
-<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb675-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Let&#39;s make our World Mercator data spatial so we can explore its CRS</span></span>
-<span id="cb675-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb675-2" aria-hidden="true" tabindex="-1"></a>monsters.sf<span class="fl">.3395</span><span class="ot">&lt;-</span><span class="fu">st_as_sf</span>(<span class="at">x=</span>monsters.df, </span>
-<span id="cb675-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb675-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;lon_3395&quot;</span>, <span class="st">&quot;lat_3395&quot;</span>), </span>
-<span id="cb675-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb675-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">crs =</span> <span class="dv">3395</span>)</span>
-<span id="cb675-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb675-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb675-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb675-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   st_crs tells us what the CRS is in well known text (WKT) and EPSG (if it&#39;s avaialble)</span></span>
-<span id="cb675-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb675-7" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(monsters.sf)</span></code></pre></div>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Let&#39;s make our World Mercator data spatial so we can explore its CRS</span></span>
+<span id="cb670-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-2" aria-hidden="true" tabindex="-1"></a>monsters.sf<span class="fl">.3395</span><span class="ot">&lt;-</span><span class="fu">st_as_sf</span>(<span class="at">x=</span>monsters.df, </span>
+<span id="cb670-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">coords=</span><span class="fu">c</span>(<span class="st">&quot;lon_3395&quot;</span>, <span class="st">&quot;lat_3395&quot;</span>), </span>
+<span id="cb670-4"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">crs =</span> <span class="dv">3395</span>)</span>
+<span id="cb670-5"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb670-6"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   st_crs tells us what the CRS is in well known text (WKT) and EPSG (if it&#39;s avaialble)</span></span>
+<span id="cb670-7"><a href="data-forensics-and-cleaning-geospatial-data.html#cb670-7" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(monsters.sf)</span></code></pre></div>
 <pre><code>## Coordinate Reference System:
 ##   User input: EPSG:4326 
 ##   wkt:
@@ -981,7 +980,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##         AREA[&quot;World.&quot;],
 ##         BBOX[-90,-180,90,180]],
 ##     ID[&quot;EPSG&quot;,4326]]</code></pre>
-<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb677-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(monsters.sf<span class="fl">.3395</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb672-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(monsters.sf<span class="fl">.3395</span>)</span></code></pre></div>
 <pre><code>## Coordinate Reference System:
 ##   User input: EPSG:3395 
 ##   wkt:
@@ -1030,9 +1029,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ##         AREA[&quot;World between 80°S and 84°N.&quot;],
 ##         BBOX[-80,-180,84,180]],
 ##     ID[&quot;EPSG&quot;,3395]]</code></pre>
-<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb679-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Check to see if they are identical, returning a logical vector</span></span>
-<span id="cb679-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb679-2" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">st_crs</span>(monsters.sf),</span>
-<span id="cb679-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb679-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">st_crs</span>(monsters.sf<span class="fl">.3395</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb674"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb674-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb674-1" aria-hidden="true" tabindex="-1"></a><span class="co">#   Check to see if they are identical, returning a logical vector</span></span>
+<span id="cb674-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb674-2" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(<span class="fu">st_crs</span>(monsters.sf),</span>
+<span id="cb674-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb674-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">st_crs</span>(monsters.sf<span class="fl">.3395</span>))</span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
 </div>
 </div>
