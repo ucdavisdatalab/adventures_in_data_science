@@ -1,0 +1,687 @@
+# Indexing
+This lesson will cover some standard functions for reading and writing data in R.
+
+
+## Learning Objectives
+- getting and setting working directory
+- save and load R objects to/from disk
+- read and write tabular data
+- read data from a url
+
+
+Factors
+-------
+
+A feature is **categorical** if it measures a qualitative category. For
+example, the genres `rock`, `blues`, `alternative`, `folk`, `pop` are
+categories.
+
+R uses the class `factor` to represent categorical data. Visualizations and
+statistical models sometimes treat factors differently than other data types,
+so it's important to make sure you have the right data type. If you're ever
+unsure, remember that you can check the class of an object with the `class`
+function.
+
+When you load a data set, R usually can't tell which features are categorical.
+That means identifying and converting the categorical features is up to you.
+For beginners, it can be difficult to understand whether a feature is
+categorical or not. The key is to think about whether you want to use the
+feature to divide the data into groups.
+
+For example, if we want to know how many songs are in the `rock` genre, we
+first need to divide the songs by genre, and then count the number of songs in
+each group (or at least the `rock` group).
+
+As a second example, months recorded as numbers can be categorical or not,
+depending on how you want to use them. You might want to treat them as
+categorical (for example, to compute max rainfall in each month) or you might
+want to treat them as numbers (for example, to compute the number of months
+time between two events).
+
+The bottom line is that you have to think about what you'll be doing in the
+analysis. In some cases, you might treat a feature as categorical only for part
+of the analysis.
+
+Let's think about which features are categorical in earnings data set. To
+refresh our memory of what's in the data set, we can look at the structural
+summary:
+
+```{r}
+#str(earn)
+```
+
+The columns `n_persons` and `median_weekly_earn` are quantitative rather than
+categorical, since they measure quantities of people and dollars, respectively.
+
+The `sex`, `race`, `ethnic_origin`, and `age` columns are all categorical,
+since they are all qualitative measurements. We can see this better if we use
+the `table` function to compute frequencies for the values in the columns:
+
+```{r}
+#table(earn$sex)
+#
+#table(earn$race)
+#
+#table(earn$ethnic_origin)
+#
+#table(earn$age)
+```
+
+Each column has only a few unique values, repeated many times. These are ideal
+for grouping the data. If age had been recorded as a number, rather than a
+range, it would probably be better to treat it as quantitative, since there
+would be far more unique values. Columns with many unique values don't make
+good categorical features, because each group will only have a few elements!
+
+That leaves us with the `year` and `quarter` columns. It's easy to imagine
+grouping the data by year or quarter, but these are also clearly numbers. These
+columns can be treated as quantitative or categorical data, depending on how we
+want to use them to analyze the data.
+
+Let's convert the `age` column to a factor. To do this, use the `factor`
+function:
+```{r}
+#age = factor(earn$age)
+#head(age)
+```
+
+Notice that factors are printed differently than strings.
+
+The categories of a factor are called _levels_. You can list the levels with
+the `levels` function:
+```{r}
+#levels(age)
+```
+
+Factors remember all possible levels even if you take a subset:
+```{r}
+#age[1:3]
+```
+
+This is another way factors are different from strings. Factors "remember" all
+possible levels even if they aren't present. This ensures that if you plot a
+factor, the missing levels will still be represented on the plot.
+
+You can make a factor forget levels that aren't present with the `droplevels`
+function:
+```{r}
+#droplevels(age[1:3])
+```
+
+
+Special Values
+--------------
+
+R has four _special_ values to represent missing or invalid data.
+
+### Missing Values
+
+The value `NA`, called the **missing value**, represents missing entries in a
+data set. It's implied that the entries are missing due to how the data was
+collected, although there are exceptions. As an example, imagine the data came
+from a survey, and respondents chose not to answer some questions. In the data
+set, their answers for those questions can be recorded as `NA`.
+
+The missing value is a chameleon: it can be a logical, integer, numeric,
+complex, or character value. By default, the missing value is logical, and the
+other types occur through coercion (\@ref(implicit-coercion)):
+
+```{r}
+class(NA)
+
+class(c(1, NA))
+
+class(c("hi", NA, NA))
+```
+
+The missing value is also contagious: it represents an unknown quantity, so
+using it as an argument to a function usually produces another missing value.
+The idea is that if the inputs to a computation are unknown, generally so is
+the output:
+
+```{r}
+NA - 3
+
+mean(c(1, 2, NA))
+```
+
+As a consequence, testing whether an object is equal to the missing value with
+`==` doesn't return a meaningful result:
+
+```{r}
+5 == NA
+
+NA == NA
+```
+
+You can use the `is.na` function instead:
+
+```{r}
+is.na(5)
+
+is.na(NA)
+
+is.na(c(1, NA, 3))
+```
+
+Missing values are a feature that sets R apart from most other programming
+languages.
+
+
+### Infinity
+
+The value `Inf` represents infinity, and can be numeric or complex. You're most
+likely to encounter it as the result of certain computations:
+
+```{r}
+13 / 0
+
+class(Inf)
+```
+
+You can use the `is.infinite` function to test whether a value is infinite:
+
+```{r}
+is.infinite(3)
+
+is.infinite(c(-Inf, 0, Inf))
+```
+
+### Not a Number
+
+The value `NaN`, called **not a number**, represents a quantity that's
+undefined mathematically. For instance, dividing 0 by 0 is undefined:
+
+```{r}
+0 / 0
+
+class(NaN)
+```
+
+Like `Inf`, `NaN` can be numeric or complex.
+
+You can use the `is.nan` function to test whether a value is `NaN`:
+
+```{r}
+is.nan(c(10.1, log(-1), 3))
+```
+
+
+### Null
+
+The value `NULL` represents a quantity that's undefined in R. Most of the time,
+`NULL` indicates the absence of a result. For instance, vectors don't have
+dimensions, so the `dim` function returns `NULL` for vectors:
+
+```{r}
+dim(c(1, 2))
+
+class(NULL)
+
+typeof(NULL)
+```
+
+Unlike the other special values, `NULL` has its own unique type and class.
+
+You can use the `is.null` function to test whether a value is `NULL`:
+
+```{r}
+is.null("null")
+
+is.null(NULL)
+```
+
+
+Indexing
+--------
+
+The way to get and set elements of a data structure is by **indexing**.
+Sometimes this is also called **subsetting** or (element) **extraction**.
+Indexing is a fundamental operation in R, key to reasoning about how to solve
+problems with the language.
+
+We first saw indexing in Section \@ref(data-frames), where we used `$`, the
+dollar sign operator, to get and set data frame columns. We saw indexing again
+in Section \@ref(indexing-vectors), where we used `[`, the indexing or square
+bracket operator, to get and set elements of vectors.
+
+The indexing operator `[` is R's primary operator for indexing. It works in
+four different ways, depending on the type of the index you use. These four
+ways to select elements are:
+
+1. All elements, with no index
+2. By position, with a numeric index
+3. By name, with a character index
+4. By condition, with a logical index
+
+Let's examine each in more detail. We'll use this vector as an example, to keep
+things concise:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+x
+```
+
+Even though we're using a vector here, the indexing operator works with almost
+all data structures, including factors, lists, matrices, and data frames. We'll
+look at unique behavior for some of these later on.
+
+### All Elements
+
+The first way to use `[` to select elements is to leave the index blank. This
+selects all elements:
+```{r}
+x[]
+```
+
+This way of indexing is rarely used for getting elements, since it's the same
+as entering the variable name without the indexing operator. Instead, its main
+use is for setting elements. Suppose we want to set all the elements of `x` to
+`5`. You might try writing this:
+
+```{r}
+x = 5
+x
+```
+
+Rather than setting each element to `5`, this sets `x` to the scalar `5`, which
+is not what we want. Let's reset the vector and try again, this time using the
+indexing operator:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+x[] = 5
+x
+```
+
+As you can see, now all the elements are `5`. So the indexing operator is
+necessary to specify that we want to set the elements rather than the whole
+variable.
+
+Let's reset `x` one more time, so that we can use it again in the next example:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+```
+
+### By Position
+
+The second way to use `[` is to select elements by position. This happens when
+you use an integer or numeric index. We already saw the basics of this in
+Section \@ref(indexing-vectors).
+
+The positions of the elements in a vector (or other data structure) correspond
+to numbers starting from 1 for the first element. This way of indexing is
+frequently used together with the sequence operator `:` to get ranges of
+values. For instance, let's get the 2nd through 4th elements of `x`:
+
+```{r}
+x[2:4]
+```
+
+You can also use this way of indexing to set specific elements or ranges of
+elements. For example, let's set the 3rd and 5th elements of `x` to `9` and
+`7`, respectively:
+
+```{r}
+x[c(3, 5)] = c(9, 7)
+x
+```
+
+When getting elements, you can repeat numbers in the index to get the same
+element more than once. You can also use the order of the numbers to control
+the order of the elements:
+
+```{r}
+x[c(2, 1, 2, 2)]
+```
+
+Finally, if the index contains only negative numbers, the elements at those
+positions are excluded rather than selected. For instance, let's get all
+elements except the 1st and 5th:
+
+```{r}
+x[-c(1, 5)]
+```
+
+When you index by position, the index should always be all positive or all
+negative. Using a mix of positive and negative numbers causes R to emit error
+rather than returning elements, since it's unclear what the result should be:
+
+```{r, error = TRUE}
+x[c(-1, 2)]
+```
+
+### By Name
+
+The third way to use `[` is to select elements by name. This happens when you
+use a character vector as the index, and only works with named data structures.
+
+Like indexing by position, you can use indexing by name to get or set elements.
+You can also use it to repeat elements or change the order. Let's get elements
+`a`, `c`, `d`, and `a` again from the vector `x`:
+
+```{r}
+y = x[c("a", "c", "d", "a")]
+y
+```
+
+Element names are generally unique, but if they're not, indexing by name gets
+or sets the first element whose name matches the index:
+
+```{r}
+y["a"]
+```
+
+Let's reset `x` again to prepare for learning about the final way to index:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+```
+
+### By Condition
+
+The fourth and final way to use `[` is to select elements based on a condition.
+This happens when you use a logical vector as the index. The logical vector
+should have the same length as what you're indexing, and will be recycled if it
+doesn't.
+
+#### Congruent Vectors {-}
+
+To understand indexing by condition, we first need to learn about congruent
+vectors. Two vectors are **congruent** if they have the same length and they
+correspond element-by-element.
+
+For example, suppose you do a survey that records each respondent's favorite
+animal and age. These are two different vectors of information, but each person
+will have a response for both. So you'll have two vectors that are the same
+length:
+
+```{r}
+animal = c("dog", "cat", "iguana")
+age = c(31, 24, 72)
+```
+
+The 1st element of each vector corresponds to the 1st person, the 2nd to the
+2nd person, and so on. These vectors are congruent.
+
+Notice that columns in a data frame are always congruent!
+
+#### Back to Indexing {-}
+
+When you index by condition, the index should generally be congruent to the
+object you're indexing. Elements where the index is `TRUE` are kept and
+elements where the index is `FALSE` are dropped.
+
+If you create the index from a condition on the object, it's automatically
+congruent. For instance, let's make a condition based on the vector `x`:
+
+```{r}
+is_small = x < 25
+is_small
+```
+
+The 1st element in the logical vector `is_small` corresponds to the 1st element
+of `x`, the 2nd to the 2nd, and so on. The vectors `x` and `is_small` are
+congruent.
+
+It makes sense to use `is_small` as an index for `x`, and it gives us all the
+elements less than `25`:
+
+```{r}
+x[is_small]
+```
+
+Of course, you can also avoid using an intermediate variable for the condition:
+
+```{r}
+x[x > 10]
+```
+
+If you create index some other way (not using the object), make sure that it's
+still congruent to the object. Otherwise, the subset returned from indexing
+might not be meaningful.
+
+You can also use indexing by condition to set elements, just as the other ways
+of indexing can be used to set elements. For instance, let's set all the
+elements of `x` that are greater than `10` to the missing value `NA`:
+
+```{r}
+x[x > 10] = NA
+x
+```
+
+
+### Logic
+
+All of the conditions we've seen so far have been written in terms of a single
+test. If you want to use more sophisticated conditions, R provides operators to
+negate and combine logical vectors. These operators are useful for working with
+logical vectors even outside the context of indexing.
+
+#### Negation {-}
+
+The _NOT operator_ `!` converts `TRUE` to `FALSE` and `FALSE` to `TRUE`:
+```{r}
+x = c(TRUE, FALSE, TRUE, TRUE, NA)
+x
+!x
+```
+
+You can use `!` with a condition:
+```{r}
+y = c("hi", "hello")
+!(y == "hi")
+```
+
+The NOT operator is vectorized.
+
+
+#### Combinations {-}
+
+R also has operators for combining logical values.
+
+The _AND operator_ `&` returns `TRUE` only when both arguments are `TRUE`. Here
+are some examples:
+
+```{r}
+FALSE & FALSE
+TRUE & FALSE
+FALSE & TRUE
+TRUE & TRUE
+c(TRUE, FALSE, TRUE) & c(TRUE, TRUE, FALSE)
+```
+
+The _OR operator_ `|` returns `TRUE` when at least one argument is `TRUE`.
+Let's see some examples:
+
+```{r}
+FALSE | FALSE
+TRUE | FALSE
+FALSE | TRUE
+TRUE | TRUE
+c(TRUE, FALSE) | c(TRUE, TRUE)
+```
+
+Be careful: everyday English is less precise than logic. You might say:
+
+> I want all subjects with age over 50 and all subjects that like cats.
+
+But in logic this means:
+
+`(subject age over 50) OR (subject likes cats)`
+
+So think carefully about whether you need both conditions to be true (AND) or
+at least one (OR).
+
+Rarely, you might want _exactly one_ condition to be true. The _XOR (eXclusive
+OR) function_ `xor()` returns `TRUE` when exactly one argument is `TRUE`. For
+example:
+
+```{r}
+xor(FALSE, FALSE)
+xor(TRUE, FALSE)
+xor(TRUE, TRUE)
+```
+
+The AND, OR, and XOR operators are vectorized.
+
+
+#### Short-circuiting {-}
+
+The second argument is irrelevant in some conditions:
+
+* `FALSE &` is always `FALSE`
+* `TRUE |` is always `TRUE`
+
+Now imagine you have `FALSE & long_computation()`. You can save time by
+skipping `long_computation()`. A _short-circuit operator_ does exactly that.
+
+R has two short-circuit operators:
+
+* `&&` is a short-circuited `&`
+* `||` is a short-circuited `|`
+
+These operators only evaluate the second argument if it is necessary to
+determine the result. Here are some of these:
+
+```{r}
+TRUE && FALSE
+TRUE && TRUE
+TRUE || TRUE
+c(TRUE, FALSE) && c(TRUE, TRUE)
+```
+
+For the final expression, notice R only combines the first element of each
+vector. The others are ignored. In other words, the short-circuit operators are
+_not_ vectorized! Because of this, generally you **should not use** the
+short-circuit operators for indexing. Their main use is in writing conditions
+for if-statements, which we'll learn about later on.
+
+### Indexing Lists
+
+Lists are a _container_ for other types of R objects. When you select an
+element from a list, you can either keep the container (the list) or discard
+it. The indexing operator `[` almost always keeps containers.
+
+As an example, let's get some elements from a small list:
+
+```{r}
+x = list(first = c(1, 2, 3), second = sin, third = c("hi", "hello"))
+y = x[c(1, 3)]
+y
+class(y)
+```
+
+The result is still a list. Even if we get just one element, the result of
+indexing a list with `[` is a list:
+
+```{r}
+class(x[1])
+```
+
+Sometimes this will be exactly what we want. But what if we want to get the
+first element of `x` so that we can use it in a vectorized function? Or in a
+function that only accepts numeric arguments? We need to somehow get the
+element and discard the container.
+
+The solution to this problem is the _extraction operator_ `[[`, which is also
+called the _double square bracket operator_. The extraction operator is the
+primary way to get and set elements of lists and other containers.
+
+Unlike the indexing operator `[`, the extraction operator always discards the
+container:
+
+```{r}
+x[[1]]
+class(x[[1]])
+```
+
+The tradeoff is that the extraction operator can only get or set one element at
+a time. Note that the element can be a vector, as above. Because it can only
+get or set one element at a time, the extraction operator can only index by
+position or name. Blank and logical indexes are not allowed.
+
+The final difference between the index operator `[` and the extraction operator
+`[[` has to do with how they handle invalid indexes. The index operator `[`
+returns `NA` for invalid vector elements, and `NULL` for invalid list elements:
+
+```{r}
+c(1, 2)[10]
+x[10]
+```
+
+On the other hand, the extraction operator `[[` raises an error for invalid
+elements:
+
+```{r, error = TRUE}
+x[[10]]
+```
+
+The indexing operator `[` and the extraction operator `[[` both work with any
+data structure that has elements. However, you'll generally use the indexing
+operator `[` to index vectors, and the extraction operator `[[` to index
+containers (such as lists).
+
+
+### Indexing Data Frames
+
+For two-dimensional objects, like matrices and data frames, you can pass the
+indexing operator `[` or the extraction operator `[[` a separate index for each
+dimension. The rows come first:
+
+```
+DATA[ROWS, COLUMNS]
+```
+
+For instance, let's get the first 3 rows and all columns of the earnings data:
+
+```{r}
+#earn[1:3, ]
+```
+
+As we saw in Section \@ref(all-elements), leaving an index blank means all
+elements.
+
+As another example, let's get the 3rd and 5th row, and the 2nd and 4th column:
+
+```{r}
+#earn[c(3, 5), c(2, 4)]
+```
+
+Mixing several different ways of indexing is allowed. So for example, we can
+get the same above, but use column names instead of positions:
+
+```{r}
+#earn[c(3, 5), c("race", "age")]
+```
+
+For data frames, it's especially common to index the rows by condition and the
+columns by name. For instance, let's get the `sex`, `age`, and `n_persons`
+columns for all rows that pertain to women:
+
+```{r}
+#result = earn[earn$sex == "Women", c("sex", "age", "n_persons")]
+#head(result)
+```
+
+#### The Drop Parameter {-}
+
+If you use two-dimensional indexing with `[` to select exactly one column, you
+get a vector:
+
+```{r}
+#result = earn[1:3, 2]
+#class(result)
+```
+
+The container is dropped, even though the indexing operator `[` usually keeps
+containers. This also occurs for matrices. You can control this behavior with
+the `drop` parameter:
+
+```{r}
+#result = earn[1:3, 2, drop = FALSE]
+#class(result)
+```
+
+The default is `drop = TRUE`.
