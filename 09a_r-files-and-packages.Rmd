@@ -1,4 +1,4 @@
-# Working with files in R (and packages)
+# Working with Files and Packages
 
 This lesson will focus on working with data files in R. 
 It will reinforce understanding of the command line, as well as RStudio.
@@ -98,12 +98,13 @@ du -h *
 ### File Extensions
 
 Most of the time, you can guess the format of a file by looking at its
-extension, the characters (usually three) after the last dot . in the filename.
-For example, the extension .jpg or .jpeg indicates a JPEG image file. Some
-operating systems hide extensions by default, but you can find instructions to
-change this setting online by searching for “show file extensions” and your
-operating system’s name. The extension is just part of the file’s name, so it
-should be taken as a hint about the file’s format rather than a guarantee.
+extension, the characters (usually three) after the last dot `.` in the
+filename. For example, the extension `.jpg` or `.jpeg` indicates a JPEG image
+file. Some operating systems hide extensions by default, but you can find
+instructions to change this setting online by searching for “show file
+extensions” and your operating system’s name. The extension is just part of the
+file’s name, so it should be taken as a hint about the file’s format rather
+than a guarantee.
 
 ### Text Files
 
@@ -239,9 +240,9 @@ list.files("/this/path/is/fake/")
 
 Later on, we'll learn about what `character(0)` means more generally.
 
-### Reading Our CSV File
+### Reading a CSV File
 
-Let's go ahead and read the dogs.csv file we extracted from the zip file
+Let's go ahead and read the `dogs.csv` file we extracted from the zip file
 at the start.
 
 R provides a very easy built-in function for reading CSV files, and a variety
@@ -252,10 +253,11 @@ To read a csv file into R, use `read.csv`:
 dogs = read.csv('dogs.csv')
 ```
 
-#### inspect our data
+#### Inspecting the Data
 
-Note that we used read.csv assuming that the file extension was appropriate,
-we can feel confident about this because we looked into the file earlier.
+Note that when we used `read.csv`, we assumed that the file extension was
+appropriate. We can feel confident about this because we examined the file
+earlier.
 
 We can also feel confident that it will fit into memory as we saw it was 
 relatively small.
@@ -264,15 +266,15 @@ Whenever you import data into R, it is crucial to check that things went
 as expected.
 
 To check things went according to our expections, look at the output
-of the read.csv function which we saved into `dogs`.
+of the `read.csv` function, which we saved into `dogs`.
 
-Lets see what the output is. We can check what the object is with the `class`
+Let's see what the output is. We can check what the object is with the `class`
 function.
 ```{r, eval=FALSE}
 class(dogs)
 ```
 
-We can see that the read.csv function returned a dataframe. This makes sense
+We can see that the `read.csv` function returned a dataframe. This makes sense
 because dataframes represent tabular data, and csv files contain tabular data.
 
 We can get more information with the `str` function. `str` concisely gives 
@@ -306,12 +308,13 @@ And to display the last rows from the dataset, use `tail`:
 tail(dogs)
 ```
 
-### read functions for tabular data
+### Reader Functions for Tabular Data
 
-`read.csv` is actually shortcut for `read.table` a general purpose
+The `read.csv` function is a shortcut for `read.table`, a general purpose
 function for reading tabular data from plain-text files into R.
 
-`read.csv` acts just like `read.table` but sets the `sep = ","` and `header=TRUE`
+The `read.csv` function acts just like `read.table`, but with the arguments
+`sep = ","` and `header = TRUE`.
 
 Table of R's read functions (https://rstudio-education.github.io/hopr/dataio.html)
 
@@ -355,21 +358,23 @@ Use `saveRDS` to save our data as an rds file with the `rds` file extension.
 saveRDS(dogs, "./outputs/dogs.rds")
 ```
 
-Its easy to load RDS files in R with `readRDS`:
+It's easy to load RDS files in R with `readRDS`:
 ```{r, eval=FALSE}
 dogs = readRDS("./outputs/dogs.rds")
 ```
 
 ### Excel Files in R
 
-Excel is very popular in the data analysis world. Millions of people use 
-Excel to input, clean, analyze, and store data.
+Excel is very popular in the data analysis world. Millions of people use Excel
+to input, clean, analyze, and store data. R doesn't provide a built-in function
+to load Excel files. Fortunately, members of the R community share code for a
+variety of tasks, including loading Excel files.
 
 
 ## Packages
 
-Lot's of the most useful parts of R do not come preloaded when you install R.
-Packages bundle together code, documentation and data. Its easy to share,
+Lots of the most useful parts of R do not come preloaded when you install R.
+Packages bundle together code, documentation and data. It's easy to share,
 and easy to include in your own code. Users have contributed thousands
 of R packages which can be found online.
 
@@ -387,7 +392,7 @@ R packages accessible.
 
 #### readxl
 
-**readxl** is a package written to provide functions for working with xlsx
+**readxl** is a package written to provide functions for working with Excel
 files in R.
 
 ### Using Packages 
@@ -395,7 +400,7 @@ files in R.
 To use an R package, it first needs to be installed on your system, 
 and then loaded into the R session.
 
-#### Installing packages
+#### Installing Packages
 
 You can install packages from CRAN onto your system using `install.packages`. 
 It will search for the package on CRAN, and download the code onto your computer
@@ -406,7 +411,7 @@ To install the `readxl` package, we pass the name to `install.packages`:
 install.packages("readxl")
 ```
 
-#### Loading packages
+#### Loading Packages
 
 Even if the package is on your system, it is not automatically loaded into R.
 
@@ -414,11 +419,11 @@ Every time you restart R you will need to reload each package that your script
 uses. Do so with `library` at the top of your script for each package that 
 you will use.
 
-This signals to yourself and anyone else that uses your script which packages
-are required to run the code, and will stop the execution of the script
-if any of the packages are not found.
+This signals to you and anyone else that uses your script which packages are
+required to run the code, and will stop the execution of the script if any of
+the packages are not found.
 
-To load in the `readxl` package we installed in the previous step use `library`:
+To load in the `readxl` package we installed in the previous step, use `library`:
 ```{r, eval=FALSE}
 library("readxl")
 ```
@@ -436,12 +441,12 @@ to find them.
 
 ###  Load Excel Data 
 
-With Readxl we can list all the sheets in an excel spreadsheet:
+With readxl, we can list all the sheets in an excel spreadsheet:
 ```{r, eval=FALSE}
 sheets = excel_sheets("./data/dogs.xlsx")
 ```
 
-And can load the data with `read_excel`
+We can then load the data with `read_excel`:
 ```{r, eval=FALSE}
 data = read_xlsx("./data/dogs.xlsx")
 ```
