@@ -1,26 +1,51 @@
-# Indexing
-This lesson will cover some standard functions for reading and writing data in R.
+# Factors, Special Values, and Indexing
+
+This lesson covers what factors are, R's special values, and R's various
+indexing operators.
+
+```{r, include = FALSE}
+dogs = readRDS("data/dogs.rds")
+```
 
 
 ## Learning Objectives
-- getting and setting working directory
-- save and load R objects to/from disk
-- read and write tabular data
-- read data from a url
+
+After this lesson, you should be able to:
+
+* Recognize categorical data
+* Explain what factors are and when to use them
+* Explain the purpose of R's special values, especially missing values
+* Explain the four different types of indexes and how to use them
+* Explain why the `[[` operator is necessary and how to use it
+* Explain the syntax to subset a data frame
 
 
 Factors
 -------
 
-A feature is **categorical** if it measures a qualitative category. For
-example, the genres `rock`, `blues`, `alternative`, `folk`, `pop` are
-categories.
+A feature in a data set is **categorical** if it measures a qualitative
+category. Some examples of categories are:
 
-R uses the class `factor` to represent categorical data. Visualizations and
-statistical models sometimes treat factors differently than other data types,
-so it's important to make sure you have the right data type. If you're ever
-unsure, remember that you can check the class of an object with the `class`
-function.
+* Music genres `rock`, `blues`, `alternative`, `folk`, `pop`
+* Colors `red`, `green`, `blue`, `yellow`
+* Answers `yes`, `no`
+* Months `January`, `February`, and so on
+
+In some cases, a feature can be interpreted as categorical or quantitative. For
+instance, months can be interpreted as categories, but they can also be
+interpreted as numbers. There's not necessarily a "correct" interpretation;
+each can be useful for different kinds of analyses.
+
+R uses the class `factor` to represent categorical data. For instance, in the
+dogs data set, the `group` column is a factor:
+
+```
+class(dogs$group)
+```
+
+Visualizations and statistical models sometimes treat factors differently than
+other data types, so it's important to think about whether you want R to
+interpret data as categorical.
 
 When you load a data set, R usually can't tell which features are categorical.
 That means identifying and converting the categorical features is up to you.
@@ -42,47 +67,12 @@ The bottom line is that you have to think about what you'll be doing in the
 analysis. In some cases, you might treat a feature as categorical only for part
 of the analysis.
 
-Let's think about which features are categorical in earnings data set. To
-refresh our memory of what's in the data set, we can look at the structural
-summary:
 
+You can use the `factor` function to convert a vector into a factor:
 ```{r}
-#str(earn)
-```
-
-The columns `n_persons` and `median_weekly_earn` are quantitative rather than
-categorical, since they measure quantities of people and dollars, respectively.
-
-The `sex`, `race`, `ethnic_origin`, and `age` columns are all categorical,
-since they are all qualitative measurements. We can see this better if we use
-the `table` function to compute frequencies for the values in the columns:
-
-```{r}
-#table(earn$sex)
-#
-#table(earn$race)
-#
-#table(earn$ethnic_origin)
-#
-#table(earn$age)
-```
-
-Each column has only a few unique values, repeated many times. These are ideal
-for grouping the data. If age had been recorded as a number, rather than a
-range, it would probably be better to treat it as quantitative, since there
-would be far more unique values. Columns with many unique values don't make
-good categorical features, because each group will only have a few elements!
-
-That leaves us with the `year` and `quarter` columns. It's easy to imagine
-grouping the data by year or quarter, but these are also clearly numbers. These
-columns can be treated as quantitative or categorical data, depending on how we
-want to use them to analyze the data.
-
-Let's convert the `age` column to a factor. To do this, use the `factor`
-function:
-```{r}
-#age = factor(earn$age)
-#head(age)
+colors = c("red", "green", "red", "blue")
+colors = factor(colors)
+colors
 ```
 
 Notice that factors are printed differently than strings.
@@ -90,12 +80,12 @@ Notice that factors are printed differently than strings.
 The categories of a factor are called _levels_. You can list the levels with
 the `levels` function:
 ```{r}
-#levels(age)
+levels(colors)
 ```
 
 Factors remember all possible levels even if you take a subset:
 ```{r}
-#age[1:3]
+colors[1:3]
 ```
 
 This is another way factors are different from strings. Factors "remember" all
@@ -105,22 +95,27 @@ factor, the missing levels will still be represented on the plot.
 You can make a factor forget levels that aren't present with the `droplevels`
 function:
 ```{r}
-#droplevels(age[1:3])
+droplevels(colors[1:3])
 ```
 
 
 Special Values
 --------------
 
-R has four _special_ values to represent missing or invalid data.
+R has four special values to represent missing or invalid data.
 
 ### Missing Values
 
-The value `NA`, called the **missing value**, represents missing entries in a
-data set. It's implied that the entries are missing due to how the data was
-collected, although there are exceptions. As an example, imagine the data came
-from a survey, and respondents chose not to answer some questions. In the data
-set, their answers for those questions can be recorded as `NA`.
+The value `NA` is called the **missing value**. Most of the time, missing
+values originate from how the data were collected (as opposed to computer
+errors). As an example, imagine the data came from a survey, and respondents
+chose not to answer some questions. In the data set, their answers for those
+questions might be recorded as `NA`.
+
+Of course, there are sometimes exceptions where missing values *are* the result
+of a computation. When you see missing values in a data set, you should think
+carefully about what the cause might be. Sometimes documentation or other parts
+of the data set provide clues.
 
 The missing value is a chameleon: it can be a logical, integer, numeric,
 complex, or character value. By default, the missing value is logical, and the
@@ -168,25 +163,6 @@ Missing values are a feature that sets R apart from most other programming
 languages.
 
 
-### Infinity
-
-The value `Inf` represents infinity, and can be numeric or complex. You're most
-likely to encounter it as the result of certain computations:
-
-```{r}
-13 / 0
-
-class(Inf)
-```
-
-You can use the `is.infinite` function to test whether a value is infinite:
-
-```{r}
-is.infinite(3)
-
-is.infinite(c(-Inf, 0, Inf))
-```
-
 ### Not a Number
 
 The value `NaN`, called **not a number**, represents a quantity that's
@@ -198,7 +174,7 @@ undefined mathematically. For instance, dividing 0 by 0 is undefined:
 class(NaN)
 ```
 
-Like `Inf`, `NaN` can be numeric or complex.
+`NaN` can be numeric or complex.
 
 You can use the `is.nan` function to test whether a value is `NaN`:
 
@@ -209,9 +185,9 @@ is.nan(c(10.1, log(-1), 3))
 
 ### Null
 
-The value `NULL` represents a quantity that's undefined in R. Most of the time,
-`NULL` indicates the absence of a result. For instance, vectors don't have
-dimensions, so the `dim` function returns `NULL` for vectors:
+The value `NULL` represents a quantity that's undefined _in R_. Most of the
+time, `NULL` indicates the absence of a result. For instance, vectors don't
+have dimensions, so the `dim` function returns `NULL` for vectors:
 
 ```{r}
 dim(c(1, 2))
@@ -231,6 +207,25 @@ is.null("null")
 is.null(NULL)
 ```
 
+### Infinity
+
+The value `Inf` represents infinity, and can be numeric or complex. You're most
+likely to encounter it as the result of certain computations:
+
+```{r}
+13 / 0
+
+class(Inf)
+```
+
+You can use the `is.infinite` function to test whether a value is infinite:
+
+```{r}
+is.infinite(3)
+
+is.infinite(c(-Inf, 0, Inf))
+```
+
 
 Indexing
 --------
@@ -240,21 +235,20 @@ Sometimes this is also called **subsetting** or (element) **extraction**.
 Indexing is a fundamental operation in R, key to reasoning about how to solve
 problems with the language.
 
-We first saw indexing in Section \@ref(data-frames), where we used `$`, the
-dollar sign operator, to get and set data frame columns. We saw indexing again
-in Section \@ref(indexing-vectors), where we used `[`, the indexing or square
-bracket operator, to get and set elements of vectors.
+We first saw indexing in Section \@ref(indexing-vectors), where we used `[`,
+the indexing or square bracket operator, to get and set elements of vectors.
+We saw indexing again in Section \@ref(data-frames), where we used `$`, the
+dollar sign operator, to get and set data frame columns. 
 
 The indexing operator `[` is R's primary operator for indexing. It works in
-four different ways, depending on the type of the index you use. These four
-ways to select elements are:
+four different ways, depending on the type of the index you use:
 
-1. All elements, with no index
-2. By position, with a numeric index
-3. By name, with a character index
-4. By condition, with a logical index
+1. An empty index selects all elements
+2. A numeric index selects elements by position
+3. A character index selects elements by name
+4. A logical index selects elements for which the index is `TRUE`
 
-Let's examine each in more detail. We'll use this vector as an example, to keep
+Let's explore each in more detail. We'll use this vector as an example, to keep
 things concise:
 
 ```{r}
@@ -383,8 +377,8 @@ x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
 
 The fourth and final way to use `[` is to select elements based on a condition.
 This happens when you use a logical vector as the index. The logical vector
-should have the same length as what you're indexing, and will be recycled if it
-doesn't.
+should have the same length as what you're indexing, and will be recycled (that
+is, repeated) if it doesn't.
 
 #### Congruent Vectors {-}
 
@@ -461,7 +455,7 @@ logical vectors even outside the context of indexing.
 
 #### Negation {-}
 
-The _NOT operator_ `!` converts `TRUE` to `FALSE` and `FALSE` to `TRUE`:
+The **NOT operator** `!` converts `TRUE` to `FALSE` and `FALSE` to `TRUE`:
 ```{r}
 x = c(TRUE, FALSE, TRUE, TRUE, NA)
 x
@@ -481,7 +475,7 @@ The NOT operator is vectorized.
 
 R also has operators for combining logical values.
 
-The _AND operator_ `&` returns `TRUE` only when both arguments are `TRUE`. Here
+The **AND operator** `&` returns `TRUE` only when both arguments are `TRUE`. Here
 are some examples:
 
 ```{r}
@@ -492,7 +486,7 @@ TRUE & TRUE
 c(TRUE, FALSE, TRUE) & c(TRUE, TRUE, FALSE)
 ```
 
-The _OR operator_ `|` returns `TRUE` when at least one argument is `TRUE`.
+The **OR operator** `|` returns `TRUE` when at least one argument is `TRUE`.
 Let's see some examples:
 
 ```{r}
@@ -514,8 +508,8 @@ But in logic this means:
 So think carefully about whether you need both conditions to be true (AND) or
 at least one (OR).
 
-Rarely, you might want _exactly one_ condition to be true. The _XOR (eXclusive
-OR) function_ `xor()` returns `TRUE` when exactly one argument is `TRUE`. For
+Rarely, you might want _exactly one_ condition to be true. The **XOR (eXclusive
+OR) function** `xor()` returns `TRUE` when exactly one argument is `TRUE`. For
 example:
 
 ```{r}
@@ -535,7 +529,7 @@ The second argument is irrelevant in some conditions:
 * `TRUE |` is always `TRUE`
 
 Now imagine you have `FALSE & long_computation()`. You can save time by
-skipping `long_computation()`. A _short-circuit operator_ does exactly that.
+skipping `long_computation()`. A **short-circuit operator** does exactly that.
 
 R has two short-circuit operators:
 
@@ -554,13 +548,15 @@ c(TRUE, FALSE) && c(TRUE, TRUE)
 
 For the final expression, notice R only combines the first element of each
 vector. The others are ignored. In other words, the short-circuit operators are
-_not_ vectorized! Because of this, generally you **should not use** the
+_not_ vectorized! Because of this, generally you _should not use*_ the
 short-circuit operators for indexing. Their main use is in writing conditions
-for if-statements, which we'll learn about later on.
+for control structures (\@ref(control-structures)) and loops
+(\@ref(iterating-loops)).
+
 
 ### Indexing Lists
 
-Lists are a _container_ for other types of R objects. When you select an
+Lists are a **container** for other types of R objects. When you select an
 element from a list, you can either keep the container (the list) or discard
 it. The indexing operator `[` almost always keeps containers.
 
@@ -634,10 +630,10 @@ dimension. The rows come first:
 DATA[ROWS, COLUMNS]
 ```
 
-For instance, let's get the first 3 rows and all columns of the earnings data:
+For instance, let's get the first 3 rows and all columns of the dogs data:
 
 ```{r}
-#earn[1:3, ]
+dogs[1:3, ]
 ```
 
 As we saw in Section \@ref(all-elements), leaving an index blank means all
@@ -646,23 +642,23 @@ elements.
 As another example, let's get the 3rd and 5th row, and the 2nd and 4th column:
 
 ```{r}
-#earn[c(3, 5), c(2, 4)]
+dogs[c(3, 5), c(2, 4)]
 ```
 
 Mixing several different ways of indexing is allowed. So for example, we can
 get the same above, but use column names instead of positions:
 
 ```{r}
-#earn[c(3, 5), c("race", "age")]
+dogs[c(3, 5), c("breed", "longevity")]
 ```
 
 For data frames, it's especially common to index the rows by condition and the
-columns by name. For instance, let's get the `sex`, `age`, and `n_persons`
-columns for all rows that pertain to women:
+columns by name. For instance, let's get the `breed`, `popularity`, and
+`weight` columns for all rows with toy dogs:
 
 ```{r}
-#result = earn[earn$sex == "Women", c("sex", "age", "n_persons")]
-#head(result)
+result = dogs[dogs$group == "toy", c("breed", "popularity", "weight")]
+head(result)
 ```
 
 #### The Drop Parameter {-}
@@ -671,8 +667,8 @@ If you use two-dimensional indexing with `[` to select exactly one column, you
 get a vector:
 
 ```{r}
-#result = earn[1:3, 2]
-#class(result)
+result = dogs[1:3, 2]
+class(result)
 ```
 
 The container is dropped, even though the indexing operator `[` usually keeps
@@ -680,8 +676,8 @@ containers. This also occurs for matrices. You can control this behavior with
 the `drop` parameter:
 
 ```{r}
-#result = earn[1:3, 2, drop = FALSE]
-#class(result)
+result = dogs[1:3, 2, drop = FALSE]
+class(result)
 ```
 
 The default is `drop = TRUE`.
