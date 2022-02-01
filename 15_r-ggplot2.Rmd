@@ -1,6 +1,6 @@
-Data Visualization
-==================
+#Data Visualization
 
+## Learning Objectives
 After this lesson, you should be able to:
 
 * Explain the difference between strings and factors
@@ -11,105 +11,8 @@ After this lesson, you should be able to:
     + Save plots
 * Choose an appropriate kind of plot based on the data
 
+## R Graphics Overview
 
-
-Factors
--------
-
-A feature is **categorical** if it measures a qualitative category. For
-example, the genres `rock`, `blues`, `alternative`, `folk`, `pop` are
-categories.
-
-R uses the class `factor` to represent categorical data. Visualizations and
-statistical models sometimes treat factors differently than other data types,
-so it's important to make sure you have the right data type. If you're ever
-unsure, remember that you can check the class of an object with the `class`
-function.
-
-When you load a data set, R usually can't tell which features are categorical.
-That means identifying and converting the categorical features is up to you.
-For beginners, it can be difficult to understand whether a feature is
-categorical or not. The key is to think about whether you want to use the
-feature to divide the data into groups. For example, if we want to know how
-many songs are in the `rock` genre, we first need to divide the songs by genre,
-and then count the number of songs in each group (or at least the `rock`
-group).
-
-As a second example, months recorded as numbers can be categorical or not,
-depending on how you want to use them. You might want to treat them as
-categorical (for example, to compute max rainfall in each month) or you might
-want to treat them as numbers (for example, to compute the number of months
-time between two events). The bottom line is that you have to think about what
-you'll be doing in the analysis. In some cases, you might treat a feature as
-categorical only for part of the analysis.
-
-Let's think about which features are categorical in the favorite places data
-set from an earlier lesson. There's a copy of the data in an RDS file on
-Canvas. We can load the data with:
-
-```{r}
-favs = readRDS("data/fav_places.rds")
-str(favs)
-```
-
-The numeric columns in this data set (`bike_min`, `walk_min`, and
-`distance_mi`) are all quantitative, so they're not categorical. That leaves
-the character columns.
-
-The `raw_description` and `address` columns mostly have unique entries. This is
-a sign that they wouldn't make good categorical features, because if we use a
-column of unique entries to make groups, each group will only have one element!
-So we can rule these out as categorical. They are textual data.
-
-That leaves us with the `major` and `location` columns. It's easy to imagine
-grouping the survey responses by major, we can say `major` is categorical. For
-`location`, it's not as clear. The locations are:
-
-```{r}
-table(favs$location)
-```
-
-So there are a couple of locations that aren't unique, but most of them are.
-For this data set, we probably shouldn't treat `location` as categorical
-because the groups wouldn't be interesting. However, if we had more survey
-responses (or more at each location) it might make sense to do so.
-
-Let's convert the `major` column to a factor. To do this, use the `factor`
-function:
-```{r}
-factor(favs$major)
-
-favs$major = factor(favs$major)
-```
-
-Notice that factors are printed differently than strings.
-
-The categories of a factor are called **levels**. You can list the levels with
-the `levels` function:
-```{r}
-levels(favs$major)
-```
-
-Factors remember all possible levels even if you take a subset:
-```{r}
-favs$major[c(1, 2)]
-```
-
-This is another way factors are different from strings. Factors "remember" all
-possible levels even if they aren't present. This ensures that if you plot a
-factor, the missing levels will still be represented on the plot.
-
-You can make a factor forget levels that aren't present with the `droplevels`
-function:
-```{r}
-first3 = favs$major[1:3]
-droplevels(first3)
-```
-
-
-
-R Graphics Overview
--------------------
 
 There are three popular systems for creating visualizations in R:
 
@@ -128,9 +31,7 @@ package is also part of the Tidyverse. Because of these advantages, we'll use
 ggplot2 for visualizations in this and all future lessons.
 
 
-
-The Grammar of Graphics
------------------------
+## The Grammar of Graphics
 
 ggplot2 has detailed [documentation][ggplot2-docs] and also a
 [cheatsheet][ggplot2-cheat].
@@ -159,8 +60,14 @@ coordinates | Coordinate systems (Cartesian, logarithmic, polar)
 
 ### Making a Plot
 
-As an example, let's plot the favorite places survey data. First, we need to
-load ggplot2. As always, if this is your first time using the package, you'll
+As an example, let's plot the class survey data from the Intro to R and Functions lessons -- by now this should be saved into your working directory. First, let's load in our data.
+
+```{r}
+survey = read.csv("data/class_survey.csv")
+str(survey)
+```
+
+Next we need to load `ggplot2`. As always, if this is your first time using the package, you'll
 have to install it. Then you can load the package:
 
 ```{r}
@@ -170,8 +77,8 @@ library(ggplot2)
 
 What kind of plot should we make? It depends on what data we want the plot to
 show. Let's make a plot that shows the distance in miles (from the library)
-against the walking time in minutes for each place in the data. Both the
-distance and the walking time are recorded as numbers. A scatter plot is a good
+against the biking time in minutes for each place in the data. Both the
+distance and the biking time are recorded as numbers. A scatter plot is a good
 choice for displaying two numeric features. Later we'll learn about other
 options, but for now we'll make a scatter plot.
 
@@ -192,7 +99,7 @@ sets we work with are tidy.
 
 To set up the data layer, call the `ggplot` function on a data frame:
 ```{r}
-ggplot(favs)
+ggplot(survey)
 ```
 
 This returns a blank plot. We still need to add a few more layers.
@@ -210,7 +117,7 @@ a function for each geometry, always prefixed with `geom_`.
 To add a geometry layer to the plot, choose the `geom_` function you want and
 add it to the plot with the `+` operator:
 ```{r, error=TRUE, fig.show="hide"}
-ggplot(favs) + geom_point()
+ggplot(survey) + geom_point()
 ```
 
 This returns an error message that we're missing aesthetics `x` and `y`. We'll
@@ -250,7 +157,7 @@ Unlike most layers, the aesthetic layer is not added to the plot with the `+`
 operator. Instead, you can pass the aesthetic layer as the second argument to
 the `ggplot` function:
 ```{r}
-ggplot(favs, aes(x = distance_mi, y = walk_min)) + geom_point()
+ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point()
 ```
 
 If you want to set an aesthetic to a constant value, rather than one that's
@@ -258,21 +165,20 @@ data dependent, do so *outside* of the aesthetic layer. For instance, suppose
 we want to make the points blue:
 
 ```{r}
-ggplot(favs, aes(x = distance_mi, y = walk_min)) + geom_point(color = "blue")
+ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point(color = "blue")
 ```
 
 If you set an aesthetic to a constant value inside of the aesthetic layer, the
 results you get might not be what you expect:
 ```{r}
-ggplot(favs, aes(x = distance_mi, y = walk_min, color = "blue")) + geom_point()
+ggplot(survey, aes(x = distance.mi, y = time.min, color = "blue")) + geom_point()
 ```
 
 This plot also demonstrates the importance of visualization. We can see that
-one of the survey response distances is around 500 miles, which is probably
-erroneous. Before we continue, let's remove all responses that are more than
-100 miles from campus:
+one of the survey response distances is around 100 miles in 2 minutes, which we've identified is likely an error. Before we continue, let's remove all responses that are more than
+99 miles from campus (later we will talk about cleaning and correcting data, but for now we will just remove it):
 ```{r}
-favs = favs[favs$distance_mi <= 100, ]
+survey = survey[survey$distance.mi <= 99, ]
 ```
 
 
@@ -283,26 +189,26 @@ When you pass an aesthetic layer to the `ggplot` function, it applies to the
 entire plot. You can also set an aesthetic layer individually for each
 geometry, by passing the layer as the first argument in the `geom_` function:
 ```{r}
-ggplot(favs) + geom_point(aes(x = distance_mi, y = walk_min))
+ggplot(survey) + geom_point(aes(x = distance.mi, y = time.min))
 ```
 
 This is really only useful when you have multiple geometries. As an example,
 let's color-code the points by major:
 ```{r}
-ggplot(favs, aes(x = distance_mi, y = walk_min, color = major)) +
+ggplot(survey, aes(x = distance.mi, y = time.min, color = major)) +
   geom_point()
 ```
 
 Now let's also add labels to each point. To do this, we need to add another
 geometry:
 ```{r}
-ggplot(favs, aes(x = distance_mi, y = walk_min, color = major, label = major)) +
+ggplot(survey, aes(x = distance.mi, y = time.min, color = major, label = major)) +
   geom_point() + geom_text(size = 2)
 ```
 
 Where we put the aesthetics matters:
 ```{r}
-ggplot(favs, aes(x = distance_mi, y = walk_min, label = major)) +
+ggplot(survey, aes(x = distance.mi, y = time.min, label = major)) +
   geom_point() + geom_text(aes(color = major), size = 2)
 ```
 
@@ -315,9 +221,9 @@ all of them.
 The `labs` function is especially important, because it's used to set the title
 and axis labels:
 ```{r}
-ggplot(favs, aes(x = distance_mi, y = walk_min)) + geom_point() +
-  labs(title = "Walking Distance vs Miles", x = "Distance (mi)",
-    y = "Walking Distance (min)")
+ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point() +
+  labs(title = "Biking time vs distance", x = "Distance (mi)",
+    y = "Biking time (min)")
 ```
 
 
@@ -326,7 +232,7 @@ ggplot(favs, aes(x = distance_mi, y = walk_min)) + geom_point() +
 In ggplot2, use the `ggsave` function to save the most recent plot you created:
 
 ```{r, eval=FALSE}
-ggsave("scatter.png")
+ggsave("scatter_plot.png")
 ```
 
 The file format is selected automatically based on the extension. Common
@@ -346,8 +252,8 @@ This strategy works with any of R's graphics systems (not just ggplot2).
 Here's an example:
 ```{r, eval=FALSE}
 # Run these lines in the console, not the notebook!
-jpeg("scatter.jpeg")
-ggplot(favs, aes(x = distance_mi, y = walk_min)) + geom_point()
+jpeg("scatter_plot.jpeg")
+ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point()
 dev.off()
 ```
 
@@ -362,10 +268,9 @@ display frequencies, the `geom_bar` function automatically computes frequencies
 when given mapped to a categorical feature. So we can write:
 
 ```{r}
-ggplot(favs, aes(x = major)) + geom_bar() +
+ggplot(survey, aes(x = major)) + geom_bar() +
   labs(title = "Majors in Responses", x = "Major", y = "Count")
 ```
-
 To prevent `geom_bar` from computing frequencies automatically, set `stat =
 "identity"`. This is mainly useful if you want to plot quantities you've
 computed manually on the y-axis.
@@ -416,3 +321,82 @@ Also:
 
 * For side-by-side plots, use the same axis scales for both plots so that
   comparing them is not deceptive.
+
+## Remebering factors
+
+A feature is **categorical** if it measures a qualitative category. For
+example, the genres `rock`, `blues`, `alternative`, `folk`, `pop` are
+categories.
+
+R uses the class `factor` to represent categorical data. Visualizations and
+statistical models sometimes treat factors differently than other data types,
+so it's important to make sure you have the right data type. If you're ever
+unsure, remember that you can check the class of an object with the `class`
+function.
+
+When you load a data set, R usually can't tell which features are categorical.
+That means identifying and converting the categorical features is up to you. This can be especially helpful to know if you are plotting categories, but want them to have a particular order, other than the default (alphabetical).
+
+Let's think about which features are categorical in the class survey data. 
+
+```{r}
+str(survey)
+```
+
+
+The numeric columns in this data set (`bike_min`, `walk_min`, and
+`distance_mi`) are all quantitative, so they're not categorical. That leaves
+the character columns.
+
+The `major`, `place`, and `pets` columns are all characters and it is easy to imagine
+grouping these survey responses to summarize the data. Especially major, where there are multiple of the same majors, we can say this is categorical. For
+`place`, there are more distinct responses, so it's not as clear. The locations are:
+
+```{r}
+table(survey$place)
+```
+
+So there are a couple of locations that aren't unique, but most of them are.
+For this data set, we probably shouldn't treat `place` as categorical
+because the groups wouldn't be interesting. However, if we had more survey
+responses (or more at each location) it might make sense to do so.
+
+Let's convert the `major` column to a factor. To do this, use the `factor`
+function:
+```{r}
+factor(survey$major)
+
+survey$major = factor(survey$major)
+```
+
+Notice that factors are printed differently than strings.
+
+The categories of a factor are called **levels**. You can list the levels with
+the `levels` function:
+```{r}
+levels(survey$major)
+```
+
+Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the number of majors in our survey.
+```{r}
+ggplot(survey, aes(x = major)) + geom_bar() +
+  labs(title = "Majors in Responses", x = "Major", y = "Count")
+```
+
+### Assigning factor levels
+But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the `factor()` function.
+
+```{r}
+survey$major <- factor(survey$major, levels = c("undeclared", "psychology", 
+                                                "human development", "GG",
+                                                "economics", "chicanx studies"))
+levels(survey$major)
+```
+
+Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the major factor. 
+
+```{r}
+ggplot(survey, aes(x = major)) + geom_bar() +
+  labs(title = "Majors in Responses", x = "Major", y = "Count")
+```
+
