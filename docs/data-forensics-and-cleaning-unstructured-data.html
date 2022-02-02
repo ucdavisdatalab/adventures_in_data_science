@@ -32,7 +32,7 @@
 <meta name="author" content="Jared Joseph" />
 
 
-<meta name="date" content="2022-02-01" />
+<meta name="date" content="2022-02-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -41,7 +41,7 @@
   
 <link rel="prev" href="data-forensics-and-cleaning-structured-data.html"/>
 <link rel="next" href="data-forensics-and-cleaning-geospatial-data.html"/>
-<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -64,9 +64,9 @@
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -714,7 +714,7 @@ together with <code>paste()</code>.</p>
 <div class="sourceCode" id="cb752"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb752-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb752-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">lapply</span>(files, <span class="cf">function</span>(x) <span class="fu">paste</span>(x, <span class="at">collapse=</span><span class="st">&quot; &quot;</span>))</span></code></pre></div>
 <p>From here, we can wrap these files in a special “corpus” object, which the <code>tm</code>
 package enables (a corpus is a large collection of texts). A <code>tm</code> corpus works
-somewhat like a database. It has a section for “content,” which contains text
+somewhat like a database. It has a section for “content”, which contains text
 data, as well as various metadata sections, which we can populate with
 additional information about our texts, if we wished. Taken together, these
 features make it easy to streamline workflows with text data.</p>
@@ -770,7 +770,7 @@ its vector on spaces, removing empty elements in the vector, and calling
 <div id="text-normalization" class="section level3" number="20.4.2">
 <h3><span class="header-section-number">20.4.2</span> Text Normalization</h3>
 <p>While easy, producing our bag of words this way is a bit clunky. And further,
-this process can’t handle contractions (“I’m,” “don’t,” “that’s”) or
+this process can’t handle contractions (“I’m”, “don’t”, “that’s”) or
 differences in capitalization.</p>
 <div class="sourceCode" id="cb765"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb765-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb765-1" aria-hidden="true" tabindex="-1"></a>frankenstein[[<span class="dv">1</span>]][<span class="dv">188</span><span class="sc">:</span><span class="dv">191</span>]</span></code></pre></div>
 <pre><code>## [1] &quot;Midsummer&quot; &quot;Night&quot;     &quot;s&quot;         &quot;Dream&quot;</code></pre>
@@ -789,7 +789,7 @@ we want to count them together, we need to pick one version or the other. Making
 all words lowercase (even proper nouns) is the standard. Doing this is part of
 what’s called text <strong>normalization</strong>. (Other forms of normalization might
 entail handling orthographic differences between British and American English,
-like “color” and “colour.”)</p>
+like “color” and “colour”.)</p>
 <p>As for contractions, we have some decisions to make. On the one hand, it’s
 important to retain as much information as we can about the original text, so
 keeping “don’t” or “what’s” (which would be “don t” and “what s” in our current
@@ -1030,7 +1030,7 @@ that we could cut out of the text. Another option would be to collapse these
 two words together into a <strong>base form</strong> by <strong>stemming</strong> them. Though this would
 overweight their base form (which in this case is “mr”) in terms of term
 frequency, it would also free up space to see other terms in the document. Other
-examples of stemming words would be transforming “fishing,” “fished,” and
+examples of stemming words would be transforming “fishing”, “fished”, and
 “fisher” all into “fish.”</p>
 <p>That said, like all preprocessing, lemmatizing words is an
 <em>interpretive decision</em>, which comes with its own consequences. Maybe it’s okay
@@ -1137,9 +1137,9 @@ as a cognate to the <code>apply()</code> family.</p>
 <span id="cb791-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb791-4" aria-hidden="true" tabindex="-1"></a>corpus_2 <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_2, removePunctuation)</span>
 <span id="cb791-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb791-5" aria-hidden="true" tabindex="-1"></a>corpus_2 <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(corpus_2, stripWhitespace)</span></code></pre></div>
 <p>Note the order of operations here: because our stop words list takes into account
-punctuated words, like “don’t” or “i’m,” we want to remove stop words <em>before</em>
+punctuated words, like “don’t” or “i’m”, we want to remove stop words <em>before</em>
 removing punctuation. If we didn’t do this, <code>removeWords()</code> wouldn’t catch the
-un-punctuated “dont” or “im.” This won’t always be the case, since we can use
+un-punctuated “dont” or “im”. This won’t always be the case, since we can use
 different stop word lists, which may have a different set of terms, but in this
 instance, the order in which we preprocess matters.</p>
 <p>Preparing your text files like this would be fine, and indeed sometimes it’s
@@ -1441,11 +1441,11 @@ this time we’ll use tf–idf scores.</p>
 ##          0.86          0.86          0.86          0.86          0.86 
 ## neighbourhood    allowances 
 ##          0.85          0.85</code></pre>
-<p>The semantics of these results have changed. For “boats,” we get much more
+<p>The semantics of these results have changed. For “boats”, we get much more
 terms related to sefaring. Most probably this is because only a few novels talk
-about boats so these terms correlate highly with one another. For “writing,”
+about boats so these terms correlate highly with one another. For “writing”,
 we’ve interestingly lost a lot of the words associated with writing in a strict
-sense (“copy,” “message”) but we’ve gained instead a list of terms that seem to
+sense (“copy”, “message”) but we’ve gained instead a list of terms that seem to
 situate us in <em>where</em> writing takes place in these novels, or what characters
 write <em>about</em>. So far though this is speculation; we’d have to look into this
 further to see whether the hypothesis holds.</p>

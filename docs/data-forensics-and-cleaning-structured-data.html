@@ -32,7 +32,7 @@
 <meta name="author" content="Jared Joseph" />
 
 
-<meta name="date" content="2022-02-01" />
+<meta name="date" content="2022-02-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -41,7 +41,7 @@
   
 <link rel="prev" href="statistics.html"/>
 <link rel="next" href="data-forensics-and-cleaning-unstructured-data.html"/>
-<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -64,9 +64,9 @@
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -686,7 +686,7 @@ untidy data sets tidy. As usual, we first need to load the package:</p>
 <strong>tidyr</strong> package and records the number of tuberculosis cases across several
 different countries and years:</p>
 <div class="sourceCode" id="cb680"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb680-1"><a href="data-forensics-and-cleaning-structured-data.html#cb680-1" aria-hidden="true" tabindex="-1"></a>table1</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 4
+<pre><code>## # A tibble: 6 × 4
 ##   country      year  cases population
 ##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
 ## 1 Afghanistan  1999    745   19987071
@@ -713,7 +713,7 @@ when you need to use <strong>tidyr</strong> to rearrange a data set.</p>
 <p>Tidy data rule 1 says each observation must have its own row. Here’s a table
 that breaks rule 1:</p>
 <div class="sourceCode" id="cb682"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb682-1"><a href="data-forensics-and-cleaning-structured-data.html#cb682-1" aria-hidden="true" tabindex="-1"></a>table4a</span></code></pre></div>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##   country     `1999` `2000`
 ## * &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
 ## 1 Afghanistan    745   2666
@@ -733,7 +733,7 @@ specify:</p>
 </ul>
 <p>Here’s the code:</p>
 <div class="sourceCode" id="cb684"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb684-1"><a href="data-forensics-and-cleaning-structured-data.html#cb684-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(table4a, <span class="sc">-</span>country, <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;cases&quot;</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 3
+<pre><code>## # A tibble: 6 × 3
 ##   country     year   cases
 ##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
 ## 1 Afghanistan 1999     745
@@ -765,7 +765,7 @@ specify:</p>
 <span id="cb686-12"><a href="data-forensics-and-cleaning-structured-data.html#cb686-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb686-13"><a href="data-forensics-and-cleaning-structured-data.html#cb686-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4</span></span>
 <span id="cb686-14"><a href="data-forensics-and-cleaning-structured-data.html#cb686-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(df99, df00)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 3
+<pre><code>## # A tibble: 6 × 3
 ##   country      cases year 
 ##   &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;
 ## 1 Afghanistan    745 1999 
@@ -781,7 +781,7 @@ specify:</p>
 <p>Tidy data rule 2 says each feature must have its own column. Let’s look at a
 table that breaks rule 2:</p>
 <div class="sourceCode" id="cb688"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb688-1"><a href="data-forensics-and-cleaning-structured-data.html#cb688-1" aria-hidden="true" tabindex="-1"></a>table2</span></code></pre></div>
-<pre><code>## # A tibble: 12 x 4
+<pre><code>## # A tibble: 12 × 4
 ##    country      year type            count
 ##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
 ##  1 Afghanistan  1999 cases             745
@@ -807,7 +807,7 @@ each <code>type</code> value. New columns are <code>cases</code> and <code>popul
 </ul>
 <p>Here’s the code:</p>
 <div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb690-1"><a href="data-forensics-and-cleaning-structured-data.html#cb690-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_wider</span>(table2, <span class="at">names_from =</span> type, <span class="at">values_from =</span> count)</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 4
+<pre><code>## # A tibble: 6 × 4
 ##   country      year  cases population
 ##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
 ## 1 Afghanistan  1999    745   19987071
@@ -851,7 +851,7 @@ observations.</p>
 <p>Tidy data rule 3 says each value must have its own cell. Here’s a table that
 breaks rule 3:</p>
 <div class="sourceCode" id="cb693"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb693-1"><a href="data-forensics-and-cleaning-structured-data.html#cb693-1" aria-hidden="true" tabindex="-1"></a>table3</span></code></pre></div>
-<pre><code>## # A tibble: 6 x 3
+<pre><code>## # A tibble: 6 × 3
 ##   country      year rate             
 ## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
 ## 1 Afghanistan  1999 745/19987071     
@@ -1249,7 +1249,7 @@ subject. Generally it is safe to impute MAR values, but not MNAR values.</p>
 this as a value that’s far away from most of the other values. Sometimes
 outliers are a natural part of the data set. In other situations, outliers can
 indicate errors in how the data were measured, recorded, or cleaned.</p>
-<p>There’s no specific definition for “extreme” or “far away.” A good starting
+<p>There’s no specific definition for “extreme” or “far away”. A good starting
 point for detecting outliers is to make a plot that shows how the values are
 distributed. Box plots and density plots work especially well for this:</p>
 <div class="sourceCode" id="cb734"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb734-1"><a href="data-forensics-and-cleaning-structured-data.html#cb734-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>

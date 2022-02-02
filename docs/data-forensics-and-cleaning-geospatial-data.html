@@ -32,7 +32,7 @@
 <meta name="author" content="Jared Joseph" />
 
 
-<meta name="date" content="2022-02-01" />
+<meta name="date" content="2022-02-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -41,7 +41,7 @@
   
 <link rel="prev" href="data-forensics-and-cleaning-unstructured-data.html"/>
 <link rel="next" href="references.html"/>
-<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -64,9 +64,9 @@
 <script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -771,7 +771,7 @@ div.csl-indent {
 <p>First, we need to load the libraries we’ll need and then load the data.</p>
 <div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb830-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb830-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Libraries ----------------------------------------------------------</span></span>
 <span id="cb830-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb830-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;sf&quot;</span>)</span></code></pre></div>
-<pre><code>## Linking to GEOS 3.8.1, GDAL 3.2.1, PROJ 7.2.1</code></pre>
+<pre><code>## Linking to GEOS 3.8.1, GDAL 3.2.1, PROJ 7.2.1; sf_use_s2() is TRUE</code></pre>
 <div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb832-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb832-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;mapview&quot;</span>)</span>
 <span id="cb832-2"><a href="data-forensics-and-cleaning-geospatial-data.html#cb832-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;gdtools&quot;</span>) <span class="co">#makes the display... dependency of mapview but it&#39;s not loading</span></span>
 <span id="cb832-3"><a href="data-forensics-and-cleaning-geospatial-data.html#cb832-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;leafem&quot;</span>) <span class="co">#makes the labels work... dependency of mapview but it&#39;s not loading</span></span>
@@ -988,7 +988,7 @@ div.csl-indent {
 <h3><span class="header-section-number">21.5.5</span> Checking Coordinate Reference Systems</h3>
 <p>“Why is my California data showing up in Arizona?” is a common question UC Davis researchers ask on the Geospatial email list. Why does this happen? It’s usually because the CRS for their data is impropperly defined. Someone changed the defnition but didn’t reproject the data (the mathematical process of switching CRSs). Using the wrong CRS will often shift data just enough to look really funny on a map, but sometimes it won’t show up at all.</p>
 <p>“Why don’t my datasets line up in my map?” Again, it’s your CRS. In this case, they could be correct for all of the datasets you’re using, but each dataset has a different CRS. You can think of CRSs as different dimensions in your favorite SciFi story. Sometimes you can see the other person in the other dimension (CRS), but usually they are too different and you’re nowhere near each other. Datasets have to have the same CRS to make a map or do any analysis.</p>
-<p>Our data came with lat/long data in another coordinate reference system - EPSG 3395 “World Mercator,” a world projection centered on Europe. Notice how the coordinates look very different from the lat/long coordinates in EPSG 4326 “WGS 84”</p>
+<p>Our data came with lat/long data in another coordinate reference system - EPSG 3395 “World Mercator”, a world projection centered on Europe. Notice how the coordinates look very different from the lat/long coordinates in EPSG 4326 “WGS 84”</p>
 <div class="sourceCode" id="cb845"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb845-1"><a href="data-forensics-and-cleaning-geospatial-data.html#cb845-1" aria-hidden="true" tabindex="-1"></a>monsters.df[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">13</span><span class="sc">:</span><span class="dv">16</span>]</span></code></pre></div>
 <pre><code>##       lon_3395 lat_3395    lat_dd      lon_dd
 ## 1   -9445647.6  1166706  10.49143  -84.851696
