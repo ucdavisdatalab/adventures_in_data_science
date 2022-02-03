@@ -717,96 +717,130 @@ web.</p>
 in the next section).</p>
 <div id="dates" class="section level3" number="11.2.1">
 <h3><span class="header-section-number">11.2.1</span> Dates</h3>
-<p>The <code>as.Date</code> function converts times and dates to R’s <code>Date</code> class. This data
-type allows us to do computations on dates, such as sorting by date or finding
-the number of days between two dates.</p>
-<p>How does <code>as.Date</code> work? We can use it to convert just about any date. The
-syntax is:</p>
-<pre><code>as.Date(x, format)</code></pre>
-<p>The parameter <code>x</code> is a string to convert to a date. The parameter <code>format</code> is a
-string that explains how the date is formatted. In the format string, a percent
-sign <code>%</code> followed by a character is called a specification and has special
-meaning. The most useful are:</p>
+<p>There several built-in functions and also many packages for date processing.
+In particular, there are three Tidyverse packages for processing dates and
+times:</p>
+<ul>
+<li><a href="https://lubridate.tidyverse.org/">lubridate</a>, the primary package for working with dates and times</li>
+<li><a href="https://hms.tidyverse.org/">hms</a>, a package specifically for working with times</li>
+<li><a href="https://clock.r-lib.org/">clock</a>, a new package for working with dates and times</li>
+</ul>
+<p>We’ll focus on the lubridate package. As always, you’ll have to install the
+package if you haven’t already, and then load it:</p>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="data-forensics.html#cb382-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;lubridate&quot;)</span></span>
+<span id="cb382-2"><a href="data-forensics.html#cb382-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     date, intersect, setdiff, union</code></pre>
+<p>The most common task is to convert a string into a date or time class. For
+instance, when you load a data set, you might have dates that look like this:</p>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="data-forensics.html#cb385-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Jan 10, 2021&quot;</span>, <span class="st">&quot;Sep 3, 2018&quot;</span>, <span class="st">&quot;Feb 28, 1982&quot;</span>)</span>
+<span id="cb385-2"><a href="data-forensics.html#cb385-2" aria-hidden="true" tabindex="-1"></a>dates</span></code></pre></div>
+<pre><code>## [1] &quot;Jan 10, 2021&quot; &quot;Sep 3, 2018&quot;  &quot;Feb 28, 1982&quot;</code></pre>
+<p>These are strings, so it’s relatively difficult to sort the dates, do
+arithmetic on them, or extract just one part (such as the year). There are
+several lubridate functions to automatically convert strings into dates. They
+are named with one letter for each part of the date. For instance, the dates in
+the example have the month (m), then the day (d), and then the year (y), so we
+can use the <code>mdy</code> function:</p>
+<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="data-forensics.html#cb387-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">mdy</span>(dates)</span>
+<span id="cb387-2"><a href="data-forensics.html#cb387-2" aria-hidden="true" tabindex="-1"></a>result</span></code></pre></div>
+<pre><code>## [1] &quot;2021-01-10&quot; &quot;2018-09-03&quot; &quot;1982-02-28&quot;</code></pre>
+<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="data-forensics.html#cb389-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code></pre></div>
+<pre><code>## [1] &quot;Date&quot;</code></pre>
+<p>Notice that the dates now have class <code>Date</code>, one of R’s built-in classes for
+representing dates, and that they print differently. You can find a full list
+of the automatic string to date conversion functions in the lubridate
+documentation.</p>
+<p>Occasionally, a date string may have a format that lubridate can’t convert
+automatically. In that case, you can use the <code>fast_strptime</code> function to
+describe the format in detail. At a minimum, the function requires two
+arguments: the vector of strings to convert and a format string.</p>
+<p>The format string describes the format of the dates, and is based on the syntax
+of <code>strptime</code>, a function provided by many programming languages for converting
+strings to dates (including R). In a format string, a percent sign <code>%</code> followed
+by a character is called a <em>specification</em> and has a special meaning. Here are
+a few of the most useful ones:</p>
 <table>
 <thead>
 <tr class="header">
-<th>Specification</th>
-<th>Description</th>
-<th>January 29, 2015</th>
+<th align="left">Specification</th>
+<th align="left">Description</th>
+<th align="left">January 29, 2015</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>%Y</td>
-<td>4-digit year</td>
-<td>2015</td>
+<td align="left"><code>%Y</code></td>
+<td align="left">4-digit year</td>
+<td align="left">2015</td>
 </tr>
 <tr class="even">
-<td>%y</td>
-<td>2-digit year</td>
-<td>15</td>
+<td align="left"><code>%y</code></td>
+<td align="left">2-digit year</td>
+<td align="left">15</td>
 </tr>
 <tr class="odd">
-<td>%m</td>
-<td>2-digit month</td>
-<td>01</td>
+<td align="left"><code>%m</code></td>
+<td align="left">2-digit month</td>
+<td align="left">01</td>
 </tr>
 <tr class="even">
-<td>%B</td>
-<td>full month name</td>
-<td>January</td>
+<td align="left"><code>%B</code></td>
+<td align="left">full month name</td>
+<td align="left">January</td>
 </tr>
 <tr class="odd">
-<td>%b</td>
-<td>short month name</td>
-<td>Jan</td>
+<td align="left"><code>%b</code></td>
+<td align="left">short month name</td>
+<td align="left">Jan</td>
 </tr>
 <tr class="even">
-<td>%d</td>
-<td>day of month</td>
-<td>29</td>
+<td align="left"><code>%d</code></td>
+<td align="left">day of month</td>
+<td align="left">29</td>
 </tr>
 <tr class="odd">
-<td>%%</td>
-<td>literal %</td>
-<td>%</td>
+<td align="left"><code>%%</code></td>
+<td align="left">literal %</td>
+<td align="left">%</td>
 </tr>
 </tbody>
 </table>
-<p>You can find a complete list in <code>?strptime</code>.</p>
-<p>Let’s look at some examples:</p>
-<div class="sourceCode" id="cb383"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb383-1"><a href="data-forensics.html#cb383-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.Date</span>(<span class="st">&quot;January 29, 2015&quot;</span>, <span class="st">&quot;%B %d, %Y&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;2015-01-29&quot;</code></pre>
-<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="data-forensics.html#cb385-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.Date</span>(<span class="st">&quot;01292015&quot;</span>, <span class="st">&quot;%m%d%Y&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;2015-01-29&quot;</code></pre>
-<div class="sourceCode" id="cb387"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb387-1"><a href="data-forensics.html#cb387-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Dec 13, 98&quot;</span>, <span class="st">&quot;Dec 12, 99&quot;</span>, <span class="st">&quot;Jan 1, 16&quot;</span>)</span>
-<span id="cb387-2"><a href="data-forensics.html#cb387-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code></pre></div>
-<pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb389"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb389-1"><a href="data-forensics.html#cb389-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">as.Date</span>(x, <span class="st">&quot;%b %d, %y&quot;</span>)</span>
-<span id="cb389-2"><a href="data-forensics.html#cb389-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(y)</span></code></pre></div>
-<pre><code>## [1] &quot;Date&quot;</code></pre>
-<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="data-forensics.html#cb391-1" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div>
-<pre><code>## [1] &quot;1998-12-13&quot; &quot;1999-12-12&quot; &quot;2016-01-01&quot;</code></pre>
-<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb393-1"><a href="data-forensics.html#cb393-1" aria-hidden="true" tabindex="-1"></a><span class="co"># You can do arithmetic on dates.</span></span>
-<span id="cb393-2"><a href="data-forensics.html#cb393-2" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">2</span>] <span class="sc">-</span> y[<span class="dv">1</span>]</span></code></pre></div>
-<pre><code>## Time difference of 364 days</code></pre>
-<p>Now let’s convert the <code>date_posted</code> column in the Craigslist data. It’s always
+<p>You can find a complete list in <code>?fast_strptime</code>. Other characters in the
+format string do not have any special meaning. Write the format string so that
+it matches the format of the dates you want to convert.</p>
+<p>For example, let’s try converting an unusual time format:</p>
+<div class="sourceCode" id="cb391"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb391-1"><a href="data-forensics.html#cb391-1" aria-hidden="true" tabindex="-1"></a>odd_time <span class="ot">=</span> <span class="st">&quot;6 minutes, 32 seconds after 10 o&#39;clock&quot;</span></span>
+<span id="cb391-2"><a href="data-forensics.html#cb391-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fast_strptime</span>(odd_time, <span class="st">&quot;%M minutes, %S seconds after %H o&#39;clock&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;0-01-01 10:06:32 UTC&quot;</code></pre>
+<p>R usually represents dates with the class <code>Date</code>, and date-times with the
+classes <code>POSIXct</code> and <code>POSIXlt</code>. The difference between the two date-time
+classes is somewhat technical, but you can read more about it in <code>?POSIXlt</code>.</p>
+<p>There is no built-in class to represent times alone, which is why the result in
+the example above includes a date. Nonetheless, the hms package provides the
+<code>hms</code> class to represent times without dates.</p>
+<p>Once you’ve converted a string to a date, the lubridate package provides a
+variety of functions to get or set the parts individually. Here are a few
+examples:</p>
+<div class="sourceCode" id="cb393"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb393-1"><a href="data-forensics.html#cb393-1" aria-hidden="true" tabindex="-1"></a><span class="fu">day</span>(result)</span></code></pre></div>
+<pre><code>## [1] 10  3 28</code></pre>
+<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="data-forensics.html#cb395-1" aria-hidden="true" tabindex="-1"></a><span class="fu">month</span>(result)</span></code></pre></div>
+<pre><code>## [1] 1 9 2</code></pre>
+<p>You can find a complete list in the lubridate documentation.</p>
+<p>Now let’s convert the <code>date_updated</code> column in the Craigslist data. It’s always
 a good idea to test your format string before saving the results back into the
 data frame:</p>
-<div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="data-forensics.html#cb395-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">as.Date</span>(cl<span class="sc">$</span>date_posted, <span class="st">&quot;%Y-%m-%d %H:%M:%S&quot;</span>)</span>
-<span id="cb395-2"><a href="data-forensics.html#cb395-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dates)</span></code></pre></div>
-<pre><code>## [1] &quot;2021-02-04&quot; &quot;2021-03-02&quot; &quot;2021-03-02&quot; &quot;2021-03-03&quot; &quot;2021-03-04&quot;
-## [6] &quot;2021-03-04&quot;</code></pre>
+<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb397-1"><a href="data-forensics.html#cb397-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">ymd_hms</span>(cl<span class="sc">$</span>date_updated)</span>
+<span id="cb397-2"><a href="data-forensics.html#cb397-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dates)</span></code></pre></div>
+<pre><code>## [1] &quot;2021-03-03 08:41:39 UTC&quot; NA                       
+## [3] NA                        NA                       
+## [5] NA                        NA</code></pre>
 <p>The <code>as.Date</code> function returns <code>NA</code> if conversion failed, so in this case it
 looks like the dates were converted correctly. Now we can save the dates back
-into the data frame. We can also do the same thing for the other column of
-dates, <code>date_updated</code>:</p>
-<div class="sourceCode" id="cb397"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb397-1"><a href="data-forensics.html#cb397-1" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>date_posted <span class="ot">=</span> dates</span>
-<span id="cb397-2"><a href="data-forensics.html#cb397-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb397-3"><a href="data-forensics.html#cb397-3" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">as.Date</span>(cl<span class="sc">$</span>date_updated, <span class="st">&quot;%Y-%m-%d %H:%M:%S&quot;</span>)</span>
-<span id="cb397-4"><a href="data-forensics.html#cb397-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dates) <span class="co"># some NAs here because the column already contained NAs</span></span></code></pre></div>
-<pre><code>## [1] &quot;2021-03-03&quot; NA           NA           NA           NA          
-## [6] NA</code></pre>
+into the data frame.</p>
 <div class="sourceCode" id="cb399"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb399-1"><a href="data-forensics.html#cb399-1" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>date_updated <span class="ot">=</span> dates</span></code></pre></div>
 </div>
 <div id="tidy-data" class="section level3" number="11.2.2">
@@ -982,27 +1016,27 @@ You can remove missing values from a data set by indexing:</p>
 ## 4    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1479+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
 ## 5 QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Juliet starting at $1414+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
 ## 6    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1441+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
-##   latitude longitude                             city date_posted date_updated
-## 1  38.5728 -121.4675                        2520 S St  2021-02-04   2021-03-03
-## 2  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-02         &lt;NA&gt;
-## 3  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-02         &lt;NA&gt;
-## 4  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-03         &lt;NA&gt;
-## 5  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-04         &lt;NA&gt;
-## 6  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-04         &lt;NA&gt;
-##   price deleted sqft bedrooms bathrooms pets laundry    parking craigslist
-## 1  1125   FALSE  550        1         1 &lt;NA&gt;  shared off-street sacramento
-## 2  1449   FALSE  680        1         1 both in-unit    covered sacramento
-## 3  1449   FALSE  680        1         1 both in-unit    covered sacramento
-## 4  1479   FALSE  680        1         1 both in-unit    covered sacramento
-## 5  1414   FALSE  680        1         1 both in-unit    covered sacramento
-## 6  1441   FALSE  680        1         1 both in-unit    covered sacramento
-##    shp_place   shp_city shp_state shp_county
-## 1 Sacramento Sacramento        CA Sacramento
-## 2 Sacramento Sacramento        CA Sacramento
-## 3 Sacramento Sacramento        CA Sacramento
-## 4 Sacramento Sacramento        CA Sacramento
-## 5 Sacramento Sacramento        CA Sacramento
-## 6 Sacramento Sacramento        CA Sacramento</code></pre>
+##   latitude longitude                             city         date_posted
+## 1  38.5728 -121.4675                        2520 S St 2021-02-04 15:03:12
+## 2  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 12:41:17
+## 3  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 13:26:17
+## 4  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-03 10:02:05
+## 5  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 08:47:21
+## 6  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 10:20:09
+##          date_updated price deleted sqft bedrooms bathrooms pets laundry
+## 1 2021-03-03 08:41:39  1125   FALSE  550        1         1 &lt;NA&gt;  shared
+## 2                &lt;NA&gt;  1449   FALSE  680        1         1 both in-unit
+## 3                &lt;NA&gt;  1449   FALSE  680        1         1 both in-unit
+## 4                &lt;NA&gt;  1479   FALSE  680        1         1 both in-unit
+## 5                &lt;NA&gt;  1414   FALSE  680        1         1 both in-unit
+## 6                &lt;NA&gt;  1441   FALSE  680        1         1 both in-unit
+##      parking craigslist  shp_place   shp_city shp_state shp_county
+## 1 off-street sacramento Sacramento Sacramento        CA Sacramento
+## 2    covered sacramento Sacramento Sacramento        CA Sacramento
+## 3    covered sacramento Sacramento Sacramento        CA Sacramento
+## 4    covered sacramento Sacramento Sacramento        CA Sacramento
+## 5    covered sacramento Sacramento Sacramento        CA Sacramento
+## 6    covered sacramento Sacramento Sacramento        CA Sacramento</code></pre>
 <p>The <code>na.omit</code> function is less precise than indexing, because it removes rows
 that have a missing value in <em>any</em> column. This means lots of information gets
 lost.</p>
@@ -1028,7 +1062,7 @@ learn about how to make plots in a later lesson):</p>
 ##   print.tbl  pillar</code></pre>
 <div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb413-1"><a href="data-forensics.html#cb413-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cl, <span class="fu">aes</span>(<span class="at">x =</span> sqft)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span></code></pre></div>
 <pre><code>## Warning: Removed 347 rows containing non-finite values (stat_boxplot).</code></pre>
-<p><img src="10_data-forensics_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="10_data-forensics_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Statisticians tend to use the rule of thumb that any value more than 3 standard
 deviations away from the mean is an outlier. You can use the <code>scale</code> function
 to compute how many standard deviations the elements in a column are from their
@@ -1217,10 +1251,10 @@ held constant across all the elements.</p>
 ## [1] &quot;character&quot;
 ## 
 ## $date_posted
-## [1] &quot;Date&quot;
+## [1] &quot;character&quot;
 ## 
 ## $date_updated
-## [1] &quot;Date&quot;
+## [1] &quot;POSIXct&quot; &quot;POSIXt&quot; 
 ## 
 ## $price
 ## [1] &quot;integer&quot;
@@ -1301,14 +1335,65 @@ have different types or lengths, the result is the same as for <code>lapply</cod
 <p>For instance, if we use <code>sapply</code> to find the classes of the columns in the
 Craigslist data, we get a character vector:</p>
 <div class="sourceCode" id="cb433"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb433-1"><a href="data-forensics.html#cb433-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(cl, class)</span></code></pre></div>
-<pre><code>##        title         text     latitude    longitude         city  date_posted 
-##  &quot;character&quot;  &quot;character&quot;    &quot;numeric&quot;    &quot;numeric&quot;  &quot;character&quot;       &quot;Date&quot; 
-## date_updated        price      deleted         sqft     bedrooms    bathrooms 
-##       &quot;Date&quot;    &quot;integer&quot;    &quot;logical&quot;    &quot;numeric&quot;    &quot;integer&quot;    &quot;numeric&quot; 
-##         pets      laundry      parking   craigslist    shp_place     shp_city 
-##     &quot;factor&quot;     &quot;factor&quot;     &quot;factor&quot;  &quot;character&quot;  &quot;character&quot;  &quot;character&quot; 
-##    shp_state   shp_county 
-##  &quot;character&quot;  &quot;character&quot;</code></pre>
+<pre><code>## $title
+## [1] &quot;character&quot;
+## 
+## $text
+## [1] &quot;character&quot;
+## 
+## $latitude
+## [1] &quot;numeric&quot;
+## 
+## $longitude
+## [1] &quot;numeric&quot;
+## 
+## $city
+## [1] &quot;character&quot;
+## 
+## $date_posted
+## [1] &quot;character&quot;
+## 
+## $date_updated
+## [1] &quot;POSIXct&quot; &quot;POSIXt&quot; 
+## 
+## $price
+## [1] &quot;integer&quot;
+## 
+## $deleted
+## [1] &quot;logical&quot;
+## 
+## $sqft
+## [1] &quot;numeric&quot;
+## 
+## $bedrooms
+## [1] &quot;integer&quot;
+## 
+## $bathrooms
+## [1] &quot;numeric&quot;
+## 
+## $pets
+## [1] &quot;factor&quot;
+## 
+## $laundry
+## [1] &quot;factor&quot;
+## 
+## $parking
+## [1] &quot;factor&quot;
+## 
+## $craigslist
+## [1] &quot;character&quot;
+## 
+## $shp_place
+## [1] &quot;character&quot;
+## 
+## $shp_city
+## [1] &quot;character&quot;
+## 
+## $shp_state
+## [1] &quot;character&quot;
+## 
+## $shp_county
+## [1] &quot;character&quot;</code></pre>
 <p>Likewise, if we use <code>sapply</code> to compute the <code>sqrt</code> values, we get a numeric
 vector, the same as from vectorization:</p>
 <div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb435-1"><a href="data-forensics.html#cb435-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(x, sqrt)</span></code></pre></div>
@@ -1368,27 +1453,27 @@ them is by indexing:</p>
 ## 9  QR Code Link to This Post\n            \n        \n Lease our 2x2 Apartment with Juliet starting at $1877+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
 ## 10    QR Code Link to This Post\n            \n        \n Lease our 2x2 Apartment with Che starting at $1611+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
 ## 11    QR Code Link to This Post\n            \n        \n Lease our 2x2 Apartment with Che starting at $1736+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
-##    latitude longitude                             city date_posted date_updated
-## 1   38.5728 -121.4675                        2520 S St  2021-02-04   2021-03-03
-## 7   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-02         &lt;NA&gt;
-## 8   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-04         &lt;NA&gt;
-## 9   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-02         &lt;NA&gt;
-## 10  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-02         &lt;NA&gt;
-## 11  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF  2021-03-03         &lt;NA&gt;
-##    price deleted sqft bedrooms bathrooms pets laundry    parking craigslist
-## 1   1125   FALSE  550        1         1 &lt;NA&gt;  shared off-street sacramento
-## 7   1615   FALSE  816        2         1 both  shared    covered sacramento
-## 8   1660   FALSE  816        2         1 both  shared    covered sacramento
-## 9   1877   FALSE  916        2         2 both  shared    covered sacramento
-## 10  1611   FALSE  916        2         2 both  shared    covered sacramento
-## 11  1736   FALSE  916        2         2 both  shared    covered sacramento
-##     shp_place   shp_city shp_state shp_county
-## 1  Sacramento Sacramento        CA Sacramento
-## 7  Sacramento Sacramento        CA Sacramento
-## 8  Sacramento Sacramento        CA Sacramento
-## 9  Sacramento Sacramento        CA Sacramento
-## 10 Sacramento Sacramento        CA Sacramento
-## 11 Sacramento Sacramento        CA Sacramento</code></pre>
+##    latitude longitude                             city         date_posted
+## 1   38.5728 -121.4675                        2520 S St 2021-02-04 15:03:12
+## 7   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 08:36:51
+## 8   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 08:57:47
+## 9   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 08:36:17
+## 10  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 13:16:29
+## 11  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-03 10:02:38
+##           date_updated price deleted sqft bedrooms bathrooms pets laundry
+## 1  2021-03-03 08:41:39  1125   FALSE  550        1         1 &lt;NA&gt;  shared
+## 7                 &lt;NA&gt;  1615   FALSE  816        2         1 both  shared
+## 8                 &lt;NA&gt;  1660   FALSE  816        2         1 both  shared
+## 9                 &lt;NA&gt;  1877   FALSE  916        2         2 both  shared
+## 10                &lt;NA&gt;  1611   FALSE  916        2         2 both  shared
+## 11                &lt;NA&gt;  1736   FALSE  916        2         2 both  shared
+##       parking craigslist  shp_place   shp_city shp_state shp_county
+## 1  off-street sacramento Sacramento Sacramento        CA Sacramento
+## 7     covered sacramento Sacramento Sacramento        CA Sacramento
+## 8     covered sacramento Sacramento Sacramento        CA Sacramento
+## 9     covered sacramento Sacramento Sacramento        CA Sacramento
+## 10    covered sacramento Sacramento Sacramento        CA Sacramento
+## 11    covered sacramento Sacramento Sacramento        CA Sacramento</code></pre>
 <p>To get all four categories, we’d have to do this four times. If we want to
 compute something for each category, say the mean of the <code>price</code> column, we
 also have to repeat that computation four times. Here’s what it would look like

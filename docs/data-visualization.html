@@ -721,7 +721,7 @@ an untidy data set tidy. Until then, we’ll take it for granted that the data
 sets we work with are tidy.</p>
 <p>To set up the data layer, call the <code>ggplot</code> function on a data frame:</p>
 <div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="data-visualization.html#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>This returns a blank plot. We still need to add a few more layers.</p>
 </div>
 <div id="layer-2-geometry" class="section level4 unnumbered">
@@ -761,16 +761,16 @@ aesthetic layer should be:</p>
 operator. Instead, you can pass the aesthetic layer as the second argument to
 the <code>ggplot</code> function:</p>
 <div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="data-visualization.html#cb472-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>If you want to set an aesthetic to a constant value, rather than one that’s
 data dependent, do so <em>outside</em> of the aesthetic layer. For instance, suppose
 we want to make the points blue:</p>
 <div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="data-visualization.html#cb473-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>If you set an aesthetic to a constant value inside of the aesthetic layer, the
 results you get might not be what you expect:</p>
 <div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="data-visualization.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>This plot also demonstrates the importance of visualization. We can see that
 one of the survey response distances is around 100 miles in 2 minutes, which we’ve identified is likely an error. Before we continue, let’s remove all responses that are more than
 99 miles from campus (later we will talk about cleaning and correcting data, but for now we will just remove it):</p>
@@ -782,21 +782,21 @@ one of the survey response distances is around 100 miles in 2 minutes, which we�
 entire plot. You can also set an aesthetic layer individually for each
 geometry, by passing the layer as the first argument in the <code>geom_</code> function:</p>
 <div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="data-visualization.html#cb476-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min))</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>This is really only useful when you have multiple geometries. As an example,
 let’s color-code the points by major:</p>
 <div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="data-visualization.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">color =</span> major)) <span class="sc">+</span></span>
 <span id="cb477-2"><a href="data-visualization.html#cb477-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Now let’s also add labels to each point. To do this, we need to add another
 geometry:</p>
 <div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="data-visualization.html#cb478-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">color =</span> major, <span class="at">label =</span> major)) <span class="sc">+</span></span>
 <span id="cb478-2"><a href="data-visualization.html#cb478-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Where we put the aesthetics matters:</p>
 <div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="data-visualization.html#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">label =</span> major)) <span class="sc">+</span></span>
 <span id="cb479-2"><a href="data-visualization.html#cb479-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">color =</span> major), <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>
 <div id="layer-4-scales" class="section level4 unnumbered">
 <h4>Layer 4: Scales</h4>
@@ -808,7 +808,7 @@ and axis labels:</p>
 <div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="data-visualization.html#cb480-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
 <span id="cb480-2"><a href="data-visualization.html#cb480-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Biking time vs distance&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Distance (mi)&quot;</span>,</span>
 <span id="cb480-3"><a href="data-visualization.html#cb480-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Biking time (min)&quot;</span>)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 </div>
 <div id="saving-plots" class="section level3" number="13.3.2">
@@ -843,7 +843,7 @@ display frequencies, the <code>geom_bar</code> function automatically computes f
 when given mapped to a categorical feature. So we can write:</p>
 <div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="data-visualization.html#cb483-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> major)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb483-2"><a href="data-visualization.html#cb483-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Majors in Responses&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Major&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="672" />
 To prevent <code>geom_bar</code> from computing frequencies automatically, set <code>stat = "identity"</code>. This is mainly useful if you want to plot quantities you’ve
 computed manually on the y-axis.</p>
 </div>
@@ -968,7 +968,7 @@ the <code>levels</code> function:</p>
 <p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the number of majors in our survey.</p>
 <div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="data-visualization.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> major)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb493-2"><a href="data-visualization.html#cb493-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Majors in Responses&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Major&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <div id="assigning-factor-levels" class="section level3" number="13.5.1">
 <h3><span class="header-section-number">13.5.1</span> Assigning factor levels</h3>
 <p>But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the <code>factor()</code> function.</p>
@@ -981,7 +981,7 @@ the <code>levels</code> function:</p>
 <p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the major factor.</p>
 <div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="data-visualization.html#cb496-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> major)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb496-2"><a href="data-visualization.html#cb496-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Majors in Responses&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Major&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
-<p><img src="12_r-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 
 </div>
 </div>
@@ -1014,7 +1014,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/12_r-ggplot2.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/12b_r-ggplot2.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -1022,7 +1022,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/12_r-ggplot2.Rmd",
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/12b_r-ggplot2.Rmd",
 "text": null
 },
 "download": null,
