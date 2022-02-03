@@ -113,70 +113,115 @@ in the next section).
 
 ### Dates
 
-The `as.Date` function converts times and dates to R's `Date` class. This data
-type allows us to do computations on dates, such as sorting by date or finding
-the number of days between two dates.
+There several built-in functions and also many packages for date processing.
+In particular, there are three Tidyverse packages for processing dates and
+times:
 
-How does `as.Date` work? We can use it to convert just about any date. The
-syntax is:
+* [lubridate][], the primary package for working with dates and times
+* [hms][], a package specifically for working with times
+* [clock][], a new package for working with dates and times
 
-```
-as.Date(x, format)
-```
+[lubridate]: https://lubridate.tidyverse.org/
+[hms]: https://hms.tidyverse.org/
+[clock]: https://clock.r-lib.org/
 
-The parameter `x` is a string to convert to a date. The parameter `format` is a
-string that explains how the date is formatted. In the format string, a percent
-sign `%` followed by a character is called a specification and has special
-meaning. The most useful are:
-
-Specification | Description      | January 29, 2015
-------------- | ---------------  | ----------------
-%Y            | 4-digit year     | 2015
-%y            | 2-digit year     | 15
-%m            | 2-digit month    | 01
-%B            | full month name  | January
-%b            | short month name | Jan
-%d            | day of month     | 29
-%%            | literal %        | %
-
-You can find a complete list in `?strptime`.
-
-Let's look at some examples:
+We'll focus on the lubridate package. As always, you'll have to install the
+package if you haven't already, and then load it:
 
 ```{r}
-as.Date("January 29, 2015", "%B %d, %Y")
-
-as.Date("01292015", "%m%d%Y")
-
-x = c("Dec 13, 98", "Dec 12, 99", "Jan 1, 16")
-class(x)
-y = as.Date(x, "%b %d, %y")
-class(y)
-y
-
-# You can do arithmetic on dates.
-y[2] - y[1]
+# install.packages("lubridate")
+library(lubridate)
 ```
 
-Now let's convert the `date_posted` column in the Craigslist data. It's always
+The most common task is to convert a string into a date or time class. For
+instance, when you load a data set, you might have dates that look like this:
+
+```{r}
+dates = c("Jan 10, 2021", "Sep 3, 2018", "Feb 28, 1982")
+dates
+```
+
+These are strings, so it's relatively difficult to sort the dates, do
+arithmetic on them, or extract just one part (such as the year). There are
+several lubridate functions to automatically convert strings into dates. They
+are named with one letter for each part of the date. For instance, the dates in
+the example have the month (m), then the day (d), and then the year (y), so we
+can use the `mdy` function:
+
+```{r}
+result = mdy(dates)
+result
+class(result)
+```
+
+Notice that the dates now have class `Date`, one of R's built-in classes for
+representing dates, and that they print differently. You can find a full list
+of the automatic string to date conversion functions in the lubridate
+documentation.
+
+Occasionally, a date string may have a format that lubridate can't convert
+automatically. In that case, you can use the `fast_strptime` function to
+describe the format in detail. At a minimum, the function requires two
+arguments: the vector of strings to convert and a format string.
+
+The format string describes the format of the dates, and is based on the syntax
+of `strptime`, a function provided by many programming languages for converting
+strings to dates (including R). In a format string, a percent sign `%` followed
+by a character is called a _specification_ and has a special meaning. Here are
+a few of the most useful ones:
+
+| Specification | Description      | January 29, 2015
+|:------------- |:---------------- |:----------------
+| `%Y`          | 4-digit year     | 2015
+| `%y`          | 2-digit year     | 15
+| `%m`          | 2-digit month    | 01
+| `%B`          | full month name  | January
+| `%b`          | short month name | Jan
+| `%d`          | day of month     | 29
+| `%%`          | literal %        | %
+
+You can find a complete list in `?fast_strptime`. Other characters in the
+format string do not have any special meaning. Write the format string so that
+it matches the format of the dates you want to convert.
+
+For example, let's try converting an unusual time format:
+```{r}
+odd_time = "6 minutes, 32 seconds after 10 o'clock"
+fast_strptime(odd_time, "%M minutes, %S seconds after %H o'clock")
+```
+
+R usually represents dates with the class `Date`, and date-times with the
+classes `POSIXct` and `POSIXlt`. The difference between the two date-time
+classes is somewhat technical, but you can read more about it in `?POSIXlt`.
+
+There is no built-in class to represent times alone, which is why the result in
+the example above includes a date. Nonetheless, the hms package provides the
+`hms` class to represent times without dates.
+
+Once you've converted a string to a date, the lubridate package provides a
+variety of functions to get or set the parts individually. Here are a few
+examples:
+
+```{r}
+day(result)
+month(result)
+```
+
+You can find a complete list in the lubridate documentation.
+
+Now let's convert the `date_updated` column in the Craigslist data. It's always
 a good idea to test your format string before saving the results back into the
 data frame:
 ```{r}
-dates = as.Date(cl$date_posted, "%Y-%m-%d %H:%M:%S")
+dates = ymd_hms(cl$date_updated)
 head(dates)
 ```
 
 The `as.Date` function returns `NA` if conversion failed, so in this case it
 looks like the dates were converted correctly. Now we can save the dates back
-into the data frame. We can also do the same thing for the other column of
-dates, `date_updated`:
+into the data frame.
 
 ```{r}
-cl$date_posted = dates
-
-dates = as.Date(cl$date_updated, "%Y-%m-%d %H:%M:%S")
-head(dates) # some NAs here because the column already contained NAs
-
 cl$date_updated = dates
 ```
 
