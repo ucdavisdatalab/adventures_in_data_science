@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>10 Factors, Special Values, and Indexing | Adventures in Data Science</title>
   <meta name="description" content="10 Factors, Special Values, and Indexing | Adventures in Data Science" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
   <meta property="og:title" content="10 Factors, Special Values, and Indexing | Adventures in Data Science" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
 <meta name="author" content="Jared Joseph" />
 
 
-<meta name="date" content="2022-02-03" />
+<meta name="date" content="2022-02-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -41,8 +41,9 @@
   
 <link rel="prev" href="working-with-files-and-packages.html"/>
 <link rel="next" href="data-forensics.html"/>
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -58,13 +59,14 @@
 
 
 
-
-<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -132,6 +134,29 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 </head>
@@ -358,235 +383,292 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="12.4" data-path="data-structures.html"><a href="data-structures.html#non-hierarchical-relational-data"><i class="fa fa-check"></i><b>12.4</b> Non-Hierarchical Relational Data</a></li>
 <li class="chapter" data-level="12.5" data-path="data-structures.html"><a href="data-structures.html#geospatial-data"><i class="fa fa-check"></i><b>12.5</b> Geospatial Data</a></li>
 </ul></li>
-<li class="chapter" data-level="13" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>13</b> Data Visualization</a>
+<li class="chapter" data-level="13" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html"><i class="fa fa-check"></i><b>13</b> Data Visualization Principles &amp; Perception</a>
 <ul>
-<li class="chapter" data-level="13.1" data-path="data-visualization.html"><a href="data-visualization.html#learning-objectives-5"><i class="fa fa-check"></i><b>13.1</b> Learning Objectives</a></li>
-<li class="chapter" data-level="13.2" data-path="data-visualization.html"><a href="data-visualization.html#r-graphics-overview"><i class="fa fa-check"></i><b>13.2</b> R Graphics Overview</a></li>
-<li class="chapter" data-level="13.3" data-path="data-visualization.html"><a href="data-visualization.html#the-grammar-of-graphics"><i class="fa fa-check"></i><b>13.3</b> The Grammar of Graphics</a>
+<li class="chapter" data-level="13.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#learning-objectives-5"><i class="fa fa-check"></i><b>13.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="13.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#introduction"><i class="fa fa-check"></i><b>13.2</b> Introduction</a>
 <ul>
-<li class="chapter" data-level="13.3.1" data-path="data-visualization.html"><a href="data-visualization.html#making-a-plot"><i class="fa fa-check"></i><b>13.3.1</b> Making a Plot</a></li>
-<li class="chapter" data-level="13.3.2" data-path="data-visualization.html"><a href="data-visualization.html#saving-plots"><i class="fa fa-check"></i><b>13.3.2</b> Saving Plots</a></li>
-<li class="chapter" data-level="13.3.3" data-path="data-visualization.html"><a href="data-visualization.html#example-bar-plot"><i class="fa fa-check"></i><b>13.3.3</b> Example: Bar Plot</a></li>
+<li class="chapter" data-level="13.2.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#a-brief-history-of-data-visualization"><i class="fa fa-check"></i><b>13.2.1</b> A Brief History of Data Visualization</a></li>
+<li class="chapter" data-level="13.2.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#famous-data-visualizations"><i class="fa fa-check"></i><b>13.2.2</b> Famous Data Visualizations</a></li>
 </ul></li>
-<li class="chapter" data-level="13.4" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>13.4</b> Designing a Visualization</a></li>
-<li class="chapter" data-level="13.5" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>13.5</b> Remembering factors</a>
+<li class="chapter" data-level="13.3" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#what-is-data-visualization"><i class="fa fa-check"></i><b>13.3</b> What is Data Visualization?</a>
 <ul>
-<li class="chapter" data-level="13.5.1" data-path="data-visualization.html"><a href="data-visualization.html#assigning-factor-levels"><i class="fa fa-check"></i><b>13.5.1</b> Assigning factor levels</a></li>
+<li class="chapter" data-level="13.3.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#why-viz"><i class="fa fa-check"></i><b>13.3.1</b> Why viz?</a></li>
+<li class="chapter" data-level="13.3.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#good-data-visualizations"><i class="fa fa-check"></i><b>13.3.2</b> Good data visualizations</a></li>
+<li class="chapter" data-level="13.3.3" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#bad-data-visualizations"><i class="fa fa-check"></i><b>13.3.3</b> Bad data visualizations</a></li>
 </ul></li>
+<li class="chapter" data-level="13.4" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#before-you-viz-make-a-plan"><i class="fa fa-check"></i><b>13.4</b> Before You Viz, Make a Plan</a>
+<ul>
+<li class="chapter" data-level="13.4.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#purpose"><i class="fa fa-check"></i><b>13.4.1</b> Purpose</a></li>
+<li class="chapter" data-level="13.4.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#audience"><i class="fa fa-check"></i><b>13.4.2</b> Audience</a></li>
+<li class="chapter" data-level="13.4.3" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#medium"><i class="fa fa-check"></i><b>13.4.3</b> Medium</a></li>
+<li class="chapter" data-level="13.4.4" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#tools"><i class="fa fa-check"></i><b>13.4.4</b> Tools</a></li>
+<li class="chapter" data-level="13.4.5" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#message"><i class="fa fa-check"></i><b>13.4.5</b> Message</a></li>
+<li class="chapter" data-level="13.4.6" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#critical-approaches"><i class="fa fa-check"></i><b>13.4.6</b> Critical Approaches</a></li>
 </ul></li>
-<li class="chapter" data-level="14" data-path="how-the-web-works.html"><a href="how-the-web-works.html"><i class="fa fa-check"></i><b>14</b> How the Web Works</a>
+<li class="chapter" data-level="13.5" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#graphical-elements-of-a-plot"><i class="fa fa-check"></i><b>13.5</b> Graphical Elements of a Plot</a></li>
+<li class="chapter" data-level="13.6" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#principles-of-visual-perception"><i class="fa fa-check"></i><b>13.6</b> Principles of Visual Perception</a>
 <ul>
-<li class="chapter" data-level="14.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#client-server-architecture"><i class="fa fa-check"></i><b>14.1</b> Client-Server Architecture</a>
-<ul>
-<li class="chapter" data-level="14.1.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#communication-between-clients-and-servers"><i class="fa fa-check"></i><b>14.1.1</b> Communication Between Clients and Servers</a></li>
-<li class="chapter" data-level="14.1.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#domain-name-resolution"><i class="fa fa-check"></i><b>14.1.2</b> Domain Name Resolution</a></li>
-<li class="chapter" data-level="14.1.3" data-path="how-the-web-works.html"><a href="how-the-web-works.html#request-routing"><i class="fa fa-check"></i><b>14.1.3</b> Request Routing</a></li>
-<li class="chapter" data-level="14.1.4" data-path="how-the-web-works.html"><a href="how-the-web-works.html#the-server-response"><i class="fa fa-check"></i><b>14.1.4</b> The Server Response</a></li>
-<li class="chapter" data-level="14.1.5" data-path="how-the-web-works.html"><a href="how-the-web-works.html#internet-transfer-protocols"><i class="fa fa-check"></i><b>14.1.5</b> Internet Transfer Protocols</a></li>
+<li class="chapter" data-level="13.6.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#visual-magic-tricks"><i class="fa fa-check"></i><b>13.6.1</b> Visual Magic Tricks</a></li>
+<li class="chapter" data-level="13.6.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#stevens-psychophysical-power-law"><i class="fa fa-check"></i><b>13.6.2</b> Steven’s Psychophysical Power Law</a></li>
+<li class="chapter" data-level="13.6.3" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#perception-and-encodings"><i class="fa fa-check"></i><b>13.6.3</b> Perception and Encodings</a></li>
+<li class="chapter" data-level="13.6.4" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#evaluating-graphics"><i class="fa fa-check"></i><b>13.6.4</b> Evaluating Graphics</a></li>
+<li class="chapter" data-level="13.6.5" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#gestalt-principles"><i class="fa fa-check"></i><b>13.6.5</b> Gestalt Principles</a></li>
 </ul></li>
-<li class="chapter" data-level="14.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#understanding-urls"><i class="fa fa-check"></i><b>14.2</b> Understanding URLs</a>
+<li class="chapter" data-level="13.7" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#accessible-data-visualizations"><i class="fa fa-check"></i><b>13.7</b> Accessible Data Visualizations</a></li>
+<li class="chapter" data-level="13.8" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#designing-statistical-graphics"><i class="fa fa-check"></i><b>13.8</b> Designing Statistical Graphics</a>
 <ul>
-<li class="chapter" data-level="14.2.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#dynamic-files"><i class="fa fa-check"></i><b>14.2.1</b> Dynamic Files</a></li>
-<li class="chapter" data-level="14.2.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#query-strings"><i class="fa fa-check"></i><b>14.2.2</b> Query Strings</a></li>
+<li class="chapter" data-level="13.8.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#step-1-identify-your-data-type"><i class="fa fa-check"></i><b>13.8.1</b> Step 1: Identify Your Data Type</a></li>
+<li class="chapter" data-level="13.8.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#step-2-determine-your-functional-approach"><i class="fa fa-check"></i><b>13.8.2</b> Step 2: Determine Your Functional Approach</a></li>
+<li class="chapter" data-level="13.8.3" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#step-3-select-a-plot-type"><i class="fa fa-check"></i><b>13.8.3</b> Step 3: Select a Plot Type</a></li>
+<li class="chapter" data-level="13.8.4" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#step-4-iterate"><i class="fa fa-check"></i><b>13.8.4</b> Step 4: Iterate</a></li>
 </ul></li>
+<li class="chapter" data-level="13.9" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#tips-for-better-plots"><i class="fa fa-check"></i><b>13.9</b> Tips for Better Plots</a>
+<ul>
+<li class="chapter" data-level="13.9.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#get-rid-of-chartjunk"><i class="fa fa-check"></i><b>13.9.1</b> Get Rid of Chartjunk</a></li>
+<li class="chapter" data-level="13.9.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#facilitate-comparisons"><i class="fa fa-check"></i><b>13.9.2</b> Facilitate Comparisons</a></li>
+<li class="chapter" data-level="13.9.3" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#create-information-rich-plots"><i class="fa fa-check"></i><b>13.9.3</b> Create Information-Rich Plots</a></li>
+<li class="chapter" data-level="13.9.4" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#dont-distort-the-data"><i class="fa fa-check"></i><b>13.9.4</b> Don’t Distort the Data</a></li>
+<li class="chapter" data-level="13.9.5" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#practice"><i class="fa fa-check"></i><b>13.9.5</b> Practice</a></li>
 </ul></li>
-<li class="chapter" data-level="15" data-path="web-scraping.html"><a href="web-scraping.html"><i class="fa fa-check"></i><b>15</b> Web Scraping</a>
+<li class="chapter" data-level="13.10" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#references-and-additional-resources"><i class="fa fa-check"></i><b>13.10</b> References and Additional Resources</a>
 <ul>
-<li class="chapter" data-level="15.1" data-path="web-scraping.html"><a href="web-scraping.html#getting-data-from-the-web"><i class="fa fa-check"></i><b>15.1</b> Getting Data from the Web</a>
-<ul>
-<li class="chapter" data-level="15.1.1" data-path="web-scraping.html"><a href="web-scraping.html#whats-in-a-web-page"><i class="fa fa-check"></i><b>15.1.1</b> What’s in a Web Page?</a></li>
-</ul></li>
-<li class="chapter" data-level="15.2" data-path="web-scraping.html"><a href="web-scraping.html#rs-xml-parsers"><i class="fa fa-check"></i><b>15.2</b> R’s XML Parsers</a></li>
-<li class="chapter" data-level="15.3" data-path="web-scraping.html"><a href="web-scraping.html#xpath"><i class="fa fa-check"></i><b>15.3</b> XPath</a>
-<ul>
-<li class="chapter" data-level="15.3.1" data-path="web-scraping.html"><a href="web-scraping.html#predicates"><i class="fa fa-check"></i><b>15.3.1</b> Predicates</a></li>
-</ul></li>
-<li class="chapter" data-level="15.4" data-path="web-scraping.html"><a href="web-scraping.html#the-web-scraping-workflow"><i class="fa fa-check"></i><b>15.4</b> The Web Scraping Workflow</a>
-<ul>
-<li class="chapter" data-level="15.4.1" data-path="web-scraping.html"><a href="web-scraping.html#being-polite"><i class="fa fa-check"></i><b>15.4.1</b> Being Polite</a></li>
-</ul></li>
-<li class="chapter" data-level="15.5" data-path="web-scraping.html"><a href="web-scraping.html#case-study-ca-cities"><i class="fa fa-check"></i><b>15.5</b> Case Study: CA Cities</a>
-<ul>
-<li class="chapter" data-level="15.5.1" data-path="web-scraping.html"><a href="web-scraping.html#data-cleaning"><i class="fa fa-check"></i><b>15.5.1</b> Data Cleaning</a></li>
-</ul></li>
-<li class="chapter" data-level="15.6" data-path="web-scraping.html"><a href="web-scraping.html#case-study-the-ca-aggie"><i class="fa fa-check"></i><b>15.6</b> Case Study: The CA Aggie</a></li>
-<li class="chapter" data-level="15.7" data-path="web-scraping.html"><a href="web-scraping.html#css-selectors"><i class="fa fa-check"></i><b>15.7</b> CSS Selectors</a></li>
-</ul></li>
-<li class="chapter" data-level="16" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html"><i class="fa fa-check"></i><b>16</b> Strings and Regular Expressions</a>
-<ul>
-<li class="chapter" data-level="16.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#printing-output"><i class="fa fa-check"></i><b>16.1</b> Printing Output</a></li>
-<li class="chapter" data-level="16.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences"><i class="fa fa-check"></i><b>16.2</b> Escape Sequences</a>
-<ul>
-<li class="chapter" data-level="16.2.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#raw-strings"><i class="fa fa-check"></i><b>16.2.1</b> Raw Strings</a></li>
-</ul></li>
-<li class="chapter" data-level="16.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings"><i class="fa fa-check"></i><b>16.3</b> Character Encodings</a></li>
-<li class="chapter" data-level="16.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-tidyverse"><i class="fa fa-check"></i><b>16.4</b> The Tidyverse</a></li>
-<li class="chapter" data-level="16.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-stringr-package"><i class="fa fa-check"></i><b>16.5</b> The stringr Package</a>
-<ul>
-<li class="chapter" data-level="16.5.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#splitting-strings"><i class="fa fa-check"></i><b>16.5.1</b> Splitting Strings</a></li>
-<li class="chapter" data-level="16.5.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#replacing-parts-of-strings"><i class="fa fa-check"></i><b>16.5.2</b> Replacing Parts of Strings</a></li>
-</ul></li>
-<li class="chapter" data-level="16.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#regular-expressions"><i class="fa fa-check"></i><b>16.6</b> Regular Expressions</a>
-<ul>
-<li class="chapter" data-level="16.6.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-wildcard"><i class="fa fa-check"></i><b>16.6.1</b> The Wildcard</a></li>
-<li class="chapter" data-level="16.6.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences-1"><i class="fa fa-check"></i><b>16.6.2</b> Escape Sequences</a></li>
-<li class="chapter" data-level="16.6.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#anchors"><i class="fa fa-check"></i><b>16.6.3</b> Anchors</a></li>
-<li class="chapter" data-level="16.6.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-classes"><i class="fa fa-check"></i><b>16.6.4</b> Character Classes</a></li>
-<li class="chapter" data-level="16.6.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#quantifiers"><i class="fa fa-check"></i><b>16.6.5</b> Quantifiers</a></li>
-<li class="chapter" data-level="16.6.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#groups"><i class="fa fa-check"></i><b>16.6.6</b> Groups</a></li>
-<li class="chapter" data-level="16.6.7" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#extracting-matches"><i class="fa fa-check"></i><b>16.6.7</b> Extracting Matches</a></li>
+<li class="chapter" data-level="13.10.1" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#articles"><i class="fa fa-check"></i><b>13.10.1</b> Articles</a></li>
+<li class="chapter" data-level="13.10.2" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#websites"><i class="fa fa-check"></i><b>13.10.2</b> Websites</a></li>
+<li class="chapter" data-level="13.10.3" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#books-and-chapters"><i class="fa fa-check"></i><b>13.10.3</b> Books and Chapters</a></li>
+<li class="chapter" data-level="13.10.4" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#historical-books"><i class="fa fa-check"></i><b>13.10.4</b> Historical Books</a></li>
+<li class="chapter" data-level="13.10.5" data-path="data-visualization-principles-perception.html"><a href="data-visualization-principles-perception.html#r-graphics-references"><i class="fa fa-check"></i><b>13.10.5</b> R Graphics References</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="17" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html"><i class="fa fa-check"></i><b>17</b> Optical Character Recognition</a>
+<li class="chapter" data-level="14" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>14</b> Data Visualization</a>
 <ul>
-<li class="chapter" data-level="17.1" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#loading-page-images"><i class="fa fa-check"></i><b>17.1</b> Loading Page Images</a></li>
-<li class="chapter" data-level="17.2" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#running-ocr"><i class="fa fa-check"></i><b>17.2</b> Running OCR</a></li>
-<li class="chapter" data-level="17.3" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#accuracy"><i class="fa fa-check"></i><b>17.3</b> Accuracy</a></li>
-<li class="chapter" data-level="17.4" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#unreadable-text"><i class="fa fa-check"></i><b>17.4</b> Unreadable Text</a></li>
+<li class="chapter" data-level="14.1" data-path="data-visualization.html"><a href="data-visualization.html#learning-objectives-6"><i class="fa fa-check"></i><b>14.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="14.2" data-path="data-visualization.html"><a href="data-visualization.html#r-graphics-overview"><i class="fa fa-check"></i><b>14.2</b> R Graphics Overview</a></li>
+<li class="chapter" data-level="14.3" data-path="data-visualization.html"><a href="data-visualization.html#the-grammar-of-graphics"><i class="fa fa-check"></i><b>14.3</b> The Grammar of Graphics</a>
+<ul>
+<li class="chapter" data-level="14.3.1" data-path="data-visualization.html"><a href="data-visualization.html#making-a-plot"><i class="fa fa-check"></i><b>14.3.1</b> Making a Plot</a></li>
+<li class="chapter" data-level="14.3.2" data-path="data-visualization.html"><a href="data-visualization.html#saving-plots"><i class="fa fa-check"></i><b>14.3.2</b> Saving Plots</a></li>
+<li class="chapter" data-level="14.3.3" data-path="data-visualization.html"><a href="data-visualization.html#example-bar-plot"><i class="fa fa-check"></i><b>14.3.3</b> Example: Bar Plot</a></li>
 </ul></li>
-<li class="chapter" data-level="18" data-path="network-analysis.html"><a href="network-analysis.html"><i class="fa fa-check"></i><b>18</b> Network Analysis</a>
+<li class="chapter" data-level="14.4" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>14.4</b> Designing a Visualization</a></li>
+<li class="chapter" data-level="14.5" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>14.5</b> Remembering factors</a>
 <ul>
-<li class="chapter" data-level="18.1" data-path="network-analysis.html"><a href="network-analysis.html#overview-1"><i class="fa fa-check"></i><b>18.1</b> Overview</a>
-<ul>
-<li class="chapter" data-level="18.1.1" data-path="network-analysis.html"><a href="network-analysis.html#while-you-wait"><i class="fa fa-check"></i><b>18.1.1</b> While you wait</a></li>
-<li class="chapter" data-level="18.1.2" data-path="network-analysis.html"><a href="network-analysis.html#learning-objectives-6"><i class="fa fa-check"></i><b>18.1.2</b> Learning Objectives</a></li>
-<li class="chapter" data-level="18.1.3" data-path="network-analysis.html"><a href="network-analysis.html#roadmap"><i class="fa fa-check"></i><b>18.1.3</b> Roadmap</a></li>
-</ul></li>
-<li class="chapter" data-level="18.2" data-path="network-analysis.html"><a href="network-analysis.html#what-is-network-analysis"><i class="fa fa-check"></i><b>18.2</b> What is Network Analysis</a>
-<ul>
-<li class="chapter" data-level="18.2.1" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---social-sciences"><i class="fa fa-check"></i><b>18.2.1</b> Networks in research - Social Sciences</a></li>
-<li class="chapter" data-level="18.2.2" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---neuroscience"><i class="fa fa-check"></i><b>18.2.2</b> Networks in research - Neuroscience</a></li>
-<li class="chapter" data-level="18.2.3" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---chemistry"><i class="fa fa-check"></i><b>18.2.3</b> Networks in research - Chemistry</a></li>
-<li class="chapter" data-level="18.2.4" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---the-internet"><i class="fa fa-check"></i><b>18.2.4</b> Networks in research - The Internet</a></li>
-<li class="chapter" data-level="18.2.5" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---infrastructure"><i class="fa fa-check"></i><b>18.2.5</b> Networks in research - Infrastructure</a></li>
-<li class="chapter" data-level="18.2.6" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---security"><i class="fa fa-check"></i><b>18.2.6</b> Networks in research - Security</a></li>
-</ul></li>
-<li class="chapter" data-level="18.3" data-path="network-analysis.html"><a href="network-analysis.html#network-data"><i class="fa fa-check"></i><b>18.3</b> Network Data</a>
-<ul>
-<li class="chapter" data-level="18.3.1" data-path="network-analysis.html"><a href="network-analysis.html#edgelist"><i class="fa fa-check"></i><b>18.3.1</b> Edgelist</a></li>
-<li class="chapter" data-level="18.3.2" data-path="network-analysis.html"><a href="network-analysis.html#adjacency-matrix"><i class="fa fa-check"></i><b>18.3.2</b> Adjacency Matrix</a></li>
-<li class="chapter" data-level="18.3.3" data-path="network-analysis.html"><a href="network-analysis.html#edge-weights"><i class="fa fa-check"></i><b>18.3.3</b> Edge Weights</a></li>
-<li class="chapter" data-level="18.3.4" data-path="network-analysis.html"><a href="network-analysis.html#attributes"><i class="fa fa-check"></i><b>18.3.4</b> Attributes</a></li>
-<li class="chapter" data-level="18.3.5" data-path="network-analysis.html"><a href="network-analysis.html#create-an-example-network"><i class="fa fa-check"></i><b>18.3.5</b> Create an Example Network</a></li>
-<li class="chapter" data-level="18.3.6" data-path="network-analysis.html"><a href="network-analysis.html#components"><i class="fa fa-check"></i><b>18.3.6</b> Components</a></li>
-<li class="chapter" data-level="18.3.7" data-path="network-analysis.html"><a href="network-analysis.html#limitations-of-network-data"><i class="fa fa-check"></i><b>18.3.7</b> Limitations of Network Data</a></li>
-<li class="chapter" data-level="18.3.8" data-path="network-analysis.html"><a href="network-analysis.html#projected-networks"><i class="fa fa-check"></i><b>18.3.8</b> Projected Networks</a></li>
-</ul></li>
-<li class="chapter" data-level="18.4" data-path="network-analysis.html"><a href="network-analysis.html#graph-level-properties"><i class="fa fa-check"></i><b>18.4</b> Graph Level Properties</a>
-<ul>
-<li class="chapter" data-level="18.4.1" data-path="network-analysis.html"><a href="network-analysis.html#directed-or-un-directed"><i class="fa fa-check"></i><b>18.4.1</b> Directed or Un-directed</a></li>
-<li class="chapter" data-level="18.4.2" data-path="network-analysis.html"><a href="network-analysis.html#density"><i class="fa fa-check"></i><b>18.4.2</b> Density</a></li>
-<li class="chapter" data-level="18.4.3" data-path="network-analysis.html"><a href="network-analysis.html#centralization"><i class="fa fa-check"></i><b>18.4.3</b> Centralization</a></li>
-</ul></li>
-<li class="chapter" data-level="18.5" data-path="network-analysis.html"><a href="network-analysis.html#node-level-properties"><i class="fa fa-check"></i><b>18.5</b> Node Level Properties</a>
-<ul>
-<li class="chapter" data-level="18.5.1" data-path="network-analysis.html"><a href="network-analysis.html#degree"><i class="fa fa-check"></i><b>18.5.1</b> Degree</a></li>
-<li class="chapter" data-level="18.5.2" data-path="network-analysis.html"><a href="network-analysis.html#geodesic-distance"><i class="fa fa-check"></i><b>18.5.2</b> Geodesic Distance</a></li>
-<li class="chapter" data-level="18.5.3" data-path="network-analysis.html"><a href="network-analysis.html#centrality"><i class="fa fa-check"></i><b>18.5.3</b> Centrality</a></li>
-</ul></li>
-<li class="chapter" data-level="18.6" data-path="network-analysis.html"><a href="network-analysis.html#network-workflow"><i class="fa fa-check"></i><b>18.6</b> Network Workflow</a></li>
-<li class="chapter" data-level="18.7" data-path="network-analysis.html"><a href="network-analysis.html#network-tools"><i class="fa fa-check"></i><b>18.7</b> Network Tools</a>
-<ul>
-<li class="chapter" data-level="18.7.1" data-path="network-analysis.html"><a href="network-analysis.html#network-models"><i class="fa fa-check"></i><b>18.7.1</b> Network Models</a></li>
-<li class="chapter" data-level="18.7.2" data-path="network-analysis.html"><a href="network-analysis.html#network-visualization"><i class="fa fa-check"></i><b>18.7.2</b> Network Visualization</a></li>
+<li class="chapter" data-level="14.5.1" data-path="data-visualization.html"><a href="data-visualization.html#assigning-factor-levels"><i class="fa fa-check"></i><b>14.5.1</b> Assigning factor levels</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="19" data-path="statistics.html"><a href="statistics.html"><i class="fa fa-check"></i><b>19</b> Statistics</a>
+<li class="chapter" data-level="15" data-path="how-the-web-works.html"><a href="how-the-web-works.html"><i class="fa fa-check"></i><b>15</b> How the Web Works</a>
 <ul>
-<li class="chapter" data-level="19.1" data-path="statistics.html"><a href="statistics.html#introduction"><i class="fa fa-check"></i><b>19.1</b> Introduction</a>
+<li class="chapter" data-level="15.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#client-server-architecture"><i class="fa fa-check"></i><b>15.1</b> Client-Server Architecture</a>
 <ul>
-<li class="chapter" data-level="19.1.1" data-path="statistics.html"><a href="statistics.html#mice_pot-dataset"><i class="fa fa-check"></i><b>19.1.1</b> <code>mice_pot</code> dataset</a></li>
-<li class="chapter" data-level="19.1.2" data-path="statistics.html"><a href="statistics.html#barnacles-dataset"><i class="fa fa-check"></i><b>19.1.2</b> <code>barnacles</code> dataset</a></li>
-<li class="chapter" data-level="19.1.3" data-path="statistics.html"><a href="statistics.html#sample-and-population"><i class="fa fa-check"></i><b>19.1.3</b> Sample and population</a></li>
+<li class="chapter" data-level="15.1.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#communication-between-clients-and-servers"><i class="fa fa-check"></i><b>15.1.1</b> Communication Between Clients and Servers</a></li>
+<li class="chapter" data-level="15.1.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#domain-name-resolution"><i class="fa fa-check"></i><b>15.1.2</b> Domain Name Resolution</a></li>
+<li class="chapter" data-level="15.1.3" data-path="how-the-web-works.html"><a href="how-the-web-works.html#request-routing"><i class="fa fa-check"></i><b>15.1.3</b> Request Routing</a></li>
+<li class="chapter" data-level="15.1.4" data-path="how-the-web-works.html"><a href="how-the-web-works.html#the-server-response"><i class="fa fa-check"></i><b>15.1.4</b> The Server Response</a></li>
+<li class="chapter" data-level="15.1.5" data-path="how-the-web-works.html"><a href="how-the-web-works.html#internet-transfer-protocols"><i class="fa fa-check"></i><b>15.1.5</b> Internet Transfer Protocols</a></li>
 </ul></li>
-<li class="chapter" data-level="19.2" data-path="statistics.html"><a href="statistics.html#uses-of-simulation"><i class="fa fa-check"></i><b>19.2</b> Uses of simulation</a></li>
-<li class="chapter" data-level="19.3" data-path="statistics.html"><a href="statistics.html#mathematical-statistics"><i class="fa fa-check"></i><b>19.3</b> Mathematical statistics</a>
+<li class="chapter" data-level="15.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#understanding-urls"><i class="fa fa-check"></i><b>15.2</b> Understanding URLs</a>
 <ul>
-<li class="chapter" data-level="19.3.1" data-path="statistics.html"><a href="statistics.html#law-of-large-numbers"><i class="fa fa-check"></i><b>19.3.1</b> Law of large numbers</a></li>
-<li class="chapter" data-level="19.3.2" data-path="statistics.html"><a href="statistics.html#central-limit-theorem"><i class="fa fa-check"></i><b>19.3.2</b> Central limit theorem</a></li>
-</ul></li>
-<li class="chapter" data-level="19.4" data-path="statistics.html"><a href="statistics.html#statistical-inference"><i class="fa fa-check"></i><b>19.4</b> Statistical inference</a>
-<ul>
-<li class="chapter" data-level="19.4.1" data-path="statistics.html"><a href="statistics.html#confidence-intervals"><i class="fa fa-check"></i><b>19.4.1</b> Confidence intervals</a></li>
-<li class="chapter" data-level="19.4.2" data-path="statistics.html"><a href="statistics.html#two-population-test"><i class="fa fa-check"></i><b>19.4.2</b> Two-population test</a></li>
-<li class="chapter" data-level="19.4.3" data-path="statistics.html"><a href="statistics.html#hypothesis-tests-for-non-normal-data"><i class="fa fa-check"></i><b>19.4.3</b> Hypothesis tests for non-normal data</a></li>
-</ul></li>
-<li class="chapter" data-level="19.5" data-path="statistics.html"><a href="statistics.html#regression"><i class="fa fa-check"></i><b>19.5</b> Regression</a>
-<ul>
-<li class="chapter" data-level="19.5.1" data-path="statistics.html"><a href="statistics.html#fitting-a-regression-line"><i class="fa fa-check"></i><b>19.5.1</b> Fitting a regression line</a></li>
-<li class="chapter" data-level="19.5.2" data-path="statistics.html"><a href="statistics.html#assumptions-and-diagnostics"><i class="fa fa-check"></i><b>19.5.2</b> Assumptions and diagnostics</a></li>
-<li class="chapter" data-level="19.5.3" data-path="statistics.html"><a href="statistics.html#functions-for-inspecting-regression-fits"><i class="fa fa-check"></i><b>19.5.3</b> Functions for inspecting regression fits</a></li>
-<li class="chapter" data-level="19.5.4" data-path="statistics.html"><a href="statistics.html#a-model-that-fails-diagnostics"><i class="fa fa-check"></i><b>19.5.4</b> A model that fails diagnostics</a></li>
-<li class="chapter" data-level="19.5.5" data-path="statistics.html"><a href="statistics.html#predictions-and-variability"><i class="fa fa-check"></i><b>19.5.5</b> Predictions and variability</a></li>
-</ul></li>
-<li class="chapter" data-level="19.6" data-path="statistics.html"><a href="statistics.html#model-selection"><i class="fa fa-check"></i><b>19.6</b> Model selection</a></li>
-<li class="chapter" data-level="19.7" data-path="statistics.html"><a href="statistics.html#cross-validation"><i class="fa fa-check"></i><b>19.7</b> Cross-validation</a></li>
-</ul></li>
-<li class="chapter" data-level="20" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html"><i class="fa fa-check"></i><b>20</b> Reshaping Tabular Data</a>
-<ul>
-<li class="chapter" data-level="20.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#learning-objectives-7"><i class="fa fa-check"></i><b>20.1</b> Learning Objectives</a></li>
-<li class="chapter" data-level="20.2" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#introduction-1"><i class="fa fa-check"></i><b>20.2</b> Introduction</a>
-<ul>
-<li class="chapter" data-level="20.2.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#columns-into-rows"><i class="fa fa-check"></i><b>20.2.1</b> Columns into Rows</a></li>
-<li class="chapter" data-level="20.2.2" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#rows-into-columns"><i class="fa fa-check"></i><b>20.2.2</b> Rows into Columns</a></li>
-<li class="chapter" data-level="20.2.3" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#separating-values"><i class="fa fa-check"></i><b>20.2.3</b> Separating Values</a></li>
+<li class="chapter" data-level="15.2.1" data-path="how-the-web-works.html"><a href="how-the-web-works.html#dynamic-files"><i class="fa fa-check"></i><b>15.2.1</b> Dynamic Files</a></li>
+<li class="chapter" data-level="15.2.2" data-path="how-the-web-works.html"><a href="how-the-web-works.html#query-strings"><i class="fa fa-check"></i><b>15.2.2</b> Query Strings</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="21" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html"><i class="fa fa-check"></i><b>21</b> Data Forensics and Cleaning: Unstructured Data</a>
+<li class="chapter" data-level="16" data-path="web-scraping.html"><a href="web-scraping.html"><i class="fa fa-check"></i><b>16</b> Web Scraping</a>
 <ul>
-<li class="chapter" data-level="21.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#preliminaries"><i class="fa fa-check"></i><b>21.1</b> Preliminaries</a></li>
-<li class="chapter" data-level="21.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#from-file-names-to-metadata"><i class="fa fa-check"></i><b>21.2</b> From File Names to Metadata</a></li>
-<li class="chapter" data-level="21.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#loading-a-corpus"><i class="fa fa-check"></i><b>21.3</b> Loading a Corpus</a></li>
-<li class="chapter" data-level="21.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#preprocessing"><i class="fa fa-check"></i><b>21.4</b> Preprocessing</a>
+<li class="chapter" data-level="16.1" data-path="web-scraping.html"><a href="web-scraping.html#getting-data-from-the-web"><i class="fa fa-check"></i><b>16.1</b> Getting Data from the Web</a>
 <ul>
-<li class="chapter" data-level="21.4.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizing-and-bags-of-words"><i class="fa fa-check"></i><b>21.4.1</b> Tokenizing and Bags of Words</a></li>
-<li class="chapter" data-level="21.4.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-normalization"><i class="fa fa-check"></i><b>21.4.2</b> Text Normalization</a></li>
-<li class="chapter" data-level="21.4.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#stop-words"><i class="fa fa-check"></i><b>21.4.3</b> Stop Words</a></li>
-<li class="chapter" data-level="21.4.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizers"><i class="fa fa-check"></i><b>21.4.4</b> Tokenizers</a></li>
-<li class="chapter" data-level="21.4.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-chunking-and-n-grams"><i class="fa fa-check"></i><b>21.4.5</b> Document Chunking and N-grams</a></li>
+<li class="chapter" data-level="16.1.1" data-path="web-scraping.html"><a href="web-scraping.html#whats-in-a-web-page"><i class="fa fa-check"></i><b>16.1.1</b> What’s in a Web Page?</a></li>
 </ul></li>
-<li class="chapter" data-level="21.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#counting-terms"><i class="fa fa-check"></i><b>21.5</b> Counting Terms</a>
+<li class="chapter" data-level="16.2" data-path="web-scraping.html"><a href="web-scraping.html#rs-xml-parsers"><i class="fa fa-check"></i><b>16.2</b> R’s XML Parsers</a></li>
+<li class="chapter" data-level="16.3" data-path="web-scraping.html"><a href="web-scraping.html#xpath"><i class="fa fa-check"></i><b>16.3</b> XPath</a>
 <ul>
-<li class="chapter" data-level="21.5.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#term-frequency"><i class="fa fa-check"></i><b>21.5.1</b> Term Frequency</a></li>
-<li class="chapter" data-level="21.5.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#plotting-term-frequency"><i class="fa fa-check"></i><b>21.5.2</b> Plotting Term Frequency</a></li>
-<li class="chapter" data-level="21.5.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#comparing-term-frequencies-across-documents"><i class="fa fa-check"></i><b>21.5.3</b> Comparing Term Frequencies Across Documents</a></li>
+<li class="chapter" data-level="16.3.1" data-path="web-scraping.html"><a href="web-scraping.html#predicates"><i class="fa fa-check"></i><b>16.3.1</b> Predicates</a></li>
 </ul></li>
-<li class="chapter" data-level="21.6" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-mining-pipepline"><i class="fa fa-check"></i><b>21.6</b> Text Mining Pipepline</a></li>
-<li class="chapter" data-level="21.7" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-term-matrix"><i class="fa fa-check"></i><b>21.7</b> Document Term Matrix</a></li>
-<li class="chapter" data-level="21.8" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-analytics"><i class="fa fa-check"></i><b>21.8</b> Corpus Analytics</a>
+<li class="chapter" data-level="16.4" data-path="web-scraping.html"><a href="web-scraping.html#the-web-scraping-workflow"><i class="fa fa-check"></i><b>16.4</b> The Web Scraping Workflow</a>
 <ul>
-<li class="chapter" data-level="21.8.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-term-counts"><i class="fa fa-check"></i><b>21.8.1</b> Corpus Term Counts</a></li>
-<li class="chapter" data-level="21.8.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tfidf-scores"><i class="fa fa-check"></i><b>21.8.2</b> tf–idf Scores</a></li>
-<li class="chapter" data-level="21.8.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#unique-terms-in-a-document"><i class="fa fa-check"></i><b>21.8.3</b> Unique Terms in a Document</a></li>
+<li class="chapter" data-level="16.4.1" data-path="web-scraping.html"><a href="web-scraping.html#being-polite"><i class="fa fa-check"></i><b>16.4.1</b> Being Polite</a></li>
 </ul></li>
-</ul></li>
-<li class="chapter" data-level="22" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html"><i class="fa fa-check"></i><b>22</b> Data Forensics and Cleaning: Geospatial Data</a>
+<li class="chapter" data-level="16.5" data-path="web-scraping.html"><a href="web-scraping.html#case-study-ca-cities"><i class="fa fa-check"></i><b>16.5</b> Case Study: CA Cities</a>
 <ul>
-<li class="chapter" data-level="22.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#learning-objectives-8"><i class="fa fa-check"></i><b>22.1</b> Learning Objectives</a></li>
-<li class="chapter" data-level="22.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#what-is-geospatial-data"><i class="fa fa-check"></i><b>22.2</b> What is Geospatial Data?</a>
+<li class="chapter" data-level="16.5.1" data-path="web-scraping.html"><a href="web-scraping.html#data-cleaning"><i class="fa fa-check"></i><b>16.5.1</b> Data Cleaning</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="web-scraping.html"><a href="web-scraping.html#case-study-the-ca-aggie"><i class="fa fa-check"></i><b>16.6</b> Case Study: The CA Aggie</a></li>
+<li class="chapter" data-level="16.7" data-path="web-scraping.html"><a href="web-scraping.html#css-selectors"><i class="fa fa-check"></i><b>16.7</b> CSS Selectors</a></li>
+</ul></li>
+<li class="chapter" data-level="17" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html"><i class="fa fa-check"></i><b>17</b> Strings and Regular Expressions</a>
 <ul>
-<li class="chapter" data-level="22.2.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#attributes-1"><i class="fa fa-check"></i><b>22.2.1</b> Attributes</a></li>
-<li class="chapter" data-level="22.2.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinate-reference-system"><i class="fa fa-check"></i><b>22.2.2</b> Coordinate Reference System</a></li>
-<li class="chapter" data-level="22.2.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinates"><i class="fa fa-check"></i><b>22.2.3</b> Coordinates</a></li>
-</ul></li>
-<li class="chapter" data-level="22.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#geospatial-data-models"><i class="fa fa-check"></i><b>22.3</b> Geospatial Data Models</a>
+<li class="chapter" data-level="17.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#printing-output"><i class="fa fa-check"></i><b>17.1</b> Printing Output</a></li>
+<li class="chapter" data-level="17.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences"><i class="fa fa-check"></i><b>17.2</b> Escape Sequences</a>
 <ul>
-<li class="chapter" data-level="22.3.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#vector-data"><i class="fa fa-check"></i><b>22.3.1</b> Vector Data</a></li>
-<li class="chapter" data-level="22.3.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#raster-data"><i class="fa fa-check"></i><b>22.3.2</b> Raster Data</a></li>
+<li class="chapter" data-level="17.2.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#raw-strings"><i class="fa fa-check"></i><b>17.2.1</b> Raw Strings</a></li>
 </ul></li>
-<li class="chapter" data-level="22.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#data-structures-applied-to-geospatial-data"><i class="fa fa-check"></i><b>22.4</b> Data Structures Applied to Geospatial Data</a></li>
-<li class="chapter" data-level="22.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-geospatial-data"><i class="fa fa-check"></i><b>22.5</b> Cleaning Geospatial Data</a>
+<li class="chapter" data-level="17.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings"><i class="fa fa-check"></i><b>17.3</b> Character Encodings</a></li>
+<li class="chapter" data-level="17.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-tidyverse"><i class="fa fa-check"></i><b>17.4</b> The Tidyverse</a></li>
+<li class="chapter" data-level="17.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-stringr-package"><i class="fa fa-check"></i><b>17.5</b> The stringr Package</a>
 <ul>
-<li class="chapter" data-level="22.5.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#example-data"><i class="fa fa-check"></i><b>22.5.1</b> Example Data</a></li>
-<li class="chapter" data-level="22.5.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#making-location-data-usable"><i class="fa fa-check"></i><b>22.5.2</b> Making Location Data Usable</a></li>
-<li class="chapter" data-level="22.5.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-location-data"><i class="fa fa-check"></i><b>22.5.3</b> Cleaning Location Data</a></li>
-<li class="chapter" data-level="22.5.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-attribute-data"><i class="fa fa-check"></i><b>22.5.4</b> Cleaning Attribute Data</a></li>
-<li class="chapter" data-level="22.5.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#checking-coordinate-reference-systems"><i class="fa fa-check"></i><b>22.5.5</b> Checking Coordinate Reference Systems</a></li>
+<li class="chapter" data-level="17.5.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#splitting-strings"><i class="fa fa-check"></i><b>17.5.1</b> Splitting Strings</a></li>
+<li class="chapter" data-level="17.5.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#replacing-parts-of-strings"><i class="fa fa-check"></i><b>17.5.2</b> Replacing Parts of Strings</a></li>
 </ul></li>
-<li class="chapter" data-level="22.6" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#conclusions"><i class="fa fa-check"></i><b>22.6</b> Conclusions</a></li>
-<li class="chapter" data-level="22.7" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#optional-further-reading"><i class="fa fa-check"></i><b>22.7</b> Optional Further Reading</a></li>
+<li class="chapter" data-level="17.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#regular-expressions"><i class="fa fa-check"></i><b>17.6</b> Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="17.6.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-wildcard"><i class="fa fa-check"></i><b>17.6.1</b> The Wildcard</a></li>
+<li class="chapter" data-level="17.6.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences-1"><i class="fa fa-check"></i><b>17.6.2</b> Escape Sequences</a></li>
+<li class="chapter" data-level="17.6.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#anchors"><i class="fa fa-check"></i><b>17.6.3</b> Anchors</a></li>
+<li class="chapter" data-level="17.6.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-classes"><i class="fa fa-check"></i><b>17.6.4</b> Character Classes</a></li>
+<li class="chapter" data-level="17.6.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#quantifiers"><i class="fa fa-check"></i><b>17.6.5</b> Quantifiers</a></li>
+<li class="chapter" data-level="17.6.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#groups"><i class="fa fa-check"></i><b>17.6.6</b> Groups</a></li>
+<li class="chapter" data-level="17.6.7" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#extracting-matches"><i class="fa fa-check"></i><b>17.6.7</b> Extracting Matches</a></li>
 </ul></li>
-<li class="chapter" data-level="23" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>23</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="18" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html"><i class="fa fa-check"></i><b>18</b> Optical Character Recognition</a>
+<ul>
+<li class="chapter" data-level="18.1" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#loading-page-images"><i class="fa fa-check"></i><b>18.1</b> Loading Page Images</a></li>
+<li class="chapter" data-level="18.2" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#running-ocr"><i class="fa fa-check"></i><b>18.2</b> Running OCR</a></li>
+<li class="chapter" data-level="18.3" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#accuracy"><i class="fa fa-check"></i><b>18.3</b> Accuracy</a></li>
+<li class="chapter" data-level="18.4" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#unreadable-text"><i class="fa fa-check"></i><b>18.4</b> Unreadable Text</a></li>
+</ul></li>
+<li class="chapter" data-level="19" data-path="network-analysis.html"><a href="network-analysis.html"><i class="fa fa-check"></i><b>19</b> Network Analysis</a>
+<ul>
+<li class="chapter" data-level="19.1" data-path="network-analysis.html"><a href="network-analysis.html#overview-1"><i class="fa fa-check"></i><b>19.1</b> Overview</a>
+<ul>
+<li class="chapter" data-level="19.1.1" data-path="network-analysis.html"><a href="network-analysis.html#while-you-wait"><i class="fa fa-check"></i><b>19.1.1</b> While you wait</a></li>
+<li class="chapter" data-level="19.1.2" data-path="network-analysis.html"><a href="network-analysis.html#learning-objectives-7"><i class="fa fa-check"></i><b>19.1.2</b> Learning Objectives</a></li>
+<li class="chapter" data-level="19.1.3" data-path="network-analysis.html"><a href="network-analysis.html#roadmap"><i class="fa fa-check"></i><b>19.1.3</b> Roadmap</a></li>
+</ul></li>
+<li class="chapter" data-level="19.2" data-path="network-analysis.html"><a href="network-analysis.html#what-is-network-analysis"><i class="fa fa-check"></i><b>19.2</b> What is Network Analysis</a>
+<ul>
+<li class="chapter" data-level="19.2.1" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---social-sciences"><i class="fa fa-check"></i><b>19.2.1</b> Networks in research - Social Sciences</a></li>
+<li class="chapter" data-level="19.2.2" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---neuroscience"><i class="fa fa-check"></i><b>19.2.2</b> Networks in research - Neuroscience</a></li>
+<li class="chapter" data-level="19.2.3" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---chemistry"><i class="fa fa-check"></i><b>19.2.3</b> Networks in research - Chemistry</a></li>
+<li class="chapter" data-level="19.2.4" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---the-internet"><i class="fa fa-check"></i><b>19.2.4</b> Networks in research - The Internet</a></li>
+<li class="chapter" data-level="19.2.5" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---infrastructure"><i class="fa fa-check"></i><b>19.2.5</b> Networks in research - Infrastructure</a></li>
+<li class="chapter" data-level="19.2.6" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research---security"><i class="fa fa-check"></i><b>19.2.6</b> Networks in research - Security</a></li>
+</ul></li>
+<li class="chapter" data-level="19.3" data-path="network-analysis.html"><a href="network-analysis.html#network-data"><i class="fa fa-check"></i><b>19.3</b> Network Data</a>
+<ul>
+<li class="chapter" data-level="19.3.1" data-path="network-analysis.html"><a href="network-analysis.html#edgelist"><i class="fa fa-check"></i><b>19.3.1</b> Edgelist</a></li>
+<li class="chapter" data-level="19.3.2" data-path="network-analysis.html"><a href="network-analysis.html#adjacency-matrix"><i class="fa fa-check"></i><b>19.3.2</b> Adjacency Matrix</a></li>
+<li class="chapter" data-level="19.3.3" data-path="network-analysis.html"><a href="network-analysis.html#edge-weights"><i class="fa fa-check"></i><b>19.3.3</b> Edge Weights</a></li>
+<li class="chapter" data-level="19.3.4" data-path="network-analysis.html"><a href="network-analysis.html#attributes"><i class="fa fa-check"></i><b>19.3.4</b> Attributes</a></li>
+<li class="chapter" data-level="19.3.5" data-path="network-analysis.html"><a href="network-analysis.html#create-an-example-network"><i class="fa fa-check"></i><b>19.3.5</b> Create an Example Network</a></li>
+<li class="chapter" data-level="19.3.6" data-path="network-analysis.html"><a href="network-analysis.html#components"><i class="fa fa-check"></i><b>19.3.6</b> Components</a></li>
+<li class="chapter" data-level="19.3.7" data-path="network-analysis.html"><a href="network-analysis.html#limitations-of-network-data"><i class="fa fa-check"></i><b>19.3.7</b> Limitations of Network Data</a></li>
+<li class="chapter" data-level="19.3.8" data-path="network-analysis.html"><a href="network-analysis.html#projected-networks"><i class="fa fa-check"></i><b>19.3.8</b> Projected Networks</a></li>
+</ul></li>
+<li class="chapter" data-level="19.4" data-path="network-analysis.html"><a href="network-analysis.html#graph-level-properties"><i class="fa fa-check"></i><b>19.4</b> Graph Level Properties</a>
+<ul>
+<li class="chapter" data-level="19.4.1" data-path="network-analysis.html"><a href="network-analysis.html#directed-or-un-directed"><i class="fa fa-check"></i><b>19.4.1</b> Directed or Un-directed</a></li>
+<li class="chapter" data-level="19.4.2" data-path="network-analysis.html"><a href="network-analysis.html#density"><i class="fa fa-check"></i><b>19.4.2</b> Density</a></li>
+<li class="chapter" data-level="19.4.3" data-path="network-analysis.html"><a href="network-analysis.html#centralization"><i class="fa fa-check"></i><b>19.4.3</b> Centralization</a></li>
+</ul></li>
+<li class="chapter" data-level="19.5" data-path="network-analysis.html"><a href="network-analysis.html#node-level-properties"><i class="fa fa-check"></i><b>19.5</b> Node Level Properties</a>
+<ul>
+<li class="chapter" data-level="19.5.1" data-path="network-analysis.html"><a href="network-analysis.html#degree"><i class="fa fa-check"></i><b>19.5.1</b> Degree</a></li>
+<li class="chapter" data-level="19.5.2" data-path="network-analysis.html"><a href="network-analysis.html#geodesic-distance"><i class="fa fa-check"></i><b>19.5.2</b> Geodesic Distance</a></li>
+<li class="chapter" data-level="19.5.3" data-path="network-analysis.html"><a href="network-analysis.html#centrality"><i class="fa fa-check"></i><b>19.5.3</b> Centrality</a></li>
+</ul></li>
+<li class="chapter" data-level="19.6" data-path="network-analysis.html"><a href="network-analysis.html#network-workflow"><i class="fa fa-check"></i><b>19.6</b> Network Workflow</a></li>
+<li class="chapter" data-level="19.7" data-path="network-analysis.html"><a href="network-analysis.html#network-tools"><i class="fa fa-check"></i><b>19.7</b> Network Tools</a>
+<ul>
+<li class="chapter" data-level="19.7.1" data-path="network-analysis.html"><a href="network-analysis.html#network-models"><i class="fa fa-check"></i><b>19.7.1</b> Network Models</a></li>
+<li class="chapter" data-level="19.7.2" data-path="network-analysis.html"><a href="network-analysis.html#network-visualization"><i class="fa fa-check"></i><b>19.7.2</b> Network Visualization</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="20" data-path="statistics.html"><a href="statistics.html"><i class="fa fa-check"></i><b>20</b> Statistics</a>
+<ul>
+<li class="chapter" data-level="20.1" data-path="statistics.html"><a href="statistics.html#introduction-1"><i class="fa fa-check"></i><b>20.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="20.1.1" data-path="statistics.html"><a href="statistics.html#mice_pot-dataset"><i class="fa fa-check"></i><b>20.1.1</b> <code>mice_pot</code> dataset</a></li>
+<li class="chapter" data-level="20.1.2" data-path="statistics.html"><a href="statistics.html#barnacles-dataset"><i class="fa fa-check"></i><b>20.1.2</b> <code>barnacles</code> dataset</a></li>
+<li class="chapter" data-level="20.1.3" data-path="statistics.html"><a href="statistics.html#sample-and-population"><i class="fa fa-check"></i><b>20.1.3</b> Sample and population</a></li>
+</ul></li>
+<li class="chapter" data-level="20.2" data-path="statistics.html"><a href="statistics.html#uses-of-simulation"><i class="fa fa-check"></i><b>20.2</b> Uses of simulation</a></li>
+<li class="chapter" data-level="20.3" data-path="statistics.html"><a href="statistics.html#mathematical-statistics"><i class="fa fa-check"></i><b>20.3</b> Mathematical statistics</a>
+<ul>
+<li class="chapter" data-level="20.3.1" data-path="statistics.html"><a href="statistics.html#law-of-large-numbers"><i class="fa fa-check"></i><b>20.3.1</b> Law of large numbers</a></li>
+<li class="chapter" data-level="20.3.2" data-path="statistics.html"><a href="statistics.html#central-limit-theorem"><i class="fa fa-check"></i><b>20.3.2</b> Central limit theorem</a></li>
+</ul></li>
+<li class="chapter" data-level="20.4" data-path="statistics.html"><a href="statistics.html#statistical-inference"><i class="fa fa-check"></i><b>20.4</b> Statistical inference</a>
+<ul>
+<li class="chapter" data-level="20.4.1" data-path="statistics.html"><a href="statistics.html#confidence-intervals"><i class="fa fa-check"></i><b>20.4.1</b> Confidence intervals</a></li>
+<li class="chapter" data-level="20.4.2" data-path="statistics.html"><a href="statistics.html#two-population-test"><i class="fa fa-check"></i><b>20.4.2</b> Two-population test</a></li>
+<li class="chapter" data-level="20.4.3" data-path="statistics.html"><a href="statistics.html#hypothesis-tests-for-non-normal-data"><i class="fa fa-check"></i><b>20.4.3</b> Hypothesis tests for non-normal data</a></li>
+</ul></li>
+<li class="chapter" data-level="20.5" data-path="statistics.html"><a href="statistics.html#regression"><i class="fa fa-check"></i><b>20.5</b> Regression</a>
+<ul>
+<li class="chapter" data-level="20.5.1" data-path="statistics.html"><a href="statistics.html#fitting-a-regression-line"><i class="fa fa-check"></i><b>20.5.1</b> Fitting a regression line</a></li>
+<li class="chapter" data-level="20.5.2" data-path="statistics.html"><a href="statistics.html#assumptions-and-diagnostics"><i class="fa fa-check"></i><b>20.5.2</b> Assumptions and diagnostics</a></li>
+<li class="chapter" data-level="20.5.3" data-path="statistics.html"><a href="statistics.html#functions-for-inspecting-regression-fits"><i class="fa fa-check"></i><b>20.5.3</b> Functions for inspecting regression fits</a></li>
+<li class="chapter" data-level="20.5.4" data-path="statistics.html"><a href="statistics.html#a-model-that-fails-diagnostics"><i class="fa fa-check"></i><b>20.5.4</b> A model that fails diagnostics</a></li>
+<li class="chapter" data-level="20.5.5" data-path="statistics.html"><a href="statistics.html#predictions-and-variability"><i class="fa fa-check"></i><b>20.5.5</b> Predictions and variability</a></li>
+</ul></li>
+<li class="chapter" data-level="20.6" data-path="statistics.html"><a href="statistics.html#model-selection"><i class="fa fa-check"></i><b>20.6</b> Model selection</a></li>
+<li class="chapter" data-level="20.7" data-path="statistics.html"><a href="statistics.html#cross-validation"><i class="fa fa-check"></i><b>20.7</b> Cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="21" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html"><i class="fa fa-check"></i><b>21</b> Reshaping Tabular Data</a>
+<ul>
+<li class="chapter" data-level="21.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#learning-objectives-8"><i class="fa fa-check"></i><b>21.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="21.2" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#introduction-2"><i class="fa fa-check"></i><b>21.2</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="21.2.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#columns-into-rows"><i class="fa fa-check"></i><b>21.2.1</b> Columns into Rows</a></li>
+<li class="chapter" data-level="21.2.2" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#rows-into-columns"><i class="fa fa-check"></i><b>21.2.2</b> Rows into Columns</a></li>
+<li class="chapter" data-level="21.2.3" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#separating-values"><i class="fa fa-check"></i><b>21.2.3</b> Separating Values</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="22" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html"><i class="fa fa-check"></i><b>22</b> Data Forensics and Cleaning: Unstructured Data</a>
+<ul>
+<li class="chapter" data-level="22.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#preliminaries"><i class="fa fa-check"></i><b>22.1</b> Preliminaries</a></li>
+<li class="chapter" data-level="22.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#from-file-names-to-metadata"><i class="fa fa-check"></i><b>22.2</b> From File Names to Metadata</a></li>
+<li class="chapter" data-level="22.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#loading-a-corpus"><i class="fa fa-check"></i><b>22.3</b> Loading a Corpus</a></li>
+<li class="chapter" data-level="22.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#preprocessing"><i class="fa fa-check"></i><b>22.4</b> Preprocessing</a>
+<ul>
+<li class="chapter" data-level="22.4.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizing-and-bags-of-words"><i class="fa fa-check"></i><b>22.4.1</b> Tokenizing and Bags of Words</a></li>
+<li class="chapter" data-level="22.4.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-normalization"><i class="fa fa-check"></i><b>22.4.2</b> Text Normalization</a></li>
+<li class="chapter" data-level="22.4.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#stop-words"><i class="fa fa-check"></i><b>22.4.3</b> Stop Words</a></li>
+<li class="chapter" data-level="22.4.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizers"><i class="fa fa-check"></i><b>22.4.4</b> Tokenizers</a></li>
+<li class="chapter" data-level="22.4.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-chunking-and-n-grams"><i class="fa fa-check"></i><b>22.4.5</b> Document Chunking and N-grams</a></li>
+</ul></li>
+<li class="chapter" data-level="22.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#counting-terms"><i class="fa fa-check"></i><b>22.5</b> Counting Terms</a>
+<ul>
+<li class="chapter" data-level="22.5.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#term-frequency"><i class="fa fa-check"></i><b>22.5.1</b> Term Frequency</a></li>
+<li class="chapter" data-level="22.5.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#plotting-term-frequency"><i class="fa fa-check"></i><b>22.5.2</b> Plotting Term Frequency</a></li>
+<li class="chapter" data-level="22.5.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#comparing-term-frequencies-across-documents"><i class="fa fa-check"></i><b>22.5.3</b> Comparing Term Frequencies Across Documents</a></li>
+</ul></li>
+<li class="chapter" data-level="22.6" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-mining-pipepline"><i class="fa fa-check"></i><b>22.6</b> Text Mining Pipepline</a></li>
+<li class="chapter" data-level="22.7" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-term-matrix"><i class="fa fa-check"></i><b>22.7</b> Document Term Matrix</a></li>
+<li class="chapter" data-level="22.8" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-analytics"><i class="fa fa-check"></i><b>22.8</b> Corpus Analytics</a>
+<ul>
+<li class="chapter" data-level="22.8.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-term-counts"><i class="fa fa-check"></i><b>22.8.1</b> Corpus Term Counts</a></li>
+<li class="chapter" data-level="22.8.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tfidf-scores"><i class="fa fa-check"></i><b>22.8.2</b> tf–idf Scores</a></li>
+<li class="chapter" data-level="22.8.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#unique-terms-in-a-document"><i class="fa fa-check"></i><b>22.8.3</b> Unique Terms in a Document</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="23" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html"><i class="fa fa-check"></i><b>23</b> Data Forensics and Cleaning: Geospatial Data</a>
+<ul>
+<li class="chapter" data-level="23.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#learning-objectives-9"><i class="fa fa-check"></i><b>23.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="23.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#what-is-geospatial-data"><i class="fa fa-check"></i><b>23.2</b> What is Geospatial Data?</a>
+<ul>
+<li class="chapter" data-level="23.2.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#attributes-1"><i class="fa fa-check"></i><b>23.2.1</b> Attributes</a></li>
+<li class="chapter" data-level="23.2.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinate-reference-system"><i class="fa fa-check"></i><b>23.2.2</b> Coordinate Reference System</a></li>
+<li class="chapter" data-level="23.2.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinates"><i class="fa fa-check"></i><b>23.2.3</b> Coordinates</a></li>
+</ul></li>
+<li class="chapter" data-level="23.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#geospatial-data-models"><i class="fa fa-check"></i><b>23.3</b> Geospatial Data Models</a>
+<ul>
+<li class="chapter" data-level="23.3.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#vector-data"><i class="fa fa-check"></i><b>23.3.1</b> Vector Data</a></li>
+<li class="chapter" data-level="23.3.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#raster-data"><i class="fa fa-check"></i><b>23.3.2</b> Raster Data</a></li>
+</ul></li>
+<li class="chapter" data-level="23.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#data-structures-applied-to-geospatial-data"><i class="fa fa-check"></i><b>23.4</b> Data Structures Applied to Geospatial Data</a></li>
+<li class="chapter" data-level="23.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-geospatial-data"><i class="fa fa-check"></i><b>23.5</b> Cleaning Geospatial Data</a>
+<ul>
+<li class="chapter" data-level="23.5.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#example-data"><i class="fa fa-check"></i><b>23.5.1</b> Example Data</a></li>
+<li class="chapter" data-level="23.5.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#making-location-data-usable"><i class="fa fa-check"></i><b>23.5.2</b> Making Location Data Usable</a></li>
+<li class="chapter" data-level="23.5.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-location-data"><i class="fa fa-check"></i><b>23.5.3</b> Cleaning Location Data</a></li>
+<li class="chapter" data-level="23.5.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-attribute-data"><i class="fa fa-check"></i><b>23.5.4</b> Cleaning Attribute Data</a></li>
+<li class="chapter" data-level="23.5.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#checking-coordinate-reference-systems"><i class="fa fa-check"></i><b>23.5.5</b> Checking Coordinate Reference Systems</a></li>
+</ul></li>
+<li class="chapter" data-level="23.6" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#conclusions"><i class="fa fa-check"></i><b>23.6</b> Conclusions</a></li>
+<li class="chapter" data-level="23.7" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#optional-further-reading"><i class="fa fa-check"></i><b>23.7</b> Optional Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="24" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>24</b> References</a></li>
 </ul>
 
       </nav>
@@ -1167,7 +1249,6 @@ the <code>drop</code> parameter:</p>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -1197,6 +1278,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section"
 }
