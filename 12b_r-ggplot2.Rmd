@@ -56,6 +56,7 @@ facets      | Side-by-side plots
 guides      | Axis and legend position settings
 annotations | Shapes that are not mapped to data
 coordinates | Coordinate systems (Cartesian, logarithmic, polar)
+themes      | Display of non-data elements
 
 
 ### Making a Plot
@@ -209,7 +210,7 @@ ggplot(survey, aes(x = distance.mi, y = time.min, color = major, label = major))
 Where we put the aesthetics matters:
 ```{r}
 ggplot(survey, aes(x = distance.mi, y = time.min, label = major)) +
-  geom_point() + geom_text(aes(color = major), size = 2)
+  geom_point() + geom_text(aes(color = major), size = 3, position = position_jitter(.5))
 ```
 
 #### Layer 4: Scales {-}
@@ -275,6 +276,32 @@ To prevent `geom_bar` from computing frequencies automatically, set `stat =
 "identity"`. This is mainly useful if you want to plot quantities you've
 computed manually on the y-axis.
 
+#### Position adjustment  
+
+Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. First, let's consider the difference between the `color` arguments and the `fill` argument for bar plots.
+
+```{r}
+ggplot(survey, aes(x = major)) + geom_bar(aes(color = pets)) +
+  labs(title = "Majors in Responses", x = "Major", y = "Count")
+```
+
+The `color` argument will outline the bars in a color, whereas the `fill` argument will fill them in with a default color scheme.
+
+```{r}
+ggplot(survey, aes(x = major)) + geom_bar(aes(fill = pets)) +
+  labs(title = "Majors in Responses", x = "Major", y = "Count")
+```
+
+Automatically, `geom_bar()` positions the grouped colors or fills on top of one another, with the default argument `position = "identity"`. If you want to change the position of the groupings, you can set `position = "dodge"` to set the groups side-by-side.
+
+```{r}
+ggplot(survey, aes(x = major)) + geom_bar(aes(fill = pets), position = "dodge") +
+  labs(title = "Majors in Responses", x = "Major", y = "Count")
+```
+
+### Themes
+
+We can also 
 
 ## Designing a Visualization
 
