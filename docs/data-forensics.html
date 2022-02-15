@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>11 Data Forensics | Adventures in Data Science</title>
   <meta name="description" content="11 Data Forensics | Adventures in Data Science" />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="11 Data Forensics | Adventures in Data Science" />
   <meta property="og:type" content="book" />
@@ -30,9 +30,10 @@
 <meta name="author" content="Arthur Koehl" />
 <meta name="author" content="Carrie Alexander" />
 <meta name="author" content="Jared Joseph" />
+<meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-02-08" />
+<meta name="date" content="2022-02-14" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -42,8 +43,7 @@
 <link rel="prev" href="factors-special-values-and-indexing.html"/>
 <link rel="next" href="data-structures.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -51,6 +51,7 @@
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
 
 
 
@@ -450,11 +451,11 @@ div.csl-indent {
 <li class="chapter" data-level="14.3.2" data-path="data-visualization.html"><a href="data-visualization.html#saving-plots"><i class="fa fa-check"></i><b>14.3.2</b> Saving Plots</a></li>
 <li class="chapter" data-level="14.3.3" data-path="data-visualization.html"><a href="data-visualization.html#example-bar-plot"><i class="fa fa-check"></i><b>14.3.3</b> Example: Bar Plot</a></li>
 </ul></li>
-<li class="chapter" data-level="14.4" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>14.4</b> Designing a Visualization</a></li>
-<li class="chapter" data-level="14.5" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>14.5</b> Remembering factors</a>
+<li class="chapter" data-level="14.4" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>14.4</b> Remembering factors</a>
 <ul>
-<li class="chapter" data-level="14.5.1" data-path="data-visualization.html"><a href="data-visualization.html#assigning-factor-levels"><i class="fa fa-check"></i><b>14.5.1</b> Assigning factor levels</a></li>
+<li class="chapter" data-level="14.4.1" data-path="data-visualization.html"><a href="data-visualization.html#assigning-factor-levels"><i class="fa fa-check"></i><b>14.4.1</b> Assigning factor levels</a></li>
 </ul></li>
+<li class="chapter" data-level="14.5" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>14.5</b> Designing a Visualization</a></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="how-the-web-works.html"><a href="how-the-web-works.html"><i class="fa fa-check"></i><b>15</b> How the Web Works</a>
 <ul>
@@ -1135,7 +1136,7 @@ subject. Generally it is safe to impute MAR values, but not MNAR values.</p>
 this as a value that’s far away from most of the other values. Sometimes
 outliers are a natural part of the data set. In other situations, outliers can
 indicate errors in how the data were measured, recorded, or cleaned.</p>
-<p>There’s no specific definition for “extreme” or “far away.” A good starting
+<p>There’s no specific definition for “extreme” or “far away”. A good starting
 point for detecting outliers is to make a plot that shows how the values are
 distributed. Box plots and density plots work especially well for this (you’ll
 learn about how to make plots in a later lesson):</p>
@@ -1393,7 +1394,7 @@ identical to the result from vectorization:</p>
 ## [1] 1.772454</code></pre>
 <p>The only difference is that the result from <code>lapply</code> is a list. In fact, the
 <code>lapply</code> function always returns a list with one element for each element of
-the input data. The “l” in <code>lapply</code> stands for “list.”</p>
+the input data. The “l” in <code>lapply</code> stands for “list”.</p>
 <p>The <code>lapply</code> function is one member of a family of functions called <strong>apply
 functions</strong>. All of the apply functions provide ways to apply a function
 repeatedly to different parts of a data structure. We’ll meet a few more apply
@@ -1412,7 +1413,7 @@ vector, and simplifies the result. That last part is the crucial difference
 compared to <code>lapply</code>. When results from the calls all have the same type and
 length, <code>sapply</code> returns a vector or matrix instead of a list. When the results
 have different types or lengths, the result is the same as for <code>lapply</code>. The
-“s” in <code>sapply</code> stands for “simplify.”</p>
+“s” in <code>sapply</code> stands for “simplify”.</p>
 <p>For instance, if we use <code>sapply</code> to find the classes of the columns in the
 Craigslist data, we get a character vector:</p>
 <div class="sourceCode" id="cb431"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb431-1"><a href="data-forensics.html#cb431-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(cl, class)</span></code></pre></div>
@@ -1599,7 +1600,7 @@ Craigslist data:</p>
 <pre><code>##    hookup   in-unit      none    shared 
 ## 2059.6111 1880.8592  982.2381 1522.8691</code></pre>
 <p>Notice that the result is identical to the one we computed before.</p>
-<p>The “t” in <code>tapply</code> stands for “table,” because the <code>tapply</code> function is a
+<p>The “t” in <code>tapply</code> stands for “table”, because the <code>tapply</code> function is a
 generalization of the <code>table</code> function. If you use <code>length</code> as the third
 argument to <code>tapply</code>, you get the same results as you would from using the
 <code>table</code> function on the category vector.</p>
@@ -1634,6 +1635,7 @@ post</a>.</p>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -1663,10 +1665,6 @@ gitbook.start({
 "text": null
 },
 "download": null,
-"search": {
-"engine": "fuse",
-"options": null
-},
 "toc": {
 "collapse": "section"
 }
