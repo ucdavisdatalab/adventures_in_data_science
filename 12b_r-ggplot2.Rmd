@@ -64,9 +64,9 @@ For the plotting examples, let's take the wine reviews data that we have been
 working with, and subset it to focus in on Cabernet Sauvignon from the Central Valley.
 
 ```{r}
-wine_revs = read.csv("data/wine_enthusiast_rankings.csv")
-str(wine_revs)
-wine_cv <- wine_revs[wine_revs$region_2 == "Central Valley" & wine_revs$variety == "Cabernet Sauvignon",]
+wine_revs <- read.csv("data/wine_enthusiast_rankings.csv")
+wine_cv <- wine_revs[wine_revs$region_2 == "Central Valley" & 
+                       wine_revs$variety == "Cabernet Sauvignon",]
 ```
 
 Next we need to load `ggplot2`. As always, if this is your first time using the 
@@ -182,7 +182,7 @@ ggplot(wine_cv, aes(x = price, y = points)) + geom_point(color = "blue")
 
 Notice that when we specify the color "blue" (outside of aesthetic mapping), R understands what we mean. There is a [long list of color names that R recognizes](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf). But you can also use specific hex codes or palettes like were recommended in the previous section on [Accessible Data Visualizations](https://ucdavisdatalab.github.io/adventures_in_data_science/data-visualization-principles-perception.html#accessible-data-visualizations).
 
-Another useful constant aesthetic is the `alpha` argument, which adjusts the transparency of the points using a range between 0-1 (alpha = 0 is fully transparent and alpha = 1 is not transparent). This can be useful because `geom_point()` will stack points with the exact same values on top of one another, which is hard to tell when they are all completely filled in a certain color (e.g. alpha = 1).
+Another useful constant aesthetic is the `alpha` argument, which adjusts the transparency of the points using a range between 0-1 (alpha = 0 is fully transparent and alpha = 1 is not transparent). This can be useful because `geom_point` will stack points with the exact same values on top of one another, which is hard to tell when they are all completely filled in a certain color (e.g. alpha = 1).
 
 ```{r}
 ggplot(wine_cv, aes(x = price, y = points)) + geom_point(color = "blue", alpha = .3)
@@ -207,28 +207,32 @@ ggplot(underrated_wines, aes(x = price, y = points, color = region_1)) + geom_po
 
 
 Now let's add another geometry to better understand the effect of aesthetic 
-placements. Let's add a `geom_text()` layer to add labels to the plot. 
-We need to specify the variables that we want to label with in the aesthetics, 
-and add a new geom layer:
+placements. Let's add a `geom_text` layer to add labels to the plot based on who
+ranked this wine. We need to specify the variables that we want to label with in the aesthetics, and add a new geom layer:
 
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, color = region_1, label = region_1)) + geom_point() + geom_text(size = 3)
+ggplot(underrated_wines, aes(x = price, y = points, color = region_1, label = taster_name)) +
+  geom_point() + geom_text(size = 3)
 ```
 
-In the example above, both geometries (geom_point and geom_text), take on the same aesthetic mapping. So, where we put the aesthetics matters. If we move the color aesthetic to the `geom_text()` layer, how does the plot change?
+In the example above, both geometries (`geom_point` and `geom_text`), take on the same color aesthetic mapping. So, where we put the aesthetics matters. If we move the color aesthetic to the `geom_text` layer, how does the plot change?
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, label = region_1)) + geom_point() + geom_text(aes(color = region_1), size = 3)
+ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) + 
+  geom_point() + geom_text(aes(color = region_1), size = 3)
 ```
 
 
 We can also move the color aesthetic to the `geom_text` layer to experiment: 
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, label = region_1)) + geom_point(aes(color = region_1)) + geom_text(size = 3)
+ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) + 
+  geom_point(aes(color = region_1)) + geom_text(size = 3)
 ```
 
 How might we be able to better see all 40 of the observations? Let's try the `position` argument within each geometry, where `position = position_jitter()` will adjust (or "jitter") the points.
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, label = region_1)) + geom_point(aes(color = region_1), position = position_jitter(seed = 1)) + geom_text(size = 3, position = position_jitter(seed = 1))
+ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) +
+  geom_point(aes(color = region_1), position = position_jitter(seed = 1)) + 
+  geom_text(size = 3, position = position_jitter(seed = 1))
 ```
 
 #### Other layers: Scales and themes {-}
@@ -240,27 +244,29 @@ all of them.
 The `labs` function is especially important, because it's used to set the title
 and axis labels:
 ```{r}
-ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + geom_point() +
-  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", x = "Price ($)",
-    y = "Points", color = "Region")
+ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + 
+  geom_point() +
+  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
+       x = "Price ($)", y = "Points", color = "Region")
 ```
 
-You can add `theme` layers that change the non-data components of the figure. ggplot2 comes with several themes which can be useful to quickly change the look of your visualization. The complete list of themes is available at http://docs.ggplot2.org/current/ggtheme.html. theme_classic(), theme_minimal(), and theme_light() are popular.
+You can add `theme` layers that change the non-data components of the figure. ggplot2 comes with several themes which can be useful to quickly change the look of your visualization. The complete list of themes is available at https://ggplot2.tidyverse.org/reference/ggtheme.html. theme_classic(), theme_minimal(), and theme_light() are popular.
 
 
 ```{r}
 ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + geom_point() +
-  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", x = "Price ($)",
-    y = "Points", color = "Region") +
+  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
+       x = "Price ($)", y = "Points", color = "Region") +
   theme_minimal()
 ```
 
 We can also save ggplots as objects:
 
 ```{r}
-wine_plot <- ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + geom_point() +
-  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", x = "Price ($)",
-    y = "Points", color = "Region") +
+wine_plot <- ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + 
+  geom_point() +
+  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
+       x = "Price ($)", y = "Points", color = "Region") +
   theme_minimal()
 ```
 
@@ -335,7 +341,8 @@ ggplot(wine_cv, aes(x = region_1)) + geom_bar(aes(fill = taster_name))
 Automatically, `geom_bar()` positions the grouped colors or fills on top of one another, with the default argument `position = "identity"`. If you want to change the position of the groupings, you can set `position = "dodge"` to set the groups side-by-side.
 
 ```{r}
-ggplot(wine_cv, aes(x = region_1)) + geom_bar(aes(fill = taster_name), position = "dodge") 
+ggplot(wine_cv, aes(x = region_1)) + 
+  geom_bar(aes(fill = taster_name), position = "dodge") 
 ```
 
 ## Remembering factors
@@ -397,8 +404,9 @@ ggplot(wine_cv, aes(x = region_1)) + geom_bar()
 But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the `factor` function.
 
 ```{r}
-wine_cv$region_1_f <- factor(wine_cv$region_1, levels = c("Lodi", "Clarksburg", "Yolo County",
-                                                          "Clements Hills", "Dunnigan Hills"))
+wine_cv$region_1_f <- factor(wine_cv$region_1, 
+                             levels = c("Lodi", "Clarksburg", "Yolo County",
+                                        "Clements Hills", "Dunnigan Hills"))
 levels(wine_cv$region_1_f)
 ```
 
