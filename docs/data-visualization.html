@@ -33,7 +33,7 @@
 <meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-02-14" />
+<meta name="date" content="2022-02-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -946,7 +946,7 @@ are:</p>
 </div>
 <div id="example-bar-plot" class="section level3" number="14.3.3">
 <h3><span class="header-section-number">14.3.3</span> Example: Bar Plot</h3>
-<p>Let’s say we want to plot the number of responses for each major. A bar plot is
+<p>Let’s say we want to plot the number of responses for each region in the Central Valley. A bar plot is
 an appropriate way to represent this visually.</p>
 <p>The geometry for a bar plot is <code>geom_bar</code>. Since bar plots are mainly used to
 display frequencies, the <code>geom_bar</code> function automatically computes frequencies
@@ -984,7 +984,7 @@ function.</p>
 That means identifying and converting the categorical features is up to you.
 This can be especially helpful to know if you are plotting categories, but want
 them to have a particular order, other than the default (alphabetical).</p>
-<p>Let’s think about which features are categorical in the class survey data.</p>
+<p>Let’s think about which features are categorical in the class wine reviews data.</p>
 <div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="data-visualization.html#cb492-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wine_cv)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    104 obs. of  14 variables:
 ##  $ X                    : int  954 2765 3397 4549 4686 4944 5426 5975 6964 8633 ...
@@ -1078,7 +1078,7 @@ the <code>levels</code> function:</p>
 <div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="data-visualization.html#cb498-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1))</span></code></pre></div>
 <pre><code>## [1] &quot;Clarksburg&quot;     &quot;Clements Hills&quot; &quot;Dunnigan Hills&quot; &quot;Lodi&quot;          
 ## [5] &quot;Yolo County&quot;</code></pre>
-<p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the number of majors in our survey.</p>
+<p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the regions in our wine reviews data.</p>
 <div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="data-visualization.html#cb500-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <div id="assigning-factor-levels" class="section level3" number="14.4.1">
@@ -1090,7 +1090,7 @@ the <code>levels</code> function:</p>
 <span id="cb501-4"><a href="data-visualization.html#cb501-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(wine_cv<span class="sc">$</span>region_1_f)</span></code></pre></div>
 <pre><code>## [1] &quot;Lodi&quot;           &quot;Clarksburg&quot;     &quot;Yolo County&quot;    &quot;Clements Hills&quot;
 ## [5] &quot;Dunnigan Hills&quot;</code></pre>
-<p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the major factor.</p>
+<p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the region_1 factor.</p>
 <div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="data-visualization.html#cb503-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1_f)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 </div>

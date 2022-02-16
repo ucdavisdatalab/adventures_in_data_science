@@ -33,7 +33,7 @@
 <meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-02-14" />
+<meta name="date" content="2022-02-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -1054,12 +1054,12 @@ see where they match a string.</p>
 <p>For example:</p>
 <div class="sourceCode" id="cb628"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb628-1"><a href="strings-and-regular-expressions.html#cb628-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="st">&quot;dog&quot;</span></span>
 <span id="cb628-2"><a href="strings-and-regular-expressions.html#cb628-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;d.g&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-da0c01dba524d5772785" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-da0c01dba524d5772785">{"x":{"html":"<ul>\n  <li><span class='match'>dog<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1b581a43f14dd9d27dd1" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1b581a43f14dd9d27dd1">{"x":{"html":"<ul>\n  <li><span class='match'>dog<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>By default, regex searches from left to right:</p>
 <div class="sourceCode" id="cb629"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb629-1"><a href="strings-and-regular-expressions.html#cb629-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;.&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-af150cbc2b85be646f93" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-af150cbc2b85be646f93">{"x":{"html":"<ul>\n  <li><span class='match'>d<\/span>og<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-848cc87cfd78affb3675" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-848cc87cfd78affb3675">{"x":{"html":"<ul>\n  <li><span class='match'>d<\/span>og<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="escape-sequences-1" class="section level3" number="17.6.2">
 <h3><span class="header-section-number">17.6.2</span> Escape Sequences</h3>
@@ -1071,26 +1071,26 @@ character.</p>
 literal dot is <code>\.</code>. Since backslashes in R strings have to be escaped, the R
 string for this regex is <code>"\\.</code>. Then the regex works:</p>
 <div class="sourceCode" id="cb630"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb630-1"><a href="strings-and-regular-expressions.html#cb630-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(<span class="st">&quot;this.string&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-3c2dd4febeac39f5f876" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3c2dd4febeac39f5f876">{"x":{"html":"<ul>\n  <li>this<span class='match'>.<\/span>string<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-40025d69dd1902408933" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-40025d69dd1902408933">{"x":{"html":"<ul>\n  <li>this<span class='match'>.<\/span>string<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>The double backslash can be confusing, and it gets worse if we want to match a
 literal backslash. We have to escape the backslash in the regex (because
 backslash is the regex escape character) and then also have to escape the
 backslashes in R (because backslash is also the R escape character). So to
 match a single literal backslash in R, the code is:</p>
 <div class="sourceCode" id="cb631"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb631-1"><a href="strings-and-regular-expressions.html#cb631-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(<span class="st">&quot;this</span><span class="sc">\\</span><span class="st">that&quot;</span>, <span class="st">&quot;</span><span class="sc">\\\\</span><span class="st">&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-a19e588802c0d6a98dd3" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a19e588802c0d6a98dd3">{"x":{"html":"<ul>\n  <li>this<span class='match'>\\<\/span>that<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-2c92ae992fda622010f7" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2c92ae992fda622010f7">{"x":{"html":"<ul>\n  <li>this<span class='match'>\\<\/span>that<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>Raw strings are helpful here, because they make the backslash literal in R
 strings (but still not in regex). We can use raw strings to write the above as:</p>
 <div class="sourceCode" id="cb632"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb632-1"><a href="strings-and-regular-expressions.html#cb632-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(r<span class="st">&quot;(this</span><span class="sc">\t</span><span class="st">hat)&quot;</span>, r<span class="st">&quot;(</span><span class="sc">\\</span><span class="st">)&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-d11aecb53670502ba988" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d11aecb53670502ba988">{"x":{"html":"<ul>\n  <li>this<span class='match'>\\<\/span>that<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-121b55496976035923cd" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-121b55496976035923cd">{"x":{"html":"<ul>\n  <li>this<span class='match'>\\<\/span>that<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>You can turn off regular expressions entirely in stringr with the <code>fixed</code>
 function:</p>
 <div class="sourceCode" id="cb633"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb633-1"><a href="strings-and-regular-expressions.html#cb633-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="fu">fixed</span>(<span class="st">&quot;.&quot;</span>))</span></code></pre></div>
-<div id="htmlwidget-5a8bfadd4cf76381da4a" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-5a8bfadd4cf76381da4a">{"x":{"html":"<ul>\n  <li>dog<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-217032cba795695e9b97" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-217032cba795695e9b97">{"x":{"html":"<ul>\n  <li>dog<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>It’s good to turn off regular expressions whenever you don’t need them, both to
 avoid mistakes and because they take longer to compute.</p>
 </div>
@@ -1104,11 +1104,11 @@ but doesn’t count as a character in the match.</p>
 <div class="sourceCode" id="cb634"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb634-1"><a href="strings-and-regular-expressions.html#cb634-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="st">&quot;cab&quot;</span>)</span>
 <span id="cb634-2"><a href="strings-and-regular-expressions.html#cb634-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb634-3"><a href="strings-and-regular-expressions.html#cb634-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-d51c772dac60f7b8a798" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d51c772dac60f7b8a798">{"x":{"html":"<ul>\n  <li><span class='match'>a<\/span>bc<\/li>\n  <li>c<span class='match'>a<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-5cafe7255f6d7904bb28" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5cafe7255f6d7904bb28">{"x":{"html":"<ul>\n  <li><span class='match'>a<\/span>bc<\/li>\n  <li>c<span class='match'>a<\/span>b<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <div class="sourceCode" id="cb635"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb635-1"><a href="strings-and-regular-expressions.html#cb635-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;^a&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-4a10b9247842ad7d7906" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4a10b9247842ad7d7906">{"x":{"html":"<ul>\n  <li><span class='match'>a<\/span>bc<\/li>\n  <li>cab<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f843f4bcb7e1af14a9ae" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f843f4bcb7e1af14a9ae">{"x":{"html":"<ul>\n  <li><span class='match'>a<\/span>bc<\/li>\n  <li>cab<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>It doesn’t make sense to put characters before <code>^</code>, since no characters can
 come before the beginning of the string.</p>
 <p>Likewise, the end of string anchor is <code>$</code>. It marks the end of the string, but
@@ -1124,13 +1124,13 @@ in the match.</p>
 <div class="sourceCode" id="cb636"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb636-1"><a href="strings-and-regular-expressions.html#cb636-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;ca&quot;</span>, <span class="st">&quot;ct&quot;</span>, <span class="st">&quot;cat&quot;</span>, <span class="st">&quot;cta&quot;</span>)</span>
 <span id="cb636-2"><a href="strings-and-regular-expressions.html#cb636-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb636-3"><a href="strings-and-regular-expressions.html#cb636-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;c[ta]&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-1d940008cdde4552ce60" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1d940008cdde4552ce60">{"x":{"html":"<ul>\n  <li><span class='match'>ca<\/span><\/li>\n  <li><span class='match'>ct<\/span><\/li>\n  <li><span class='match'>ca<\/span>t<\/li>\n  <li><span class='match'>ct<\/span>a<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-65867d1bb248cd7fa409" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-65867d1bb248cd7fa409">{"x":{"html":"<ul>\n  <li><span class='match'>ca<\/span><\/li>\n  <li><span class='match'>ct<\/span><\/li>\n  <li><span class='match'>ca<\/span>t<\/li>\n  <li><span class='match'>ct<\/span>a<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>You can use a dash <code>-</code> in a character class to create a range. For example, to
 match letters <code>p</code> through <code>z</code>:</p>
 <div class="sourceCode" id="cb637"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb637-1"><a href="strings-and-regular-expressions.html#cb637-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;c[p-z]&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-6f0d77057bce2a4a9cab" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6f0d77057bce2a4a9cab">{"x":{"html":"<ul>\n  <li>ca<\/li>\n  <li><span class='match'>ct<\/span><\/li>\n  <li>cat<\/li>\n  <li><span class='match'>ct<\/span>a<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-132ce22c88e39730d425" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-132ce22c88e39730d425">{"x":{"html":"<ul>\n  <li>ca<\/li>\n  <li><span class='match'>ct<\/span><\/li>\n  <li>cat<\/li>\n  <li><span class='match'>ct<\/span>a<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>Ranges also work with numbers and capital letters. To match a literal dash,
 place the dash at the end of the character class (instead of between two other
 characters), as in <code>[abc-]</code>.</p>
@@ -1139,8 +1139,8 @@ characters), as in <code>[abc-]</code>.</p>
 <p>A hat <code>^</code> at the beginning of the character class negates the class. So for
 example, <code>[^abc]</code> matches any one character <em>except</em> for <code>a</code>, <code>b</code>, or <code>c</code>:</p>
 <div class="sourceCode" id="cb638"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb638-1"><a href="strings-and-regular-expressions.html#cb638-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(<span class="st">&quot;abcdef&quot;</span>, <span class="st">&quot;[^abc]&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-2e125fad90486f36d6ef" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2e125fad90486f36d6ef">{"x":{"html":"<ul>\n  <li>abc<span class='match'>d<\/span>ef<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-81a2059a9821d74a7440" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-81a2059a9821d74a7440">{"x":{"html":"<ul>\n  <li>abc<span class='match'>d<\/span>ef<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="quantifiers" class="section level3" number="17.6.5">
 <h3><span class="header-section-number">17.6.5</span> Quantifiers</h3>
@@ -1153,14 +1153,14 @@ character in the match.</p>
 <div class="sourceCode" id="cb639"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb639-1"><a href="strings-and-regular-expressions.html#cb639-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="st">&quot;ab&quot;</span>, <span class="st">&quot;ac&quot;</span>, <span class="st">&quot;abbc&quot;</span>)</span>
 <span id="cb639-2"><a href="strings-and-regular-expressions.html#cb639-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb639-3"><a href="strings-and-regular-expressions.html#cb639-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;ab?c&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-aaeedad5ebc6a3348fe5" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-aaeedad5ebc6a3348fe5">{"x":{"html":"<ul>\n  <li><span class='match'>abc<\/span><\/li>\n  <li>ab<\/li>\n  <li><span class='match'>ac<\/span><\/li>\n  <li>abbc<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-acac5f132c9fdd09adbd" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-acac5f132c9fdd09adbd">{"x":{"html":"<ul>\n  <li><span class='match'>abc<\/span><\/li>\n  <li>ab<\/li>\n  <li><span class='match'>ac<\/span><\/li>\n  <li>abbc<\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>The <code>*</code> quantifier means the preceeding character can appear 0 or more times.
 In other words, <code>*</code> means the preceeding character can appear any number of
 times or not at all.</p>
 <div class="sourceCode" id="cb640"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb640-1"><a href="strings-and-regular-expressions.html#cb640-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;ab*c&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-39ddaf83d9e72a4dacec" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-39ddaf83d9e72a4dacec">{"x":{"html":"<ul>\n  <li><span class='match'>abc<\/span><\/li>\n  <li>ab<\/li>\n  <li><span class='match'>ac<\/span><\/li>\n  <li><span class='match'>abbc<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1f2906a81e597d7c26cb" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1f2906a81e597d7c26cb">{"x":{"html":"<ul>\n  <li><span class='match'>abc<\/span><\/li>\n  <li>ab<\/li>\n  <li><span class='match'>ac<\/span><\/li>\n  <li><span class='match'>abbc<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <p>The <code>+</code> quantifier means the preceeding character must appear 1 or more times.</p>
 <p>Quantifiers are <em>greedy</em>, meaning they always match as many characters as
 possible.</p>
@@ -1174,8 +1174,8 @@ parentheses themselves don’t count as characters in the match.</p>
 <div class="sourceCode" id="cb641"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb641-1"><a href="strings-and-regular-expressions.html#cb641-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;cats, dogs, and frogs&quot;</span>, <span class="st">&quot;cats and frogs&quot;</span>)</span>
 <span id="cb641-2"><a href="strings-and-regular-expressions.html#cb641-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb641-3"><a href="strings-and-regular-expressions.html#cb641-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_view</span>(x, <span class="st">&quot;cats(, dogs,)? and frogs&quot;</span>)</span></code></pre></div>
-<div id="htmlwidget-4a41b713cb1ad1524d79" style="width:960px;height:100%;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4a41b713cb1ad1524d79">{"x":{"html":"<ul>\n  <li><span class='match'>cats, dogs, and frogs<\/span><\/li>\n  <li><span class='match'>cats and frogs<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-cdac31d4e7447d3e3cd0" style="width:960px;height:100%;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cdac31d4e7447d3e3cd0">{"x":{"html":"<ul>\n  <li><span class='match'>cats, dogs, and frogs<\/span><\/li>\n  <li><span class='match'>cats and frogs<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="extracting-matches" class="section level3" number="17.6.7">
 <h3><span class="header-section-number">17.6.7</span> Extracting Matches</h3>
