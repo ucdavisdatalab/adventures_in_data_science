@@ -3,13 +3,12 @@
 ## Learning Objectives
 After this lesson, you should be able to:
 
-* Explain the difference between strings and factors
-* Convert strings to factors
 * Explain the grammar of graphics
 * With the ggplot2 package:
     + Make various kinds of plots
     + Save plots
 * Choose an appropriate kind of plot based on the data
+* Use factors to reorder axes
 
 ## R Graphics Overview
 
@@ -56,19 +55,22 @@ facets      | Side-by-side plots
 guides      | Axis and legend position settings
 annotations | Shapes that are not mapped to data
 coordinates | Coordinate systems (Cartesian, logarithmic, polar)
+themes      | Display of non-data elements
 
 
 ### Making a Plot
 
-As an example, let's plot the class survey data from the Intro to R and Functions lessons -- by now this should be saved into your working directory. First, let's load in our data.
+For the plotting examples, let's take the wine reviews data that we have been 
+working with, and subset it to focus in on Cabernet Sauvignon from the Central Valley.
 
 ```{r}
-survey = read.csv("data/class_survey.csv")
-str(survey)
+wine_revs <- read.csv("data/wine_enthusiast_rankings.csv")
+wine_cv <- wine_revs[wine_revs$region_2 == "Central Valley" & 
+                       wine_revs$variety == "Cabernet Sauvignon",]
 ```
 
-Next we need to load `ggplot2`. As always, if this is your first time using the package, you'll
-have to install it. Then you can load the package:
+Next we need to load `ggplot2`. As always, if this is your first time using the 
+package, you'll have to install it. Then you can load the package:
 
 ```{r}
 # install.packages("ggplot2")
@@ -76,9 +78,9 @@ library(ggplot2)
 ```
 
 What kind of plot should we make? It depends on what data we want the plot to
-show. Let's make a plot that shows the distance in miles (from the library)
-against the biking time in minutes for each place in the data. Both the
-distance and the biking time are recorded as numbers. A scatter plot is a good
+show. Let's make a plot that shows the price of the wine 
+against the points awarded to that wine by the reviewers. Both the
+price and the points are recorded as numbers. A scatter plot is a good
 choice for displaying two numeric features. Later we'll learn about other
 options, but for now we'll make a scatter plot.
 
@@ -99,7 +101,7 @@ sets we work with are tidy.
 
 To set up the data layer, call the `ggplot` function on a data frame:
 ```{r}
-ggplot(survey)
+ggplot(wine_cv)
 ```
 
 This returns a blank plot. We still need to add a few more layers.
@@ -117,7 +119,7 @@ a function for each geometry, always prefixed with `geom_`.
 To add a geometry layer to the plot, choose the `geom_` function you want and
 add it to the plot with the `+` operator:
 ```{r, error=TRUE, fig.show="hide"}
-ggplot(survey) + geom_point()
+ggplot(wine_cv) + geom_point()
 ```
 
 This returns an error message that we're missing aesthetics `x` and `y`. We'll
@@ -142,13 +144,13 @@ aes(AESTHETIC = FEATURE, ...)
 ```
 
 The names of the aesthetics depend on the geometry, but some common ones are
-`x`, `y`, `color`, `fill`, `shape`, and `size`. There is more information about
+`x`, `y`, `color`, `fill`, `shape`, `alpha`, and `size`. There is more information about
 and examples of aesthetic names in the documentation.
 
-For example, if we want to put the `distance_mi` feature on the x-axis, the
+For example, if we want to put the `price` feature on the x-axis, the
 aesthetic layer should be:
 ```{r, eval=FALSE}
-aes(x = distance_mi)
+aes(x = price)
 ```
 
 In the `aes` function, column names are never quoted.
@@ -157,62 +159,83 @@ Unlike most layers, the aesthetic layer is not added to the plot with the `+`
 operator. Instead, you can pass the aesthetic layer as the second argument to
 the `ggplot` function:
 ```{r}
-ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point()
+ggplot(wine_cv, aes(x = price, y = points)) + geom_point()
 ```
 
-If you want to set an aesthetic to a constant value, rather than one that's
-data dependent, do so *outside* of the aesthetic layer. For instance, suppose
+Aesthetics can be informed by data (e.g. the price column), or by constant values
+(e.g. the color "blue"). Whether the value is informed by the data or constant will
+determine where to place that piece of information. Constant values should not be placed
+inside the aesthetic later. If you set a constant value *inside* of the aesthetic 
+layer, the results you get might not be what you expect. For instance, suppose
 we want to make the points blue:
 
 ```{r}
-ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point(color = "blue")
+ggplot(wine_cv, aes(x = price, y = points, color = "blue")) + geom_point()
 ```
 
-If you set an aesthetic to a constant value inside of the aesthetic layer, the
-results you get might not be what you expect:
+Instead, if you want to set an aesthetic to a constant value, rather than one that's
+data dependent, do so *outside* of the aesthetic layer. 
+
 ```{r}
-ggplot(survey, aes(x = distance.mi, y = time.min, color = "blue")) + geom_point()
+ggplot(wine_cv, aes(x = price, y = points)) + geom_point(color = "blue")
 ```
 
-This plot also demonstrates the importance of visualization. We can see that
-one of the survey response distances is around 100 miles in 2 minutes, which we've identified is likely an error. Before we continue, let's remove all responses that are more than
-99 miles from campus (later we will talk about cleaning and correcting data, but for now we will just remove it):
+Notice that when we specify the color "blue" (outside of aesthetic mapping), R understands what we mean. There is a [long list of color names that R recognizes](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf). But you can also use specific hex codes or palettes like were recommended in the previous section on [Accessible Data Visualizations](https://ucdavisdatalab.github.io/adventures_in_data_science/data-visualization-principles-perception.html#accessible-data-visualizations).
+
+Another useful constant aesthetic is the `alpha` argument, which adjusts the transparency of the points using a range between 0-1 (alpha = 0 is fully transparent and alpha = 1 is not transparent). This can be useful because `geom_point` will stack points with the exact same values on top of one another, which is hard to tell when they are all completely filled in a certain color (e.g. alpha = 1).
+
 ```{r}
-survey = survey[survey$distance.mi <= 99, ]
+ggplot(wine_cv, aes(x = price, y = points)) + geom_point(color = "blue", alpha = .3)
 ```
-
-
 
 #### Per-geometry Aesthetics {-}
 
 When you pass an aesthetic layer to the `ggplot` function, it applies to the
 entire plot. You can also set an aesthetic layer individually for each
-geometry, by passing the layer as the first argument in the `geom_` function:
+geometry, by passing the layer as the first argument in the `geom_` function. Before we test this out, let's make a smaller subset of our wines, what we'll called underrated_wines, based on those that are less than $20 and have scores higher than 85.
+
 ```{r}
-ggplot(survey) + geom_point(aes(x = distance.mi, y = time.min))
+underrated_wines <- wine_cv[wine_cv$price < 20 & wine_cv$points > 85, ]
+nrow(underrated_wines)
 ```
 
-This is really only useful when you have multiple geometries. As an example,
-let's color-code the points by major:
+Now, let's first set the aesthetics in the `ggplot` functions, and add color by
+region to take a look at where these wines are from within the Central Valley.
 ```{r}
-ggplot(survey, aes(x = distance.mi, y = time.min, color = major)) +
-  geom_point()
+ggplot(underrated_wines, aes(x = price, y = points, color = region_1)) + geom_point()
 ```
 
-Now let's also add labels to each point. To do this, we need to add another
-geometry:
+
+Now let's add another geometry to better understand the effect of aesthetic 
+placements. Let's add a `geom_text` layer to add labels to the plot based on who
+ranked this wine. We need to specify the variables that we want to label with in the aesthetics, and add a new geom layer:
+
 ```{r}
-ggplot(survey, aes(x = distance.mi, y = time.min, color = major, label = major)) +
-  geom_point() + geom_text(size = 2)
+ggplot(underrated_wines, aes(x = price, y = points, color = region_1, label = taster_name)) +
+  geom_point() + geom_text(size = 3)
 ```
 
-Where we put the aesthetics matters:
+In the example above, both geometries (`geom_point` and `geom_text`), take on the same color aesthetic mapping. So, where we put the aesthetics matters. If we move the color aesthetic to the `geom_text` layer, how does the plot change?
 ```{r}
-ggplot(survey, aes(x = distance.mi, y = time.min, label = major)) +
-  geom_point() + geom_text(aes(color = major), size = 2)
+ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) + 
+  geom_point() + geom_text(aes(color = region_1), size = 3)
 ```
 
-#### Layer 4: Scales {-}
+
+We can also move the color aesthetic to the `geom_text` layer to experiment: 
+```{r}
+ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) + 
+  geom_point(aes(color = region_1)) + geom_text(size = 3)
+```
+
+How might we be able to better see all 40 of the observations? Let's try the `position` argument within each geometry, where `position = position_jitter()` will adjust (or "jitter") the points.
+```{r}
+ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) +
+  geom_point(aes(color = region_1), position = position_jitter(seed = 1)) + 
+  geom_text(size = 3, position = position_jitter(seed = 1))
+```
+
+#### Other layers: Scales and themes {-}
 
 The scales layer controls the title, axis labels, and axis scales of the plot.
 Most of the functions in the scales layer are prefixed with `scale_`, but not
@@ -221,18 +244,45 @@ all of them.
 The `labs` function is especially important, because it's used to set the title
 and axis labels:
 ```{r}
-ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point() +
-  labs(title = "Biking time vs distance", x = "Distance (mi)",
-    y = "Biking time (min)")
+ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + 
+  geom_point() +
+  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
+       x = "Price ($)", y = "Points", color = "Region")
 ```
 
+You can add `theme` layers that change the non-data components of the figure. ggplot2 comes with several themes which can be useful to quickly change the look of your visualization. The complete list of themes is available at https://ggplot2.tidyverse.org/reference/ggtheme.html. theme_classic(), theme_minimal(), and theme_light() are popular.
+
+
+```{r}
+ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + geom_point() +
+  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
+       x = "Price ($)", y = "Points", color = "Region") +
+  theme_minimal()
+```
+
+We can also save ggplots as objects:
+
+```{r}
+wine_plot <- ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + 
+  geom_point() +
+  labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
+       x = "Price ($)", y = "Points", color = "Region") +
+  theme_minimal()
+```
+
+Note what kind of object this is:
+
+```{r}
+typeof(wine_plot)
+class(wine_plot)
+```
 
 ### Saving Plots
 
 In ggplot2, use the `ggsave` function to save the most recent plot you created:
 
 ```{r, eval=FALSE}
-ggsave("scatter_plot.png")
+ggsave(plot = wine_plot, "scatter_plot.png")
 ```
 
 The file format is selected automatically based on the extension. Common
@@ -253,14 +303,14 @@ Here's an example:
 ```{r, eval=FALSE}
 # Run these lines in the console, not the notebook!
 jpeg("scatter_plot.jpeg")
-ggplot(survey, aes(x = distance.mi, y = time.min)) + geom_point()
+wine_plot
 dev.off()
 ```
 
 
 ### Example: Bar Plot
 
-Let's say we want to plot the number of responses for each major. A bar plot is
+Let's say we want to plot the number of responses for each region in the Central Valley. A bar plot is
 an appropriate way to represent this visually.
 
 The geometry for a bar plot is `geom_bar`. Since bar plots are mainly used to
@@ -268,12 +318,103 @@ display frequencies, the `geom_bar` function automatically computes frequencies
 when given mapped to a categorical feature. So we can write:
 
 ```{r}
-ggplot(survey, aes(x = major)) + geom_bar() +
-  labs(title = "Majors in Responses", x = "Major", y = "Count")
+ggplot(wine_cv, aes(x = region_1)) + geom_bar() 
 ```
 To prevent `geom_bar` from computing frequencies automatically, set `stat =
 "identity"`. This is mainly useful if you want to plot quantities you've
 computed manually on the y-axis.
+
+#### Position adjustment  
+
+Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. First, let's consider the difference between the `color` arguments and the `fill` argument for bar plots.
+
+```{r}
+ggplot(wine_cv, aes(x = region_1)) + geom_bar(aes(color = taster_name)) 
+```
+
+The `color` argument will outline the bars in a color, whereas the `fill` argument will fill them in with a default color scheme.
+
+```{r}
+ggplot(wine_cv, aes(x = region_1)) + geom_bar(aes(fill = taster_name)) 
+```
+
+Automatically, `geom_bar()` positions the grouped colors or fills on top of one another, with the default argument `position = "identity"`. If you want to change the position of the groupings, you can set `position = "dodge"` to set the groups side-by-side.
+
+```{r}
+ggplot(wine_cv, aes(x = region_1)) + 
+  geom_bar(aes(fill = taster_name), position = "dodge") 
+```
+
+## Remembering factors
+
+A feature is **categorical** if it measures a qualitative category. For
+example, the genres `rock`, `blues`, `alternative`, `folk`, `pop` are
+categories.
+
+R uses the class `factor` to represent categorical data. Visualizations and
+statistical models sometimes treat factors differently than other data types,
+so it's important to make sure you have the right data type. If you're ever
+unsure, remember that you can check the class of an object with the `class`
+function.
+
+When you load a data set, R usually can't tell which features are categorical.
+That means identifying and converting the categorical features is up to you. 
+This can be especially helpful to know if you are plotting categories, but want 
+them to have a particular order, other than the default (alphabetical).
+
+Let's think about which features are categorical in the class wine reviews data. 
+
+```{r}
+str(wine_cv)
+```
+
+
+The numeric columns in this data set (`price`, `points`) are all quantitative, 
+so they're not categorical. That leaves the character columns.
+
+Because we have subsetted only the Cabernet Sauvignon varieties in the Central Valley, 
+we know that variables like `province`, `region_2`, and `variety` have no variation. 
+So that leaves us with the other character variables. Some of these, like winery, 
+have too many groups to really consider useful:
+
+```{r}
+table(wine_cv$winery)
+```
+
+Others, such as `region_1` and `taster_name`, have fewer groupings -- which is why 
+we have used them so far for simplfying our visualizations. To reorder our 
+`region_1` variable, lets' convert to to a factor using the `factor`.
+
+```{r}
+factor(wine_cv$region_1)
+```
+
+The categories of a factor are called **levels**. You can list the levels with
+the `levels` function:
+```{r}
+levels(factor(wine_cv$region_1))
+```
+
+Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the regions in our wine reviews data.
+```{r}
+ggplot(wine_cv, aes(x = region_1)) + geom_bar()
+```
+
+### Assigning factor levels
+But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the `factor` function.
+
+```{r}
+wine_cv$region_1_f <- factor(wine_cv$region_1, 
+                             levels = c("Lodi", "Clarksburg", "Yolo County",
+                                        "Clements Hills", "Dunnigan Hills"))
+levels(wine_cv$region_1_f)
+```
+
+Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the region_1 factor. 
+
+```{r}
+ggplot(wine_cv, aes(x = region_1_f)) + geom_bar()
+```
 
 
 ## Designing a Visualization
@@ -321,81 +462,4 @@ Also:
 * For side-by-side plots, use the same axis scales for both plots so that
   comparing them is not deceptive.
 
-## Remembering factors
-
-A feature is **categorical** if it measures a qualitative category. For
-example, the genres `rock`, `blues`, `alternative`, `folk`, `pop` are
-categories.
-
-R uses the class `factor` to represent categorical data. Visualizations and
-statistical models sometimes treat factors differently than other data types,
-so it's important to make sure you have the right data type. If you're ever
-unsure, remember that you can check the class of an object with the `class`
-function.
-
-When you load a data set, R usually can't tell which features are categorical.
-That means identifying and converting the categorical features is up to you. This can be especially helpful to know if you are plotting categories, but want them to have a particular order, other than the default (alphabetical).
-
-Let's think about which features are categorical in the class survey data. 
-
-```{r}
-str(survey)
-```
-
-
-The numeric columns in this data set (`bike_min`, `walk_min`, and
-`distance_mi`) are all quantitative, so they're not categorical. That leaves
-the character columns.
-
-The `major`, `place`, and `pets` columns are all characters and it is easy to imagine
-grouping these survey responses to summarize the data. Especially major, where there are multiple of the same majors, we can say this is categorical. For
-`place`, there are more distinct responses, so it's not as clear. The locations are:
-
-```{r}
-table(survey$place)
-```
-
-So there are a couple of locations that aren't unique, but most of them are.
-For this data set, we probably shouldn't treat `place` as categorical
-because the groups wouldn't be interesting. However, if we had more survey
-responses (or more at each location) it might make sense to do so.
-
-Let's convert the `major` column to a factor. To do this, use the `factor`
-function:
-```{r}
-factor(survey$major)
-
-survey$major = factor(survey$major)
-```
-
-Notice that factors are printed differently than strings.
-
-The categories of a factor are called **levels**. You can list the levels with
-the `levels` function:
-```{r}
-levels(survey$major)
-```
-
-Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the number of majors in our survey.
-```{r}
-ggplot(survey, aes(x = major)) + geom_bar() +
-  labs(title = "Majors in Responses", x = "Major", y = "Count")
-```
-
-### Assigning factor levels
-But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the `factor()` function.
-
-```{r}
-survey$major <- factor(survey$major, levels = c("undeclared", "psychology", 
-                                                "human development", "GG",
-                                                "economics", "chicanx studies"))
-levels(survey$major)
-```
-
-Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the major factor. 
-
-```{r}
-ggplot(survey, aes(x = major)) + geom_bar() +
-  labs(title = "Majors in Responses", x = "Major", y = "Count")
-```
 

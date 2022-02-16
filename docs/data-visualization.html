@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>14 Data Visualization | Adventures in Data Science</title>
   <meta name="description" content="14 Data Visualization | Adventures in Data Science" />
-  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="14 Data Visualization | Adventures in Data Science" />
   <meta property="og:type" content="book" />
@@ -30,9 +30,10 @@
 <meta name="author" content="Arthur Koehl" />
 <meta name="author" content="Carrie Alexander" />
 <meta name="author" content="Jared Joseph" />
+<meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-02-08" />
+<meta name="date" content="2022-02-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -42,8 +43,7 @@
 <link rel="prev" href="data-visualization-principles-perception.html"/>
 <link rel="next" href="how-the-web-works.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
-<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -51,6 +51,7 @@
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
 
 
 
@@ -450,11 +451,11 @@ div.csl-indent {
 <li class="chapter" data-level="14.3.2" data-path="data-visualization.html"><a href="data-visualization.html#saving-plots"><i class="fa fa-check"></i><b>14.3.2</b> Saving Plots</a></li>
 <li class="chapter" data-level="14.3.3" data-path="data-visualization.html"><a href="data-visualization.html#example-bar-plot"><i class="fa fa-check"></i><b>14.3.3</b> Example: Bar Plot</a></li>
 </ul></li>
-<li class="chapter" data-level="14.4" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>14.4</b> Designing a Visualization</a></li>
-<li class="chapter" data-level="14.5" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>14.5</b> Remembering factors</a>
+<li class="chapter" data-level="14.4" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>14.4</b> Remembering factors</a>
 <ul>
-<li class="chapter" data-level="14.5.1" data-path="data-visualization.html"><a href="data-visualization.html#assigning-factor-levels"><i class="fa fa-check"></i><b>14.5.1</b> Assigning factor levels</a></li>
+<li class="chapter" data-level="14.4.1" data-path="data-visualization.html"><a href="data-visualization.html#assigning-factor-levels"><i class="fa fa-check"></i><b>14.4.1</b> Assigning factor levels</a></li>
 </ul></li>
+<li class="chapter" data-level="14.5" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>14.5</b> Designing a Visualization</a></li>
 </ul></li>
 <li class="chapter" data-level="15" data-path="how-the-web-works.html"><a href="how-the-web-works.html"><i class="fa fa-check"></i><b>15</b> How the Web Works</a>
 <ul>
@@ -692,8 +693,6 @@ div.csl-indent {
 <h2><span class="header-section-number">14.1</span> Learning Objectives</h2>
 <p>After this lesson, you should be able to:</p>
 <ul>
-<li>Explain the difference between strings and factors</li>
-<li>Convert strings to factors</li>
 <li>Explain the grammar of graphics</li>
 <li>With the ggplot2 package:
 <ul>
@@ -701,6 +700,7 @@ div.csl-indent {
 <li>Save plots</li>
 </ul></li>
 <li>Choose an appropriate kind of plot based on the data</li>
+<li>Use factors to reorder axes</li>
 </ul>
 </div>
 <div id="r-graphics-overview" class="section level2" number="14.2">
@@ -761,27 +761,27 @@ three layers every plot must have are:</p>
 <td>coordinates</td>
 <td>Coordinate systems (Cartesian, logarithmic, polar)</td>
 </tr>
+<tr class="even">
+<td>themes</td>
+<td>Display of non-data elements</td>
+</tr>
 </tbody>
 </table>
 <div id="making-a-plot" class="section level3" number="14.3.1">
 <h3><span class="header-section-number">14.3.1</span> Making a Plot</h3>
-<p>As an example, let’s plot the class survey data from the Intro to R and Functions lessons – by now this should be saved into your working directory. First, let’s load in our data.</p>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="data-visualization.html#cb461-1" aria-hidden="true" tabindex="-1"></a>survey <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/class_survey.csv&quot;</span>)</span>
-<span id="cb461-2"><a href="data-visualization.html#cb461-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(survey)</span></code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    11 obs. of  5 variables:
-##  $ place      : chr  &quot;Temple&quot; &quot;Yakitori&quot; &quot;Panera&quot; &quot;Yakitori&quot; ...
-##  $ distance.mi: num  0.9 0.6 0.8 0.6 2 100 0.6 0.7 0.8 1 ...
-##  $ time.min   : int  5 4 4 12 10 2 3 4 4 5 ...
-##  $ major      : chr  &quot;chicanx studies&quot; &quot;human development&quot; &quot;economics&quot; &quot;undeclared&quot; ...
-##  $ pets       : chr  &quot;woof&quot; &quot;woof&quot; &quot;cat&quot; &quot;woof&quot; ...</code></pre>
-<p>Next we need to load <code>ggplot2</code>. As always, if this is your first time using the package, you’ll
-have to install it. Then you can load the package:</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="data-visualization.html#cb463-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;ggplot2&quot;)</span></span>
-<span id="cb463-2"><a href="data-visualization.html#cb463-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<p>For the plotting examples, let’s take the wine reviews data that we have been
+working with, and subset it to focus in on Cabernet Sauvignon from the Central Valley.</p>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="data-visualization.html#cb461-1" aria-hidden="true" tabindex="-1"></a>wine_revs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/wine_enthusiast_rankings.csv&quot;</span>)</span>
+<span id="cb461-2"><a href="data-visualization.html#cb461-2" aria-hidden="true" tabindex="-1"></a>wine_cv <span class="ot">&lt;-</span> wine_revs[wine_revs<span class="sc">$</span>region_2 <span class="sc">==</span> <span class="st">&quot;Central Valley&quot;</span> <span class="sc">&amp;</span> </span>
+<span id="cb461-3"><a href="data-visualization.html#cb461-3" aria-hidden="true" tabindex="-1"></a>                       wine_revs<span class="sc">$</span>variety <span class="sc">==</span> <span class="st">&quot;Cabernet Sauvignon&quot;</span>,]</span></code></pre></div>
+<p>Next we need to load <code>ggplot2</code>. As always, if this is your first time using the
+package, you’ll have to install it. Then you can load the package:</p>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="data-visualization.html#cb462-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;ggplot2&quot;)</span></span>
+<span id="cb462-2"><a href="data-visualization.html#cb462-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
 <p>What kind of plot should we make? It depends on what data we want the plot to
-show. Let’s make a plot that shows the distance in miles (from the library)
-against the biking time in minutes for each place in the data. Both the
-distance and the biking time are recorded as numbers. A scatter plot is a good
+show. Let’s make a plot that shows the price of the wine
+against the points awarded to that wine by the reviewers. Both the
+price and the points are recorded as numbers. A scatter plot is a good
 choice for displaying two numeric features. Later we’ll learn about other
 options, but for now we’ll make a scatter plot.</p>
 <div id="layer-1-data" class="section level4 unnumbered">
@@ -798,7 +798,7 @@ Tidy means:</p>
 an untidy data set tidy. Until then, we’ll take it for granted that the data
 sets we work with are tidy.</p>
 <p>To set up the data layer, call the <code>ggplot</code> function on a data frame:</p>
-<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="data-visualization.html#cb464-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey)</span></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="data-visualization.html#cb463-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>This returns a blank plot. We still need to add a few more layers.</p>
 </div>
@@ -811,8 +811,9 @@ of plot to make: one with points, lines, boxes, or something else.</p>
 a function for each geometry, always prefixed with <code>geom_</code>.</p>
 <p>To add a geometry layer to the plot, choose the <code>geom_</code> function you want and
 add it to the plot with the <code>+</code> operator:</p>
-<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="data-visualization.html#cb465-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
-<pre><code>## Error: geom_point requires the following missing aesthetics: x and y</code></pre>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="data-visualization.html#cb464-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<pre><code>## Error in `check_required_aesthetics()`:
+## ! geom_point requires the following missing aesthetics: x and y</code></pre>
 <p>This returns an error message that we’re missing aesthetics <code>x</code> and <code>y</code>. We’ll
 learn more about aesthetics in the next section, but this error message is
 especially helpful: it tells us exactly what we’re missing. When you use a
@@ -829,70 +830,101 @@ geometry. Use the aesthetic layer to map features in the data to <strong>aesthet
 <p>The <code>aes</code> function creates an aesthetic layer. The syntax is:</p>
 <pre><code>aes(AESTHETIC = FEATURE, ...)</code></pre>
 <p>The names of the aesthetics depend on the geometry, but some common ones are
-<code>x</code>, <code>y</code>, <code>color</code>, <code>fill</code>, <code>shape</code>, and <code>size</code>. There is more information about
+<code>x</code>, <code>y</code>, <code>color</code>, <code>fill</code>, <code>shape</code>, <code>alpha</code>, and <code>size</code>. There is more information about
 and examples of aesthetic names in the documentation.</p>
-<p>For example, if we want to put the <code>distance_mi</code> feature on the x-axis, the
+<p>For example, if we want to put the <code>price</code> feature on the x-axis, the
 aesthetic layer should be:</p>
-<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="data-visualization.html#cb468-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aes</span>(<span class="at">x =</span> distance_mi)</span></code></pre></div>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="data-visualization.html#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aes</span>(<span class="at">x =</span> price)</span></code></pre></div>
 <p>In the <code>aes</code> function, column names are never quoted.</p>
 <p>Unlike most layers, the aesthetic layer is not added to the plot with the <code>+</code>
 operator. Instead, you can pass the aesthetic layer as the second argument to
 the <code>ggplot</code> function:</p>
-<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb469-1"><a href="data-visualization.html#cb469-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="data-visualization.html#cb468-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>If you want to set an aesthetic to a constant value, rather than one that’s
-data dependent, do so <em>outside</em> of the aesthetic layer. For instance, suppose
+<p>Aesthetics can be informed by data (e.g. the price column), or by constant values
+(e.g. the color “blue”). Whether the value is informed by the data or constant will
+determine where to place that piece of information. Constant values should not be placed
+inside the aesthetic later. If you set a constant value <em>inside</em> of the aesthetic
+layer, the results you get might not be what you expect. For instance, suppose
 we want to make the points blue:</p>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="data-visualization.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb469-1"><a href="data-visualization.html#cb469-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>If you set an aesthetic to a constant value inside of the aesthetic layer, the
-results you get might not be what you expect:</p>
-<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="data-visualization.html#cb471-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<p>Instead, if you want to set an aesthetic to a constant value, rather than one that’s
+data dependent, do so <em>outside</em> of the aesthetic layer.</p>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="data-visualization.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>This plot also demonstrates the importance of visualization. We can see that
-one of the survey response distances is around 100 miles in 2 minutes, which we’ve identified is likely an error. Before we continue, let’s remove all responses that are more than
-99 miles from campus (later we will talk about cleaning and correcting data, but for now we will just remove it):</p>
-<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="data-visualization.html#cb472-1" aria-hidden="true" tabindex="-1"></a>survey <span class="ot">=</span> survey[survey<span class="sc">$</span>distance.mi <span class="sc">&lt;=</span> <span class="dv">99</span>, ]</span></code></pre></div>
+<p>Notice that when we specify the color “blue” (outside of aesthetic mapping), R understands what we mean. There is a <a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">long list of color names that R recognizes</a>. But you can also use specific hex codes or palettes like were recommended in the previous section on <a href="https://ucdavisdatalab.github.io/adventures_in_data_science/data-visualization-principles-perception.html#accessible-data-visualizations">Accessible Data Visualizations</a>.</p>
+<p>Another useful constant aesthetic is the <code>alpha</code> argument, which adjusts the transparency of the points using a range between 0-1 (alpha = 0 is fully transparent and alpha = 1 is not transparent). This can be useful because <code>geom_point</code> will stack points with the exact same values on top of one another, which is hard to tell when they are all completely filled in a certain color (e.g. alpha = 1).</p>
+<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="data-visualization.html#cb471-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">alpha =</span> .<span class="dv">3</span>)</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 <div id="per-geometry-aesthetics" class="section level4 unnumbered">
 <h4>Per-geometry Aesthetics</h4>
 <p>When you pass an aesthetic layer to the <code>ggplot</code> function, it applies to the
 entire plot. You can also set an aesthetic layer individually for each
-geometry, by passing the layer as the first argument in the <code>geom_</code> function:</p>
-<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="data-visualization.html#cb473-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min))</span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>This is really only useful when you have multiple geometries. As an example,
-let’s color-code the points by major:</p>
-<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="data-visualization.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">color =</span> major)) <span class="sc">+</span></span>
-<span id="cb474-2"><a href="data-visualization.html#cb474-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
+geometry, by passing the layer as the first argument in the <code>geom_</code> function. Before we test this out, let’s make a smaller subset of our wines, what we’ll called underrated_wines, based on those that are less than $20 and have scores higher than 85.</p>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="data-visualization.html#cb472-1" aria-hidden="true" tabindex="-1"></a>underrated_wines <span class="ot">&lt;-</span> wine_cv[wine_cv<span class="sc">$</span>price <span class="sc">&lt;</span> <span class="dv">20</span> <span class="sc">&amp;</span> wine_cv<span class="sc">$</span>points <span class="sc">&gt;</span> <span class="dv">85</span>, ]</span>
+<span id="cb472-2"><a href="data-visualization.html#cb472-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(underrated_wines)</span></code></pre></div>
+<pre><code>## [1] 40</code></pre>
+<p>Now, let’s first set the aesthetics in the <code>ggplot</code> functions, and add color by
+region to take a look at where these wines are from within the Central Valley.</p>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="data-visualization.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>Now let’s also add labels to each point. To do this, we need to add another
-geometry:</p>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="data-visualization.html#cb475-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">color =</span> major, <span class="at">label =</span> major)) <span class="sc">+</span></span>
-<span id="cb475-2"><a href="data-visualization.html#cb475-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>Now let’s add another geometry to better understand the effect of aesthetic
+placements. Let’s add a <code>geom_text</code> layer to add labels to the plot based on who
+ranked this wine. We need to specify the variables that we want to label with in the aesthetics, and add a new geom layer:</p>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="data-visualization.html#cb475-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
+<span id="cb475-2"><a href="data-visualization.html#cb475-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Where we put the aesthetics matters:</p>
-<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="data-visualization.html#cb476-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min, <span class="at">label =</span> major)) <span class="sc">+</span></span>
-<span id="cb476-2"><a href="data-visualization.html#cb476-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">color =</span> major), <span class="at">size =</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>In the example above, both geometries (<code>geom_point</code> and <code>geom_text</code>), take on the same color aesthetic mapping. So, where we put the aesthetics matters. If we move the color aesthetic to the <code>geom_text</code> layer, how does the plot change?</p>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="data-visualization.html#cb476-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
+<span id="cb476-2"><a href="data-visualization.html#cb476-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>We can also move the color aesthetic to the <code>geom_text</code> layer to experiment:</p>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="data-visualization.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
+<span id="cb477-2"><a href="data-visualization.html#cb477-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>How might we be able to better see all 40 of the observations? Let’s try the <code>position</code> argument within each geometry, where <code>position = position_jitter()</code> will adjust (or “jitter”) the points.</p>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="data-visualization.html#cb478-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
+<span id="cb478-2"><a href="data-visualization.html#cb478-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb478-3"><a href="data-visualization.html#cb478-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>))</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
-<div id="layer-4-scales" class="section level4 unnumbered">
-<h4>Layer 4: Scales</h4>
+<div id="other-layers-scales-and-themes" class="section level4 unnumbered">
+<h4>Other layers: Scales and themes</h4>
 <p>The scales layer controls the title, axis labels, and axis scales of the plot.
 Most of the functions in the scales layer are prefixed with <code>scale_</code>, but not
 all of them.</p>
 <p>The <code>labs</code> function is especially important, because it’s used to set the title
 and axis labels:</p>
-<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="data-visualization.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb477-2"><a href="data-visualization.html#cb477-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Biking time vs distance&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Distance (mi)&quot;</span>,</span>
-<span id="cb477-3"><a href="data-visualization.html#cb477-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Biking time (min)&quot;</span>)</span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="data-visualization.html#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
+<span id="cb479-2"><a href="data-visualization.html#cb479-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb479-3"><a href="data-visualization.html#cb479-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb479-4"><a href="data-visualization.html#cb479-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>)</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>You can add <code>theme</code> layers that change the non-data components of the figure. ggplot2 comes with several themes which can be useful to quickly change the look of your visualization. The complete list of themes is available at <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="uri">https://ggplot2.tidyverse.org/reference/ggtheme.html</a>. theme_classic(), theme_minimal(), and theme_light() are popular.</p>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="data-visualization.html#cb480-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb480-2"><a href="data-visualization.html#cb480-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb480-3"><a href="data-visualization.html#cb480-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
+<span id="cb480-4"><a href="data-visualization.html#cb480-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>We can also save ggplots as objects:</p>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="data-visualization.html#cb481-1" aria-hidden="true" tabindex="-1"></a>wine_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
+<span id="cb481-2"><a href="data-visualization.html#cb481-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb481-3"><a href="data-visualization.html#cb481-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb481-4"><a href="data-visualization.html#cb481-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
+<span id="cb481-5"><a href="data-visualization.html#cb481-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p>Note what kind of object this is:</p>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="data-visualization.html#cb482-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(wine_plot)</span></code></pre></div>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="data-visualization.html#cb484-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(wine_plot)</span></code></pre></div>
+<pre><code>## [1] &quot;gg&quot;     &quot;ggplot&quot;</code></pre>
 </div>
 </div>
 <div id="saving-plots" class="section level3" number="14.3.2">
 <h3><span class="header-section-number">14.3.2</span> Saving Plots</h3>
 <p>In ggplot2, use the <code>ggsave</code> function to save the most recent plot you created:</p>
-<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="data-visualization.html#cb478-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">&quot;scatter_plot.png&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="data-visualization.html#cb486-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot =</span> wine_plot, <span class="st">&quot;scatter_plot.png&quot;</span>)</span></code></pre></div>
 <p>The file format is selected automatically based on the extension. Common
 formats are PNG and PDF.</p>
 <div id="the-plot-device" class="section level4 unnumbered">
@@ -906,28 +938,165 @@ are:</p>
 </ol>
 <p>This strategy works with any of R’s graphics systems (not just ggplot2).</p>
 <p>Here’s an example:</p>
-<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="data-visualization.html#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run these lines in the console, not the notebook!</span></span>
-<span id="cb479-2"><a href="data-visualization.html#cb479-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jpeg</span>(<span class="st">&quot;scatter_plot.jpeg&quot;</span>)</span>
-<span id="cb479-3"><a href="data-visualization.html#cb479-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> distance.mi, <span class="at">y =</span> time.min)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span>
-<span id="cb479-4"><a href="data-visualization.html#cb479-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="data-visualization.html#cb487-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run these lines in the console, not the notebook!</span></span>
+<span id="cb487-2"><a href="data-visualization.html#cb487-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jpeg</span>(<span class="st">&quot;scatter_plot.jpeg&quot;</span>)</span>
+<span id="cb487-3"><a href="data-visualization.html#cb487-3" aria-hidden="true" tabindex="-1"></a>wine_plot</span>
+<span id="cb487-4"><a href="data-visualization.html#cb487-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 </div>
 </div>
 <div id="example-bar-plot" class="section level3" number="14.3.3">
 <h3><span class="header-section-number">14.3.3</span> Example: Bar Plot</h3>
-<p>Let’s say we want to plot the number of responses for each major. A bar plot is
+<p>Let’s say we want to plot the number of responses for each region in the Central Valley. A bar plot is
 an appropriate way to represent this visually.</p>
 <p>The geometry for a bar plot is <code>geom_bar</code>. Since bar plots are mainly used to
 display frequencies, the <code>geom_bar</code> function automatically computes frequencies
 when given mapped to a categorical feature. So we can write:</p>
-<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="data-visualization.html#cb480-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> major)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb480-2"><a href="data-visualization.html#cb480-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Majors in Responses&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Major&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="data-visualization.html#cb488-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>() </span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" />
 To prevent <code>geom_bar</code> from computing frequencies automatically, set <code>stat = "identity"</code>. This is mainly useful if you want to plot quantities you’ve
 computed manually on the y-axis.</p>
+<div id="position-adjustment" class="section level4" number="14.3.3.1">
+<h4><span class="header-section-number">14.3.3.1</span> Position adjustment</h4>
+<p>Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. First, let’s consider the difference between the <code>color</code> arguments and the <code>fill</code> argument for bar plots.</p>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="data-visualization.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">color =</span> taster_name)) </span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>The <code>color</code> argument will outline the bars in a color, whereas the <code>fill</code> argument will fill them in with a default color scheme.</p>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="data-visualization.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name)) </span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>Automatically, <code>geom_bar()</code> positions the grouped colors or fills on top of one another, with the default argument <code>position = "identity"</code>. If you want to change the position of the groupings, you can set <code>position = "dodge"</code> to set the groups side-by-side.</p>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="data-visualization.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> </span>
+<span id="cb491-2"><a href="data-visualization.html#cb491-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name), <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) </span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 </div>
 </div>
-<div id="designing-a-visualization" class="section level2" number="14.4">
-<h2><span class="header-section-number">14.4</span> Designing a Visualization</h2>
+</div>
+<div id="remembering-factors" class="section level2" number="14.4">
+<h2><span class="header-section-number">14.4</span> Remembering factors</h2>
+<p>A feature is <strong>categorical</strong> if it measures a qualitative category. For
+example, the genres <code>rock</code>, <code>blues</code>, <code>alternative</code>, <code>folk</code>, <code>pop</code> are
+categories.</p>
+<p>R uses the class <code>factor</code> to represent categorical data. Visualizations and
+statistical models sometimes treat factors differently than other data types,
+so it’s important to make sure you have the right data type. If you’re ever
+unsure, remember that you can check the class of an object with the <code>class</code>
+function.</p>
+<p>When you load a data set, R usually can’t tell which features are categorical.
+That means identifying and converting the categorical features is up to you.
+This can be especially helpful to know if you are plotting categories, but want
+them to have a particular order, other than the default (alphabetical).</p>
+<p>Let’s think about which features are categorical in the class wine reviews data.</p>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="data-visualization.html#cb492-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wine_cv)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    104 obs. of  14 variables:
+##  $ X                    : int  954 2765 3397 4549 4686 4944 5426 5975 6964 8633 ...
+##  $ country              : chr  &quot;US&quot; &quot;US&quot; &quot;US&quot; &quot;US&quot; ...
+##  $ description          : chr  &quot;Full-bodied and smooth in texture, this generous-tasting wine has lots of ripe plum flavors and sweet-seeming oak accents.&quot; &quot;This full-bodied wine has earthy, woodsy aromas, ripe and mature fruit flavors and a broad, almost soft texture&quot;| __truncated__ &quot;This is on the light side, with simple flavors and a juicy, soft texture that shows very little tannin. Aromas &quot;| __truncated__ &quot;A very basic Cabernet Sauvignon, very low in alcohol, with a harshness on the finish.&quot; ...
+##  $ designation          : chr  &quot;Reserve Bottling&quot; &quot;Judy&#39;s Vineyard&quot; &quot;&quot; &quot;&quot; ...
+##  $ points               : int  87 84 84 81 91 86 88 87 86 86 ...
+##  $ price                : num  15 29 13 11 20 11 12 10 13 14 ...
+##  $ province             : chr  &quot;California&quot; &quot;California&quot; &quot;California&quot; &quot;California&quot; ...
+##  $ region_1             : chr  &quot;Lodi&quot; &quot;Lodi&quot; &quot;Lodi&quot; &quot;Lodi&quot; ...
+##  $ region_2             : chr  &quot;Central Valley&quot; &quot;Central Valley&quot; &quot;Central Valley&quot; &quot;Central Valley&quot; ...
+##  $ taster_name          : chr  &quot;Jim Gordon&quot; &quot;Jim Gordon&quot; &quot;Jim Gordon&quot; &quot;Virginie Boone&quot; ...
+##  $ taster_twitter_handle: chr  &quot;@gordone_cellars&quot; &quot;@gordone_cellars&quot; &quot;@gordone_cellars&quot; &quot;@vboone&quot; ...
+##  $ title                : chr  &quot;Archgate Cellars 2014 Reserve Bottling Cabernet Sauvignon (Lodi)&quot; &quot;Housley&#39;s Century Oak 2013 Judy&#39;s Vineyard Cabernet Sauvignon (Lodi)&quot; &quot;Cable Car 2013 Cabernet Sauvignon (Lodi)&quot; &quot;Harlow Ridge 2011 Cabernet Sauvignon (Lodi)&quot; ...
+##  $ variety              : chr  &quot;Cabernet Sauvignon&quot; &quot;Cabernet Sauvignon&quot; &quot;Cabernet Sauvignon&quot; &quot;Cabernet Sauvignon&quot; ...
+##  $ winery               : chr  &quot;Archgate Cellars&quot; &quot;Housley&#39;s Century Oak&quot; &quot;Cable Car&quot; &quot;Harlow Ridge&quot; ...</code></pre>
+<p>The numeric columns in this data set (<code>price</code>, <code>points</code>) are all quantitative,
+so they’re not categorical. That leaves the character columns.</p>
+<p>Because we have subsetted only the Cabernet Sauvignon varieties in the Central Valley,
+we know that variables like <code>province</code>, <code>region_2</code>, and <code>variety</code> have no variation.
+So that leaves us with the other character variables. Some of these, like winery,
+have too many groups to really consider useful:</p>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="data-visualization.html#cb494-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wine_cv<span class="sc">$</span>winery)</span></code></pre></div>
+<pre><code>## 
+##          337 Wine Cellars          Archgate Cellars           Black&#39;s Station 
+##                         1                         1                         2 
+##                 Cable Car                Caricature          Christine Andrew 
+##                         2                         1                         1 
+##                  Concrete            Cooper Station                 Cosentino 
+##                         2                         2                         1 
+##               Criss Cross          Cycles Gladiator                Earthquake 
+##                         2                         1                         4 
+##                 Five Rows                 Freakshow                      Gen5 
+##                         1                         2                         3 
+##              Harlow Ridge            Herman Walters     Housley&#39;s Century Oak 
+##                         1                         1                         1 
+##                Insatiable                 Ironstone            James Mitchell 
+##                         1                         3                         4 
+##             Klinker Brick                LangeTwins                Lapis Luna 
+##                         1                         4                         1 
+## Leonardo Family Vineyards              Lodi Estates                      Loft 
+##                         1                         2                         1 
+##                 Matchbook  Mettler Family Vineyards             Michael David 
+##                         1                         7                         6 
+##                 Moon Eyes               Noble Vines                  Oak Farm 
+##                         1                         3                         3 
+##                 Oak Ridge                  Old Soul         Pavilion Crossing 
+##                         1                         1                         1 
+##        Pavillion Crossing                   Peirano                   Peltier 
+##                         1                         5                         3 
+##               Plungerhead                Sand Point     Scotto Family Cellars 
+##                         1                         1                         2 
+##          Sharabella Wines               Shenanigans               Table No. 7 
+##                         1                         1                         1 
+##               The Crusher           The Dancing Fox            The Federalist 
+##                         1                         1                         1 
+##               Toad Hollow            Tortoise Creek             Twisted Cedar 
+##                         1                         7                         1 
+##                   un4seen                Van Ruiten          Victor Vineyards 
+##                         1                         2                         1 
+##               Vino Vargas 
+##                         1</code></pre>
+<p>Others, such as <code>region_1</code> and <code>taster_name</code>, have fewer groupings – which is why
+we have used them so far for simplfying our visualizations. To reorder our
+<code>region_1</code> variable, lets’ convert to to a factor using the <code>factor</code>.</p>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="data-visualization.html#cb496-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1)</span></code></pre></div>
+<pre><code>##   [1] Lodi           Lodi           Lodi           Lodi           Lodi          
+##   [6] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [11] Lodi           Lodi           Lodi           Clarksburg     Lodi          
+##  [16] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [21] Lodi           Lodi           Lodi           Lodi           Yolo County   
+##  [26] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [31] Dunnigan Hills Lodi           Lodi           Lodi           Lodi          
+##  [36] Lodi           Lodi           Lodi           Clements Hills Lodi          
+##  [41] Yolo County    Lodi           Lodi           Lodi           Lodi          
+##  [46] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [51] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [56] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [61] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [66] Clarksburg     Lodi           Lodi           Lodi           Lodi          
+##  [71] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [76] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [81] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [86] Lodi           Lodi           Lodi           Clarksburg     Lodi          
+##  [91] Lodi           Lodi           Lodi           Lodi           Lodi          
+##  [96] Lodi           Lodi           Lodi           Clarksburg     Lodi          
+## [101] Lodi           Lodi           Lodi           Lodi          
+## Levels: Clarksburg Clements Hills Dunnigan Hills Lodi Yolo County</code></pre>
+<p>The categories of a factor are called <strong>levels</strong>. You can list the levels with
+the <code>levels</code> function:</p>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="data-visualization.html#cb498-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1))</span></code></pre></div>
+<pre><code>## [1] &quot;Clarksburg&quot;     &quot;Clements Hills&quot; &quot;Dunnigan Hills&quot; &quot;Lodi&quot;          
+## [5] &quot;Yolo County&quot;</code></pre>
+<p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the regions in our wine reviews data.</p>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="data-visualization.html#cb500-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<div id="assigning-factor-levels" class="section level3" number="14.4.1">
+<h3><span class="header-section-number">14.4.1</span> Assigning factor levels</h3>
+<p>But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the <code>factor</code> function.</p>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="data-visualization.html#cb501-1" aria-hidden="true" tabindex="-1"></a>wine_cv<span class="sc">$</span>region_1_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1, </span>
+<span id="cb501-2"><a href="data-visualization.html#cb501-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Lodi&quot;</span>, <span class="st">&quot;Clarksburg&quot;</span>, <span class="st">&quot;Yolo County&quot;</span>,</span>
+<span id="cb501-3"><a href="data-visualization.html#cb501-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;Clements Hills&quot;</span>, <span class="st">&quot;Dunnigan Hills&quot;</span>))</span>
+<span id="cb501-4"><a href="data-visualization.html#cb501-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(wine_cv<span class="sc">$</span>region_1_f)</span></code></pre></div>
+<pre><code>## [1] &quot;Lodi&quot;           &quot;Clarksburg&quot;     &quot;Yolo County&quot;    &quot;Clements Hills&quot;
+## [5] &quot;Dunnigan Hills&quot;</code></pre>
+<p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the region_1 factor.</p>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="data-visualization.html#cb503-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1_f)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+</div>
+</div>
+<div id="designing-a-visualization" class="section level2" number="14.5">
+<h2><span class="header-section-number">14.5</span> Designing a Visualization</h2>
 <p>What plot is appropriate?</p>
 <table>
 <thead>
@@ -976,7 +1145,7 @@ computed manually on the y-axis.</p>
 <li><p>Always add a title and axis labels. These should be in plain English, not
 variable names!</p></li>
 <li><p>Specify units after the axis label if the axis has units. For instance,
-“Height (ft).”</p></li>
+“Height (ft)”.</p></li>
 <li><p>Don’t forget that many people are colorblind! Also, plots are often printed
 in black and white. Use point and line styles to distinguish groups; color is
 optional.</p></li>
@@ -992,76 +1161,7 @@ two-dimensional density plot or jitter the points to deal with overplotting.</p>
 <li><p>For side-by-side plots, use the same axis scales for both plots so that
 comparing them is not deceptive.</p></li>
 </ul>
-</div>
-<div id="remembering-factors" class="section level2" number="14.5">
-<h2><span class="header-section-number">14.5</span> Remembering factors</h2>
-<p>A feature is <strong>categorical</strong> if it measures a qualitative category. For
-example, the genres <code>rock</code>, <code>blues</code>, <code>alternative</code>, <code>folk</code>, <code>pop</code> are
-categories.</p>
-<p>R uses the class <code>factor</code> to represent categorical data. Visualizations and
-statistical models sometimes treat factors differently than other data types,
-so it’s important to make sure you have the right data type. If you’re ever
-unsure, remember that you can check the class of an object with the <code>class</code>
-function.</p>
-<p>When you load a data set, R usually can’t tell which features are categorical.
-That means identifying and converting the categorical features is up to you. This can be especially helpful to know if you are plotting categories, but want them to have a particular order, other than the default (alphabetical).</p>
-<p>Let’s think about which features are categorical in the class survey data.</p>
-<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="data-visualization.html#cb481-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(survey)</span></code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    10 obs. of  5 variables:
-##  $ place      : chr  &quot;Temple&quot; &quot;Yakitori&quot; &quot;Panera&quot; &quot;Yakitori&quot; ...
-##  $ distance.mi: num  0.9 0.6 0.8 0.6 2 0.6 0.7 0.8 1 3.7
-##  $ time.min   : int  5 4 4 12 10 3 4 4 5 19
-##  $ major      : chr  &quot;chicanx studies&quot; &quot;human development&quot; &quot;economics&quot; &quot;undeclared&quot; ...
-##  $ pets       : chr  &quot;woof&quot; &quot;woof&quot; &quot;cat&quot; &quot;woof&quot; ...</code></pre>
-<p>The numeric columns in this data set (<code>bike_min</code>, <code>walk_min</code>, and
-<code>distance_mi</code>) are all quantitative, so they’re not categorical. That leaves
-the character columns.</p>
-<p>The <code>major</code>, <code>place</code>, and <code>pets</code> columns are all characters and it is easy to imagine
-grouping these survey responses to summarize the data. Especially major, where there are multiple of the same majors, we can say this is categorical. For
-<code>place</code>, there are more distinct responses, so it’s not as clear. The locations are:</p>
-<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="data-visualization.html#cb483-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(survey<span class="sc">$</span>place)</span></code></pre></div>
-<pre><code>## 
-##         Guads      Lazi Cow     Pachamama        Panera Raising Canes 
-##             1             1             1             1             1 
-##      Tea List        Temple  Wok of Flame      Yakitori 
-##             1             1             1             2</code></pre>
-<p>So there are a couple of locations that aren’t unique, but most of them are.
-For this data set, we probably shouldn’t treat <code>place</code> as categorical
-because the groups wouldn’t be interesting. However, if we had more survey
-responses (or more at each location) it might make sense to do so.</p>
-<p>Let’s convert the <code>major</code> column to a factor. To do this, use the <code>factor</code>
-function:</p>
-<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="data-visualization.html#cb485-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(survey<span class="sc">$</span>major)</span></code></pre></div>
-<pre><code>##  [1] chicanx studies   human development economics         undeclared       
-##  [5] psychology        psychology        undeclared        human development
-##  [9] undeclared        GG               
-## 6 Levels: chicanx studies economics GG human development ... undeclared</code></pre>
-<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="data-visualization.html#cb487-1" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>major <span class="ot">=</span> <span class="fu">factor</span>(survey<span class="sc">$</span>major)</span></code></pre></div>
-<p>Notice that factors are printed differently than strings.</p>
-<p>The categories of a factor are called <strong>levels</strong>. You can list the levels with
-the <code>levels</code> function:</p>
-<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="data-visualization.html#cb488-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(survey<span class="sc">$</span>major)</span></code></pre></div>
-<pre><code>## [1] &quot;chicanx studies&quot;   &quot;economics&quot;         &quot;GG&quot;               
-## [4] &quot;human development&quot; &quot;psychology&quot;        &quot;undeclared&quot;</code></pre>
-<p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the number of majors in our survey.</p>
-<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="data-visualization.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> major)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb490-2"><a href="data-visualization.html#cb490-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Majors in Responses&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Major&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
-<div id="assigning-factor-levels" class="section level3" number="14.5.1">
-<h3><span class="header-section-number">14.5.1</span> Assigning factor levels</h3>
-<p>But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the <code>factor()</code> function.</p>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="data-visualization.html#cb491-1" aria-hidden="true" tabindex="-1"></a>survey<span class="sc">$</span>major <span class="ot">&lt;-</span> <span class="fu">factor</span>(survey<span class="sc">$</span>major, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;undeclared&quot;</span>, <span class="st">&quot;psychology&quot;</span>, </span>
-<span id="cb491-2"><a href="data-visualization.html#cb491-2" aria-hidden="true" tabindex="-1"></a>                                                <span class="st">&quot;human development&quot;</span>, <span class="st">&quot;GG&quot;</span>,</span>
-<span id="cb491-3"><a href="data-visualization.html#cb491-3" aria-hidden="true" tabindex="-1"></a>                                                <span class="st">&quot;economics&quot;</span>, <span class="st">&quot;chicanx studies&quot;</span>))</span>
-<span id="cb491-4"><a href="data-visualization.html#cb491-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(survey<span class="sc">$</span>major)</span></code></pre></div>
-<pre><code>## [1] &quot;undeclared&quot;        &quot;psychology&quot;        &quot;human development&quot;
-## [4] &quot;GG&quot;                &quot;economics&quot;         &quot;chicanx studies&quot;</code></pre>
-<p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the major factor.</p>
-<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="data-visualization.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(survey, <span class="fu">aes</span>(<span class="at">x =</span> major)) <span class="sc">+</span> <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb493-2"><a href="data-visualization.html#cb493-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Majors in Responses&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Major&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 
-</div>
 </div>
 </div>
             </section>
@@ -1074,6 +1174,7 @@ the <code>levels</code> function:</p>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -1103,10 +1204,6 @@ gitbook.start({
 "text": null
 },
 "download": null,
-"search": {
-"engine": "fuse",
-"options": null
-},
 "toc": {
 "collapse": "section"
 }
