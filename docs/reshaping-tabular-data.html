@@ -33,7 +33,7 @@
 <meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-02-15" />
+<meta name="date" content="2022-02-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -708,12 +708,12 @@ them to be tidy, in the sense descriped in Section <a href="data-forensics.html#
 <p>Let’s look at some examples of tidy and untidy data sets. The <strong>tidyr</strong> package
 provides examples, and as we’ll see later, it also provides functions to make
 untidy data sets tidy. As usual, we first need to load the package:</p>
-<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb773-1"><a href="reshaping-tabular-data.html#cb773-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tidyr&quot;)</span></span>
-<span id="cb773-2"><a href="reshaping-tabular-data.html#cb773-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code></pre></div>
+<div class="sourceCode" id="cb772"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb772-1"><a href="reshaping-tabular-data.html#cb772-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tidyr&quot;)</span></span>
+<span id="cb772-2"><a href="reshaping-tabular-data.html#cb772-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span></code></pre></div>
 <p>Let’s start with an example of tidy data. This data set is included in the
 <strong>tidyr</strong> package and records the number of tuberculosis cases across several
 different countries and years:</p>
-<div class="sourceCode" id="cb774"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb774-1"><a href="reshaping-tabular-data.html#cb774-1" aria-hidden="true" tabindex="-1"></a>table1</span></code></pre></div>
+<div class="sourceCode" id="cb773"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb773-1"><a href="reshaping-tabular-data.html#cb773-1" aria-hidden="true" tabindex="-1"></a>table1</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 4
 ##   country      year  cases population
 ##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
@@ -740,7 +740,7 @@ when you need to use <strong>tidyr</strong> to rearrange a data set.</p>
 <h3><span class="header-section-number">21.2.1</span> Columns into Rows</h3>
 <p>Tidy data rule 1 says each observation must have its own row. Here’s a table
 that breaks rule 1:</p>
-<div class="sourceCode" id="cb776"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb776-1"><a href="reshaping-tabular-data.html#cb776-1" aria-hidden="true" tabindex="-1"></a>table4a</span></code></pre></div>
+<div class="sourceCode" id="cb775"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb775-1"><a href="reshaping-tabular-data.html#cb775-1" aria-hidden="true" tabindex="-1"></a>table4a</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 3
 ##   country     `1999` `2000`
 ## * &lt;chr&gt;        &lt;int&gt;  &lt;int&gt;
@@ -760,7 +760,7 @@ specify:</p>
 <li>Name(s) of new measuerment column(s) as <code>values_to</code>.</li>
 </ul>
 <p>Here’s the code:</p>
-<div class="sourceCode" id="cb778"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb778-1"><a href="reshaping-tabular-data.html#cb778-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(table4a, <span class="sc">-</span>country, <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;cases&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb777"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb777-1"><a href="reshaping-tabular-data.html#cb777-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(table4a, <span class="sc">-</span>country, <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;cases&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 3
 ##   country     year   cases
 ##   &lt;chr&gt;       &lt;chr&gt;  &lt;int&gt;
@@ -779,20 +779,20 @@ specify:</p>
 <li>Rename the <code>1999</code> and <code>2000</code> columns to <code>cases</code>.</li>
 <li>Stack the two data frames with <code>rbind</code>.</li>
 </ol>
-<div class="sourceCode" id="cb780"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb780-1"><a href="reshaping-tabular-data.html#cb780-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1</span></span>
-<span id="cb780-2"><a href="reshaping-tabular-data.html#cb780-2" aria-hidden="true" tabindex="-1"></a>df99 <span class="ot">=</span> table4a[<span class="sc">-</span><span class="dv">3</span>]</span>
-<span id="cb780-3"><a href="reshaping-tabular-data.html#cb780-3" aria-hidden="true" tabindex="-1"></a>df00 <span class="ot">=</span> table4a[<span class="sc">-</span><span class="dv">2</span>]</span>
-<span id="cb780-4"><a href="reshaping-tabular-data.html#cb780-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb780-5"><a href="reshaping-tabular-data.html#cb780-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2</span></span>
-<span id="cb780-6"><a href="reshaping-tabular-data.html#cb780-6" aria-hidden="true" tabindex="-1"></a>df99<span class="sc">$</span>year <span class="ot">=</span> <span class="st">&quot;1999&quot;</span></span>
-<span id="cb780-7"><a href="reshaping-tabular-data.html#cb780-7" aria-hidden="true" tabindex="-1"></a>df00<span class="sc">$</span>year <span class="ot">=</span> <span class="st">&quot;2000&quot;</span></span>
-<span id="cb780-8"><a href="reshaping-tabular-data.html#cb780-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb780-9"><a href="reshaping-tabular-data.html#cb780-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3</span></span>
-<span id="cb780-10"><a href="reshaping-tabular-data.html#cb780-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df99)[<span class="dv">2</span>] <span class="ot">=</span> <span class="st">&quot;cases&quot;</span></span>
-<span id="cb780-11"><a href="reshaping-tabular-data.html#cb780-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df00)[<span class="dv">2</span>] <span class="ot">=</span> <span class="st">&quot;cases&quot;</span></span>
-<span id="cb780-12"><a href="reshaping-tabular-data.html#cb780-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb780-13"><a href="reshaping-tabular-data.html#cb780-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4</span></span>
-<span id="cb780-14"><a href="reshaping-tabular-data.html#cb780-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(df99, df00)</span></code></pre></div>
+<div class="sourceCode" id="cb779"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb779-1"><a href="reshaping-tabular-data.html#cb779-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1</span></span>
+<span id="cb779-2"><a href="reshaping-tabular-data.html#cb779-2" aria-hidden="true" tabindex="-1"></a>df99 <span class="ot">=</span> table4a[<span class="sc">-</span><span class="dv">3</span>]</span>
+<span id="cb779-3"><a href="reshaping-tabular-data.html#cb779-3" aria-hidden="true" tabindex="-1"></a>df00 <span class="ot">=</span> table4a[<span class="sc">-</span><span class="dv">2</span>]</span>
+<span id="cb779-4"><a href="reshaping-tabular-data.html#cb779-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb779-5"><a href="reshaping-tabular-data.html#cb779-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2</span></span>
+<span id="cb779-6"><a href="reshaping-tabular-data.html#cb779-6" aria-hidden="true" tabindex="-1"></a>df99<span class="sc">$</span>year <span class="ot">=</span> <span class="st">&quot;1999&quot;</span></span>
+<span id="cb779-7"><a href="reshaping-tabular-data.html#cb779-7" aria-hidden="true" tabindex="-1"></a>df00<span class="sc">$</span>year <span class="ot">=</span> <span class="st">&quot;2000&quot;</span></span>
+<span id="cb779-8"><a href="reshaping-tabular-data.html#cb779-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb779-9"><a href="reshaping-tabular-data.html#cb779-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3</span></span>
+<span id="cb779-10"><a href="reshaping-tabular-data.html#cb779-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df99)[<span class="dv">2</span>] <span class="ot">=</span> <span class="st">&quot;cases&quot;</span></span>
+<span id="cb779-11"><a href="reshaping-tabular-data.html#cb779-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df00)[<span class="dv">2</span>] <span class="ot">=</span> <span class="st">&quot;cases&quot;</span></span>
+<span id="cb779-12"><a href="reshaping-tabular-data.html#cb779-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb779-13"><a href="reshaping-tabular-data.html#cb779-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4</span></span>
+<span id="cb779-14"><a href="reshaping-tabular-data.html#cb779-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(df99, df00)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 3
 ##   country      cases year 
 ##   &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;
@@ -808,7 +808,7 @@ specify:</p>
 <h3><span class="header-section-number">21.2.2</span> Rows into Columns</h3>
 <p>Tidy data rule 2 says each feature must have its own column. Let’s look at a
 table that breaks rule 2:</p>
-<div class="sourceCode" id="cb782"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb782-1"><a href="reshaping-tabular-data.html#cb782-1" aria-hidden="true" tabindex="-1"></a>table2</span></code></pre></div>
+<div class="sourceCode" id="cb781"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb781-1"><a href="reshaping-tabular-data.html#cb781-1" aria-hidden="true" tabindex="-1"></a>table2</span></code></pre></div>
 <pre><code>## # A tibble: 12 × 4
 ##    country      year type            count
 ##    &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;           &lt;int&gt;
@@ -834,7 +834,7 @@ each <code>type</code> value. New columns are <code>cases</code> and <code>popul
 <li>Measurements to rotate as <code>values_from</code>.</li>
 </ul>
 <p>Here’s the code:</p>
-<div class="sourceCode" id="cb784"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb784-1"><a href="reshaping-tabular-data.html#cb784-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_wider</span>(table2, <span class="at">names_from =</span> type, <span class="at">values_from =</span> count)</span></code></pre></div>
+<div class="sourceCode" id="cb783"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb783-1"><a href="reshaping-tabular-data.html#cb783-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_wider</span>(table2, <span class="at">names_from =</span> type, <span class="at">values_from =</span> count)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 4
 ##   country      year  cases population
 ##   &lt;chr&gt;       &lt;int&gt;  &lt;int&gt;      &lt;int&gt;
@@ -853,20 +853,20 @@ each <code>type</code> value. New columns are <code>cases</code> and <code>popul
 <li>Rename the <code>count</code> column to <code>cases</code> and <code>population</code>.</li>
 <li>Merge the two subsets by matching <code>country</code> and <code>year</code>.</li>
 </ol>
-<div class="sourceCode" id="cb786"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb786-1"><a href="reshaping-tabular-data.html#cb786-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1</span></span>
-<span id="cb786-2"><a href="reshaping-tabular-data.html#cb786-2" aria-hidden="true" tabindex="-1"></a>cases <span class="ot">=</span> table2[table2<span class="sc">$</span>type <span class="sc">==</span> <span class="st">&quot;cases&quot;</span>, ]</span>
-<span id="cb786-3"><a href="reshaping-tabular-data.html#cb786-3" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> table2[table2<span class="sc">$</span>type <span class="sc">==</span> <span class="st">&quot;population&quot;</span>, ]</span>
-<span id="cb786-4"><a href="reshaping-tabular-data.html#cb786-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb786-5"><a href="reshaping-tabular-data.html#cb786-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2</span></span>
-<span id="cb786-6"><a href="reshaping-tabular-data.html#cb786-6" aria-hidden="true" tabindex="-1"></a>cases <span class="ot">=</span> cases[<span class="sc">-</span><span class="dv">3</span>]</span>
-<span id="cb786-7"><a href="reshaping-tabular-data.html#cb786-7" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> pop[<span class="sc">-</span><span class="dv">3</span>]</span>
-<span id="cb786-8"><a href="reshaping-tabular-data.html#cb786-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb786-9"><a href="reshaping-tabular-data.html#cb786-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3</span></span>
-<span id="cb786-10"><a href="reshaping-tabular-data.html#cb786-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cases)[<span class="dv">3</span>] <span class="ot">=</span> <span class="st">&quot;cases&quot;</span></span>
-<span id="cb786-11"><a href="reshaping-tabular-data.html#cb786-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(pop)[<span class="dv">3</span>] <span class="ot">=</span> <span class="st">&quot;population&quot;</span></span>
-<span id="cb786-12"><a href="reshaping-tabular-data.html#cb786-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb786-13"><a href="reshaping-tabular-data.html#cb786-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4</span></span>
-<span id="cb786-14"><a href="reshaping-tabular-data.html#cb786-14" aria-hidden="true" tabindex="-1"></a>tidy <span class="ot">=</span> <span class="fu">cbind</span>(cases, pop[<span class="dv">3</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb785"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb785-1"><a href="reshaping-tabular-data.html#cb785-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1</span></span>
+<span id="cb785-2"><a href="reshaping-tabular-data.html#cb785-2" aria-hidden="true" tabindex="-1"></a>cases <span class="ot">=</span> table2[table2<span class="sc">$</span>type <span class="sc">==</span> <span class="st">&quot;cases&quot;</span>, ]</span>
+<span id="cb785-3"><a href="reshaping-tabular-data.html#cb785-3" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> table2[table2<span class="sc">$</span>type <span class="sc">==</span> <span class="st">&quot;population&quot;</span>, ]</span>
+<span id="cb785-4"><a href="reshaping-tabular-data.html#cb785-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb785-5"><a href="reshaping-tabular-data.html#cb785-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2</span></span>
+<span id="cb785-6"><a href="reshaping-tabular-data.html#cb785-6" aria-hidden="true" tabindex="-1"></a>cases <span class="ot">=</span> cases[<span class="sc">-</span><span class="dv">3</span>]</span>
+<span id="cb785-7"><a href="reshaping-tabular-data.html#cb785-7" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> pop[<span class="sc">-</span><span class="dv">3</span>]</span>
+<span id="cb785-8"><a href="reshaping-tabular-data.html#cb785-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb785-9"><a href="reshaping-tabular-data.html#cb785-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3</span></span>
+<span id="cb785-10"><a href="reshaping-tabular-data.html#cb785-10" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cases)[<span class="dv">3</span>] <span class="ot">=</span> <span class="st">&quot;cases&quot;</span></span>
+<span id="cb785-11"><a href="reshaping-tabular-data.html#cb785-11" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(pop)[<span class="dv">3</span>] <span class="ot">=</span> <span class="st">&quot;population&quot;</span></span>
+<span id="cb785-12"><a href="reshaping-tabular-data.html#cb785-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb785-13"><a href="reshaping-tabular-data.html#cb785-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4</span></span>
+<span id="cb785-14"><a href="reshaping-tabular-data.html#cb785-14" aria-hidden="true" tabindex="-1"></a>tidy <span class="ot">=</span> <span class="fu">cbind</span>(cases, pop[<span class="dv">3</span>])</span></code></pre></div>
 <p>This code uses the <code>cbind</code> function to merge the two subsets, but it would be
 better to use the <code>merge</code> function. The <code>cbind</code> function does not use
 identifier columns to check that the rows in each subset are from the same
@@ -878,7 +878,7 @@ observations.</p>
 <h3><span class="header-section-number">21.2.3</span> Separating Values</h3>
 <p>Tidy data rule 3 says each value must have its own cell. Here’s a table that
 breaks rule 3:</p>
-<div class="sourceCode" id="cb787"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb787-1"><a href="reshaping-tabular-data.html#cb787-1" aria-hidden="true" tabindex="-1"></a>table3</span></code></pre></div>
+<div class="sourceCode" id="cb786"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb786-1"><a href="reshaping-tabular-data.html#cb786-1" aria-hidden="true" tabindex="-1"></a>table3</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 3
 ##   country      year rate             
 ## * &lt;chr&gt;       &lt;int&gt; &lt;chr&gt;            
@@ -895,19 +895,19 @@ into two different columns.</p>
 (you can check this with <code>str(table3)</code>), so we can use the string processing
 functions in the <strong>stringr</strong> package. In particular, we can use the
 <code>str_split_fixed</code> function:</p>
-<div class="sourceCode" id="cb789"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb789-1"><a href="reshaping-tabular-data.html#cb789-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb789-2"><a href="reshaping-tabular-data.html#cb789-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb789-3"><a href="reshaping-tabular-data.html#cb789-3" aria-hidden="true" tabindex="-1"></a>columns <span class="ot">=</span> <span class="fu">str_split_fixed</span>(table3<span class="sc">$</span>rate, <span class="fu">fixed</span>(<span class="st">&quot;/&quot;</span>), <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb788"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb788-1"><a href="reshaping-tabular-data.html#cb788-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb788-2"><a href="reshaping-tabular-data.html#cb788-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb788-3"><a href="reshaping-tabular-data.html#cb788-3" aria-hidden="true" tabindex="-1"></a>columns <span class="ot">=</span> <span class="fu">str_split_fixed</span>(table3<span class="sc">$</span>rate, <span class="fu">fixed</span>(<span class="st">&quot;/&quot;</span>), <span class="dv">2</span>)</span></code></pre></div>
 <p>Now we have a character matrix where the values are in separate columns. Now we
 need to combine these with the original data frame. There are several ways to
 approach this, but to be safe, let’s make a new data frame rather than
 overwrite the original. First we make a copy of the original:</p>
-<div class="sourceCode" id="cb790"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb790-1"><a href="reshaping-tabular-data.html#cb790-1" aria-hidden="true" tabindex="-1"></a>tidy_tb <span class="ot">=</span> table3</span></code></pre></div>
+<div class="sourceCode" id="cb789"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb789-1"><a href="reshaping-tabular-data.html#cb789-1" aria-hidden="true" tabindex="-1"></a>tidy_tb <span class="ot">=</span> table3</span></code></pre></div>
 <p>Next, we need to assign each column in the character matrix to a column in the
 <code>tidy_tb</code> data frame. Since the columns contain numbers, we can also use the
 <code>as.numeric</code> function to convert them to the correct data type:</p>
-<div class="sourceCode" id="cb791"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb791-1"><a href="reshaping-tabular-data.html#cb791-1" aria-hidden="true" tabindex="-1"></a>tidy_tb<span class="sc">$</span>cases <span class="ot">=</span> <span class="fu">as.numeric</span>(columns[, <span class="dv">1</span>])</span>
-<span id="cb791-2"><a href="reshaping-tabular-data.html#cb791-2" aria-hidden="true" tabindex="-1"></a>tidy_tb<span class="sc">$</span>population <span class="ot">=</span> <span class="fu">as.numeric</span>(columns[, <span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb790"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb790-1"><a href="reshaping-tabular-data.html#cb790-1" aria-hidden="true" tabindex="-1"></a>tidy_tb<span class="sc">$</span>cases <span class="ot">=</span> <span class="fu">as.numeric</span>(columns[, <span class="dv">1</span>])</span>
+<span id="cb790-2"><a href="reshaping-tabular-data.html#cb790-2" aria-hidden="true" tabindex="-1"></a>tidy_tb<span class="sc">$</span>population <span class="ot">=</span> <span class="fu">as.numeric</span>(columns[, <span class="dv">2</span>])</span></code></pre></div>
 <p>Extracting values, converting to appropriate data types, and then combining
 everything into a single data frame is an extremely common pattern in data
 science.</p>

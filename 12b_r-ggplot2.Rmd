@@ -165,7 +165,7 @@ ggplot(wine_cv, aes(x = price, y = points)) + geom_point()
 Aesthetics can be informed by data (e.g. the price column), or by constant values
 (e.g. the color "blue"). Whether the value is informed by the data or constant will
 determine where to place that piece of information. Constant values should not be placed
-inside the aesthetic later. If you set a constant value *inside* of the aesthetic 
+inside the aesthetic layer. If you set a constant value *inside* of the aesthetic 
 layer, the results you get might not be what you expect. For instance, suppose
 we want to make the points blue:
 
@@ -310,29 +310,24 @@ dev.off()
 
 ### Example: Bar Plot
 
-Let's say we want to plot the number of responses for each region in the Central Valley. A bar plot is
+Let's say we want to plot the number of wines for each region in the Central Valley. A bar plot is
 an appropriate way to represent this visually.
 
 The geometry for a bar plot is `geom_bar`. Since bar plots are mainly used to
 display frequencies, the `geom_bar` function automatically computes frequencies
-when given mapped to a categorical feature. So we can write:
+when given mapped to a categorical feature. So we can write:  
 
 ```{r}
 ggplot(wine_cv, aes(x = region_1)) + geom_bar() 
 ```
+
 To prevent `geom_bar` from computing frequencies automatically, set `stat =
 "identity"`. This is mainly useful if you want to plot quantities you've
 computed manually on the y-axis.
 
 #### Position adjustment  
 
-Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. First, let's consider the difference between the `color` arguments and the `fill` argument for bar plots.
-
-```{r}
-ggplot(wine_cv, aes(x = region_1)) + geom_bar(aes(color = taster_name)) 
-```
-
-The `color` argument will outline the bars in a color, whereas the `fill` argument will fill them in with a default color scheme.
+Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. For bar plots, this will take the `fill` argument instead of the `color` argument. (The `color` argument will outline the bars in a color, whereas the `fill` argument will fill them in with a default color scheme.)  
 
 ```{r}
 ggplot(wine_cv, aes(x = region_1)) + geom_bar(aes(fill = taster_name)) 

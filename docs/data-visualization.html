@@ -33,7 +33,7 @@
 <meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-02-15" />
+<meta name="date" content="2022-02-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -844,7 +844,7 @@ the <code>ggplot</code> function:</p>
 <p>Aesthetics can be informed by data (e.g. the price column), or by constant values
 (e.g. the color “blue”). Whether the value is informed by the data or constant will
 determine where to place that piece of information. Constant values should not be placed
-inside the aesthetic later. If you set a constant value <em>inside</em> of the aesthetic
+inside the aesthetic layer. If you set a constant value <em>inside</em> of the aesthetic
 layer, the results you get might not be what you expect. For instance, suppose
 we want to make the points blue:</p>
 <div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb469-1"><a href="data-visualization.html#cb469-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
@@ -946,27 +946,24 @@ are:</p>
 </div>
 <div id="example-bar-plot" class="section level3" number="14.3.3">
 <h3><span class="header-section-number">14.3.3</span> Example: Bar Plot</h3>
-<p>Let’s say we want to plot the number of responses for each region in the Central Valley. A bar plot is
+<p>Let’s say we want to plot the number of wines for each region in the Central Valley. A bar plot is
 an appropriate way to represent this visually.</p>
 <p>The geometry for a bar plot is <code>geom_bar</code>. Since bar plots are mainly used to
 display frequencies, the <code>geom_bar</code> function automatically computes frequencies
 when given mapped to a categorical feature. So we can write:</p>
 <div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="data-visualization.html#cb488-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>() </span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" />
-To prevent <code>geom_bar</code> from computing frequencies automatically, set <code>stat = "identity"</code>. This is mainly useful if you want to plot quantities you’ve
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>To prevent <code>geom_bar</code> from computing frequencies automatically, set <code>stat = "identity"</code>. This is mainly useful if you want to plot quantities you’ve
 computed manually on the y-axis.</p>
 <div id="position-adjustment" class="section level4" number="14.3.3.1">
 <h4><span class="header-section-number">14.3.3.1</span> Position adjustment</h4>
-<p>Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. First, let’s consider the difference between the <code>color</code> arguments and the <code>fill</code> argument for bar plots.</p>
-<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="data-visualization.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">color =</span> taster_name)) </span></code></pre></div>
+<p>Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. For bar plots, this will take the <code>fill</code> argument instead of the <code>color</code> argument. (The <code>color</code> argument will outline the bars in a color, whereas the <code>fill</code> argument will fill them in with a default color scheme.)</p>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="data-visualization.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name)) </span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<p>The <code>color</code> argument will outline the bars in a color, whereas the <code>fill</code> argument will fill them in with a default color scheme.</p>
-<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="data-visualization.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name)) </span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>Automatically, <code>geom_bar()</code> positions the grouped colors or fills on top of one another, with the default argument <code>position = "identity"</code>. If you want to change the position of the groupings, you can set <code>position = "dodge"</code> to set the groups side-by-side.</p>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="data-visualization.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> </span>
-<span id="cb491-2"><a href="data-visualization.html#cb491-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name), <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) </span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="data-visualization.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> </span>
+<span id="cb490-2"><a href="data-visualization.html#cb490-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name), <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) </span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -985,7 +982,7 @@ That means identifying and converting the categorical features is up to you.
 This can be especially helpful to know if you are plotting categories, but want
 them to have a particular order, other than the default (alphabetical).</p>
 <p>Let’s think about which features are categorical in the class wine reviews data.</p>
-<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="data-visualization.html#cb492-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wine_cv)</span></code></pre></div>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="data-visualization.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wine_cv)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    104 obs. of  14 variables:
 ##  $ X                    : int  954 2765 3397 4549 4686 4944 5426 5975 6964 8633 ...
 ##  $ country              : chr  &quot;US&quot; &quot;US&quot; &quot;US&quot; &quot;US&quot; ...
@@ -1007,7 +1004,7 @@ so they’re not categorical. That leaves the character columns.</p>
 we know that variables like <code>province</code>, <code>region_2</code>, and <code>variety</code> have no variation.
 So that leaves us with the other character variables. Some of these, like winery,
 have too many groups to really consider useful:</p>
-<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="data-visualization.html#cb494-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wine_cv<span class="sc">$</span>winery)</span></code></pre></div>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="data-visualization.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wine_cv<span class="sc">$</span>winery)</span></code></pre></div>
 <pre><code>## 
 ##          337 Wine Cellars          Archgate Cellars           Black&#39;s Station 
 ##                         1                         1                         2 
@@ -1050,7 +1047,7 @@ have too many groups to really consider useful:</p>
 <p>Others, such as <code>region_1</code> and <code>taster_name</code>, have fewer groupings – which is why
 we have used them so far for simplfying our visualizations. To reorder our
 <code>region_1</code> variable, lets’ convert to to a factor using the <code>factor</code>.</p>
-<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="data-visualization.html#cb496-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1)</span></code></pre></div>
+<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb495-1"><a href="data-visualization.html#cb495-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1)</span></code></pre></div>
 <pre><code>##   [1] Lodi           Lodi           Lodi           Lodi           Lodi          
 ##   [6] Lodi           Lodi           Lodi           Lodi           Lodi          
 ##  [11] Lodi           Lodi           Lodi           Clarksburg     Lodi          
@@ -1075,24 +1072,24 @@ we have used them so far for simplfying our visualizations. To reorder our
 ## Levels: Clarksburg Clements Hills Dunnigan Hills Lodi Yolo County</code></pre>
 <p>The categories of a factor are called <strong>levels</strong>. You can list the levels with
 the <code>levels</code> function:</p>
-<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="data-visualization.html#cb498-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1))</span></code></pre></div>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb497-1"><a href="data-visualization.html#cb497-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1))</span></code></pre></div>
 <pre><code>## [1] &quot;Clarksburg&quot;     &quot;Clements Hills&quot; &quot;Dunnigan Hills&quot; &quot;Lodi&quot;          
 ## [5] &quot;Yolo County&quot;</code></pre>
 <p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the regions in our wine reviews data.</p>
-<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="data-visualization.html#cb500-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb499-1"><a href="data-visualization.html#cb499-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <div id="assigning-factor-levels" class="section level3" number="14.4.1">
 <h3><span class="header-section-number">14.4.1</span> Assigning factor levels</h3>
 <p>But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the <code>factor</code> function.</p>
-<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb501-1"><a href="data-visualization.html#cb501-1" aria-hidden="true" tabindex="-1"></a>wine_cv<span class="sc">$</span>region_1_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1, </span>
-<span id="cb501-2"><a href="data-visualization.html#cb501-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Lodi&quot;</span>, <span class="st">&quot;Clarksburg&quot;</span>, <span class="st">&quot;Yolo County&quot;</span>,</span>
-<span id="cb501-3"><a href="data-visualization.html#cb501-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;Clements Hills&quot;</span>, <span class="st">&quot;Dunnigan Hills&quot;</span>))</span>
-<span id="cb501-4"><a href="data-visualization.html#cb501-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(wine_cv<span class="sc">$</span>region_1_f)</span></code></pre></div>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="data-visualization.html#cb500-1" aria-hidden="true" tabindex="-1"></a>wine_cv<span class="sc">$</span>region_1_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1, </span>
+<span id="cb500-2"><a href="data-visualization.html#cb500-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Lodi&quot;</span>, <span class="st">&quot;Clarksburg&quot;</span>, <span class="st">&quot;Yolo County&quot;</span>,</span>
+<span id="cb500-3"><a href="data-visualization.html#cb500-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;Clements Hills&quot;</span>, <span class="st">&quot;Dunnigan Hills&quot;</span>))</span>
+<span id="cb500-4"><a href="data-visualization.html#cb500-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(wine_cv<span class="sc">$</span>region_1_f)</span></code></pre></div>
 <pre><code>## [1] &quot;Lodi&quot;           &quot;Clarksburg&quot;     &quot;Yolo County&quot;    &quot;Clements Hills&quot;
 ## [5] &quot;Dunnigan Hills&quot;</code></pre>
 <p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the region_1 factor.</p>
-<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="data-visualization.html#cb503-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1_f)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
-<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb502-1"><a href="data-visualization.html#cb502-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1_f)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 </div>
 </div>
 <div id="designing-a-visualization" class="section level2" number="14.5">
