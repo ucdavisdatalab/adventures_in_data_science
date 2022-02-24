@@ -1,8 +1,9 @@
-Web Scraping
+Getting Data from the Web
 ============
 
-_Scraping_ a web page means extracting information so that it can be used
-programmatically (for instance, in R).
+The internet in general and the World Wide Web specifically serves as a 
+vast source of data suitable for answering a wide range of research questions. 
+In this lesson we cover several common methods for acquiring this data.
 
 After this lesson, you should be able to:
 
@@ -17,10 +18,38 @@ After this lesson, you should be able to:
 
 
 
-Getting Data from the Web
+Overview
 -------------------------
 
-Ways you can get data from the web, from most to least convenient:
+While there are many methods (and R packages) for acquiring data from 
+the web, all fall into one of three general categories of data 
+acquisition:
+
+* Direct Download of data from a specified enpoint;
+* Application Programming Interface (API) access;
+* Scraping
+
+_Direct Download_ describes process where a data provider has provided 
+a specific URL  or web link from which you can download the data.  For 
+example, when you download data from the "Files" are of Canvas you are
+using the Direct Download method of data acquisition.
+
+_Application Programming Interfaces (APIs)_ are web accessible endpoints 
+that you access via a URL, just as you would any website, but that are 
+designed specifically to interact with computers (as opposed to humans).  
+APIs receive requests and return data to the requester in machine, as 
+opposed to human, readable formats, such as JSON or XML.  We will learn 
+more about working with APIs in this unit.
+
+_Scraping_ a web page means extracting information from human readable 
+internet sources so that it can be used programmatically (for instance, 
+in R).  We will also learn more about Scraping in this unit.
+
+Each of the above general methods can be accomplished by applying any 
+number of sub-methods and packages.  And each brings with it its own 
+degree of complexity and difficulty.  As a general rule, the various 
+ways you can get data from the web can be ranked according to difficulty
+from most to least convenient as follows:
 
 1. Direct download or "data dump"
 2. R or Python package (there are packages for many popular web APIs)
@@ -28,6 +57,118 @@ Ways you can get data from the web, from most to least convenient:
 4. Undocumented web API
 5. Scraping
 
+
+APIs
+-------------------------
+
+As noted earlier, and Application Programmoing Interface (API) provides 
+a machine readable gateway for accessing data from the web.  Most APIs 
+provide programmatic access to the data that lives behind a human readable 
+website.  For example, most social media platforms such as Twitter, Facebook, 
+and Instagram provide APIs that allow computers to programmatically access 
+the same data that you, as a human, see when you interct with these platforms 
+via a web broswer of mobile app.  Some APIs, however, are stand alone, in that 
+they provide machine access to data sources that have no human readable interface.
+
+One of the challendges with working with APIs is that, while there are some 
+standards of behavior for APIs, you need to know what and how to query a specific 
+API in order to interact with it.  Some APIs are well documented, while others are 
+not.  And some, for example the Twitter API, has extensive documentation that is 
+frequently erroneous, incommplete, or out of date.  As a result, working with APIs 
+can sometimes be challenging.
+
+For this unit, we will work with the API to the National Oceanographic and Atmospheric 
+Administration (NOAA) [FishWatch](https://www.fishwatch.gov/) database of U.S. Seafood Facts.
+
+### Querying to an API
+
+Many popular APIs (Twitter, Facebook, etc.) have specific R pacages designed to 
+facilitate interaction with their APIs.  Because APIs are web accessible, however, all can 
+be accessed programmatically using basic internet request protocols, just as if you were 
+going to a human readable webpage, provided you know how to formulate your request as a
+URL.  The FishWatch database publishes an easy to follow set of instructios for accessing its
+API at [https://www.fishwatch.gov/developers](https://www.fishwatch.gov/developers).
+
+We can see from the documentation that the API will allow us to query a list of 
+fish species that appear in the database using a URL with the following construction:
+
+```
+https://www.fishwatch.gov/api/species
+```
+
+You can actually go to this URL in your web browser and see the response, a protion 
+of which is reproduced here:
+
+```
+[{"Fishery Management":"<ul>\n<li><a href=\"https://www.fisheries.noaa.gov/region/new-england-mid-atlantic\">NOAA Fisheries</a> and the <a href=\"https://www.nefmc.org/index.html\">New England Fishery Management Council </a>manage the white hake fishery.</li>\n<li>White hake is managed as a single stock&nbsp;in U.S. waters.</li>\n<li>White hake, along with other groundfish in New England waters, is managed under the <a href=\"https://www.nefmc.org/management-plans/small-mesh-multispecies\">Northeast Multispecies Fishery Management Plan</a>, which includes:\n<ul>\n<li>Permitting requirements for commercial vessels.</li>\n<li>Separate management measures for recreational vessels.</li>\n<li>Time/area closures to protect spawning fish and habitat.</li>\n<li>Annual catch limits&nbsp;based on best available science.</li>\n</ul>\n</li>\n<li>An optional sector (<a href=\"https://www.fisheries.noaa.gov/new-england-mid-atlantic/commercial-fishing/sector-management-northeast-multispecies-fishery\">catch share</a>)
+```
+
+If you look closely at this extract form the response, you will see that it contains HTML 
+but is not HTML.  Remember that APIs exist to deliver machine readable information.  In this 
+case, the API is delivering data in the JSON format, and some of the fields in the JSON object 
+contain information provided as HTML.
+
+Because the respons is machine readable, we can make better use of the query if we run it in R 
+rather than our web browser.  Before we can do so, we need to setup our R environment to execute 
+HTTP queries againt the API and to process JSON.  We'll use the "httr" pacakage to process our http 
+transactions and the "jsonlite" package to process the JSON that we receive
+
+```{r, eval=FALSE}
+install.packages("httr")
+install.packages("jsonlite")
+library(httr)
+library(jsonlite)
+```
+
+With our environment now ready, we execture our query in R with one simple command:
+
+```{r}
+response <- GET("https://www.fishwatch.gov/api/species")
+```
+
+The above executes an HTTP GET request (just like your web browser) to the identified 
+query URL and loads it into an httr "response" object.  If you take some time to examine 
+the response object, you will see that it is a container object that contains a lot of 
+useful information in addition to the actual JSON response that you see when you load the 
+URL in your browser.  For example, we can check the status of the reponse to see if it was
+successfull by look at the reponse "status_code" which shoudl be 200 if the query executed 
+successfully.
+
+```{r}
+cat(response$status_code)
+```
+
+The actual content of the response can be found in the response object's "content" element. 
+Note, however, that we have to do some formatting on the object in order to access it.  Go ahead 
+and look a the actual response$content object
+
+```{r}
+response$content
+```
+
+Above we see that the content that is received from the API is delivered as a compressed 
+binary string, which must be uncompressed and converted back to character encoding before 
+processing.  We co this ussing a built-in httr function:
+
+```{r}
+bdy <- content(response, "text")
+```
+
+Once we have the contect extracted and converted, we can begin to process it.  We previously 
+examined the response and determined that it is in JSON format, so our step will be to load 
+the content into a JSON object for ease of traversal:
+
+```{r}
+bdy_json <- fromJSON(bdy)
+```
+
+If you examine the class and structure of the bdy_json object, you will see that jsonlite has 
+converted the json structure into a nice, R dataframe where you can begin the process of exploration 
+and cleaning in preparation for research.
+
+
+Web Scraping
+-------------------------
 
 ### What's in a Web Page?
 
