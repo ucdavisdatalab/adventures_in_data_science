@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>16 Getting Data from the Web | Adventures in Data Science</title>
   <meta name="description" content="16 Getting Data from the Web | Adventures in Data Science" />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="16 Getting Data from the Web | Adventures in Data Science" />
   <meta property="og:type" content="book" />
@@ -42,7 +42,7 @@
   
 <link rel="prev" href="how-the-web-works.html"/>
 <link rel="next" href="strings-and-regular-expressions.html"/>
-<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -60,9 +60,7 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
 <link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
@@ -135,29 +133,6 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
-
-<style type="text/css">
-/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
 </style>
 
 </head>
@@ -790,13 +765,13 @@ we run it in R rather than our web browser. Before we can do so, we need to
 setup our R environment to execute HTTP queries against the API and to process
 JSON. We’ll use the <code>httr</code> package to process our http transactions and the
 <code>jsonlite</code> package to process the JSON that we receive</p>
-<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb507-1"><a href="getting-data-from-the-web.html#cb507-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;httr&quot;</span>)</span>
-<span id="cb507-2"><a href="getting-data-from-the-web.html#cb507-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;jsonlite&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="getting-data-from-the-web.html#cb510-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;httr&quot;</span>)</span>
+<span id="cb510-2"><a href="getting-data-from-the-web.html#cb510-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;jsonlite&quot;</span>)</span></code></pre></div>
 <p>With our packages installed, we execture our query in R with one simple command:</p>
-<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="getting-data-from-the-web.html#cb508-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb508-2"><a href="getting-data-from-the-web.html#cb508-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
-<span id="cb508-3"><a href="getting-data-from-the-web.html#cb508-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb508-4"><a href="getting-data-from-the-web.html#cb508-4" aria-hidden="true" tabindex="-1"></a>response <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;https://www.fishwatch.gov/api/species&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="getting-data-from-the-web.html#cb511-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
+<span id="cb511-2"><a href="getting-data-from-the-web.html#cb511-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb511-3"><a href="getting-data-from-the-web.html#cb511-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb511-4"><a href="getting-data-from-the-web.html#cb511-4" aria-hidden="true" tabindex="-1"></a>response <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;https://www.fishwatch.gov/api/species&quot;</span>)</span></code></pre></div>
 <p>The above executes an HTTP GET request (just like your web browser) to the identified
 query URL and loads it into an httr “response” object. If you take some time to examine
 the response object, you will see that it is a container object that contains a lot of
@@ -804,12 +779,12 @@ useful information in addition to the actual JSON response that you see when you
 URL in your browser. For example, we can check the status of the reponse to see if it was
 successfull by look at the reponse “status_code” which shoudl be 200 if the query executed
 successfully.</p>
-<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb509-1"><a href="getting-data-from-the-web.html#cb509-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(response<span class="sc">$</span>status_code)</span></code></pre></div>
+<div class="sourceCode" id="cb512"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb512-1"><a href="getting-data-from-the-web.html#cb512-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(response<span class="sc">$</span>status_code)</span></code></pre></div>
 <pre><code>## 200</code></pre>
 <p>The actual content of the response can be found in the response object’s “content”
 element. Note, however, that we have to do some formatting on the object in order
 to access it. Go ahead and look a the actual <code>response$content</code> object</p>
-<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="getting-data-from-the-web.html#cb511-1" aria-hidden="true" tabindex="-1"></a>response<span class="sc">$</span>content</span></code></pre></div>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="getting-data-from-the-web.html#cb514-1" aria-hidden="true" tabindex="-1"></a>response<span class="sc">$</span>content</span></code></pre></div>
 <pre><code>##     [1] 5b 7b 22 46 69 73 68 65 72 79 20 4d 61 6e 61 67 65 6d 65 6e 74 22 3a 22
 ##    [25] 3c 75 6c 3e 5c 6e 3c 6c 69 3e 3c 61 20 68 72 65 66 3d 5c 22 68 74 74 70
 ##    [49] 73 3a 2f 2f 77 77 77 2e 66 69 73 68 65 72 69 65 73 2e 6e 6f 61 61 2e 67
@@ -4981,11 +4956,11 @@ to access it. Go ahead and look a the actual <code>response$content</code> objec
 <p>Above we see that the content that is received from the API is delivered as a
 compressed binary string, which must be uncompressed and converted back to
 character encoding before processing. We co this using a built-in <code>httr</code> function:</p>
-<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="getting-data-from-the-web.html#cb513-1" aria-hidden="true" tabindex="-1"></a>bdy <span class="ot">&lt;-</span> <span class="fu">content</span>(response, <span class="st">&quot;text&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb516"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb516-1"><a href="getting-data-from-the-web.html#cb516-1" aria-hidden="true" tabindex="-1"></a>bdy <span class="ot">&lt;-</span> <span class="fu">content</span>(response, <span class="st">&quot;text&quot;</span>)</span></code></pre></div>
 <p>Once we have the content extracted and converted, we can begin to process it. We
 previously examined the response and determined that it is in JSON format, so
 our step will be to load the content into a JSON object for ease of traversal:</p>
-<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="getting-data-from-the-web.html#cb514-1" aria-hidden="true" tabindex="-1"></a>bdy_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(bdy)</span></code></pre></div>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb517-1"><a href="getting-data-from-the-web.html#cb517-1" aria-hidden="true" tabindex="-1"></a>bdy_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(bdy)</span></code></pre></div>
 <p>If you examine the class and structure of the <code>bdy_json</code> object, you will see that
 <code>jsonlite</code> has converted the json structure into a nice, R dataframe where you
 can begin the process of exploration and cleaning in preparation for research.</p>
@@ -5016,7 +4991,7 @@ written <code>&lt;NAME&gt;</code>. Fortunately, HTML only has a few singleton ta
 be distinguished by name regardless of which way they’re written.</p>
 <p>For example, here’s some HTML that uses the <code>em</code> (emphasis, usually italic) and
 <code>strong</code> (usually bold) tags, as well as the singleton <code>br</code> (line break) tag:</p>
-<div class="sourceCode" id="cb515"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb515-1"><a href="getting-data-from-the-web.html#cb515-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;em&gt;&lt;strong&gt;</span>This text<span class="kw">&lt;/strong&gt;</span> is emphasized.<span class="kw">&lt;br</span> <span class="kw">/&gt;&lt;/em&gt;</span> Not emphasized</span></code></pre></div>
+<div class="sourceCode" id="cb518"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb518-1"><a href="getting-data-from-the-web.html#cb518-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;em&gt;&lt;strong&gt;</span>This text<span class="kw">&lt;/strong&gt;</span> is emphasized.<span class="kw">&lt;br</span> <span class="kw">/&gt;&lt;/em&gt;</span> Not emphasized</span></code></pre></div>
 <p>A pair of tags can contain other elements (paired or singleton tags), but not a
 lone opening or closing tag. This creates a strict, treelike hierarchy.</p>
 <p>Opening and singleton tags can have <em>attributes</em> that contain additional
@@ -5024,21 +4999,21 @@ information. Attributes are name-value pairs written <code>NAME="VALUE"</code> a
 tag name.</p>
 <p>For instance, the HTML <code>a</code> (anchor) tag creates a link to the URL provided for
 the <code>href</code> attribute:</p>
-<div class="sourceCode" id="cb516"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb516-1"><a href="getting-data-from-the-web.html#cb516-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;http://www.google.com/&quot;</span> <span class="er">id</span><span class="ot">=</span><span class="st">&quot;mytag&quot;</span><span class="kw">&gt;</span>My Search Engine<span class="kw">&lt;/a&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb519"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb519-1"><a href="getting-data-from-the-web.html#cb519-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;http://www.google.com/&quot;</span> <span class="er">id</span><span class="ot">=</span><span class="st">&quot;mytag&quot;</span><span class="kw">&gt;</span>My Search Engine<span class="kw">&lt;/a&gt;</span></span></code></pre></div>
 <p>In this case the tag also has a value set for the <code>id</code> attribute.</p>
 <p>Now let’s look at an example of HTML for a complete, albeit simple, web page:</p>
-<div class="sourceCode" id="cb517"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb517-1"><a href="getting-data-from-the-web.html#cb517-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;html&gt;</span></span>
-<span id="cb517-2"><a href="getting-data-from-the-web.html#cb517-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;head&gt;</span></span>
-<span id="cb517-3"><a href="getting-data-from-the-web.html#cb517-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;title&gt;</span>This is the page title!<span class="kw">&lt;/title&gt;</span></span>
-<span id="cb517-4"><a href="getting-data-from-the-web.html#cb517-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/head&gt;</span></span>
-<span id="cb517-5"><a href="getting-data-from-the-web.html#cb517-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;body&gt;</span></span>
-<span id="cb517-6"><a href="getting-data-from-the-web.html#cb517-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;h1&gt;</span>This is a header!<span class="kw">&lt;/h1&gt;</span></span>
-<span id="cb517-7"><a href="getting-data-from-the-web.html#cb517-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;p&gt;</span>This is a paragraph.</span>
-<span id="cb517-8"><a href="getting-data-from-the-web.html#cb517-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;http://www.r-project.org/&quot;</span><span class="kw">&gt;</span>Here&#39;s a website!<span class="kw">&lt;/a&gt;</span></span>
-<span id="cb517-9"><a href="getting-data-from-the-web.html#cb517-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/p&gt;</span></span>
-<span id="cb517-10"><a href="getting-data-from-the-web.html#cb517-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;p</span> <span class="er">id</span><span class="ot">=</span><span class="st">&quot;hello&quot;</span><span class="kw">&gt;</span>This is another paragraph.<span class="kw">&lt;/p&gt;</span></span>
-<span id="cb517-11"><a href="getting-data-from-the-web.html#cb517-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/body&gt;</span></span>
-<span id="cb517-12"><a href="getting-data-from-the-web.html#cb517-12" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/html&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb520"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb520-1"><a href="getting-data-from-the-web.html#cb520-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;html&gt;</span></span>
+<span id="cb520-2"><a href="getting-data-from-the-web.html#cb520-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;head&gt;</span></span>
+<span id="cb520-3"><a href="getting-data-from-the-web.html#cb520-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;title&gt;</span>This is the page title!<span class="kw">&lt;/title&gt;</span></span>
+<span id="cb520-4"><a href="getting-data-from-the-web.html#cb520-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/head&gt;</span></span>
+<span id="cb520-5"><a href="getting-data-from-the-web.html#cb520-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;body&gt;</span></span>
+<span id="cb520-6"><a href="getting-data-from-the-web.html#cb520-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;h1&gt;</span>This is a header!<span class="kw">&lt;/h1&gt;</span></span>
+<span id="cb520-7"><a href="getting-data-from-the-web.html#cb520-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;p&gt;</span>This is a paragraph.</span>
+<span id="cb520-8"><a href="getting-data-from-the-web.html#cb520-8" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;http://www.r-project.org/&quot;</span><span class="kw">&gt;</span>Here&#39;s a website!<span class="kw">&lt;/a&gt;</span></span>
+<span id="cb520-9"><a href="getting-data-from-the-web.html#cb520-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/p&gt;</span></span>
+<span id="cb520-10"><a href="getting-data-from-the-web.html#cb520-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;p</span> <span class="er">id</span><span class="ot">=</span><span class="st">&quot;hello&quot;</span><span class="kw">&gt;</span>This is another paragraph.<span class="kw">&lt;/p&gt;</span></span>
+<span id="cb520-11"><a href="getting-data-from-the-web.html#cb520-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/body&gt;</span></span>
+<span id="cb520-12"><a href="getting-data-from-the-web.html#cb520-12" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/html&gt;</span></span></code></pre></div>
 <p>In most web browsers, you can examine the HTML for a web page by right-clicking
 and choosing “View Page Source”.</p>
 <p>See <a href="https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/HTML_basics">here</a> for a more detailed explanation of HTML, and
@@ -5061,31 +5036,31 @@ to writing (rather than parsing) XML documents.</p>
 package</a>, which provides support for CSS selectors (described later in
 this lesson) and automates scraping HTML tables.</p>
 <p>The first time you use these packages, you’ll have to install them:</p>
-<div class="sourceCode" id="cb518"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb518-1"><a href="getting-data-from-the-web.html#cb518-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;xml2&quot;</span>)</span>
-<span id="cb518-2"><a href="getting-data-from-the-web.html#cb518-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rvest&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb521"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb521-1"><a href="getting-data-from-the-web.html#cb521-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;xml2&quot;</span>)</span>
+<span id="cb521-2"><a href="getting-data-from-the-web.html#cb521-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rvest&quot;</span>)</span></code></pre></div>
 <p>Let’s start by parsing the example of a complete web page from earlier. The
 xml2 function <code>read_xml</code> reads an XML document, and the rvest function
 <code>read_html</code> reads an HTML document. Both accept an XML/HTML string or a file
 path (including URLs):</p>
-<div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb519-1"><a href="getting-data-from-the-web.html#cb519-1" aria-hidden="true" tabindex="-1"></a>html <span class="ot">=</span> r<span class="st">&quot;(</span></span>
-<span id="cb519-2"><a href="getting-data-from-the-web.html#cb519-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
-<span id="cb519-3"><a href="getting-data-from-the-web.html#cb519-3" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;head&gt;</span></span>
-<span id="cb519-4"><a href="getting-data-from-the-web.html#cb519-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;title&gt;This is the page title!&lt;/title&gt;</span></span>
-<span id="cb519-5"><a href="getting-data-from-the-web.html#cb519-5" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/head&gt;</span></span>
-<span id="cb519-6"><a href="getting-data-from-the-web.html#cb519-6" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;body&gt;</span></span>
-<span id="cb519-7"><a href="getting-data-from-the-web.html#cb519-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;h1&gt;This is a header!&lt;/h1&gt;</span></span>
-<span id="cb519-8"><a href="getting-data-from-the-web.html#cb519-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p&gt;This is a paragraph.</span></span>
-<span id="cb519-9"><a href="getting-data-from-the-web.html#cb519-9" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;a href=&quot;</span>http<span class="sc">:</span><span class="er">//</span>www.r<span class="sc">-</span>project.org<span class="sc">/</span><span class="st">&quot;&gt;Here&#39;s a website!&lt;/a&gt;</span></span>
-<span id="cb519-10"><a href="getting-data-from-the-web.html#cb519-10" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/p&gt;</span></span>
-<span id="cb519-11"><a href="getting-data-from-the-web.html#cb519-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p id=&quot;</span>hello<span class="st">&quot;&gt;This is another paragraph.&lt;/p&gt;</span></span>
-<span id="cb519-12"><a href="getting-data-from-the-web.html#cb519-12" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/body&gt;</span></span>
-<span id="cb519-13"><a href="getting-data-from-the-web.html#cb519-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt; )&quot;</span></span>
-<span id="cb519-14"><a href="getting-data-from-the-web.html#cb519-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb519-15"><a href="getting-data-from-the-web.html#cb519-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xml2)</span>
-<span id="cb519-16"><a href="getting-data-from-the-web.html#cb519-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
-<span id="cb519-17"><a href="getting-data-from-the-web.html#cb519-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb519-18"><a href="getting-data-from-the-web.html#cb519-18" aria-hidden="true" tabindex="-1"></a>doc <span class="ot">=</span> <span class="fu">read_html</span>(html)</span>
-<span id="cb519-19"><a href="getting-data-from-the-web.html#cb519-19" aria-hidden="true" tabindex="-1"></a>doc</span></code></pre></div>
+<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="getting-data-from-the-web.html#cb522-1" aria-hidden="true" tabindex="-1"></a>html <span class="ot">=</span> r<span class="st">&quot;(</span></span>
+<span id="cb522-2"><a href="getting-data-from-the-web.html#cb522-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb522-3"><a href="getting-data-from-the-web.html#cb522-3" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;head&gt;</span></span>
+<span id="cb522-4"><a href="getting-data-from-the-web.html#cb522-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;title&gt;This is the page title!&lt;/title&gt;</span></span>
+<span id="cb522-5"><a href="getting-data-from-the-web.html#cb522-5" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/head&gt;</span></span>
+<span id="cb522-6"><a href="getting-data-from-the-web.html#cb522-6" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;body&gt;</span></span>
+<span id="cb522-7"><a href="getting-data-from-the-web.html#cb522-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;h1&gt;This is a header!&lt;/h1&gt;</span></span>
+<span id="cb522-8"><a href="getting-data-from-the-web.html#cb522-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p&gt;This is a paragraph.</span></span>
+<span id="cb522-9"><a href="getting-data-from-the-web.html#cb522-9" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;a href=&quot;</span>http<span class="sc">:</span><span class="er">//</span>www.r<span class="sc">-</span>project.org<span class="sc">/</span><span class="st">&quot;&gt;Here&#39;s a website!&lt;/a&gt;</span></span>
+<span id="cb522-10"><a href="getting-data-from-the-web.html#cb522-10" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/p&gt;</span></span>
+<span id="cb522-11"><a href="getting-data-from-the-web.html#cb522-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p id=&quot;</span>hello<span class="st">&quot;&gt;This is another paragraph.&lt;/p&gt;</span></span>
+<span id="cb522-12"><a href="getting-data-from-the-web.html#cb522-12" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/body&gt;</span></span>
+<span id="cb522-13"><a href="getting-data-from-the-web.html#cb522-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt; )&quot;</span></span>
+<span id="cb522-14"><a href="getting-data-from-the-web.html#cb522-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb522-15"><a href="getting-data-from-the-web.html#cb522-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xml2)</span>
+<span id="cb522-16"><a href="getting-data-from-the-web.html#cb522-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest)</span>
+<span id="cb522-17"><a href="getting-data-from-the-web.html#cb522-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb522-18"><a href="getting-data-from-the-web.html#cb522-18" aria-hidden="true" tabindex="-1"></a>doc <span class="ot">=</span> <span class="fu">read_html</span>(html)</span>
+<span id="cb522-19"><a href="getting-data-from-the-web.html#cb522-19" aria-hidden="true" tabindex="-1"></a>doc</span></code></pre></div>
 <pre><code>## {html_document}
 ## &lt;html&gt;
 ## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8 ...
@@ -5094,22 +5069,22 @@ path (including URLs):</p>
 element.</p>
 <p>The top element of our document is the <code>html</code> tag, and its immediate children
 are the <code>head</code> and <code>body</code> tags:</p>
-<div class="sourceCode" id="cb521"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb521-1"><a href="getting-data-from-the-web.html#cb521-1" aria-hidden="true" tabindex="-1"></a>tags <span class="ot">=</span> <span class="fu">xml_children</span>(doc)</span></code></pre></div>
+<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="getting-data-from-the-web.html#cb524-1" aria-hidden="true" tabindex="-1"></a>tags <span class="ot">=</span> <span class="fu">xml_children</span>(doc)</span></code></pre></div>
 <p>The result from <code>xml_children</code> is a <em>node set</em> (<code>xml_nodeset</code> object). Think of
 a node set as a vector where the elements are tags rather than numbers or
 strings. Just like a vector, you can access individual elements with the
 indexing (square bracket <code>[</code>) operator:</p>
-<div class="sourceCode" id="cb522"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb522-1"><a href="getting-data-from-the-web.html#cb522-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(tags)</span></code></pre></div>
+<div class="sourceCode" id="cb525"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb525-1"><a href="getting-data-from-the-web.html#cb525-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(tags)</span></code></pre></div>
 <pre><code>## [1] 2</code></pre>
-<div class="sourceCode" id="cb524"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb524-1"><a href="getting-data-from-the-web.html#cb524-1" aria-hidden="true" tabindex="-1"></a>head <span class="ot">=</span> tags[<span class="dv">1</span>]</span>
-<span id="cb524-2"><a href="getting-data-from-the-web.html#cb524-2" aria-hidden="true" tabindex="-1"></a>head</span></code></pre></div>
+<div class="sourceCode" id="cb527"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb527-1"><a href="getting-data-from-the-web.html#cb527-1" aria-hidden="true" tabindex="-1"></a>head <span class="ot">=</span> tags[<span class="dv">1</span>]</span>
+<span id="cb527-2"><a href="getting-data-from-the-web.html#cb527-2" aria-hidden="true" tabindex="-1"></a>head</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8 ...</code></pre>
 <p>The <code>xml_text</code> function returns the text contained in a tag. Let’s get the text
 in the <code>title</code> tag, which is beneath the <code>head</code> tag. First we isolate the tag,
 then use <code>xml_text</code>:</p>
-<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="getting-data-from-the-web.html#cb526-1" aria-hidden="true" tabindex="-1"></a>title <span class="ot">=</span> <span class="fu">xml_children</span>(head)</span>
-<span id="cb526-2"><a href="getting-data-from-the-web.html#cb526-2" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_text</span>(title)</span></code></pre></div>
+<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="getting-data-from-the-web.html#cb529-1" aria-hidden="true" tabindex="-1"></a>title <span class="ot">=</span> <span class="fu">xml_children</span>(head)</span>
+<span id="cb529-2"><a href="getting-data-from-the-web.html#cb529-2" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_text</span>(title)</span></code></pre></div>
 <pre><code>## [1] &quot;&quot;                        &quot;This is the page title!&quot;</code></pre>
 <p>Navigating through the tags by hand is tedious and easy to get wrong, but
 fortunately there’s a better way to find the tags we want.</p>
@@ -5156,7 +5131,7 @@ not R-specific. At a glance, an XPath looks similar to a file path:</p>
 </tbody>
 </table>
 <p>The xml2 function <code>xml_find_all</code> finds all elements at given XPath:</p>
-<div class="sourceCode" id="cb529"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb529-1"><a href="getting-data-from-the-web.html#cb529-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;/html/body/p&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb532"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb532-1"><a href="getting-data-from-the-web.html#cb532-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;/html/body/p&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (2)}
 ## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
 ## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
@@ -5166,18 +5141,18 @@ specific element, use indexing to get it from the result.</p>
 separator means “at any level beneath.” It’s a useful shortcut when you want to
 find a specific element but don’t care where it is.</p>
 <p>Let’s get all of the <code>p</code> elements at any level of the document:</p>
-<div class="sourceCode" id="cb531"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb531-1"><a href="getting-data-from-the-web.html#cb531-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb534"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb534-1"><a href="getting-data-from-the-web.html#cb534-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (2)}
 ## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
 ## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
 <p>Let’s also get all <code>a</code> elements at any level beneath a <code>p</code> element:</p>
-<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="getting-data-from-the-web.html#cb533-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p/a&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="getting-data-from-the-web.html#cb536-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p/a&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s a website!&lt;/a&gt;</code></pre>
 <p>The vertical bar <code>|</code> means “or.” You can use it to get two different sets of
 elements in one query.</p>
 <p>Let’s get all <code>h1</code> or <code>p</code> tags:</p>
-<div class="sourceCode" id="cb535"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb535-1"><a href="getting-data-from-the-web.html#cb535-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//h1|//p&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="getting-data-from-the-web.html#cb538-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//h1|//p&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (3)}
 ## [1] &lt;h1&gt;This is a header!&lt;/h1&gt;
 ## [2] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
@@ -5189,7 +5164,7 @@ condition. Most conditions are about the attributes of the element. In the
 predicate operator, attributes are always prefixed with <code>@</code>.</p>
 <p>For example, suppose we want to find all tags where the <code>id</code> attribute is equal
 to <code>"hello"</code>:</p>
-<div class="sourceCode" id="cb537"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb537-1"><a href="getting-data-from-the-web.html#cb537-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//*[@id = &#39;hello&#39;]&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="getting-data-from-the-web.html#cb540-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//*[@id = &#39;hello&#39;]&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
 <p>Notice that the equality operator in XPath is <code>=</code>, not <code>==</code>. Strings in XPath
@@ -5226,18 +5201,18 @@ Here are a few:</p>
 </table>
 <p>For instance, suppose we want to get elements that contain the word
 “paragraph”:</p>
-<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb539-1"><a href="getting-data-from-the-web.html#cb539-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//*[contains(text(), &#39;paragraph&#39;)]&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="getting-data-from-the-web.html#cb542-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//*[contains(text(), &#39;paragraph&#39;)]&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (2)}
 ## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
 ## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
 <p>Finally, note that you can also use the predicate operator to get elements at a
 specific position. For example, to get the second <code>p</code> element anywhere in the
 document:</p>
-<div class="sourceCode" id="cb541"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb541-1"><a href="getting-data-from-the-web.html#cb541-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p[2]&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="getting-data-from-the-web.html#cb544-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p[2]&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
 <p>Notice that this is the same as if we had used R to get the second element:</p>
-<div class="sourceCode" id="cb543"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb543-1"><a href="getting-data-from-the-web.html#cb543-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p&quot;</span>)[<span class="dv">2</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="getting-data-from-the-web.html#cb546-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//p&quot;</span>)[<span class="dv">2</span>]</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
 <p>Beware that although the XPath predicate operator resembles R’s indexing
@@ -5296,15 +5271,15 @@ terms of service to make sure scraping is not explicitly forbidden.</p>
 data. For example, there’s this <a href="https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California">list of cities and towns in
 California</a>. Let’s scrape the table to get a data frame.</p>
 <p>Step 1 is to download the page:</p>
-<div class="sourceCode" id="cb545"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb545-1"><a href="getting-data-from-the-web.html#cb545-1" aria-hidden="true" tabindex="-1"></a>wiki_url <span class="ot">=</span></span>
-<span id="cb545-2"><a href="getting-data-from-the-web.html#cb545-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California&quot;</span></span>
-<span id="cb545-3"><a href="getting-data-from-the-web.html#cb545-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb545-4"><a href="getting-data-from-the-web.html#cb545-4" aria-hidden="true" tabindex="-1"></a>wiki_doc <span class="ot">=</span> <span class="fu">read_html</span>(wiki_url)</span></code></pre></div>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="getting-data-from-the-web.html#cb548-1" aria-hidden="true" tabindex="-1"></a>wiki_url <span class="ot">=</span></span>
+<span id="cb548-2"><a href="getting-data-from-the-web.html#cb548-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California&quot;</span></span>
+<span id="cb548-3"><a href="getting-data-from-the-web.html#cb548-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb548-4"><a href="getting-data-from-the-web.html#cb548-4" aria-hidden="true" tabindex="-1"></a>wiki_doc <span class="ot">=</span> <span class="fu">read_html</span>(wiki_url)</span></code></pre></div>
 <p>Step 2 is to extract the table element from the page. We can use Firefox or
 Chrome’s web developer tools to identify the table. HTML tables usually use the
 <code>table</code> tag. Let’s see if it’s the only table in the page:</p>
-<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="getting-data-from-the-web.html#cb546-1" aria-hidden="true" tabindex="-1"></a>tables <span class="ot">=</span> <span class="fu">xml_find_all</span>(wiki_doc, <span class="st">&quot;//table&quot;</span>)</span>
-<span id="cb546-2"><a href="getting-data-from-the-web.html#cb546-2" aria-hidden="true" tabindex="-1"></a>tables</span></code></pre></div>
+<div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="getting-data-from-the-web.html#cb549-1" aria-hidden="true" tabindex="-1"></a>tables <span class="ot">=</span> <span class="fu">xml_find_all</span>(wiki_doc, <span class="st">&quot;//table&quot;</span>)</span>
+<span id="cb549-2"><a href="getting-data-from-the-web.html#cb549-2" aria-hidden="true" tabindex="-1"></a>tables</span></code></pre></div>
 <pre><code>## {xml_nodeset (4)}
 ## [1] &lt;table class=&quot;wikitable&quot;&gt;&lt;tbody&gt;\n&lt;tr&gt;\n&lt;th scope=&quot;row&quot; style=&quot;background ...
 ## [2] &lt;table class=&quot;wikitable plainrowheaders sortable&quot;&gt;&lt;tbody&gt;\n&lt;tr&gt;\n&lt;th scop ...
@@ -5316,8 +5291,8 @@ our scraper more robust, but indexing is easier.</p>
 <p>For the sake of learning, let’s refine the XPath. Going back to the browser, we
 can see that the table includes <code>"wikitable"</code> and <code>"sortable"</code> in its <code>class</code>
 attribute. So let’s search for these among the table elements:</p>
-<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="getting-data-from-the-web.html#cb548-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">=</span> <span class="fu">xml_find_all</span>(tables, <span class="st">&quot;//*[contains(@class, &#39;sortable&#39;)]&quot;</span>)</span>
-<span id="cb548-2"><a href="getting-data-from-the-web.html#cb548-2" aria-hidden="true" tabindex="-1"></a>tab</span></code></pre></div>
+<div class="sourceCode" id="cb551"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb551-1"><a href="getting-data-from-the-web.html#cb551-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">=</span> <span class="fu">xml_find_all</span>(tables, <span class="st">&quot;//*[contains(@class, &#39;sortable&#39;)]&quot;</span>)</span>
+<span id="cb551-2"><a href="getting-data-from-the-web.html#cb551-2" aria-hidden="true" tabindex="-1"></a>tab</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;table class=&quot;wikitable plainrowheaders sortable&quot;&gt;&lt;tbody&gt;\n&lt;tr&gt;\n&lt;th scop ...</code></pre>
 <p>Now we get just one table! Here we used a second XPath applied only to the
@@ -5328,19 +5303,23 @@ individual cell in the table. HTML tables have a strict layout order, with tags
 to indicate rows and cells. We could extract each cell by hand and then
 reassemble them into a data frame, but the rvest function <code>html_table</code> can do
 it for us automatically:</p>
-<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="getting-data-from-the-web.html#cb550-1" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> <span class="fu">html_table</span>(tab, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb550-2"><a href="getting-data-from-the-web.html#cb550-2" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> cities[[<span class="dv">1</span>]]</span>
-<span id="cb550-3"><a href="getting-data-from-the-web.html#cb550-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cities)</span></code></pre></div>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="getting-data-from-the-web.html#cb553-1" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> <span class="fu">html_table</span>(tab, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by &#39;tibble&#39;:
+##   method     from  
+##   format.tbl pillar
+##   print.tbl  pillar</code></pre>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="getting-data-from-the-web.html#cb555-1" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> cities[[<span class="dv">1</span>]]</span>
+<span id="cb555-2"><a href="getting-data-from-the-web.html#cb555-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cities)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 7
-##   Name      Type  County     `Population (2010)[1… `Land area[1]` `Land area[1]`
-##   &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;                 &lt;chr&gt;          &lt;chr&gt;         
-## 1 Name      Type  County     Population (2010)[1]… sq mi          km2           
-## 2 Adelanto  City  San Berna… 31,765                56.01          145.1         
-## 3 Agoura H… City  Los Angel… 20,330                7.79           20.2          
-## 4 Alameda   City  Alameda    73,812                10.61          27.5          
-## 5 Albany    City  Alameda    18,539                1.79           4.6           
-## 6 Alhambra  City  Los Angel… 83,089                7.63           19.8          
-## # … with 1 more variable: Incorporated[7] &lt;chr&gt;</code></pre>
+##   Name  Type  County `Population (20… `Land area[1]` `Land area[1]`
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;            &lt;chr&gt;          &lt;chr&gt;         
+## 1 Name  Type  County Population (201… sq mi          km2           
+## 2 Adel… City  San B… 31,765           56.01          145.1         
+## 3 Agou… City  Los A… 20,330           7.79           20.2          
+## 4 Alam… City  Alame… 73,812           10.61          27.5          
+## 5 Alba… City  Alame… 18,539           1.79           4.6           
+## 6 Alha… City  Los A… 83,089           7.63           19.8          
+## # … with 1 more variable: `Incorporated[7]` &lt;chr&gt;</code></pre>
 <p>The <code>fill = TRUE</code> argument ensures that empty cells are filled with <code>NA</code>. We’ve
 successfully imported the data from the web page into R, so we’re done with
 step 2.</p>
@@ -5348,143 +5327,134 @@ step 2.</p>
 <h3><span class="header-section-number">16.7.1</span> Data Cleaning</h3>
 <p>Step 3 is to clean up the data frame. The column names contain symbols, the
 first row is part of the header, and the column types are not correct.</p>
-<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="getting-data-from-the-web.html#cb552-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix column names.</span></span>
-<span id="cb552-2"><a href="getting-data-from-the-web.html#cb552-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cities) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;county&quot;</span>, <span class="st">&quot;population&quot;</span>, <span class="st">&quot;mi2&quot;</span>, <span class="st">&quot;km2&quot;</span>, <span class="st">&quot;date&quot;</span>)</span>
-<span id="cb552-3"><a href="getting-data-from-the-web.html#cb552-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb552-4"><a href="getting-data-from-the-web.html#cb552-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove fake first row.</span></span>
-<span id="cb552-5"><a href="getting-data-from-the-web.html#cb552-5" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> cities[<span class="sc">-</span><span class="dv">1</span>, ]</span>
-<span id="cb552-6"><a href="getting-data-from-the-web.html#cb552-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset row names.</span></span>
-<span id="cb552-7"><a href="getting-data-from-the-web.html#cb552-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cities) <span class="ot">=</span> <span class="cn">NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb557"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb557-1"><a href="getting-data-from-the-web.html#cb557-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fix column names.</span></span>
+<span id="cb557-2"><a href="getting-data-from-the-web.html#cb557-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cities) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;city&quot;</span>, <span class="st">&quot;type&quot;</span>, <span class="st">&quot;county&quot;</span>, <span class="st">&quot;population&quot;</span>, <span class="st">&quot;mi2&quot;</span>, <span class="st">&quot;km2&quot;</span>, <span class="st">&quot;date&quot;</span>)</span>
+<span id="cb557-3"><a href="getting-data-from-the-web.html#cb557-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb557-4"><a href="getting-data-from-the-web.html#cb557-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove fake first row.</span></span>
+<span id="cb557-5"><a href="getting-data-from-the-web.html#cb557-5" aria-hidden="true" tabindex="-1"></a>cities <span class="ot">=</span> cities[<span class="sc">-</span><span class="dv">1</span>, ]</span>
+<span id="cb557-6"><a href="getting-data-from-the-web.html#cb557-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reset row names.</span></span>
+<span id="cb557-7"><a href="getting-data-from-the-web.html#cb557-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cities) <span class="ot">=</span> <span class="cn">NULL</span></span></code></pre></div>
 <p>How can we clean up the <code>date</code> column? The <code>as.Date</code> function converts a string
 into a date R understands. The idea is to match the date string to a <em>format
 string</em> where the components of the date are indicated by codes that start with
 <code>%</code>. For example, <code>%m</code> stands for the month as a two-digit number. You can read
 about the different date format codes in <code>?strptime</code>.</p>
 <p>Here’s the code to convert the dates in the data frame:</p>
-<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="getting-data-from-the-web.html#cb553-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">as.Date</span>(cities<span class="sc">$</span>date, <span class="st">&quot;%B %m, %Y&quot;</span>)</span>
-<span id="cb553-2"><a href="getting-data-from-the-web.html#cb553-2" aria-hidden="true" tabindex="-1"></a>cities<span class="sc">$</span>date <span class="ot">=</span> dates</span></code></pre></div>
+<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="getting-data-from-the-web.html#cb558-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">as.Date</span>(cities<span class="sc">$</span>date, <span class="st">&quot;%B %m, %Y&quot;</span>)</span>
+<span id="cb558-2"><a href="getting-data-from-the-web.html#cb558-2" aria-hidden="true" tabindex="-1"></a>cities<span class="sc">$</span>date <span class="ot">=</span> dates</span></code></pre></div>
 <p>We can also convert the population to a number:</p>
-<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="getting-data-from-the-web.html#cb554-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(cities<span class="sc">$</span>population)</span></code></pre></div>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="getting-data-from-the-web.html#cb559-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(cities<span class="sc">$</span>population)</span></code></pre></div>
 <pre><code>## [1] &quot;character&quot;</code></pre>
-<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="getting-data-from-the-web.html#cb556-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove commas and footnotes (e.g., [1]) before conversion</span></span>
-<span id="cb556-2"><a href="getting-data-from-the-web.html#cb556-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb556-3"><a href="getting-data-from-the-web.html#cb556-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb556-4"><a href="getting-data-from-the-web.html#cb556-4" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">str_replace_all</span>(cities<span class="sc">$</span>population, <span class="st">&quot;,&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
-<span id="cb556-5"><a href="getting-data-from-the-web.html#cb556-5" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">str_replace_all</span>(pop, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">[[0-9]+</span><span class="sc">\\</span><span class="st">]&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
-<span id="cb556-6"><a href="getting-data-from-the-web.html#cb556-6" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">as.numeric</span>(pop)</span>
-<span id="cb556-7"><a href="getting-data-from-the-web.html#cb556-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb556-8"><a href="getting-data-from-the-web.html#cb556-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for missing values, which can mean conversion failed</span></span>
-<span id="cb556-9"><a href="getting-data-from-the-web.html#cb556-9" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(pop))</span></code></pre></div>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="getting-data-from-the-web.html#cb561-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove commas and footnotes (e.g., [1]) before conversion</span></span>
+<span id="cb561-2"><a href="getting-data-from-the-web.html#cb561-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb561-3"><a href="getting-data-from-the-web.html#cb561-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb561-4"><a href="getting-data-from-the-web.html#cb561-4" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">str_replace_all</span>(cities<span class="sc">$</span>population, <span class="st">&quot;,&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
+<span id="cb561-5"><a href="getting-data-from-the-web.html#cb561-5" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">str_replace_all</span>(pop, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">[[0-9]+</span><span class="sc">\\</span><span class="st">]&quot;</span>, <span class="st">&quot;&quot;</span>)</span>
+<span id="cb561-6"><a href="getting-data-from-the-web.html#cb561-6" aria-hidden="true" tabindex="-1"></a>pop <span class="ot">=</span> <span class="fu">as.numeric</span>(pop)</span>
+<span id="cb561-7"><a href="getting-data-from-the-web.html#cb561-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb561-8"><a href="getting-data-from-the-web.html#cb561-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for missing values, which can mean conversion failed</span></span>
+<span id="cb561-9"><a href="getting-data-from-the-web.html#cb561-9" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">is.na</span>(pop))</span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="getting-data-from-the-web.html#cb558-1" aria-hidden="true" tabindex="-1"></a>cities<span class="sc">$</span>population <span class="ot">=</span> pop</span></code></pre></div>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="getting-data-from-the-web.html#cb563-1" aria-hidden="true" tabindex="-1"></a>cities<span class="sc">$</span>population <span class="ot">=</span> pop</span></code></pre></div>
 </div>
 </div>
 <div id="case-study-the-ca-aggie" class="section level2" number="16.8">
 <h2><span class="header-section-number">16.8</span> Case Study: The CA Aggie</h2>
 <p>Suppose we want to scrape The California Aggie.</p>
 <p>In particular, we want to get all the links to news articles on the features
-page <a href="https://theaggie.org/features/" class="uri">https://theaggie.org/features/</a>. This could be one part of a larger
-scraping project where we go on to scrape individual articles.</p>
+page <a href="https://theaggie.org/category/features/" class="uri">https://theaggie.org/category/features/</a>. This could be one part of a
+larger scraping project where we go on to scrape individual articles.</p>
 <p>First, let’s download the features page so we can extract the links:</p>
-<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="getting-data-from-the-web.html#cb559-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://theaggie.org/features/&quot;</span></span>
-<span id="cb559-2"><a href="getting-data-from-the-web.html#cb559-2" aria-hidden="true" tabindex="-1"></a>doc <span class="ot">=</span> <span class="fu">read_html</span>(url)</span></code></pre></div>
+<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="getting-data-from-the-web.html#cb564-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://theaggie.org/category/features/&quot;</span></span>
+<span id="cb564-2"><a href="getting-data-from-the-web.html#cb564-2" aria-hidden="true" tabindex="-1"></a>doc <span class="ot">=</span> <span class="fu">read_html</span>(url)</span></code></pre></div>
 <p>We know that links are in <code>a</code> tags, but we only want links to articles. Looking
 at the features page with the web developer tools, the links to feature
-articles are all inside of a <code>section</code> tag. So let’s get the section tag:</p>
-<div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="getting-data-from-the-web.html#cb560-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//section&quot;</span>) <span class="co"># OR html_nodes(doc, &quot;section&quot;)</span></span></code></pre></div>
-<pre><code>## {xml_nodeset (1)}
-## [1] &lt;section id=&quot;blog-grid&quot;&gt;&lt;div class=&quot;blog-grid-container&quot;&gt;\n\n\t\t\t\t\t&lt;d ...</code></pre>
-<p>Just to be safe, let’s also use the <code>id</code> attribute, which is <code>"blog-grid"</code>.
-Usually the id of an element is unique, so this ensures that we get the right
-section even if later the web developer for The Aggie adds other <code>section</code>
-tags.</p>
+articles are all inside of a <code>div</code> tag with class <code>td_block_inner</code>. So
+let’s get that tag:</p>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="getting-data-from-the-web.html#cb565-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//div[contains(@class, &#39;td_block_inner&#39;)]&quot;</span>)</span></code></pre></div>
+<pre><code>## {xml_nodeset (0)}</code></pre>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="getting-data-from-the-web.html#cb567-1" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(doc, &quot;div.td-block-inner&quot;)</span></span></code></pre></div>
+<p>That returns a lot of results, so let’s try using the <code>id</code> attribute, which is
+<code>"tdi_113"</code>, instead. Usually the id of an element is unique, so this ensures
+that we get the right section.</p>
 <p>We can also add in a part about getting links now:</p>
-<div class="sourceCode" id="cb562"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb562-1"><a href="getting-data-from-the-web.html#cb562-1" aria-hidden="true" tabindex="-1"></a>section <span class="ot">=</span> <span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//section[@id = &#39;blog-grid&#39;]&quot;</span>)</span>
-<span id="cb562-2"><a href="getting-data-from-the-web.html#cb562-2" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(doc, &quot;section#blog-grid&quot;)</span></span>
-<span id="cb562-3"><a href="getting-data-from-the-web.html#cb562-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb562-4"><a href="getting-data-from-the-web.html#cb562-4" aria-hidden="true" tabindex="-1"></a>links <span class="ot">=</span> <span class="fu">xml_find_all</span>(section, <span class="st">&quot;//a&quot;</span>)</span>
-<span id="cb562-5"><a href="getting-data-from-the-web.html#cb562-5" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(section, &quot;a&quot;)</span></span>
-<span id="cb562-6"><a href="getting-data-from-the-web.html#cb562-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb562-7"><a href="getting-data-from-the-web.html#cb562-7" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(links)</span></code></pre></div>
-<pre><code>## [1] 267</code></pre>
-<p>That gives us 267 links, but there are only 15 articles on the
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="getting-data-from-the-web.html#cb568-1" aria-hidden="true" tabindex="-1"></a>div <span class="ot">=</span> <span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//div[@id = &#39;tdi_113&#39;]&quot;</span>)</span>
+<span id="cb568-2"><a href="getting-data-from-the-web.html#cb568-2" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(doc, &quot;div#tdi_113&quot;)</span></span>
+<span id="cb568-3"><a href="getting-data-from-the-web.html#cb568-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb568-4"><a href="getting-data-from-the-web.html#cb568-4" aria-hidden="true" tabindex="-1"></a>links <span class="ot">=</span> <span class="fu">xml_find_all</span>(div, <span class="st">&quot;.//a&quot;</span>)</span>
+<span id="cb568-5"><a href="getting-data-from-the-web.html#cb568-5" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(div, &quot;a&quot;)</span></span>
+<span id="cb568-6"><a href="getting-data-from-the-web.html#cb568-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb568-7"><a href="getting-data-from-the-web.html#cb568-7" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(links)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<p>That gives us 0 links, but there are only 15 articles on the
 page, so something’s still not right. Inspecting the page again, there are
 actually three links to each article: on the image, on the title, and on
 “Continue Reading”.</p>
-<p>Let’s focus on the title link. There are a couple different ways we can
-identify the title link:</p>
-<ul>
-<li>Always inside an <code>h2</code> tag</li>
-<li>Always has <code>title</code> attribute that starts with “Permanent”</li>
-</ul>
-<p>Generally it’s more robust to rely on tags (structure) than to rely on
-attributes (other than <code>id</code> and <code>class</code>). So let’s use the <code>h2</code> tag here:</p>
-<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="getting-data-from-the-web.html#cb564-1" aria-hidden="true" tabindex="-1"></a>links <span class="ot">=</span> <span class="fu">xml_find_all</span>(section, <span class="st">&quot;//h2/a&quot;</span>)</span>
-<span id="cb564-2"><a href="getting-data-from-the-web.html#cb564-2" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(section, &quot;h2 &gt; a&quot;)</span></span>
-<span id="cb564-3"><a href="getting-data-from-the-web.html#cb564-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb564-4"><a href="getting-data-from-the-web.html#cb564-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(links)</span></code></pre></div>
-<pre><code>## [1] 15</code></pre>
+<p>Let’s focus on the title link. All of the title links are inside of an <code>h3</code>
+tag. Generally it’s more robust to rely on tags (structure) than to rely on
+attributes (other than <code>id</code> and <code>class</code>). So let’s use the <code>h3</code> tag here:</p>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="getting-data-from-the-web.html#cb570-1" aria-hidden="true" tabindex="-1"></a>links <span class="ot">=</span> <span class="fu">xml_find_all</span>(div, <span class="st">&quot;.//h3/a&quot;</span>)</span>
+<span id="cb570-2"><a href="getting-data-from-the-web.html#cb570-2" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(div, &quot;h3 &gt; a&quot;)</span></span>
+<span id="cb570-3"><a href="getting-data-from-the-web.html#cb570-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb570-4"><a href="getting-data-from-the-web.html#cb570-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(links)</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
 <p>Now we’ve got the 15 links, so let’s get the URLs from the <code>href</code> attribute.</p>
-<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="getting-data-from-the-web.html#cb566-1" aria-hidden="true" tabindex="-1"></a>feature_urls <span class="ot">=</span> <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="getting-data-from-the-web.html#cb572-1" aria-hidden="true" tabindex="-1"></a>feature_urls <span class="ot">=</span> <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span></code></pre></div>
 <p>The other article listings (Sports, Science, etc) on The Aggie have a similar
 structure, so we can potentially reuse our code to scrape those.</p>
 <p>So let’s turn our code into a function. The input will be a downloaded page,
 and the output will be the article links.</p>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="getting-data-from-the-web.html#cb567-1" aria-hidden="true" tabindex="-1"></a>parse_article_links <span class="ot">=</span> <span class="cf">function</span>(page) {</span>
-<span id="cb567-2"><a href="getting-data-from-the-web.html#cb567-2" aria-hidden="true" tabindex="-1"></a>  section <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//section[@id = &#39;blog-grid&#39;]&quot;</span>)</span>
-<span id="cb567-3"><a href="getting-data-from-the-web.html#cb567-3" aria-hidden="true" tabindex="-1"></a>  links <span class="ot">=</span> <span class="fu">xml_find_all</span>(section, <span class="st">&quot;//h2/a&quot;</span>)</span>
-<span id="cb567-4"><a href="getting-data-from-the-web.html#cb567-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span>
-<span id="cb567-5"><a href="getting-data-from-the-web.html#cb567-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="getting-data-from-the-web.html#cb573-1" aria-hidden="true" tabindex="-1"></a>parse_article_links <span class="ot">=</span> <span class="cf">function</span>(page) {</span>
+<span id="cb573-2"><a href="getting-data-from-the-web.html#cb573-2" aria-hidden="true" tabindex="-1"></a>  div <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//div[@id = &#39;tdi_113&#39;]&quot;</span>)</span>
+<span id="cb573-3"><a href="getting-data-from-the-web.html#cb573-3" aria-hidden="true" tabindex="-1"></a>  links <span class="ot">=</span> <span class="fu">xml_find_all</span>(div, <span class="st">&quot;.//h3/a&quot;</span>)</span>
+<span id="cb573-4"><a href="getting-data-from-the-web.html#cb573-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span>
+<span id="cb573-5"><a href="getting-data-from-the-web.html#cb573-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>We can test this out on the Sports page. First we download the page:</p>
-<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="getting-data-from-the-web.html#cb568-1" aria-hidden="true" tabindex="-1"></a>sports <span class="ot">=</span> <span class="fu">read_html</span>(<span class="st">&quot;https://theaggie.org/sports&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="getting-data-from-the-web.html#cb574-1" aria-hidden="true" tabindex="-1"></a>sports <span class="ot">=</span> <span class="fu">read_html</span>(<span class="st">&quot;https://theaggie.org/category/sports&quot;</span>)</span></code></pre></div>
 <p>Then we call the function on the document:</p>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="getting-data-from-the-web.html#cb569-1" aria-hidden="true" tabindex="-1"></a>sports_urls <span class="ot">=</span> <span class="fu">head</span>(<span class="fu">parse_article_links</span>(sports))</span>
-<span id="cb569-2"><a href="getting-data-from-the-web.html#cb569-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sports_urls)</span></code></pre></div>
-<pre><code>## [1] &quot;https://theaggie.org/2021/02/19/pickleball-the-rising-sport/&quot;                                       
-## [2] &quot;https://theaggie.org/2021/02/19/2021-olympic-games-are-in-limbo/&quot;                                   
-## [3] &quot;https://theaggie.org/2021/02/12/wild-year-for-football-culminates-in-super-bowl/&quot;                   
-## [4] &quot;https://theaggie.org/2021/02/12/american-sports-sees-a-lack-of-diversity-in-team-coach-composition/&quot;
-## [5] &quot;https://theaggie.org/2021/02/10/preview-of-the-uefa-champions-league-knockout-stage/&quot;               
-## [6] &quot;https://theaggie.org/2021/02/05/out-of-the-bubble-trouble/&quot;</code></pre>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="getting-data-from-the-web.html#cb575-1" aria-hidden="true" tabindex="-1"></a>sports_urls <span class="ot">=</span> <span class="fu">parse_article_links</span>(sports)</span>
+<span id="cb575-2"><a href="getting-data-from-the-web.html#cb575-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sports_urls)</span></code></pre></div>
+<pre><code>## character(0)</code></pre>
 <p>It looks like the function works even on other pages! We can also set up the
 function to extract the link to the next page, in case we want to scrape
 multiple pages of links.</p>
 <p>The link to the next page of features (an arrow at the bottom) is an <code>a</code> tag
-with class <code>next</code>. Let’s see if that’s specific enough to isolate the tag:</p>
-<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="getting-data-from-the-web.html#cb571-1" aria-hidden="true" tabindex="-1"></a>next_page <span class="ot">=</span> <span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//a[contains(@class, &#39;next&#39;)]&quot;</span>)</span>
-<span id="cb571-2"><a href="getting-data-from-the-web.html#cb571-2" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(doc, &quot;a.next&quot;)</span></span></code></pre></div>
+with attribute <code>aria-label</code> in a <code>div</code> with classs <code>page-nav</code>. Let’s see if
+that’s specific enough to isolate the tag:</p>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="getting-data-from-the-web.html#cb577-1" aria-hidden="true" tabindex="-1"></a>nav <span class="ot">=</span> <span class="fu">xml_find_all</span>(doc, <span class="st">&quot;//div[contains(@class, &#39;page-nav&#39;)]&quot;</span>)</span>
+<span id="cb577-2"><a href="getting-data-from-the-web.html#cb577-2" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(doc, &quot;div.page-nav&quot;)</span></span>
+<span id="cb577-3"><a href="getting-data-from-the-web.html#cb577-3" aria-hidden="true" tabindex="-1"></a>next_page <span class="ot">=</span> <span class="fu">xml_find_all</span>(nav, <span class="st">&quot;.//a[contains(@aria-label, &#39;next-page&#39;)]&quot;</span>)</span>
+<span id="cb577-4"><a href="getting-data-from-the-web.html#cb577-4" aria-hidden="true" tabindex="-1"></a><span class="co"># OR html_nodes(nav, &quot;a[aria-label *= &#39;next-page&#39;]&quot;)</span></span></code></pre></div>
 <p>It looks like it is. We use <code>contains</code> here rather than <code>=</code> because it is
-common for the <code>class</code> attribute to have many parts. It only has one here, but
-using <code>contains</code> makes our code robust against changes in the future.</p>
+common for the <code>class</code> attribute to have many parts. Using <code>contains</code> makes our
+code robust against changes in the future.</p>
 <p>We can now modify our parser function to return the link to the next page:</p>
-<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="getting-data-from-the-web.html#cb572-1" aria-hidden="true" tabindex="-1"></a>parse_article_links <span class="ot">=</span> <span class="cf">function</span>(page) {</span>
-<span id="cb572-2"><a href="getting-data-from-the-web.html#cb572-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get article URLs</span></span>
-<span id="cb572-3"><a href="getting-data-from-the-web.html#cb572-3" aria-hidden="true" tabindex="-1"></a>  section <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//section[@id = &#39;blog-grid&#39;]&quot;</span>)</span>
-<span id="cb572-4"><a href="getting-data-from-the-web.html#cb572-4" aria-hidden="true" tabindex="-1"></a>  links <span class="ot">=</span> <span class="fu">xml_find_all</span>(section, <span class="st">&quot;//h2/a&quot;</span>)</span>
-<span id="cb572-5"><a href="getting-data-from-the-web.html#cb572-5" aria-hidden="true" tabindex="-1"></a>  urls <span class="ot">=</span> <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span>
-<span id="cb572-6"><a href="getting-data-from-the-web.html#cb572-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb572-7"><a href="getting-data-from-the-web.html#cb572-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get next page URL</span></span>
-<span id="cb572-8"><a href="getting-data-from-the-web.html#cb572-8" aria-hidden="true" tabindex="-1"></a>  next_page <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//a[contains(@class, &#39;next&#39;)]&quot;</span>)</span>
-<span id="cb572-9"><a href="getting-data-from-the-web.html#cb572-9" aria-hidden="true" tabindex="-1"></a>  next_url <span class="ot">=</span> <span class="fu">xml_attr</span>(next_page, <span class="st">&quot;href&quot;</span>)</span>
-<span id="cb572-10"><a href="getting-data-from-the-web.html#cb572-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb572-11"><a href="getting-data-from-the-web.html#cb572-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Using a list allows us to return two objects</span></span>
-<span id="cb572-12"><a href="getting-data-from-the-web.html#cb572-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">urls =</span> urls, <span class="at">next_url =</span> next_url)</span>
-<span id="cb572-13"><a href="getting-data-from-the-web.html#cb572-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="getting-data-from-the-web.html#cb578-1" aria-hidden="true" tabindex="-1"></a>parse_article_links <span class="ot">=</span> <span class="cf">function</span>(page) {</span>
+<span id="cb578-2"><a href="getting-data-from-the-web.html#cb578-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get article URLs</span></span>
+<span id="cb578-3"><a href="getting-data-from-the-web.html#cb578-3" aria-hidden="true" tabindex="-1"></a>  div <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//div[@id = &#39;tdi_113&#39;]&quot;</span>)</span>
+<span id="cb578-4"><a href="getting-data-from-the-web.html#cb578-4" aria-hidden="true" tabindex="-1"></a>  links <span class="ot">=</span> <span class="fu">xml_find_all</span>(div, <span class="st">&quot;.//h3/a&quot;</span>)</span>
+<span id="cb578-5"><a href="getting-data-from-the-web.html#cb578-5" aria-hidden="true" tabindex="-1"></a>  urls <span class="ot">=</span> <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span>
+<span id="cb578-6"><a href="getting-data-from-the-web.html#cb578-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb578-7"><a href="getting-data-from-the-web.html#cb578-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get next page URL</span></span>
+<span id="cb578-8"><a href="getting-data-from-the-web.html#cb578-8" aria-hidden="true" tabindex="-1"></a>  nav <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//div[contains(@class, &#39;page-nav&#39;)]&quot;</span>)</span>
+<span id="cb578-9"><a href="getting-data-from-the-web.html#cb578-9" aria-hidden="true" tabindex="-1"></a>  next_page <span class="ot">=</span> <span class="fu">xml_find_all</span>(nav, <span class="st">&quot;.//a[contains(@aria-label, &#39;next-page&#39;)]&quot;</span>)</span>
+<span id="cb578-10"><a href="getting-data-from-the-web.html#cb578-10" aria-hidden="true" tabindex="-1"></a>  next_url <span class="ot">=</span> <span class="fu">xml_attr</span>(next_page, <span class="st">&quot;href&quot;</span>)</span>
+<span id="cb578-11"><a href="getting-data-from-the-web.html#cb578-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb578-12"><a href="getting-data-from-the-web.html#cb578-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Using a list allows us to return two objects</span></span>
+<span id="cb578-13"><a href="getting-data-from-the-web.html#cb578-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">urls =</span> urls, <span class="at">next_url =</span> next_url)</span>
+<span id="cb578-14"><a href="getting-data-from-the-web.html#cb578-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Since our function gets URL for the next page, what happens on the last page?</p>
 <p>Looking at the last page in the browser, there is no link to the next page.
 Let’s see what our scraper function does:</p>
-<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="getting-data-from-the-web.html#cb573-1" aria-hidden="true" tabindex="-1"></a>last_page <span class="ot">=</span> <span class="fu">read_html</span>(<span class="st">&quot;https://theaggie.org/features/page/180/&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="getting-data-from-the-web.html#cb574-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_article_links</span>(last_page)</span></code></pre></div>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="getting-data-from-the-web.html#cb579-1" aria-hidden="true" tabindex="-1"></a>last_page <span class="ot">=</span> <span class="fu">read_html</span>(<span class="st">&quot;https://theaggie.org/category/features/page/187/&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="getting-data-from-the-web.html#cb580-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_article_links</span>(last_page)</span></code></pre></div>
 <pre><code>## $urls
-## [1] &quot;https://theaggie.org/2008/03/14/daily-calendar/&quot;                    
-## [2] &quot;https://theaggie.org/2008/03/14/facial-hair-takes-root-at-uc-davis/&quot;
-## [3] &quot;https://theaggie.org/2008/03/13/daily-calendar/&quot;                    
-## [4] &quot;https://theaggie.org/2008/03/12/corrections/&quot;                       
-## [5] &quot;https://theaggie.org/2008/03/12/daily-calendar/&quot;                    
-## [6] &quot;https://theaggie.org/2008/03/12/five-years-in-iraq-part-two/&quot;       
-## [7] &quot;https://theaggie.org/2008/03/11/daily-calendar/&quot;                    
-## [8] &quot;https://theaggie.org/2008/03/11/deals-around-davis/&quot;                
-## [9] &quot;https://theaggie.org/2008/03/11/five-years-in-iraq-part-one/&quot;       
+## [1] &quot;https://theaggie.org/2008/03/12/five-years-in-iraq-part-two/&quot;
+## [2] &quot;https://theaggie.org/2008/03/12/corrections/&quot;                
+## [3] &quot;https://theaggie.org/2008/03/12/daily-calendar/&quot;             
+## [4] &quot;https://theaggie.org/2008/03/11/daily-calendar/&quot;             
+## [5] &quot;https://theaggie.org/2008/03/11/deals-around-davis/&quot;         
+## [6] &quot;https://theaggie.org/2008/03/11/five-years-in-iraq-part-one/&quot;
 ## 
 ## $next_url
 ## character(0)</code></pre>
@@ -5494,51 +5464,52 @@ there aren’t any <code>href</code> fields for <code>xml_attr</code> to extract
 the xml2 functions behave this way, but we could also add an if-statement to
 the function to check (and possibly return <code>NA</code> as the next URL in this case).</p>
 <p>Then the code becomes:</p>
-<div class="sourceCode" id="cb576"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb576-1"><a href="getting-data-from-the-web.html#cb576-1" aria-hidden="true" tabindex="-1"></a>parse_article_links <span class="ot">=</span> <span class="cf">function</span>(page) {</span>
-<span id="cb576-2"><a href="getting-data-from-the-web.html#cb576-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get article URLs</span></span>
-<span id="cb576-3"><a href="getting-data-from-the-web.html#cb576-3" aria-hidden="true" tabindex="-1"></a>  section <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//section[@id = &#39;blog-grid&#39;]&quot;</span>)</span>
-<span id="cb576-4"><a href="getting-data-from-the-web.html#cb576-4" aria-hidden="true" tabindex="-1"></a>  links <span class="ot">=</span> <span class="fu">xml_find_all</span>(section, <span class="st">&quot;//h2/a&quot;</span>)</span>
-<span id="cb576-5"><a href="getting-data-from-the-web.html#cb576-5" aria-hidden="true" tabindex="-1"></a>  urls <span class="ot">=</span> <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span>
-<span id="cb576-6"><a href="getting-data-from-the-web.html#cb576-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb576-7"><a href="getting-data-from-the-web.html#cb576-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get next page URL</span></span>
-<span id="cb576-8"><a href="getting-data-from-the-web.html#cb576-8" aria-hidden="true" tabindex="-1"></a>  next_page <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//a[contains(@class, &#39;next&#39;)]&quot;</span>)</span>
-<span id="cb576-9"><a href="getting-data-from-the-web.html#cb576-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(next_page) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb576-10"><a href="getting-data-from-the-web.html#cb576-10" aria-hidden="true" tabindex="-1"></a>    next_url <span class="ot">=</span> <span class="cn">NA</span></span>
-<span id="cb576-11"><a href="getting-data-from-the-web.html#cb576-11" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb576-12"><a href="getting-data-from-the-web.html#cb576-12" aria-hidden="true" tabindex="-1"></a>    next_url <span class="ot">=</span> <span class="fu">xml_attr</span>(next_page, <span class="st">&quot;href&quot;</span>)</span>
-<span id="cb576-13"><a href="getting-data-from-the-web.html#cb576-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb576-14"><a href="getting-data-from-the-web.html#cb576-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb576-15"><a href="getting-data-from-the-web.html#cb576-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Using a list allows us to return two objects</span></span>
-<span id="cb576-16"><a href="getting-data-from-the-web.html#cb576-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">urls =</span> urls, <span class="at">next_url =</span> next_url)</span>
-<span id="cb576-17"><a href="getting-data-from-the-web.html#cb576-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="getting-data-from-the-web.html#cb582-1" aria-hidden="true" tabindex="-1"></a>parse_article_links <span class="ot">=</span> <span class="cf">function</span>(page) {</span>
+<span id="cb582-2"><a href="getting-data-from-the-web.html#cb582-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get article URLs</span></span>
+<span id="cb582-3"><a href="getting-data-from-the-web.html#cb582-3" aria-hidden="true" tabindex="-1"></a>  div <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//div[@id = &#39;tdi_113&#39;]&quot;</span>)</span>
+<span id="cb582-4"><a href="getting-data-from-the-web.html#cb582-4" aria-hidden="true" tabindex="-1"></a>  links <span class="ot">=</span> <span class="fu">xml_find_all</span>(div, <span class="st">&quot;.//h3/a&quot;</span>)</span>
+<span id="cb582-5"><a href="getting-data-from-the-web.html#cb582-5" aria-hidden="true" tabindex="-1"></a>  urls <span class="ot">=</span> <span class="fu">xml_attr</span>(links, <span class="st">&quot;href&quot;</span>)</span>
+<span id="cb582-6"><a href="getting-data-from-the-web.html#cb582-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb582-7"><a href="getting-data-from-the-web.html#cb582-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Get next page URL</span></span>
+<span id="cb582-8"><a href="getting-data-from-the-web.html#cb582-8" aria-hidden="true" tabindex="-1"></a>  nav <span class="ot">=</span> <span class="fu">xml_find_all</span>(page, <span class="st">&quot;//div[contains(@class, &#39;page-nav&#39;)]&quot;</span>)</span>
+<span id="cb582-9"><a href="getting-data-from-the-web.html#cb582-9" aria-hidden="true" tabindex="-1"></a>  next_page <span class="ot">=</span> <span class="fu">xml_find_all</span>(nav, <span class="st">&quot;.//a[contains(@aria-label, &#39;next-page&#39;)]&quot;</span>)</span>
+<span id="cb582-10"><a href="getting-data-from-the-web.html#cb582-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(next_page) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb582-11"><a href="getting-data-from-the-web.html#cb582-11" aria-hidden="true" tabindex="-1"></a>    next_url <span class="ot">=</span> <span class="cn">NA</span></span>
+<span id="cb582-12"><a href="getting-data-from-the-web.html#cb582-12" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb582-13"><a href="getting-data-from-the-web.html#cb582-13" aria-hidden="true" tabindex="-1"></a>    next_url <span class="ot">=</span> <span class="fu">xml_attr</span>(next_page, <span class="st">&quot;href&quot;</span>)</span>
+<span id="cb582-14"><a href="getting-data-from-the-web.html#cb582-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb582-15"><a href="getting-data-from-the-web.html#cb582-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb582-16"><a href="getting-data-from-the-web.html#cb582-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Using a list allows us to return two objects</span></span>
+<span id="cb582-17"><a href="getting-data-from-the-web.html#cb582-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">urls =</span> urls, <span class="at">next_url =</span> next_url)</span>
+<span id="cb582-18"><a href="getting-data-from-the-web.html#cb582-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Now our function should work well even on the last page.</p>
 <p>If we want to scrape links to all of the articles in the features section, we
 can use our function in a loop:</p>
-<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="getting-data-from-the-web.html#cb577-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: This code is likely to take a while to run, and is meant more for</span></span>
-<span id="cb577-2"><a href="getting-data-from-the-web.html#cb577-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reading than for you to run and try out.</span></span>
-<span id="cb577-3"><a href="getting-data-from-the-web.html#cb577-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb577-4"><a href="getting-data-from-the-web.html#cb577-4" aria-hidden="true" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://theaggie.org/features/&quot;</span></span>
-<span id="cb577-5"><a href="getting-data-from-the-web.html#cb577-5" aria-hidden="true" tabindex="-1"></a>article_urls <span class="ot">=</span> <span class="fu">list</span>()</span>
-<span id="cb577-6"><a href="getting-data-from-the-web.html#cb577-6" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb577-7"><a href="getting-data-from-the-web.html#cb577-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb577-8"><a href="getting-data-from-the-web.html#cb577-8" aria-hidden="true" tabindex="-1"></a><span class="co"># On the last page, the next URL will be `NA`.</span></span>
-<span id="cb577-9"><a href="getting-data-from-the-web.html#cb577-9" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (<span class="sc">!</span><span class="fu">is.na</span>(url)) {</span>
-<span id="cb577-10"><a href="getting-data-from-the-web.html#cb577-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Download and parse the page.</span></span>
-<span id="cb577-11"><a href="getting-data-from-the-web.html#cb577-11" aria-hidden="true" tabindex="-1"></a>  page <span class="ot">=</span> <span class="fu">read_html</span>(url)</span>
-<span id="cb577-12"><a href="getting-data-from-the-web.html#cb577-12" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">=</span> <span class="fu">parse_article_links</span>(page)</span>
-<span id="cb577-13"><a href="getting-data-from-the-web.html#cb577-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb577-14"><a href="getting-data-from-the-web.html#cb577-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Save the article URLs in the `article_urls` list. The variable `i` is the</span></span>
-<span id="cb577-15"><a href="getting-data-from-the-web.html#cb577-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># page number.</span></span>
-<span id="cb577-16"><a href="getting-data-from-the-web.html#cb577-16" aria-hidden="true" tabindex="-1"></a>  article_urls[[i]] <span class="ot">=</span> result<span class="sc">$</span>url</span>
-<span id="cb577-17"><a href="getting-data-from-the-web.html#cb577-17" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb577-18"><a href="getting-data-from-the-web.html#cb577-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb577-19"><a href="getting-data-from-the-web.html#cb577-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set the URL to the next URL.</span></span>
-<span id="cb577-20"><a href="getting-data-from-the-web.html#cb577-20" aria-hidden="true" tabindex="-1"></a>  url <span class="ot">=</span> result<span class="sc">$</span>next_url</span>
-<span id="cb577-21"><a href="getting-data-from-the-web.html#cb577-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb577-22"><a href="getting-data-from-the-web.html#cb577-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sleep for 1/30th of a second so that we never make more than 30 requests</span></span>
-<span id="cb577-23"><a href="getting-data-from-the-web.html#cb577-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># per second.</span></span>
-<span id="cb577-24"><a href="getting-data-from-the-web.html#cb577-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Sys.sleep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">30</span>)</span>
-<span id="cb577-25"><a href="getting-data-from-the-web.html#cb577-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="getting-data-from-the-web.html#cb583-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: This code is likely to take a while to run, and is meant more for</span></span>
+<span id="cb583-2"><a href="getting-data-from-the-web.html#cb583-2" aria-hidden="true" tabindex="-1"></a><span class="co"># reading than for you to run and try out.</span></span>
+<span id="cb583-3"><a href="getting-data-from-the-web.html#cb583-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb583-4"><a href="getting-data-from-the-web.html#cb583-4" aria-hidden="true" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://theaggie.org/category/features/&quot;</span></span>
+<span id="cb583-5"><a href="getting-data-from-the-web.html#cb583-5" aria-hidden="true" tabindex="-1"></a>article_urls <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb583-6"><a href="getting-data-from-the-web.html#cb583-6" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb583-7"><a href="getting-data-from-the-web.html#cb583-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb583-8"><a href="getting-data-from-the-web.html#cb583-8" aria-hidden="true" tabindex="-1"></a><span class="co"># On the last page, the next URL will be `NA`.</span></span>
+<span id="cb583-9"><a href="getting-data-from-the-web.html#cb583-9" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (<span class="sc">!</span><span class="fu">is.na</span>(url)) {</span>
+<span id="cb583-10"><a href="getting-data-from-the-web.html#cb583-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Download and parse the page.</span></span>
+<span id="cb583-11"><a href="getting-data-from-the-web.html#cb583-11" aria-hidden="true" tabindex="-1"></a>  page <span class="ot">=</span> <span class="fu">read_html</span>(url)</span>
+<span id="cb583-12"><a href="getting-data-from-the-web.html#cb583-12" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">=</span> <span class="fu">parse_article_links</span>(page)</span>
+<span id="cb583-13"><a href="getting-data-from-the-web.html#cb583-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb583-14"><a href="getting-data-from-the-web.html#cb583-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Save the article URLs in the `article_urls` list. The variable `i` is the</span></span>
+<span id="cb583-15"><a href="getting-data-from-the-web.html#cb583-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># page number.</span></span>
+<span id="cb583-16"><a href="getting-data-from-the-web.html#cb583-16" aria-hidden="true" tabindex="-1"></a>  article_urls[[i]] <span class="ot">=</span> result<span class="sc">$</span>url</span>
+<span id="cb583-17"><a href="getting-data-from-the-web.html#cb583-17" aria-hidden="true" tabindex="-1"></a>  i <span class="ot">=</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb583-18"><a href="getting-data-from-the-web.html#cb583-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb583-19"><a href="getting-data-from-the-web.html#cb583-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Set the URL to the next URL.</span></span>
+<span id="cb583-20"><a href="getting-data-from-the-web.html#cb583-20" aria-hidden="true" tabindex="-1"></a>  url <span class="ot">=</span> result<span class="sc">$</span>next_url</span>
+<span id="cb583-21"><a href="getting-data-from-the-web.html#cb583-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb583-22"><a href="getting-data-from-the-web.html#cb583-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sleep for 1/30th of a second so that we never make more than 30 requests</span></span>
+<span id="cb583-23"><a href="getting-data-from-the-web.html#cb583-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># per second.</span></span>
+<span id="cb583-24"><a href="getting-data-from-the-web.html#cb583-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Sys.sleep</span>(<span class="dv">1</span><span class="sc">/</span><span class="dv">30</span>)</span>
+<span id="cb583-25"><a href="getting-data-from-the-web.html#cb583-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>Now we’ve got the basis for a simple scraper.</p>
 </div>
 <div id="css-selectors" class="section level2" number="16.9">
@@ -5600,33 +5571,33 @@ anything beyond the simplest web scrapers.</p>
 <p>The rvest package uses CSS selectors by default. Behind the scenes, the package
 translates these into XPath and passes them to xml2.</p>
 <p>Here are a few examples of CSS selectors, using rvest’s <code>html_nodes</code> function:</p>
-<div class="sourceCode" id="cb578"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb578-1"><a href="getting-data-from-the-web.html#cb578-1" aria-hidden="true" tabindex="-1"></a>html <span class="ot">=</span> r<span class="st">&quot;(</span></span>
-<span id="cb578-2"><a href="getting-data-from-the-web.html#cb578-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
-<span id="cb578-3"><a href="getting-data-from-the-web.html#cb578-3" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;head&gt;</span></span>
-<span id="cb578-4"><a href="getting-data-from-the-web.html#cb578-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;title&gt;This is the page title!&lt;/title&gt;</span></span>
-<span id="cb578-5"><a href="getting-data-from-the-web.html#cb578-5" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/head&gt;</span></span>
-<span id="cb578-6"><a href="getting-data-from-the-web.html#cb578-6" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;body&gt;</span></span>
-<span id="cb578-7"><a href="getting-data-from-the-web.html#cb578-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;h1&gt;This is a header!&lt;/h1&gt;</span></span>
-<span id="cb578-8"><a href="getting-data-from-the-web.html#cb578-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p&gt;This is a paragraph.</span></span>
-<span id="cb578-9"><a href="getting-data-from-the-web.html#cb578-9" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;a href=&quot;</span>http<span class="sc">:</span><span class="er">//</span>www.r<span class="sc">-</span>project.org<span class="sc">/</span><span class="st">&quot;&gt;Here&#39;s a website!&lt;/a&gt;</span></span>
-<span id="cb578-10"><a href="getting-data-from-the-web.html#cb578-10" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/p&gt;</span></span>
-<span id="cb578-11"><a href="getting-data-from-the-web.html#cb578-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p id=&quot;</span>hello<span class="st">&quot;&gt;This is another paragraph.&lt;/p&gt;</span></span>
-<span id="cb578-12"><a href="getting-data-from-the-web.html#cb578-12" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/body&gt;</span></span>
-<span id="cb578-13"><a href="getting-data-from-the-web.html#cb578-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt; )&quot;</span></span>
-<span id="cb578-14"><a href="getting-data-from-the-web.html#cb578-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb578-15"><a href="getting-data-from-the-web.html#cb578-15" aria-hidden="true" tabindex="-1"></a>doc <span class="ot">=</span> <span class="fu">read_html</span>(html)</span>
-<span id="cb578-16"><a href="getting-data-from-the-web.html#cb578-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb578-17"><a href="getting-data-from-the-web.html#cb578-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all p elements</span></span>
-<span id="cb578-18"><a href="getting-data-from-the-web.html#cb578-18" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;p&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="getting-data-from-the-web.html#cb584-1" aria-hidden="true" tabindex="-1"></a>html <span class="ot">=</span> r<span class="st">&quot;(</span></span>
+<span id="cb584-2"><a href="getting-data-from-the-web.html#cb584-2" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;html&gt;</span></span>
+<span id="cb584-3"><a href="getting-data-from-the-web.html#cb584-3" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;head&gt;</span></span>
+<span id="cb584-4"><a href="getting-data-from-the-web.html#cb584-4" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;title&gt;This is the page title!&lt;/title&gt;</span></span>
+<span id="cb584-5"><a href="getting-data-from-the-web.html#cb584-5" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/head&gt;</span></span>
+<span id="cb584-6"><a href="getting-data-from-the-web.html#cb584-6" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;body&gt;</span></span>
+<span id="cb584-7"><a href="getting-data-from-the-web.html#cb584-7" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;h1&gt;This is a header!&lt;/h1&gt;</span></span>
+<span id="cb584-8"><a href="getting-data-from-the-web.html#cb584-8" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p&gt;This is a paragraph.</span></span>
+<span id="cb584-9"><a href="getting-data-from-the-web.html#cb584-9" aria-hidden="true" tabindex="-1"></a><span class="st">      &lt;a href=&quot;</span>http<span class="sc">:</span><span class="er">//</span>www.r<span class="sc">-</span>project.org<span class="sc">/</span><span class="st">&quot;&gt;Here&#39;s a website!&lt;/a&gt;</span></span>
+<span id="cb584-10"><a href="getting-data-from-the-web.html#cb584-10" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;/p&gt;</span></span>
+<span id="cb584-11"><a href="getting-data-from-the-web.html#cb584-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &lt;p id=&quot;</span>hello<span class="st">&quot;&gt;This is another paragraph.&lt;/p&gt;</span></span>
+<span id="cb584-12"><a href="getting-data-from-the-web.html#cb584-12" aria-hidden="true" tabindex="-1"></a><span class="st">  &lt;/body&gt;</span></span>
+<span id="cb584-13"><a href="getting-data-from-the-web.html#cb584-13" aria-hidden="true" tabindex="-1"></a><span class="st">&lt;/html&gt; )&quot;</span></span>
+<span id="cb584-14"><a href="getting-data-from-the-web.html#cb584-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb584-15"><a href="getting-data-from-the-web.html#cb584-15" aria-hidden="true" tabindex="-1"></a>doc <span class="ot">=</span> <span class="fu">read_html</span>(html)</span>
+<span id="cb584-16"><a href="getting-data-from-the-web.html#cb584-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb584-17"><a href="getting-data-from-the-web.html#cb584-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all p elements</span></span>
+<span id="cb584-18"><a href="getting-data-from-the-web.html#cb584-18" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;p&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (2)}
 ## [1] &lt;p&gt;This is a paragraph.\n      &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s ...
 ## [2] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
-<div class="sourceCode" id="cb580"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb580-1"><a href="getting-data-from-the-web.html#cb580-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all links</span></span>
-<span id="cb580-2"><a href="getting-data-from-the-web.html#cb580-2" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb586"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb586-1"><a href="getting-data-from-the-web.html#cb586-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all links</span></span>
+<span id="cb586-2"><a href="getting-data-from-the-web.html#cb586-2" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;a href=&quot;http://www.r-project.org/&quot;&gt;Here&#39;s a website!&lt;/a&gt;</code></pre>
-<div class="sourceCode" id="cb582"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb582-1"><a href="getting-data-from-the-web.html#cb582-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all tags with id=&quot;hello&quot;</span></span>
-<span id="cb582-2"><a href="getting-data-from-the-web.html#cb582-2" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;#hello&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb588"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb588-1"><a href="getting-data-from-the-web.html#cb588-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get all tags with id=&quot;hello&quot;</span></span>
+<span id="cb588-2"><a href="getting-data-from-the-web.html#cb588-2" aria-hidden="true" tabindex="-1"></a><span class="fu">html_nodes</span>(doc, <span class="st">&quot;#hello&quot;</span>)</span></code></pre></div>
 <pre><code>## {xml_nodeset (1)}
 ## [1] &lt;p id=&quot;hello&quot;&gt;This is another paragraph.&lt;/p&gt;</code></pre>
 

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>14 Data Viz with ggplot in R | Adventures in Data Science</title>
   <meta name="description" content="14 Data Viz with ggplot in R | Adventures in Data Science" />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="14 Data Viz with ggplot in R | Adventures in Data Science" />
   <meta property="og:type" content="book" />
@@ -42,7 +42,7 @@
   
 <link rel="prev" href="data-visualization-principles-perception.html"/>
 <link rel="next" href="how-the-web-works.html"/>
-<script src="libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -60,9 +60,7 @@
 
 
 
-<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
 <link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
@@ -135,29 +133,6 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
-
-<style type="text/css">
-/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
 </style>
 
 </head>
@@ -776,13 +751,17 @@ three layers every plot must have are:</p>
 <h3><span class="header-section-number">14.3.1</span> Making a Plot</h3>
 <p>For the plotting examples, let’s take the wine reviews data that we have been
 working with, and subset it to focus in on Cabernet Sauvignon from the Central Valley.</p>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="data-viz-with-ggplot-in-r.html#cb461-1" aria-hidden="true" tabindex="-1"></a>wine_revs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/wine_enthusiast_rankings.csv&quot;</span>)</span>
-<span id="cb461-2"><a href="data-viz-with-ggplot-in-r.html#cb461-2" aria-hidden="true" tabindex="-1"></a>wine_cv <span class="ot">&lt;-</span> wine_revs[wine_revs<span class="sc">$</span>region_2 <span class="sc">==</span> <span class="st">&quot;Central Valley&quot;</span> <span class="sc">&amp;</span> </span>
-<span id="cb461-3"><a href="data-viz-with-ggplot-in-r.html#cb461-3" aria-hidden="true" tabindex="-1"></a>                       wine_revs<span class="sc">$</span>variety <span class="sc">==</span> <span class="st">&quot;Cabernet Sauvignon&quot;</span>,]</span></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="data-viz-with-ggplot-in-r.html#cb463-1" aria-hidden="true" tabindex="-1"></a>wine_revs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/wine_enthusiast_rankings.csv&quot;</span>)</span>
+<span id="cb463-2"><a href="data-viz-with-ggplot-in-r.html#cb463-2" aria-hidden="true" tabindex="-1"></a>wine_cv <span class="ot">&lt;-</span> wine_revs[wine_revs<span class="sc">$</span>region_2 <span class="sc">==</span> <span class="st">&quot;Central Valley&quot;</span> <span class="sc">&amp;</span> </span>
+<span id="cb463-3"><a href="data-viz-with-ggplot-in-r.html#cb463-3" aria-hidden="true" tabindex="-1"></a>                       wine_revs<span class="sc">$</span>variety <span class="sc">==</span> <span class="st">&quot;Cabernet Sauvignon&quot;</span>,]</span></code></pre></div>
 <p>Next we need to load <code>ggplot2</code>. As always, if this is your first time using the
 package, you’ll have to install it. Then you can load the package:</p>
-<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="data-viz-with-ggplot-in-r.html#cb462-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;ggplot2&quot;)</span></span>
-<span id="cb462-2"><a href="data-viz-with-ggplot-in-r.html#cb462-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="data-viz-with-ggplot-in-r.html#cb464-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;ggplot2&quot;)</span></span>
+<span id="cb464-2"><a href="data-viz-with-ggplot-in-r.html#cb464-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by &#39;tibble&#39;:
+##   method     from  
+##   format.tbl pillar
+##   print.tbl  pillar</code></pre>
 <p>What kind of plot should we make? It depends on what data we want the plot to
 show. Let’s make a plot that shows the price of the wine
 against the points awarded to that wine by the reviewers. Both the
@@ -803,7 +782,7 @@ Tidy means:</p>
 an untidy data set tidy. Until then, we’ll take it for granted that the data
 sets we work with are tidy.</p>
 <p>To set up the data layer, call the <code>ggplot</code> function on a data frame:</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="data-viz-with-ggplot-in-r.html#cb463-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv)</span></code></pre></div>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="data-viz-with-ggplot-in-r.html#cb466-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>This returns a blank plot. We still need to add a few more layers.</p>
 </div>
@@ -816,7 +795,7 @@ of plot to make: one with points, lines, boxes, or something else.</p>
 a function for each geometry, always prefixed with <code>geom_</code>.</p>
 <p>To add a geometry layer to the plot, choose the <code>geom_</code> function you want and
 add it to the plot with the <code>+</code> operator:</p>
-<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="data-viz-with-ggplot-in-r.html#cb464-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="data-viz-with-ggplot-in-r.html#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
 <pre><code>## Error: geom_point requires the following missing aesthetics: x and y</code></pre>
 <p>This returns an error message that we’re missing aesthetics <code>x</code> and <code>y</code>. We’ll
 learn more about aesthetics in the next section, but this error message is
@@ -838,12 +817,12 @@ geometry. Use the aesthetic layer to map features in the data to <strong>aesthet
 and examples of aesthetic names in the documentation.</p>
 <p>For example, if we want to put the <code>price</code> feature on the x-axis, the
 aesthetic layer should be:</p>
-<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb467-1"><a href="data-viz-with-ggplot-in-r.html#cb467-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aes</span>(<span class="at">x =</span> price)</span></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="data-viz-with-ggplot-in-r.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aes</span>(<span class="at">x =</span> price)</span></code></pre></div>
 <p>In the <code>aes</code> function, column names are never quoted.</p>
 <p>Unlike most layers, the aesthetic layer is not added to the plot with the <code>+</code>
 operator. Instead, you can pass the aesthetic layer as the second argument to
 the <code>ggplot</code> function:</p>
-<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="data-viz-with-ggplot-in-r.html#cb468-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="data-viz-with-ggplot-in-r.html#cb471-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Aesthetics can be informed by data (e.g. the price column), or by constant values
 (e.g. the color “blue”). Whether the value is informed by the data or constant will
@@ -851,15 +830,15 @@ determine where to place that piece of information. Constant values should not b
 inside the aesthetic layer. If you set a constant value <em>inside</em> of the aesthetic
 layer, the results you get might not be what you expect. For instance, suppose
 we want to make the points blue:</p>
-<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb469-1"><a href="data-viz-with-ggplot-in-r.html#cb469-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="data-viz-with-ggplot-in-r.html#cb472-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Instead, if you want to set an aesthetic to a constant value, rather than one that’s
 data dependent, do so <em>outside</em> of the aesthetic layer.</p>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="data-viz-with-ggplot-in-r.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="data-viz-with-ggplot-in-r.html#cb473-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Notice that when we specify the color “blue” (outside of aesthetic mapping), R understands what we mean. There is a <a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">long list of color names that R recognizes</a>. But you can also use specific hex codes or palettes like were recommended in the previous section on <a href="https://ucdavisdatalab.github.io/adventures_in_data_science/data-visualization-principles-perception.html#accessible-data-visualizations">Accessible Data Visualizations</a>.</p>
 <p>Another useful constant aesthetic is the <code>alpha</code> argument, which adjusts the transparency of the points using a range between 0-1 (alpha = 0 is fully transparent and alpha = 1 is not transparent). This can be useful because <code>geom_point</code> will stack points with the exact same values on top of one another, which is hard to tell when they are all completely filled in a certain color (e.g. alpha = 1).</p>
-<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb471-1"><a href="data-viz-with-ggplot-in-r.html#cb471-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">alpha =</span> .<span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="data-viz-with-ggplot-in-r.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">alpha =</span> .<span class="dv">3</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 <div id="per-geometry-aesthetics" class="section level4 unnumbered">
@@ -867,31 +846,31 @@ data dependent, do so <em>outside</em> of the aesthetic layer.</p>
 <p>When you pass an aesthetic layer to the <code>ggplot</code> function, it applies to the
 entire plot. You can also set an aesthetic layer individually for each
 geometry, by passing the layer as the first argument in the <code>geom_</code> function. Before we test this out, let’s make a smaller subset of our wines, what we’ll called underrated_wines, based on those that are less than $20 and have scores higher than 85.</p>
-<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="data-viz-with-ggplot-in-r.html#cb472-1" aria-hidden="true" tabindex="-1"></a>underrated_wines <span class="ot">&lt;-</span> wine_cv[wine_cv<span class="sc">$</span>price <span class="sc">&lt;</span> <span class="dv">20</span> <span class="sc">&amp;</span> wine_cv<span class="sc">$</span>points <span class="sc">&gt;</span> <span class="dv">85</span>, ]</span>
-<span id="cb472-2"><a href="data-viz-with-ggplot-in-r.html#cb472-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(underrated_wines)</span></code></pre></div>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="data-viz-with-ggplot-in-r.html#cb475-1" aria-hidden="true" tabindex="-1"></a>underrated_wines <span class="ot">&lt;-</span> wine_cv[wine_cv<span class="sc">$</span>price <span class="sc">&lt;</span> <span class="dv">20</span> <span class="sc">&amp;</span> wine_cv<span class="sc">$</span>points <span class="sc">&gt;</span> <span class="dv">85</span>, ]</span>
+<span id="cb475-2"><a href="data-viz-with-ggplot-in-r.html#cb475-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(underrated_wines)</span></code></pre></div>
 <pre><code>## [1] 40</code></pre>
 <p>Now, let’s first set the aesthetics in the <code>ggplot</code> functions, and add color by
 region to take a look at where these wines are from within the Central Valley.</p>
-<div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="data-viz-with-ggplot-in-r.html#cb474-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="data-viz-with-ggplot-in-r.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Now let’s add another geometry to better understand the effect of aesthetic
 placements. Let’s add a <code>geom_text</code> layer to add labels to the plot based on who
 ranked this wine. We need to specify the variables that we want to label with in the aesthetics, and add a new geom layer:</p>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="data-viz-with-ggplot-in-r.html#cb475-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
-<span id="cb475-2"><a href="data-viz-with-ggplot-in-r.html#cb475-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="data-viz-with-ggplot-in-r.html#cb478-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
+<span id="cb478-2"><a href="data-viz-with-ggplot-in-r.html#cb478-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>In the example above, both geometries (<code>geom_point</code> and <code>geom_text</code>), take on the same color aesthetic mapping. So, where we put the aesthetics matters. If we move the color aesthetic to the <code>geom_text</code> layer, how does the plot change?</p>
-<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="data-viz-with-ggplot-in-r.html#cb476-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
-<span id="cb476-2"><a href="data-viz-with-ggplot-in-r.html#cb476-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="data-viz-with-ggplot-in-r.html#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
+<span id="cb479-2"><a href="data-viz-with-ggplot-in-r.html#cb479-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>We can also move the color aesthetic to the <code>geom_text</code> layer to experiment:</p>
-<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="data-viz-with-ggplot-in-r.html#cb477-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
-<span id="cb477-2"><a href="data-viz-with-ggplot-in-r.html#cb477-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="data-viz-with-ggplot-in-r.html#cb480-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
+<span id="cb480-2"><a href="data-viz-with-ggplot-in-r.html#cb480-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>How might we be able to better see all 40 of the observations? Let’s try the <code>position</code> argument within each geometry, where <code>position = position_jitter()</code> will adjust (or “jitter”) the points.</p>
-<div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="data-viz-with-ggplot-in-r.html#cb478-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
-<span id="cb478-2"><a href="data-viz-with-ggplot-in-r.html#cb478-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb478-3"><a href="data-viz-with-ggplot-in-r.html#cb478-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="data-viz-with-ggplot-in-r.html#cb481-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
+<span id="cb481-2"><a href="data-viz-with-ggplot-in-r.html#cb481-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb481-3"><a href="data-viz-with-ggplot-in-r.html#cb481-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>))</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="other-layers-scales-and-themes" class="section level4 unnumbered">
@@ -901,34 +880,34 @@ Most of the functions in the scales layer are prefixed with <code>scale_</code>,
 all of them.</p>
 <p>The <code>labs</code> function is especially important, because it’s used to set the title
 and axis labels:</p>
-<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="data-viz-with-ggplot-in-r.html#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
-<span id="cb479-2"><a href="data-viz-with-ggplot-in-r.html#cb479-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb479-3"><a href="data-viz-with-ggplot-in-r.html#cb479-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
-<span id="cb479-4"><a href="data-viz-with-ggplot-in-r.html#cb479-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="data-viz-with-ggplot-in-r.html#cb482-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
+<span id="cb482-2"><a href="data-viz-with-ggplot-in-r.html#cb482-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb482-3"><a href="data-viz-with-ggplot-in-r.html#cb482-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb482-4"><a href="data-viz-with-ggplot-in-r.html#cb482-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>)</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>You can add <code>theme</code> layers that change the non-data components of the figure. ggplot2 comes with several themes which can be useful to quickly change the look of your visualization. The complete list of themes is available at <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="uri">https://ggplot2.tidyverse.org/reference/ggtheme.html</a>. theme_classic(), theme_minimal(), and theme_light() are popular.</p>
-<div class="sourceCode" id="cb480"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb480-1"><a href="data-viz-with-ggplot-in-r.html#cb480-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb480-2"><a href="data-viz-with-ggplot-in-r.html#cb480-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
-<span id="cb480-3"><a href="data-viz-with-ggplot-in-r.html#cb480-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
-<span id="cb480-4"><a href="data-viz-with-ggplot-in-r.html#cb480-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="data-viz-with-ggplot-in-r.html#cb483-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb483-2"><a href="data-viz-with-ggplot-in-r.html#cb483-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb483-3"><a href="data-viz-with-ggplot-in-r.html#cb483-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
+<span id="cb483-4"><a href="data-viz-with-ggplot-in-r.html#cb483-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>We can also save ggplots as objects:</p>
-<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="data-viz-with-ggplot-in-r.html#cb481-1" aria-hidden="true" tabindex="-1"></a>wine_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
-<span id="cb481-2"><a href="data-viz-with-ggplot-in-r.html#cb481-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb481-3"><a href="data-viz-with-ggplot-in-r.html#cb481-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
-<span id="cb481-4"><a href="data-viz-with-ggplot-in-r.html#cb481-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
-<span id="cb481-5"><a href="data-viz-with-ggplot-in-r.html#cb481-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="data-viz-with-ggplot-in-r.html#cb484-1" aria-hidden="true" tabindex="-1"></a>wine_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
+<span id="cb484-2"><a href="data-viz-with-ggplot-in-r.html#cb484-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb484-3"><a href="data-viz-with-ggplot-in-r.html#cb484-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb484-4"><a href="data-viz-with-ggplot-in-r.html#cb484-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
+<span id="cb484-5"><a href="data-viz-with-ggplot-in-r.html#cb484-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
 <p>Note what kind of object this is:</p>
-<div class="sourceCode" id="cb482"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb482-1"><a href="data-viz-with-ggplot-in-r.html#cb482-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(wine_plot)</span></code></pre></div>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="data-viz-with-ggplot-in-r.html#cb485-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(wine_plot)</span></code></pre></div>
 <pre><code>## [1] &quot;list&quot;</code></pre>
-<div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="data-viz-with-ggplot-in-r.html#cb484-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(wine_plot)</span></code></pre></div>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="data-viz-with-ggplot-in-r.html#cb487-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(wine_plot)</span></code></pre></div>
 <pre><code>## [1] &quot;gg&quot;     &quot;ggplot&quot;</code></pre>
 </div>
 </div>
 <div id="saving-plots" class="section level3" number="14.3.2">
 <h3><span class="header-section-number">14.3.2</span> Saving Plots</h3>
 <p>In ggplot2, use the <code>ggsave</code> function to save the most recent plot you created:</p>
-<div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="data-viz-with-ggplot-in-r.html#cb486-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot =</span> wine_plot, <span class="st">&quot;scatter_plot.png&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="data-viz-with-ggplot-in-r.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot =</span> wine_plot, <span class="st">&quot;scatter_plot.png&quot;</span>)</span></code></pre></div>
 <p>The file format is selected automatically based on the extension. Common
 formats are PNG and PDF.</p>
 <div id="the-plot-device" class="section level4 unnumbered">
@@ -942,10 +921,10 @@ are:</p>
 </ol>
 <p>This strategy works with any of R’s graphics systems (not just ggplot2).</p>
 <p>Here’s an example:</p>
-<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="data-viz-with-ggplot-in-r.html#cb487-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run these lines in the console, not the notebook!</span></span>
-<span id="cb487-2"><a href="data-viz-with-ggplot-in-r.html#cb487-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jpeg</span>(<span class="st">&quot;scatter_plot.jpeg&quot;</span>)</span>
-<span id="cb487-3"><a href="data-viz-with-ggplot-in-r.html#cb487-3" aria-hidden="true" tabindex="-1"></a>wine_plot</span>
-<span id="cb487-4"><a href="data-viz-with-ggplot-in-r.html#cb487-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="data-viz-with-ggplot-in-r.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run these lines in the console, not the notebook!</span></span>
+<span id="cb490-2"><a href="data-viz-with-ggplot-in-r.html#cb490-2" aria-hidden="true" tabindex="-1"></a><span class="fu">jpeg</span>(<span class="st">&quot;scatter_plot.jpeg&quot;</span>)</span>
+<span id="cb490-3"><a href="data-viz-with-ggplot-in-r.html#cb490-3" aria-hidden="true" tabindex="-1"></a>wine_plot</span>
+<span id="cb490-4"><a href="data-viz-with-ggplot-in-r.html#cb490-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 </div>
 </div>
 <div id="example-bar-plot" class="section level3" number="14.3.3">
@@ -955,18 +934,18 @@ an appropriate way to represent this visually.</p>
 <p>The geometry for a bar plot is <code>geom_bar</code>. Since bar plots are mainly used to
 display frequencies, the <code>geom_bar</code> function automatically computes frequencies
 when given mapped to a categorical feature. So we can write:</p>
-<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="data-viz-with-ggplot-in-r.html#cb488-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>() </span></code></pre></div>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="data-viz-with-ggplot-in-r.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>() </span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p>To prevent <code>geom_bar</code> from computing frequencies automatically, set <code>stat = "identity"</code>. This is mainly useful if you want to plot quantities you’ve
 computed manually on the y-axis.</p>
 <div id="position-adjustment" class="section level4" number="14.3.3.1">
 <h4><span class="header-section-number">14.3.3.1</span> Position adjustment</h4>
 <p>Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. For bar plots, this will take the <code>fill</code> argument instead of the <code>color</code> argument. (The <code>color</code> argument will outline the bars in a color, whereas the <code>fill</code> argument will fill them in with a default color scheme.)</p>
-<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb489-1"><a href="data-viz-with-ggplot-in-r.html#cb489-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name)) </span></code></pre></div>
+<div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="data-viz-with-ggplot-in-r.html#cb492-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name)) </span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>Automatically, <code>geom_bar()</code> positions the grouped colors or fills on top of one another, with the default argument <code>position = "identity"</code>. If you want to change the position of the groupings, you can set <code>position = "dodge"</code> to set the groups side-by-side.</p>
-<div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="data-viz-with-ggplot-in-r.html#cb490-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> </span>
-<span id="cb490-2"><a href="data-viz-with-ggplot-in-r.html#cb490-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name), <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="data-viz-with-ggplot-in-r.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> </span>
+<span id="cb493-2"><a href="data-viz-with-ggplot-in-r.html#cb493-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name), <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) </span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
 </div>
@@ -986,7 +965,7 @@ That means identifying and converting the categorical features is up to you.
 This can be especially helpful to know if you are plotting categories, but want
 them to have a particular order, other than the default (alphabetical).</p>
 <p>Let’s think about which features are categorical in the class wine reviews data.</p>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="data-viz-with-ggplot-in-r.html#cb491-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wine_cv)</span></code></pre></div>
+<div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="data-viz-with-ggplot-in-r.html#cb494-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wine_cv)</span></code></pre></div>
 <pre><code>## &#39;data.frame&#39;:    104 obs. of  14 variables:
 ##  $ X                    : int  954 2765 3397 4549 4686 4944 5426 5975 6964 8633 ...
 ##  $ country              : chr  &quot;US&quot; &quot;US&quot; &quot;US&quot; &quot;US&quot; ...
@@ -1008,7 +987,7 @@ so they’re not categorical. That leaves the character columns.</p>
 we know that variables like <code>province</code>, <code>region_2</code>, and <code>variety</code> have no variation.
 So that leaves us with the other character variables. Some of these, like winery,
 have too many groups to really consider useful:</p>
-<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="data-viz-with-ggplot-in-r.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wine_cv<span class="sc">$</span>winery)</span></code></pre></div>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="data-viz-with-ggplot-in-r.html#cb496-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wine_cv<span class="sc">$</span>winery)</span></code></pre></div>
 <pre><code>## 
 ##          337 Wine Cellars          Archgate Cellars           Black&#39;s Station 
 ##                         1                         1                         2 
@@ -1051,7 +1030,7 @@ have too many groups to really consider useful:</p>
 <p>Others, such as <code>region_1</code> and <code>taster_name</code>, have fewer groupings – which is why
 we have used them so far for simplfying our visualizations. To reorder our
 <code>region_1</code> variable, lets’ convert to to a factor using the <code>factor</code>.</p>
-<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb495-1"><a href="data-viz-with-ggplot-in-r.html#cb495-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1)</span></code></pre></div>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="data-viz-with-ggplot-in-r.html#cb498-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1)</span></code></pre></div>
 <pre><code>##   [1] Lodi           Lodi           Lodi           Lodi           Lodi          
 ##   [6] Lodi           Lodi           Lodi           Lodi           Lodi          
 ##  [11] Lodi           Lodi           Lodi           Clarksburg     Lodi          
@@ -1076,23 +1055,23 @@ we have used them so far for simplfying our visualizations. To reorder our
 ## Levels: Clarksburg Clements Hills Dunnigan Hills Lodi Yolo County</code></pre>
 <p>The categories of a factor are called <strong>levels</strong>. You can list the levels with
 the <code>levels</code> function:</p>
-<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb497-1"><a href="data-viz-with-ggplot-in-r.html#cb497-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1))</span></code></pre></div>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="data-viz-with-ggplot-in-r.html#cb500-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(<span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1))</span></code></pre></div>
 <pre><code>## [1] &quot;Clarksburg&quot;     &quot;Clements Hills&quot; &quot;Dunnigan Hills&quot; &quot;Lodi&quot;          
 ## [5] &quot;Yolo County&quot;</code></pre>
 <p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the regions in our wine reviews data.</p>
-<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb499-1"><a href="data-viz-with-ggplot-in-r.html#cb499-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb502-1"><a href="data-viz-with-ggplot-in-r.html#cb502-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <div id="assigning-factor-levels" class="section level3" number="14.4.1">
 <h3><span class="header-section-number">14.4.1</span> Assigning factor levels</h3>
 <p>But what if we wanted to change the order of the x axis to be in descending order? We can change the level assignments. The easier way to do this is to re-write the variable as a factor again, but specify the order of the levels as an argument in the <code>factor</code> function.</p>
-<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="data-viz-with-ggplot-in-r.html#cb500-1" aria-hidden="true" tabindex="-1"></a>wine_cv<span class="sc">$</span>region_1_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1, </span>
-<span id="cb500-2"><a href="data-viz-with-ggplot-in-r.html#cb500-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Lodi&quot;</span>, <span class="st">&quot;Clarksburg&quot;</span>, <span class="st">&quot;Yolo County&quot;</span>,</span>
-<span id="cb500-3"><a href="data-viz-with-ggplot-in-r.html#cb500-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;Clements Hills&quot;</span>, <span class="st">&quot;Dunnigan Hills&quot;</span>))</span>
-<span id="cb500-4"><a href="data-viz-with-ggplot-in-r.html#cb500-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(wine_cv<span class="sc">$</span>region_1_f)</span></code></pre></div>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb503-1"><a href="data-viz-with-ggplot-in-r.html#cb503-1" aria-hidden="true" tabindex="-1"></a>wine_cv<span class="sc">$</span>region_1_f <span class="ot">&lt;-</span> <span class="fu">factor</span>(wine_cv<span class="sc">$</span>region_1, </span>
+<span id="cb503-2"><a href="data-viz-with-ggplot-in-r.html#cb503-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Lodi&quot;</span>, <span class="st">&quot;Clarksburg&quot;</span>, <span class="st">&quot;Yolo County&quot;</span>,</span>
+<span id="cb503-3"><a href="data-viz-with-ggplot-in-r.html#cb503-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&quot;Clements Hills&quot;</span>, <span class="st">&quot;Dunnigan Hills&quot;</span>))</span>
+<span id="cb503-4"><a href="data-viz-with-ggplot-in-r.html#cb503-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(wine_cv<span class="sc">$</span>region_1_f)</span></code></pre></div>
 <pre><code>## [1] &quot;Lodi&quot;           &quot;Clarksburg&quot;     &quot;Yolo County&quot;    &quot;Clements Hills&quot;
 ## [5] &quot;Dunnigan Hills&quot;</code></pre>
 <p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the region_1 factor.</p>
-<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb502-1"><a href="data-viz-with-ggplot-in-r.html#cb502-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1_f)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb505-1"><a href="data-viz-with-ggplot-in-r.html#cb505-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1_f)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
 <p><img src="12b_r-ggplot2_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 </div>
 </div>
