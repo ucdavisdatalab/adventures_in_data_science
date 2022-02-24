@@ -103,26 +103,29 @@ of which is reproduced here:
 [{"Fishery Management":"<ul>\n<li><a href=\"https://www.fisheries.noaa.gov/region/new-england-mid-atlantic\">NOAA Fisheries</a> and the <a href=\"https://www.nefmc.org/index.html\">New England Fishery Management Council </a>manage the white hake fishery.</li>\n<li>White hake is managed as a single stock&nbsp;in U.S. waters.</li>\n<li>White hake, along with other groundfish in New England waters, is managed under the <a href=\"https://www.nefmc.org/management-plans/small-mesh-multispecies\">Northeast Multispecies Fishery Management Plan</a>, which includes:\n<ul>\n<li>Permitting requirements for commercial vessels.</li>\n<li>Separate management measures for recreational vessels.</li>\n<li>Time/area closures to protect spawning fish and habitat.</li>\n<li>Annual catch limits&nbsp;based on best available science.</li>\n</ul>\n</li>\n<li>An optional sector (<a href=\"https://www.fisheries.noaa.gov/new-england-mid-atlantic/commercial-fishing/sector-management-northeast-multispecies-fishery\">catch share</a>)
 ```
 
-If you look closely at this extract form the response, you will see that it contains HTML 
-but is not HTML.  Remember that APIs exist to deliver machine readable information.  In this 
-case, the API is delivering data in the JSON format, and some of the fields in the JSON object 
-contain information provided as HTML.
+If you look closely at this extract form the response, you will see that it 
+contains HTML but is not HTML. Remember that APIs exist to deliver machine 
+readable information.  In this case, the API is delivering data in the JSON 
+format, and some of the fields in the JSON object contain information provided 
+as HTML.
 
-Because the respons is machine readable, we can make better use of the query if we run it in R 
-rather than our web browser.  Before we can do so, we need to setup our R environment to execute 
-HTTP queries againt the API and to process JSON.  We'll use the "httr" pacakage to process our http 
-transactions and the "jsonlite" package to process the JSON that we receive
+Because the response is machine readable, we can make better use of the query if 
+we run it in R rather than our web browser. Before we can do so, we need to 
+setup our R environment to execute HTTP queries against the API and to process 
+JSON. We'll use the `httr` package to process our http transactions and the 
+`jsonlite` package to process the JSON that we receive
 
 ```{r, eval=FALSE}
 install.packages("httr")
 install.packages("jsonlite")
-library(httr)
-library(jsonlite)
 ```
 
-With our environment now ready, we execture our query in R with one simple command:
+With our packages installed, we execture our query in R with one simple command:
 
 ```{r}
+library(httr)
+library(jsonlite)
+
 response <- GET("https://www.fishwatch.gov/api/species")
 ```
 
@@ -138,33 +141,33 @@ successfully.
 cat(response$status_code)
 ```
 
-The actual content of the response can be found in the response object's "content" element. 
-Note, however, that we have to do some formatting on the object in order to access it.  Go ahead 
-and look a the actual response$content object
+The actual content of the response can be found in the response object's "content" 
+element. Note, however, that we have to do some formatting on the object in order 
+to access it. Go ahead and look a the actual `response$content` object
 
 ```{r}
 response$content
 ```
 
-Above we see that the content that is received from the API is delivered as a compressed 
-binary string, which must be uncompressed and converted back to character encoding before 
-processing.  We co this ussing a built-in httr function:
+Above we see that the content that is received from the API is delivered as a 
+compressed binary string, which must be uncompressed and converted back to 
+character encoding before processing. We co this using a built-in `httr` function:
 
 ```{r}
 bdy <- content(response, "text")
 ```
 
-Once we have the contect extracted and converted, we can begin to process it.  We previously 
-examined the response and determined that it is in JSON format, so our step will be to load 
-the content into a JSON object for ease of traversal:
+Once we have the content extracted and converted, we can begin to process it. We 
+previously examined the response and determined that it is in JSON format, so 
+our step will be to load the content into a JSON object for ease of traversal:
 
 ```{r}
 bdy_json <- fromJSON(bdy)
 ```
 
-If you examine the class and structure of the bdy_json object, you will see that jsonlite has 
-converted the json structure into a nice, R dataframe where you can begin the process of exploration 
-and cleaning in preparation for research.
+If you examine the class and structure of the `bdy_json` object, you will see that 
+`jsonlite` has converted the json structure into a nice, R dataframe where you 
+can begin the process of exploration and cleaning in preparation for research.
 
 
 Web Scraping
