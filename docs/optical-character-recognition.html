@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>18 Optical Character Recognition | Adventures in Data Science</title>
   <meta name="description" content="18 Optical Character Recognition | Adventures in Data Science" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="18 Optical Character Recognition | Adventures in Data Science" />
   <meta property="og:type" content="book" />
@@ -33,7 +33,7 @@
 <meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-02-24" />
+<meta name="date" content="2022-03-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -42,7 +42,7 @@
   
 <link rel="prev" href="strings-and-regular-expressions.html"/>
 <link rel="next" href="network-analysis.html"/>
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/header-attrs-2.9/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -60,7 +60,9 @@
 
 
 
-<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <link href="libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
 <script src="libs/str_view-binding-1.4.0/str_view.js"></script>
 <link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
@@ -133,6 +135,29 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
 </style>
 
 </head>
@@ -716,9 +741,8 @@ common page image formats you’ll encounter are <code>pdf</code> and <code>png<
 lightweight, portable, and usually retain the image quality OCR software needs
 to find text.</p>
 <p>The <code>pdftools</code> package is good for working with these files:</p>
-<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="optical-character-recognition.html#cb659-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;pdftools&quot;)</span></span>
-<span id="cb659-2"><a href="optical-character-recognition.html#cb659-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span></code></pre></div>
-<pre><code>## Using poppler version 22.01.0</code></pre>
+<div class="sourceCode" id="cb654"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb654-1"><a href="optical-character-recognition.html#cb654-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;pdftools&quot;)</span></span>
+<span id="cb654-2"><a href="optical-character-recognition.html#cb654-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pdftools)</span></code></pre></div>
 <p>Once you’ve downloaded/installed it, you can load a <code>pdf</code> into RStudio from your
 computer by entering its filesystem location as a string and assigning that
 string to a variable, like so:</p>
@@ -730,78 +754,77 @@ whatever function you want to call, but we’ll keep our <code>pdf</code> locati
 for the sake of clarity.)</p>
 <p>The same method works with web addresses. We’ll be using web material. First,
 write out an address and assign it to a variable.</p>
-<div class="sourceCode" id="cb662"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb662-1"><a href="optical-character-recognition.html#cb662-1" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://datalab.ucdavis.edu/adventures-in-datascience/pdf_sample.pdf&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb656"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb656-1"><a href="optical-character-recognition.html#cb656-1" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://datalab.ucdavis.edu/adventures-in-datascience/pdf_sample.pdf&quot;</span></span></code></pre></div>
 <p>Some <code>pdf</code> files will have text data already encoded into them. This is
 especially the case if someone made a file with word processing software (like
 when you write a paper in Word and email a <code>pdf</code> to your TA or professor). You
 can check whether a <code>pdf</code> has text data with <code>pdf_text()</code>. Assign this function’s
 output to a variable and print it to screen with <code>cat()</code>, like so:</p>
-<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="optical-character-recognition.html#cb663-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">pdf_text</span>(pdf)</span>
-<span id="cb663-2"><a href="optical-character-recognition.html#cb663-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(text_data)</span></code></pre></div>
-<pre><code>## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
+<div class="sourceCode" id="cb657"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb657-1"><a href="optical-character-recognition.html#cb657-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">pdf_text</span>(pdf)</span>
+<span id="cb657-2"><a href="optical-character-recognition.html#cb657-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(text_data)</span></code></pre></div>
+<pre style="max-height: 500px;"><code>## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
 ## 
 ## 
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
 ## 
 ## 
-##                                              The quick brown fox jumps over the lazy dog.
-##                                              The quick brown fox jumps over the lazy dog.
-##                                              The quick brown fox jumps over the lazy dog.
-##                                              The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
+##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
+##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
+##                                                                The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
 ## 
 ## 
-##                        The quick brown fox jumps over the lazy dog.
-##                        The quick brown fox jumps over the lazy dog.
-##                        The quick brown fox jumps over the lazy dog.
-##                        The quick brown fox jumps over the lazy dog.
-##                        The quick brown fox jumps over the lazy dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
 ## 
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.
 ## 
-##                                                The quick brown fox jumps over the lazy dog.
-##                                                The quick brown fox jumps over the lazy dog.
-##                                                The quick brown fox jumps over the lazy dog.
-##                                                The quick brown fox jumps over the lazy dog.
+##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
+##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
+##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
+##                                                                  The    quick   brown      fox   jumps   over   the   lazy   dog.
 ## 
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-## The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
+## The   quick   brown   fox   jumps   over   the   lazy   dog.   The    quick   brown   fox   jumps   over   the   lazy   dog.
 ## 
-##                        The quick brown fox jumps over the lazy dog.
-##                        The quick brown fox jumps over the lazy dog.
-##                        The quick brown fox jumps over the lazy dog.
-##                        The quick brown fox jumps over the lazy dog.
-## </code></pre>
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.
+##                                The   quick   brown      fox   jumps   over    the   lazy   dog.</code></pre>
 <p>See how the RStudio terminal recreates the original formatting from the <code>pdf</code>.
 If you were to use <code>print()</code> on the text output, you’d see all the line breaks
 and spaces <code>pdf_text()</code> created to match its output with the file. This
@@ -825,15 +848,15 @@ a blank character string, you’ll need to OCR it. The next section shows you ho
 <p>First, you’ll need to download/install another package, <code>tesseract</code>, which
 complements <code>pdftools</code>. The latter only loads/reads <code>pdfs</code>, whereas <code>tesseract</code>
 actually performs OCR. Download/install <code>tesseract</code>:</p>
-<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="optical-character-recognition.html#cb665-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tesseract&quot;)</span></span>
-<span id="cb665-2"><a href="optical-character-recognition.html#cb665-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tesseract)</span></code></pre></div>
+<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb659-1"><a href="optical-character-recognition.html#cb659-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages(&quot;tesseract&quot;)</span></span>
+<span id="cb659-2"><a href="optical-character-recognition.html#cb659-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tesseract)</span></code></pre></div>
 <p>And assign a new <code>pdf</code> to a new variable:</p>
-<div class="sourceCode" id="cb666"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb666-1"><a href="optical-character-recognition.html#cb666-1" aria-hidden="true" tabindex="-1"></a>new_pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://jeroen.github.io/images/ocrscan.pdf&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb660-1"><a href="optical-character-recognition.html#cb660-1" aria-hidden="true" tabindex="-1"></a>new_pdf <span class="ot">&lt;-</span> <span class="st">&quot;https://jeroen.github.io/images/ocrscan.pdf&quot;</span></span></code></pre></div>
 <p>To run OCR on this <code>pdf</code>, use the following:</p>
-<div class="sourceCode" id="cb667"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb667-1"><a href="optical-character-recognition.html#cb667-1" aria-hidden="true" tabindex="-1"></a>ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(new_pdf)</span></code></pre></div>
+<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb661-1"><a href="optical-character-recognition.html#cb661-1" aria-hidden="true" tabindex="-1"></a>ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(new_pdf)</span></code></pre></div>
 <pre><code>## Converting page 1 to file5b2611d6a1b9ocrscan_1.png... done!</code></pre>
 <p>Print the output to screen with <code>cat()</code> and see if the process worked:</p>
-<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="optical-character-recognition.html#cb669-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ocr_output)</span></code></pre></div>
+<div class="sourceCode" id="cb663"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb663-1"><a href="optical-character-recognition.html#cb663-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ocr_output)</span></code></pre></div>
 <pre><code>## | SAPORS LANE - BOOLE - DORSET - BH25 8 ER
 ## TELEPHONE BOOLE (945 13) 51617 - TELEX 123456
 ## 
@@ -878,7 +901,7 @@ under the hood as part of its pre-processing work and then silently deletes that
 <code>png</code> when it outputs its matches. If you have a collection of <code>pdf</code> files that
 you’d like to OCR, it can sometimes be faster and less memory intensive to
 convert them all to <code>png</code> first. You can perform this conversion like so:</p>
-<div class="sourceCode" id="cb671"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb671-1"><a href="optical-character-recognition.html#cb671-1" aria-hidden="true" tabindex="-1"></a>png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">filenames=</span><span class="st">&quot;./img/png_example.png&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb665"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb665-1"><a href="optical-character-recognition.html#cb665-1" aria-hidden="true" tabindex="-1"></a>png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">filenames=</span><span class="st">&quot;./img/png_example.png&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in sprintf(filenames, pages, format): 2 arguments not used by format &#39;./
 ## img/png_example.png&#39;</code></pre>
 <pre><code>## Converting page 1 to ./img/png_example.png... done!</code></pre>
@@ -893,44 +916,44 @@ for (i in 1:length(pdfs)) {
 }</code></pre>
 <p><code>ocr()</code> can work with a number of different image types. It takes <code>pngs</code> in the
 same way as it takes <code>pdfs</code>:</p>
-<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="optical-character-recognition.html#cb675-1" aria-hidden="true" tabindex="-1"></a>png_ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(png)</span></code></pre></div>
+<div class="sourceCode" id="cb669"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb669-1"><a href="optical-character-recognition.html#cb669-1" aria-hidden="true" tabindex="-1"></a>png_ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(png)</span></code></pre></div>
 </div>
 <div id="accuracy" class="section level2" number="18.3">
 <h2><span class="header-section-number">18.3</span> Accuracy</h2>
 <p>If you <code>cat()</code> the output from the above <code>png</code> file, you might notice that the
 text is messier than it was when we used <code>pdf_text_ocr()</code>.</p>
-<div class="sourceCode" id="cb676"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb676-1"><a href="optical-character-recognition.html#cb676-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(png_ocr_output)</span></code></pre></div>
+<div class="sourceCode" id="cb670"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb670-1"><a href="optical-character-recognition.html#cb670-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(png_ocr_output)</span></code></pre></div>
 <pre><code>## THE SLEREXE COMPANY LIMITED
-## SAPORS LANE - BOOLE - DORSET - BH 25 $ER
-## e sous (4513) 617 - Tk 12345
-## Our Ref. 350/BIC/EAC 186 Janvary, 1972.
-## De. PN, Cundall,
-## Kining Surveys Lid.,
+## SAPORS LANE . BOOLE - DORSET . BH25 8ER
+## ‘aurrmowe noun (945 18) SU6I7 - run 123486
+## Our Ref. 350/PIC/EAC 18eh January, 1972.
+## De. P.M. Cundall,
+## Mining Surveys Ltd.,
 ## Holroyd Road,
 ## Reading,
 ## Berks.
-## Dear Pece,
+## Dear Pete,
 ## 
-## Pernit ne to introduce you to the facility of facsinile
+## Permit ne to introduce you to the facility of facsinile
 ## transmission.
 ## 
-## In facainile a photocell is coused to perforn a raster scan over
-## the subject copy. The varistions of princ density on the docunent
-## cause the photecell o generate an analogous electrical video signal.
-## This signal is used to mdulate a carrier, vhich is cransmitted to o
-## cemote destination over &amp; radio or cable communications link.
+## In facsimile @ photocell is caused to perform a raster scan over
+## the subject copy, The variations of print density on the docunent
+## cause the photocell to generate an analogous electrical video signal.
+## ‘This signal is used to modulate a carrier, which is transmitted to a
+## remote destination over @ radio or cable Communications Link.
 ## 
-## A¢ the remote cerminal, demodulation reconstructs the video
-## signal, which is used to modulate the density of print produced by @
-## printing device. Tnis device is scanning in 4 raster scan synchronised
-## Uich that at the cransmitring terminal. As &amp; result, a facsisile
-## Copy of the subject document is produced.
+## At che remote tersinal, demodulation reconstructs the video
+## signal, which is used to modulate the density of print produced by a
+## printing device. This device is scanning in a raster scan synchronised
+## ith chac at the transmitting terminal. As a result, a facsimile
+## copy of the subject docusent is produced.
 ## 
-## Probably you have uees for this facility in your organisation.
+## Probably you have uses for this facility in your organisation.
 ## 
 ## Yours sincerely,
-## P.J. cross
-## Group Leader - Facsinile Research</code></pre>
+## PJ. CROSS
+## Group Leader ~ Facsimile Research</code></pre>
 <p>This doesn’t have to do with the <code>png</code> file format per se but rather with the
 way we created our file. If you open it, you’ll see that it’s quite blurry,
 which has made it harder for <code>ocr()</code> to match the text it represents:</p>
@@ -945,7 +968,7 @@ your documents were printed with technologies like typewriters, dot matrix
 printers, and so on and if they feature fairly legible typefaces (Times New Roman,
 for example). A dpi of 300, however, is ideal. You can set the dpi in
 <code>pdf_convert()</code> by adding a dpi argument in the function:</p>
-<div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="optical-character-recognition.html#cb678-1" aria-hidden="true" tabindex="-1"></a>hi_res_png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">dpi=</span><span class="dv">150</span>, <span class="at">filenames=</span><span class="st">&quot;./img/hi_res_png_example.png&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb672"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb672-1"><a href="optical-character-recognition.html#cb672-1" aria-hidden="true" tabindex="-1"></a>hi_res_png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(new_pdf, <span class="at">format=</span><span class="st">&quot;png&quot;</span>, <span class="at">dpi=</span><span class="dv">150</span>, <span class="at">filenames=</span><span class="st">&quot;./img/hi_res_png_example.png&quot;</span>)</span></code></pre></div>
 <pre><code>## Warning in sprintf(filenames, pages, format): 2 arguments not used by format &#39;./
 ## img/hi_res_png_example.png&#39;</code></pre>
 <pre><code>## Converting page 1 to ./img/hi_res_png_example.png... done!</code></pre>
@@ -958,9 +981,9 @@ OCRing them (more on this below). Generally, you can trust scores of 93 and
 above.</p>
 <p>To get confidence scores for an OCR job, call <code>ocr_data()</code> and subset the
 <code>confidence</code> column, like so:</p>
-<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb681-1"><a href="optical-character-recognition.html#cb681-1" aria-hidden="true" tabindex="-1"></a>ocr_data <span class="ot">&lt;-</span> <span class="fu">ocr_data</span>(hi_res_png)</span>
-<span id="cb681-2"><a href="optical-character-recognition.html#cb681-2" aria-hidden="true" tabindex="-1"></a>confidence_scores <span class="ot">&lt;-</span> ocr_data<span class="sc">$</span>confidence</span>
-<span id="cb681-3"><a href="optical-character-recognition.html#cb681-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_scores)</span></code></pre></div>
+<div class="sourceCode" id="cb675"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb675-1"><a href="optical-character-recognition.html#cb675-1" aria-hidden="true" tabindex="-1"></a>ocr_data <span class="ot">&lt;-</span> <span class="fu">ocr_data</span>(hi_res_png)</span>
+<span id="cb675-2"><a href="optical-character-recognition.html#cb675-2" aria-hidden="true" tabindex="-1"></a>confidence_scores <span class="ot">&lt;-</span> ocr_data<span class="sc">$</span>confidence</span>
+<span id="cb675-3"><a href="optical-character-recognition.html#cb675-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_scores)</span></code></pre></div>
 <pre><code>##   [1] 92.326187 93.291992 92.390686 91.292068 90.040321 93.285721 89.960922
 ##   [8] 43.996544 43.996544 82.938339 93.216827 92.747429 76.725304 92.798645
 ##  [15] 92.798645 94.139832 96.169128 96.553284 91.130814 91.130814 95.643044
@@ -989,215 +1012,53 @@ above.</p>
 ## [176] 90.181320 96.139618 92.959770 94.400261 85.483757 70.593071 96.380119
 ## [183] 66.150887 18.099655 78.519165 83.035973 31.735725</code></pre>
 <p>The mean is a good indicator of the overall OCR quality:</p>
-<div class="sourceCode" id="cb683"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb683-1"><a href="optical-character-recognition.html#cb683-1" aria-hidden="true" tabindex="-1"></a>confidence_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(confidence_scores)</span>
-<span id="cb683-2"><a href="optical-character-recognition.html#cb683-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_mean)</span></code></pre></div>
+<div class="sourceCode" id="cb677"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb677-1"><a href="optical-character-recognition.html#cb677-1" aria-hidden="true" tabindex="-1"></a>confidence_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(confidence_scores)</span>
+<span id="cb677-2"><a href="optical-character-recognition.html#cb677-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_mean)</span></code></pre></div>
 <pre><code>## [1] 92.51906</code></pre>
 <p>Looks pretty good, though there were a few low scores that dragged the score
 down a bit. Let’s look at the median:</p>
-<div class="sourceCode" id="cb685"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb685-1"><a href="optical-character-recognition.html#cb685-1" aria-hidden="true" tabindex="-1"></a>confidence_median <span class="ot">&lt;-</span> <span class="fu">median</span>(confidence_scores)</span>
-<span id="cb685-2"><a href="optical-character-recognition.html#cb685-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_median)</span></code></pre></div>
+<div class="sourceCode" id="cb679"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb679-1"><a href="optical-character-recognition.html#cb679-1" aria-hidden="true" tabindex="-1"></a>confidence_median <span class="ot">&lt;-</span> <span class="fu">median</span>(confidence_scores)</span>
+<span id="cb679-2"><a href="optical-character-recognition.html#cb679-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(confidence_median)</span></code></pre></div>
 <pre><code>## [1] 96.12025</code></pre>
 <p>We can work with that!</p>
 <p>If we want to check our output a bit more closely, we can do two things. First,
 we can look directly at <code>ocr_data</code> and compare, row by row, a given word and its<br />
 confidence score.</p>
-<div class="sourceCode" id="cb687"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb687-1"><a href="optical-character-recognition.html#cb687-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ocr_data)</span></code></pre></div>
-<pre><code>##               word confidence               bbox
-## 1           SAPORS  92.326187    422,194,497,208
-## 2             LANE  93.291992    508,194,560,208
-## 3                -  92.390686    570,203,575,205
-## 4            BOOLE  91.292068    585,193,651,208
-## 5                -  90.040321    661,202,666,205
-## 6           DORSET  93.285721    676,193,755,208
-## 7                -  89.960922    764,203,769,205
-## 8               BH  43.996544    780,193,808,208
-## 9               25  43.996544    807,189,831,217
-## 10             8ER  82.938339    842,193,883,208
-## 11       TELEPHONE  93.216827    449,232,534,243
-## 12           BOOLE  92.747429    544,232,589,243
-## 13         (94513)  76.725304    600,229,664,246
-## 14           51617  92.798645    675,229,719,244
-## 15               -  92.798645    730,237,735,240
-## 16           TELEX  94.139832    746,232,792,243
-## 17          123456  96.169128    804,228,857,244
-## 18             Our  96.553284    211,392,246,408
-## 19            Ref.  91.130814    261,391,306,407
-## 20     350/PJC/EAC  91.130814    325,389,459,409
-## 21            18th  95.643044    863,389,910,405
-## 22        January,  95.643044   924,389,1020,408
-## 23           1972.  95.283821  1038,388,1095,405
-## 24             Dr.  91.192238    212,492,244,508
-## 25            P.N.  89.044609    262,492,307,508
-## 26        Cundall,  87.802193    325,491,419,510
-## 27          Mining  96.233360    212,516,286,538
-## 28         Surveys  93.276566    301,518,383,536
-## 29           Ltd.,  92.992844    398,516,457,535
-## 30         Holroyd  95.952171    212,543,298,562
-## 31           Road,  96.681137    313,542,369,561
-## 32        Reading,  96.284302    213,566,308,587
-## 33          Berks.  95.152283    213,593,282,608
-## 34            Dear  95.977455    213,668,261,683
-## 35           Pete,  96.308533    275,668,333,686
-## 36          Permit  95.692993    276,715,348,732
-## 37              me  95.692993    362,721,386,732
-## 38              to  95.987144    402,719,423,732
-## 39       introduce  96.534164    439,715,548,731
-## 40             you  96.897186    562,720,599,735
-## 41              to  95.809143    614,718,636,731
-## 42             the  96.897415    652,716,685,731
-## 43        facility  96.315361    702,714,799,735
-## 44              of  96.617821    813,715,836,731
-## 45       facsimile  96.508087    852,713,961,731
-## 46   transmission.  94.390121    215,740,371,757
-## 47              In  95.978737    278,793,300,807
-## 48       facsimile  96.522850    316,790,424,807
-## 49               a  95.214600    439,796,450,806
-## 50       photocell  95.642807    463,791,573,811
-## 51              is  96.655434    589,790,611,806
-## 52          caused  96.282211    627,791,700,807
-## 53              to  96.282211    714,793,736,806
-## 54         perform  96.361366    751,790,839,810
-## 55               a  95.597168    852,794,862,806
-## 56          raster  95.981224    876,793,950,806
-## 57            scan  96.211266   965,794,1013,806
-## 58            over  95.877457  1026,793,1075,805
-## 59               :   8.440552      16,824,18,826
-## 60             the  96.515381    215,817,249,832
-## 61         subject  95.978645    265,815,349,836
-## 62           copy.  95.955009    364,820,421,835
-## 63             The  95.685791    451,816,486,831
-## 64      variations  96.777512    501,814,623,831
-## 65              of  96.954750    639,815,661,831
-## 66           print  96.224609    675,814,736,835
-## 67         density  96.495888    752,814,837,834
-## 68              on  96.877327    851,819,875,830
-## 69             the  96.955742    890,814,924,830
-## 70        document  96.350052   939,814,1037,830
-## 71           cause  96.784325    215,846,275,857
-## 72             the  96.784325    290,841,324,857
-## 73       photocell  96.262688    338,841,449,861
-## 74              to  96.271156    465,844,487,857
-## 75        generate  96.284409    502,844,599,860
-## 76              an  96.690887    614,845,637,857
-## 77       analogous  95.752106    652,841,761,861
-## 78      electrical  96.577225    777,839,898,856
-## 79           video  96.782013    914,838,975,856
-## 80         signal.  95.615807   989,838,1071,859
-## 81            This  96.313568    215,865,261,881
-## 82          signal  96.293747    278,865,349,886
-## 83              is  96.120255    365,865,386,881
-## 84            used  96.120255    402,866,450,882
-## 85              to  96.640419    465,868,487,881
-## 86        modulate  95.863403    501,865,599,881
-## 87               a  95.929253    615,870,626,881
-## 88        carrier,  96.522018    639,865,735,884
-## 89           which  96.398582    750,864,812,881
-## 90              is  96.446907    828,864,849,881
-## 91     transmitted  95.803619   865,863,1000,881
-## 92              to  95.803619  1015,867,1037,880
-## 93               a  95.204765  1052,868,1063,879
-## 94          remote  96.370934    215,894,287,907
-## 95     destination  96.169952    302,890,438,907
-## 96            over  95.475868    451,895,500,906
-## 97               a  95.475868    514,895,525,906
-## 98           radio  96.492149    539,889,599,906
-## 99              or  96.108894    614,895,637,906
-## 100          cable  96.828568    653,891,712,906
-## 101 communications  96.650681    727,888,899,906
-## 102          link.  94.557724    915,888,972,905
-## 103             At  94.658371    277,941,300,956
-## 104            the  94.658371    316,941,350,956
-## 105         remote  96.770195    365,943,437,956
-## 106      terminal,  96.225060    453,939,560,962
-## 107   demodulation  96.670525    577,939,725,956
-## 108   reconstructs  96.354980    740,942,886,956
-## 109            the  96.906342    903,940,937,956
-## 110          video  96.303818   951,938,1013,955
-## 111        signal,  96.014244    215,964,297,986
-## 112          which  96.497437    314,964,375,981
-## 113             is  96.302750    390,964,411,981
-## 114           used  95.792542    427,965,475,981
-## 115             to  95.792542    490,968,512,981
-## 116       modulate  95.861221    526,965,625,981
-## 117            the  96.304672    641,965,675,981
-## 118        density  96.203583    690,964,775,984
-## 119             of  96.420517    789,964,812,980
-## 120          print  96.625023    826,963,887,984
-## 121       produced  96.626266   901,964,1001,984
-## 122             by  96.882683  1013,964,1038,983
-## 123              a  91.595039  1052,968,1063,979
-## 124       printing  96.384834   215,989,314,1010
-## 125        device.  95.978401   327,989,410,1006
-## 126           This  95.988167   440,989,486,1006
-## 127         device  96.459465   502,989,575,1006
-## 128             is  96.473129   590,989,611,1006
-## 129       scanning  96.613380   628,989,726,1010
-## 130             in  96.464584   741,989,763,1005
-## 131              a  96.782417   777,994,788,1005
-## 132         raster  96.463692   802,992,876,1005
-## 133           scan  96.355392   890,994,938,1005
-## 134   synchronised  96.262489  953,988,1101,1009
-## 135           with  95.908119  213,1015,263,1031
-## 136           that  96.471008  278,1015,325,1031
-## 137             at  95.633606  340,1018,362,1031
-## 138            the  96.694962  379,1015,413,1031
-## 139   transmitting  96.391228  428,1014,576,1035
-## 140      terminal.  94.782692  591,1014,697,1031
-## 141             As  95.936348  727,1015,749,1031
-## 142              a  96.104546  765,1019,775,1030
-## 143        result,  96.003822  789,1015,873,1034
-## 144              a  95.396400  890,1019,901,1030
-## 145      facsimile  96.081680 915,1012,1026,1030
-## 146           copy  96.895088  215,1045,263,1060
-## 147             of  96.446304  278,1040,300,1056
-## 148            the  95.649055  317,1041,350,1056
-## 149        subject  96.735336  365,1039,450,1060
-## 150       document  96.161446  465,1040,562,1056
-## 151             is  96.006187  578,1039,599,1055
-## 152      produced.  96.169670  614,1040,722,1060
-## 153       Probably  96.660339  278,1091,375,1110
-## 154            you  96.984940  389,1095,427,1110
-## 155           have  96.720856  439,1091,488,1106
-## 156           uses  96.825615  503,1094,550,1106
-## 157            for  96.421089  566,1090,601,1106
-## 158           this  96.421089  616,1089,662,1106
-## 159       facility  96.121315  678,1088,775,1110
-## 160             in  96.758072  792,1088,814,1105
-## 161           your  96.483368  827,1094,876,1110
-## 162  organisation.  96.435646 890,1087,1049,1110
-## 163          Yours  96.783485  678,1141,737,1156
-## 164     sincerely,  96.674332  753,1139,874,1160
-## 165            Td,  43.258137  688,1198,778,1276
-## 166              /  81.451591  808,1209,823,1266
-## 167           P.J.  50.273232  678,1304,724,1319
-## 168          CROSS  96.291702  742,1304,802,1319
-## 169          Group  96.013054  678,1329,739,1347
-## 170         Leader  90.972252  753,1328,827,1344
-## 171              -  90.843719  840,1334,852,1338
-## 172      Facsimile  96.506401  867,1326,978,1344
-## 173       Research  96.685356 992,1327,1092,1344
-## 174     Registered  95.623764  521,1574,600,1587
-## 175             in  94.061028  607,1574,621,1584
-## 176       England:  90.181320  629,1573,695,1586
-## 177            No.  96.139618  725,1574,749,1584
-## 178           2038  92.959770  756,1574,793,1584
-## 179            No.  94.400261    72,1597,99,1610
-## 180              1  85.483757  110,1597,114,1609
-## 181     Registered  70.593071  457,1592,535,1605
-## 182        Office:  96.380119  545,1592,595,1603
-## 183             @O  66.150887  627,1592,644,1602
-## 184         Vicars  18.099655  651,1592,700,1602
-## 185          Lane,  78.519165  723,1592,763,1605
-## 186        Ilford.  83.035973  771,1592,817,1602
-## 187         Essex,  31.735725  825,1592,873,1603</code></pre>
+<div class="sourceCode" id="cb681"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb681-1"><a href="optical-character-recognition.html#cb681-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_data, <span class="dv">25</span>)</span></code></pre></div>
+<pre><code>##           word confidence              bbox
+## 1       SAPORS   92.32619   422,194,497,208
+## 2         LANE   93.29199   508,194,560,208
+## 3            -   92.39069   570,203,575,205
+## 4        BOOLE   91.29207   585,193,651,208
+## 5            -   90.04032   661,202,666,205
+## 6       DORSET   93.28572   676,193,755,208
+## 7            -   89.96092   764,203,769,205
+## 8           BH   43.99654   780,193,808,208
+## 9           25   43.99654   807,189,831,217
+## 10         8ER   82.93834   842,193,883,208
+## 11   TELEPHONE   93.21683   449,232,534,243
+## 12       BOOLE   92.74743   544,232,589,243
+## 13     (94513)   76.72530   600,229,664,246
+## 14       51617   92.79865   675,229,719,244
+## 15           -   92.79865   730,237,735,240
+## 16       TELEX   94.13983   746,232,792,243
+## 17      123456   96.16913   804,228,857,244
+## 18         Our   96.55328   211,392,246,408
+## 19        Ref.   91.13081   261,391,306,407
+## 20 350/PJC/EAC   91.13081   325,389,459,409
+## 21        18th   95.64304   863,389,910,405
+## 22    January,   95.64304  924,389,1020,408
+## 23       1972.   95.28382 1038,388,1095,405
+## 24         Dr.   91.19224   212,492,244,508
+## 25        P.N.   89.04461   262,492,307,508</code></pre>
 <p>That’s a lot of information though. Something a little more sparse might be
 better. We can use base R’s <code>table()</code> function to count the number of times
 unique words appear in the OCR data. We do this with the <code>word</code> column in our
 <code>ocr_data</code> variable from above:</p>
-<div class="sourceCode" id="cb689"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb689-1"><a href="optical-character-recognition.html#cb689-1" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">table</span>(ocr_data<span class="sc">$</span>word)</span>
-<span id="cb689-2"><a href="optical-character-recognition.html#cb689-2" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ocr_vocabulary)</span></code></pre></div>
+<div class="sourceCode" id="cb683"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb683-1"><a href="optical-character-recognition.html#cb683-1" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">table</span>(ocr_data<span class="sc">$</span>word)</span>
+<span id="cb683-2"><a href="optical-character-recognition.html#cb683-2" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ocr_vocabulary)</span></code></pre></div>
 <p>Let’s look at the first 30 words:</p>
-<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb690-1"><a href="optical-character-recognition.html#cb690-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_vocabulary, <span class="dv">30</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb684"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb684-1"><a href="optical-character-recognition.html#cb684-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_vocabulary, <span class="dv">30</span>)</span></code></pre></div>
 <pre><code>##              Var1 Freq
 ## 1               -    5
 ## 2               :    1
@@ -1268,11 +1129,11 @@ Now, OCR is much better at handling a variety of text styling, but systems still
 struggle with old print materials like <strong>blackletter</strong>.</p>
 <p><img src="img/blackletter_example.jpg" /></p>
 <p>Running:</p>
-<div class="sourceCode" id="cb692"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb692-1"><a href="optical-character-recognition.html#cb692-1" aria-hidden="true" tabindex="-1"></a>ballad <span class="ot">&lt;-</span> <span class="st">&quot;https://ebba.english.ucsb.edu/images/cache/hunt_1_18305_2448x2448.jpg&quot;</span></span>
-<span id="cb692-2"><a href="optical-character-recognition.html#cb692-2" aria-hidden="true" tabindex="-1"></a>ballad_out <span class="ot">&lt;-</span> <span class="fu">ocr</span>(ballad)</span></code></pre></div>
+<div class="sourceCode" id="cb686"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb686-1"><a href="optical-character-recognition.html#cb686-1" aria-hidden="true" tabindex="-1"></a>ballad <span class="ot">&lt;-</span> <span class="st">&quot;https://ebba.english.ucsb.edu/images/cache/hunt_1_18305_2448x2448.jpg&quot;</span></span>
+<span id="cb686-2"><a href="optical-character-recognition.html#cb686-2" aria-hidden="true" tabindex="-1"></a>ballad_out <span class="ot">&lt;-</span> <span class="fu">ocr</span>(ballad)</span></code></pre></div>
 <p>Produces:</p>
-<div class="sourceCode" id="cb693"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb693-1"><a href="optical-character-recognition.html#cb693-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ballad_out)</span></code></pre></div>
-<pre><code>##  CAditeription of Qoptons falcehoo )
+<div class="sourceCode" id="cb687"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb687-1"><a href="optical-character-recognition.html#cb687-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(ballad_out)</span></code></pre></div>
+<pre style="max-height: 500px;"><code>##  CAditeription of Qoptons falcehoo )
 ## nf Doge thyze, and of bis fatall farewell,
 ## ache fatal fineof Sratteurs lees :
 ## \  4Bp gulice due, deferuyng foe. . :
@@ -1362,10 +1223,10 @@ unconventional page layouts, as well as inset graphics. Add to that sub-par scan
 of archival documents, as in the newspaper page below, and the output will
 contain way more errors than correct matches.</p>
 <p><img src="img/chronicling_america_example.png" /></p>
-<div class="sourceCode" id="cb695"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb695-1"><a href="optical-character-recognition.html#cb695-1" aria-hidden="true" tabindex="-1"></a>newspaper <span class="ot">&lt;-</span> <span class="st">&quot;https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf&quot;</span></span>
-<span id="cb695-2"><a href="optical-character-recognition.html#cb695-2" aria-hidden="true" tabindex="-1"></a>newspaper_ocr <span class="ot">&lt;-</span> <span class="fu">ocr</span>(newspaper)</span></code></pre></div>
+<div class="sourceCode" id="cb689"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb689-1"><a href="optical-character-recognition.html#cb689-1" aria-hidden="true" tabindex="-1"></a>newspaper <span class="ot">&lt;-</span> <span class="st">&quot;https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf&quot;</span></span>
+<span id="cb689-2"><a href="optical-character-recognition.html#cb689-2" aria-hidden="true" tabindex="-1"></a>newspaper_ocr <span class="ot">&lt;-</span> <span class="fu">ocr</span>(newspaper)</span></code></pre></div>
 <p>Beautifully messy output results:</p>
-<div class="sourceCode" id="cb696"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb696-1"><a href="optical-character-recognition.html#cb696-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(newspaper_ocr)</span></code></pre></div>
+<div class="sourceCode" id="cb690"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb690-1"><a href="optical-character-recognition.html#cb690-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(newspaper_ocr)</span></code></pre></div>
 <pre><code>## in
 ## 
 ## =—
