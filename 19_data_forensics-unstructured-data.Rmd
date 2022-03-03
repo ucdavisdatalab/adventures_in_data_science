@@ -8,14 +8,13 @@ Data Forensics and Cleaning: Unstructured Data
 By the end of this lesson, you should:
 
 * Be able to identify patterns in unstructured data
-* Create metadata about a collection of documents
-* Load and clean a collection of text files into R, which entails:
+* Know the general workflow for cleaning texts in R, which entails:
   - Tokenizing words
   - Determining and applying stop words
-  - ~~Normalizing, lemmatizing, and stemming texts~~
-  - ~~Creating a document-term matrix~~
-  - ~~Getting high-level data about text documents (term frequencies, tf--idf scores)~~
+  - Normalizing, lemmatizing, and stemming texts
+  - Creating a document-term matrix
 * Understand how preprocessing steps impact analysis
+* Get high-level data about text documents (term frequencies, tf--idf scores)
 
 **Packages**
 
@@ -23,88 +22,34 @@ By the end of this lesson, you should:
 install.packages(c("tidyverse", "tokenizers", "tm", "cluster"))
 ```
 
-## From File Names to Metadata
+## Using a File Manifest
 
-First, let's get some information about a collection of files.
-
-```{r eval=FALSE}
-input_dir <- "./IST8_text_corpus/"
-fnames <- list.files(input_dir)
-```
-
-```{r echo=FALSE}
-fnames <- readRDS("./data/C19_fnames.rds")
-```
-
-While we could start analyzing these files immediately, their names contain a 
-lot of metadata, which could be helpful. We'll need to structure this info 
-first (yes, we're structuring unstructured data so we can structure _more_ 
-unstructured data---welcome to data forensics!). Mercifully, whoever created 
-these files had a convention in mind for giving them names. We can latch onto 
-the patterns within this convention to make our own representation of the 
-files' metadata.
-
-Here's the pattern:
-
-`[LANGUAGE]_[YEAR]_[LASTNAME,FIRSTNAME]_[N OR G].txt`
-
-Let's use it to make a data frame. Using `stringr` in combination with regex 
-patterns will be essential to do so. First, let's break apart the strings on 
-their underscores and transform that output into a data frame.
+In this lesson, we'll be preparing a collection of texts for computational 
+analysis. Before we start that work in full, we're going to load in a file 
+manifest, which will help us a) identify what's in our collection; and b) keep 
+track of things like the order of texts.
 
 ```{r}
-library(stringr)
-C19_novels <- str_split_fixed(fnames, "_", 5)
-C19_novels <- as.data.frame(C19_novels)
+manifest <- read.csv("./data/C19_novels_manifest.csv", row.names = 1)
+manifest
 ```
 
-This is already pretty close to a good data sheet for us, but we'll want to 
-refine it a little further. First, let's name our columns. The letters in the 
-file names are genre tags, which stand for either "gothic" or "not gothic," so 
-we'll be sure to record them.
+As you can see, in addition to the author and title listings, we also have a 
+genre tag. "G" is for "Gothic" literature, while "N" is "not Gothic." Let's 
+convert the datatype for the genre column into a factor, which will make life 
+easier later on.
 
 ```{r}
-colnames(C19_novels) <- c("lang", "year", "author_name", "title", "genre")
+manifest$genre <- as.factor(manifest$genre)
 ```
-
-Now, let's split author names into "first" and "last" and add them back to the 
-data frame.
-
-```{r}
-author_names <- str_split_fixed(C19_novels$author_name, ",", 2)
-C19_novels$last_name <- author_names[, 1]
-C19_novels$first_name <- author_names[, 2]
-```
-
-And for good measure, let's remove the `.txt` extension in the genre tags and 
-convert those tags to factors.
-
-```{r}
-C19_novels$genre <- sapply(C19_novels$genre, function(x) str_remove_all(x, ".txt"))
-C19_novels$genre <- as.factor(C19_novels$genre)
-```
-
-Finally, we'll clean up, removing the `author_names` and `lang` columns and 
-doing a bit of reordering. (Language could be useful in some instances, but 
-we don't need it for now, especially because these novels are all in English.)
-
-```{r}
-C19_novels <- subset(C19_novels, select= -c(lang, author_name))
-C19_novels <- C19_novels[, c(4,5,2,1,3)]
-C19_novels
-```
-
-Nice and tidy!
 
 ## Loading a Corpus
 
-With our metadata structured, it's time to load our files.
+With our metadata loaded, it's time to bring in our files. We'll be using files 
+stored in an `RDS` format, though you could also load straight from a directory 
+with a combination of `lapply()` and `readLines()`.
 
-```{r eval=FALSE}
-files <- lapply(paste0(input_dir, fnames), readLines)
-```
-
-```{r echo=FALSE}
+```{r}
 files <- readRDS("./data/C19_novels_raw.rds")
 ```
 
@@ -150,6 +95,8 @@ Not much here so far, but we'll add more later.
 Finally, we can get content from a text:
 
 ```{r}
+library(stringr)
+
 str_sub(corpus[[6]]$content, 1, 500)
 ```
 
@@ -300,11 +247,15 @@ package, which will globally apply our changes.
 
 ```{r warning=FALSE}
 library(tokenizers)
-cleaned_corpus <- tm_map(corpus, function(x) tokenize_words(x,
-                                                            stopwords=stopwords("SMART"),
-                                                            lowercase=TRUE,
-                                                            strip_punct=TRUE,
-                                                            strip_numeric=TRUE))
+cleaned_corpus <- tm_map(
+                      corpus,
+                      function(x)
+                      tokenize_words(x,
+                      stopwords=stopwords("SMART"),
+                      lowercase=TRUE,
+                      strip_punct=TRUE,
+                      strip_numeric=TRUE)
+                      )
 ```
 
 You may see a "transformation drops documents" warning after this. You can 
@@ -394,8 +345,11 @@ term frequencies for our words by dividing a word's count by document length
 (which is the sum of all words in the document).
 
 ```{r}
-wuthering_heights$term_frequency <- sapply(wuthering_heights$count,
-                                           function(x) (x/sum(wuthering_heights$count)))
+wuthering_heights$term_frequency <- sapply(
+                                      wuthering_heights$count,
+                                      function(x)
+                                      (x/sum(wuthering_heights$count))
+                                      )
 head(wuthering_heights, 30)
 ```
 
@@ -613,7 +567,7 @@ created. This means we can use our metadata from way back when to associate a
 document with its title:
 
 ```{r}
-dtm$dimnames$Docs <- C19_novels$title
+dtm$dimnames$Docs <- manifest$title
 dtm$dimnames$Docs
 ```
 
@@ -719,7 +673,7 @@ document-term matrix:
 
 ```{r message=FALSE, warning=FALSE}
 dtm_tfidf <- DocumentTermMatrix(cleaned_corpus, control=list(weighting=weightTfIdf))
-dtm_tfidf$dimnames$Docs <- C19_novels$title
+dtm_tfidf$dimnames$Docs <- manifest$title
 ```
 
 To see what difference it makes, let's plot the top terms in our corpus using 
@@ -778,7 +732,7 @@ observations (or rows). Don't forget the `t`!
 ```{r}
 tfidf_df <- as.matrix(dtm_tfidf)
 tfidf_df <- as.data.frame(t(tfidf_df))
-colnames(tfidf_df) <- C19_novels$title
+colnames(tfidf_df) <- manifest$title
 ```
 
 ### Unique Terms in a Document
@@ -819,4 +773,4 @@ rownames(tfidf_df[order(tfidf_df$SenseandSensibility, decreasing=TRUE)[1:50],])
 Names still rank high, but we can see in these results other words that indeed 
 seem to be particular to each novel. With this data, we now have a sense of 
 what makes each document unique in its relationship with all other documents in 
-a corpus
+a corpus.
