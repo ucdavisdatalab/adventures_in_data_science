@@ -60,7 +60,7 @@ text (like the output of `ocr()`, if you'll remember). We can collapse them
 together with `paste()`.
 
 ```{r}
-files <- lapply(files, function(x) paste(x, collapse=" "))
+files <- lapply(files, paste, collapse = " ")
 ```
 
 From here, we can wrap these files in a special "corpus" object, which the `tm` 
@@ -97,7 +97,7 @@ Finally, we can get content from a text:
 ```{r}
 library(stringr)
 
-str_sub(corpus[[6]]$content, 1, 500)
+str_sub(corpus[[6]]$content, start = 1, end = 500)
 ```
 
 In this last view, you can see that the text file is still formatted (at least 
@@ -121,7 +121,7 @@ an alphabetic character or a space. Let's grab one text to experiment with.
 
 ```{r}
 frankenstein <- corpus[[6]]$content
-frankenstein <- str_replace_all(frankenstein, "[^A-Za-z]", " ")
+frankenstein <- str_replace_all(frankenstein, pattern = "[^A-Za-z]", replacement = " ")
 ```
 
 From here, it would be easy enough to count the words in a novel by splitting 
@@ -227,7 +227,7 @@ novel in the corpus, for example, there are a bunch of stray _p_'s, which is
 likely from a pattern for marking pages ("p. 7"):
 
 ```{r}
-cat(str_sub(corpus[[1]]$content, 1, 1000))
+cat(str_sub(corpus[[1]]$content, start = 1, end = 1000))
 ```
 
 Our stop word list would take care of this. With it, we could return to our 
@@ -248,14 +248,13 @@ package, which will globally apply our changes.
 ```{r warning=FALSE}
 library(tokenizers)
 cleaned_corpus <- tm_map(
-                      corpus,
-                      function(x)
-                      tokenize_words(x,
-                      stopwords=stopwords("SMART"),
-                      lowercase=TRUE,
-                      strip_punct=TRUE,
-                      strip_numeric=TRUE)
-                      )
+  corpus,
+  tokenize_words,
+  stopwords = stopwords('SMART'),
+  lowercase = TRUE,
+  strip_punct = TRUE,
+  strip_numeric = TRUE
+)
 ```
 
 You may see a "transformation drops documents" warning after this. You can 
@@ -266,7 +265,10 @@ We can compare our tokenized output with the text data we had been working with
 earlier:
 
 ```{r}
-list(untokenized=frankenstein[[1]][1:9], tokenized=cleaned_corpus[[6]]$content[1:5])
+list(
+  untokenized = frankenstein[[1]][1:9], 
+  tokenized = cleaned_corpus[[6]]$content[1:5]
+)
 ```
 
 From the title alone we can see how much of a difference tokenizing with stop 
@@ -290,9 +292,11 @@ phrases), or, well any sequence of _n_ units. Generally, you'll see these
 sequences referred to as **n-grams**:
 
 ```{r}
-frankenstein_bigrams <- tokenize_ngrams(corpus[[6]]$content,
-                                        n=2,
-                                        stopwords=stopwords("SMART"))
+frankenstein_bigrams <- tokenize_ngrams(
+  corpus[[6]]$content,
+  n = 2,
+  stopwords = stopwords("SMART")
+)
 ```
 
 Here, `n=2` sets the n-gram window at two:
@@ -316,10 +320,14 @@ Let's look at _Wuthering Heights_, which is our ninth text:
 
 ```{r message=FALSE}
 library(tidyverse)
+
 wuthering_heights <- table(cleaned_corpus[[9]]$content)
-wuthering_heights <- data.frame(word=names(wuthering_heights),
-                                count=as.numeric(wuthering_heights))
+wuthering_heights <- data.frame(
+  word=names(wuthering_heights),
+  count=as.numeric(wuthering_heights)
+)
 wuthering_heights <- arrange(wuthering_heights, desc(count))
+
 head(wuthering_heights, 30)
 ```
 
@@ -346,10 +354,10 @@ term frequencies for our words by dividing a word's count by document length
 
 ```{r}
 wuthering_heights$term_frequency <- sapply(
-                                      wuthering_heights$count,
-                                      function(x)
-                                      (x/sum(wuthering_heights$count))
-                                      )
+  wuthering_heights$count,
+  function(x)
+  (x/sum(wuthering_heights$count))
+)
 head(wuthering_heights, 30)
 ```
 
@@ -361,10 +369,20 @@ term frequency.
 
 ```{r fig.width=10}
 library(ggplot2)
-ggplot(data=wuthering_heights[1:50, ], aes(x=fct_reorder(word, -term_frequency), y=term_frequency)) +
-  geom_bar(stat="identity") + 
-  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1)) + 
-  labs(title="Top 50 words in Wuthering Heights", x="Word", y="Term Frequency")
+
+ggplot(
+  data = wuthering_heights[1:50, ],
+  aes(x = fct_reorder(word, -term_frequency), y = term_frequency)
+  ) +
+  geom_bar(stat ="identity") + 
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  ) + 
+  labs(
+    title = "Top 50 words in Wuthering Heights", 
+    x = "Word", 
+    y = "Term Frequency"
+  )
 ```
 
 This is a good start for creating a high-level view of the novel, but further 
@@ -392,7 +410,10 @@ We can make some comparisons by transforming the above code into a function:
 ```{r}
 term_table <- function(text) {
   term_tab <- table(text)
-  term_tab <- data.frame(word=names(term_tab), count=as.numeric(term_tab))
+  term_tab <- data.frame(
+    word = names(term_tab), 
+    count = as.numeric(term_tab)
+    )
   term_tab$term_frequency <- sapply(term_tab$count, function(x) (x/sum(term_tab$count)))
   term_tab <- arrange(term_tab, desc(count))
   return(term_tab)
@@ -411,8 +432,8 @@ Now we can compare the relative frequency of a word across two novels:
 ```{r}
 comparison_words <- c("dark", "night", "ominous")
 for (i in comparison_words) {
-  wh <- list(wh=subset(wuthering_heights, word==i))
-  drac <- list(drac=subset(dracula, word==i))
+  wh <- list(wh = subset(wuthering_heights, word == i))
+  drac <- list(drac = subset(dracula, word == i))
   print(wh)
   print(drac)
 }
@@ -459,7 +480,7 @@ do text cleaning, but other functions in `tm` require non-split documents. If
 we use `tokenizers`, then, we need to do a quick workaround with `paste()`.
 
 ```{r}
-cleaned_corpus <- lapply(cleaned_corpus, function(x) paste(x, collapse=" "))
+cleaned_corpus <- lapply(cleaned_corpus, paste, collapse = " ")
 ```
 
 And then reformat that output as a corpus object:
@@ -615,8 +636,8 @@ We can transform the DTM into a matrix and then a data frame.
 
 ```{r}
 term_counts <- as.matrix(dtm)
-term_counts <- data.frame(sort(colSums(term_counts), decreasing=TRUE))
-term_counts <- cbind(newColName=rownames(term_counts), term_counts)
+term_counts <- data.frame(sort(colSums(term_counts), decreasing = TRUE))
+term_counts <- cbind(newColName = rownames(term_counts), term_counts)
 colnames(term_counts) <- c("term", "count")
 ```
 
@@ -624,10 +645,21 @@ As before, let's plot the top 50 terms in these counts, but this time, they will
 cover the entire corpus:
 
 ```{r fig.width=10}
-ggplot(data=term_counts[1:50, ], aes(x=fct_reorder(term, -count), y=count)) +
-  geom_bar(stat="identity") + 
-  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1)) + 
-  labs(title="Top 50 words in 18 Nineteenth-Century Novels", x="Word", y="Count")
+ggplot(
+  data = term_counts[1:50, ], 
+  aes(
+    x = fct_reorder(term, -count), 
+    y = count)
+  ) +
+  geom_bar(stat = "identity") + 
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  ) + 
+  labs(
+    title = "Top 50 words in 18 Nineteenth-Century Novels", 
+    x = "Word", 
+    y = "Count"
+  )
 ```
 
 This looks good, though the words here are all pretty common. In fact, many of 
@@ -672,7 +704,10 @@ math for each term in a corpus. We can implement tf--idf scores when making a
 document-term matrix:
 
 ```{r message=FALSE, warning=FALSE}
-dtm_tfidf <- DocumentTermMatrix(cleaned_corpus, control=list(weighting=weightTfIdf))
+dtm_tfidf <- DocumentTermMatrix(
+  cleaned_corpus,
+  control = list(weighting = weightTfIdf)
+)
 dtm_tfidf$dimnames$Docs <- manifest$title
 ```
 
@@ -681,16 +716,27 @@ their tf--idf scores.
 
 ```{r message=FALSE}
 tfidf_counts <- as.matrix(dtm_tfidf)
-tfidf_counts <- data.frame(sort(colSums(tfidf_counts), decreasing=TRUE))
-tfidf_counts <- cbind(newColName=rownames(tfidf_counts), tfidf_counts)
+tfidf_counts <- data.frame(sort(colSums(tfidf_counts), decreasing = TRUE))
+tfidf_counts <- cbind(newColName = rownames(tfidf_counts), tfidf_counts)
 colnames(tfidf_counts) <- c("term", "tfidf")
 ```
 
 ```{r fig.width=10}
-ggplot(data=tfidf_counts[1:50, ], aes(x=fct_reorder(term, -tfidf), y=tfidf)) +
-  geom_bar(stat="identity") + 
-  theme(axis.text.x=element_text(angle=90, vjust=0.5, hjust=1)) + 
-  labs(title="Words with the 50-highest tf--idf scores in 18 Nineteenth-Century Novels", x="Word", y="TF-IDF")
+ggplot(
+  data = tfidf_counts[1:50, ], 
+  aes(
+    x = fct_reorder(term, -tfidf), 
+    y = tfidf)
+  ) +
+  geom_bar(stat = "identity") + 
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
+  ) + 
+  labs(
+    title = "Words with the 50-highest tf--idf scores in 18 Nineteenth-Century Novels", 
+    x = "Word", 
+    y = "TF-IDF"
+  )
 ```
 
 Lots of names! That makes sense: heavily weighted terms in these novels are 
@@ -699,19 +745,19 @@ a lot in novels, and the main character names in these novels are all unique.
 
 To see in more concrete way how tf--idf scores might make a difference in the 
 way we analyze our corpus, we'll do two last things. First, we'll look again at 
-term correlations, using the same words from above with `findAssoscs()`, but 
+term correlations, using the same words from above with `findAssocs()`, but 
 this time we'll use tf--idf scores.
 
 Here's "boat":
 
 ```{r}
-findAssocs(dtm_tfidf, "boat", .85)
+findAssocs(dtm_tfidf, terms = "boat", corlimit = .85)
 ```
 
 Here's "writing":
 
 ```{r}
-findAssocs(dtm_tfidf, "writing", .85)
+findAssocs(dtm_tfidf, terms = "writing", corlimit = .85)
 ```
 
 The semantics of these results have changed. For "boats", we get much more 
@@ -744,7 +790,7 @@ the top most _unique_ terms in that novel.
 Here's _Dracula_:
 
 ```{r}
-rownames(tfidf_df[order(tfidf_df$Dracula, decreasing=TRUE)[1:50],])
+rownames(tfidf_df[order(tfidf_df$Dracula, decreasing = TRUE)[1:50], ])
 ```
 
 Note here that some contractions have slipped through. Lemmatizing would take 
@@ -752,7 +798,7 @@ care of this, though we could also go back to the corpus object and add in
 another step with `tm_map()` and then make another DTM:
 
 ```{r eval=FALSE}
-cleaned_corpus <- tm_map(cleaned_corpus, function(x) str_remove_all(x, "\\'s", " "))
+cleaned_corpus <- tm_map(cleaned_corpus, str_remove_all, pattern = "\\'s", replacement = " "))
 ```
 
 We won't bother to do this whole process now, but it's a good example of how 
@@ -761,13 +807,13 @@ iterative the preprocessing workflow is.
 Here's _Frankenstein_:
 
 ```{r}
-rownames(tfidf_df[order(tfidf_df$Frankenstein, decreasing=TRUE)[1:50],])
+rownames(tfidf_df[order(tfidf_df$Frankenstein, decreasing = TRUE)[1:50], ])
 ```
 
 And here's _Sense and Sensibility_:
 
 ```{r}
-rownames(tfidf_df[order(tfidf_df$SenseandSensibility, decreasing=TRUE)[1:50],])
+rownames(tfidf_df[order(tfidf_df$SenseandSensibility, decreasing = TRUE)[1:50], ])
 ```
 
 Names still rank high, but we can see in these results other words that indeed 

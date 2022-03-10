@@ -33,7 +33,7 @@
 <meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2022-03-03" />
+<meta name="date" content="2022-03-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -757,7 +757,7 @@ vector is a full text file. Those vectors are chunked by paragraph right now,
 but for our purposes it would be easier if each vector was a single stream of
 text (like the output of <code>ocr()</code>, if you’ll remember). We can collapse them
 together with <code>paste()</code>.</p>
-<div class="sourceCode" id="cb806"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb806-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb806-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">lapply</span>(files, <span class="cf">function</span>(x) <span class="fu">paste</span>(x, <span class="at">collapse=</span><span class="st">&quot; &quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb806"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb806-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb806-1" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">lapply</span>(files, paste, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)</span></code></pre></div>
 <p>From here, we can wrap these files in a special “corpus” object, which the <code>tm</code>
 package enables (a corpus is a large collection of texts). A <code>tm</code> corpus works
 somewhat like a database. It has a section for “content”, which contains text
@@ -782,7 +782,7 @@ features make it easy to streamline workflows with text data.</p>
 <p>Finally, we can get content from a text:</p>
 <div class="sourceCode" id="cb812"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb812-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb812-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
 <span id="cb812-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb812-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb812-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb812-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sub</span>(corpus[[<span class="dv">6</span>]]<span class="sc">$</span>content, <span class="dv">1</span>, <span class="dv">500</span>)</span></code></pre></div>
+<span id="cb812-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb812-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sub</span>(corpus[[<span class="dv">6</span>]]<span class="sc">$</span>content, <span class="at">start =</span> <span class="dv">1</span>, <span class="at">end =</span> <span class="dv">500</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;FRANKENSTEIN:  OR,  THE MODERN PROMETHEUS.  BY MARY W. SHELLEY.  PREFACE.  The event on which this fiction is founded, has been supposed, by Dr. Darwin, and some of the physiological writers of Germany, as not of impossible occurrence. I shall not be supposed as according the remotest degree of serious faith to such an imagination; yet, in assuming it as the basis of a work of fancy, I have not considered myself as merely weaving a series of supernatural terrors. The event on which the interest &quot;</code></pre>
 <p>In this last view, you can see that the text file is still formatted (at least
 we didn’t have to OCR it!). This formatting is unwieldy and worse, it makes it so
@@ -802,7 +802,7 @@ get word counts, we need to split the text vectors into individual words. One
 way to do this would be to first strip out everything in each novel that isn’t
 an alphabetic character or a space. Let’s grab one text to experiment with.</p>
 <div class="sourceCode" id="cb814"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb814-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb814-1" aria-hidden="true" tabindex="-1"></a>frankenstein <span class="ot">&lt;-</span> corpus[[<span class="dv">6</span>]]<span class="sc">$</span>content</span>
-<span id="cb814-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb814-2" aria-hidden="true" tabindex="-1"></a>frankenstein <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(frankenstein, <span class="st">&quot;[^A-Za-z]&quot;</span>, <span class="st">&quot; &quot;</span>)</span></code></pre></div>
+<span id="cb814-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb814-2" aria-hidden="true" tabindex="-1"></a>frankenstein <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(frankenstein, <span class="at">pattern =</span> <span class="st">&quot;[^A-Za-z]&quot;</span>, <span class="at">replacement =</span> <span class="st">&quot; &quot;</span>)</span></code></pre></div>
 <p>From here, it would be easy enough to count the words in a novel by splitting
 its vector on spaces, removing empty elements in the vector, and calling
 <code>length()</code> on the vector. The end result is what we call a <strong>bag of words</strong>.</p>
@@ -895,7 +895,7 @@ glance, the extra random letters in this list seem like they could be a big
 help, on the off chance there’s some noise from OCR. If you look at the first
 novel in the corpus, for example, there are a bunch of stray <em>p</em>’s, which is
 likely from a pattern for marking pages (“p. 7”):</p>
-<div class="sourceCode" id="cb827"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb827-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb827-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">str_sub</span>(corpus[[<span class="dv">1</span>]]<span class="sc">$</span>content, <span class="dv">1</span>, <span class="dv">1000</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb827"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb827-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb827-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">str_sub</span>(corpus[[<span class="dv">1</span>]]<span class="sc">$</span>content, <span class="at">start =</span> <span class="dv">1</span>, <span class="at">end =</span> <span class="dv">1000</span>))</span></code></pre></div>
 <pre><code>## VATHEK;  AN ARABIAN TALE,    BY  WILLIAM BECKFORD, ESQ.    p. 7VATHEK.  Vathek, ninth Caliph [7a] of the race of the Abassides, was the son of Motassem, and the grandson of Haroun Al Raschid.  From an early accession to the throne, and the talents he possessed to adorn it, his subjects were induced to expect that his reign would be long and happy.  His figure was pleasing and majestic; but when he was angry, one of his eyes became so terrible [7b] that no person could bear to behold it; and the wretch upon whom it was fixed instantly fell backward, and sometimes expired.  For fear, however, of depopulating his dominions, and making his palace desolate, he but rarely gave way to his anger.  Being much addicted to women, and the pleasures of the table, he sought by his affability to procure agreeable companions; and he succeeded the better, p. 8as his generosity was unbounded and his indulgences unrestrained; for he was by no means scrupulous: nor did he think, with the Caliph Omar Ben A</code></pre>
 <p>Our stop word list would take care of this. With it, we could return to our
 original collection of novels, split them on spaces as before, and filter out
@@ -913,20 +913,22 @@ can combine these functions with a special <code>tm_map()</code> function in the
 package, which will globally apply our changes.</p>
 <div class="sourceCode" id="cb829"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb829-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tokenizers)</span>
 <span id="cb829-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-2" aria-hidden="true" tabindex="-1"></a>cleaned_corpus <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(</span>
-<span id="cb829-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-3" aria-hidden="true" tabindex="-1"></a>                      corpus,</span>
-<span id="cb829-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-4" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">function</span>(x)</span>
-<span id="cb829-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-5" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">tokenize_words</span>(x,</span>
-<span id="cb829-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">stopwords=</span><span class="fu">stopwords</span>(<span class="st">&quot;SMART&quot;</span>),</span>
-<span id="cb829-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">lowercase=</span><span class="cn">TRUE</span>,</span>
-<span id="cb829-8"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">strip_punct=</span><span class="cn">TRUE</span>,</span>
-<span id="cb829-9"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">strip_numeric=</span><span class="cn">TRUE</span>)</span>
-<span id="cb829-10"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-10" aria-hidden="true" tabindex="-1"></a>                      )</span></code></pre></div>
+<span id="cb829-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-3" aria-hidden="true" tabindex="-1"></a>  corpus,</span>
+<span id="cb829-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-4" aria-hidden="true" tabindex="-1"></a>  tokenize_words,</span>
+<span id="cb829-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">stopwords =</span> <span class="fu">stopwords</span>(<span class="st">&#39;SMART&#39;</span>),</span>
+<span id="cb829-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">lowercase =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb829-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">strip_punct =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb829-8"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">strip_numeric =</span> <span class="cn">TRUE</span></span>
+<span id="cb829-9"><a href="data-forensics-and-cleaning-unstructured-data.html#cb829-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>You may see a “transformation drops documents” warning after this. You can
 disregard it. It has to do with the way <code>tm</code> references text changes against
 a corpus’s metadata, which we’ve left blank.</p>
 <p>We can compare our tokenized output with the text data we had been working with
 earlier:</p>
-<div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb830-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb830-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="at">untokenized=</span>frankenstein[[<span class="dv">1</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>], <span class="at">tokenized=</span>cleaned_corpus[[<span class="dv">6</span>]]<span class="sc">$</span>content[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb830"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb830-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb830-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(</span>
+<span id="cb830-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb830-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">untokenized =</span> frankenstein[[<span class="dv">1</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>], </span>
+<span id="cb830-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb830-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tokenized =</span> cleaned_corpus[[<span class="dv">6</span>]]<span class="sc">$</span>content[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb830-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb830-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## $untokenized
 ## [1] &quot;FRANKENSTEIN&quot; &quot;OR&quot;           &quot;THE&quot;          &quot;MODERN&quot;       &quot;PROMETHEUS&quot;  
 ## [6] &quot;BY&quot;           &quot;MARY&quot;         &quot;W&quot;            &quot;SHELLEY&quot;     
@@ -951,9 +953,11 @@ used the “unigram,” or a single word, as our basic unit of counting, but we
 could break our texts into “bigrams” (two word phrases), “trigrams” (three word
 phrases), or, well any sequence of <em>n</em> units. Generally, you’ll see these
 sequences referred to as <strong>n-grams</strong>:</p>
-<div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb832-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-1" aria-hidden="true" tabindex="-1"></a>frankenstein_bigrams <span class="ot">&lt;-</span> <span class="fu">tokenize_ngrams</span>(corpus[[<span class="dv">6</span>]]<span class="sc">$</span>content,</span>
-<span id="cb832-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-2" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">n=</span><span class="dv">2</span>,</span>
-<span id="cb832-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-3" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">stopwords=</span><span class="fu">stopwords</span>(<span class="st">&quot;SMART&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb832"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb832-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-1" aria-hidden="true" tabindex="-1"></a>frankenstein_bigrams <span class="ot">&lt;-</span> <span class="fu">tokenize_ngrams</span>(</span>
+<span id="cb832-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-2" aria-hidden="true" tabindex="-1"></a>  corpus[[<span class="dv">6</span>]]<span class="sc">$</span>content,</span>
+<span id="cb832-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">2</span>,</span>
+<span id="cb832-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">stopwords =</span> <span class="fu">stopwords</span>(<span class="st">&quot;SMART&quot;</span>)</span>
+<span id="cb832-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb832-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Here, <code>n=2</code> sets the n-gram window at two:</p>
 <div class="sourceCode" id="cb833"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb833-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb833-1" aria-hidden="true" tabindex="-1"></a>frankenstein_bigrams[[<span class="dv">1</span>]][<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]</span></code></pre></div>
 <pre><code>##  [1] &quot;frankenstein modern&quot;   &quot;modern prometheus&quot;     &quot;prometheus mary&quot;      
@@ -976,11 +980,15 @@ number of times a word appears in some data can tell us a lot about a text. The
 following steps should feel familiar: we did them with OCR.</p>
 <p>Let’s look at <em>Wuthering Heights</em>, which is our ninth text:</p>
 <div class="sourceCode" id="cb835"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb835-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb835-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-2" aria-hidden="true" tabindex="-1"></a>wuthering_heights <span class="ot">&lt;-</span> <span class="fu">table</span>(cleaned_corpus[[<span class="dv">9</span>]]<span class="sc">$</span>content)</span>
-<span id="cb835-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-3" aria-hidden="true" tabindex="-1"></a>wuthering_heights <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">word=</span><span class="fu">names</span>(wuthering_heights),</span>
-<span id="cb835-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">count=</span><span class="fu">as.numeric</span>(wuthering_heights))</span>
-<span id="cb835-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-5" aria-hidden="true" tabindex="-1"></a>wuthering_heights <span class="ot">&lt;-</span> <span class="fu">arrange</span>(wuthering_heights, <span class="fu">desc</span>(count))</span>
-<span id="cb835-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wuthering_heights, <span class="dv">30</span>)</span></code></pre></div>
+<span id="cb835-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb835-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-3" aria-hidden="true" tabindex="-1"></a>wuthering_heights <span class="ot">&lt;-</span> <span class="fu">table</span>(cleaned_corpus[[<span class="dv">9</span>]]<span class="sc">$</span>content)</span>
+<span id="cb835-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-4" aria-hidden="true" tabindex="-1"></a>wuthering_heights <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb835-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">word=</span><span class="fu">names</span>(wuthering_heights),</span>
+<span id="cb835-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">count=</span><span class="fu">as.numeric</span>(wuthering_heights)</span>
+<span id="cb835-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb835-8"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-8" aria-hidden="true" tabindex="-1"></a>wuthering_heights <span class="ot">&lt;-</span> <span class="fu">arrange</span>(wuthering_heights, <span class="fu">desc</span>(count))</span>
+<span id="cb835-9"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb835-10"><a href="data-forensics-and-cleaning-unstructured-data.html#cb835-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wuthering_heights, <span class="dv">30</span>)</span></code></pre></div>
 <pre><code>##          word count
 ## 1  heathcliff   422
 ## 2      linton   348
@@ -1031,10 +1039,10 @@ information about a word’s contribution to the document as a whole. We can get
 term frequencies for our words by dividing a word’s count by document length
 (which is the sum of all words in the document).</p>
 <div class="sourceCode" id="cb837"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb837-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-1" aria-hidden="true" tabindex="-1"></a>wuthering_heights<span class="sc">$</span>term_frequency <span class="ot">&lt;-</span> <span class="fu">sapply</span>(</span>
-<span id="cb837-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-2" aria-hidden="true" tabindex="-1"></a>                                      wuthering_heights<span class="sc">$</span>count,</span>
-<span id="cb837-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-3" aria-hidden="true" tabindex="-1"></a>                                      <span class="cf">function</span>(x)</span>
-<span id="cb837-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-4" aria-hidden="true" tabindex="-1"></a>                                      (x<span class="sc">/</span><span class="fu">sum</span>(wuthering_heights<span class="sc">$</span>count))</span>
-<span id="cb837-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-5" aria-hidden="true" tabindex="-1"></a>                                      )</span>
+<span id="cb837-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-2" aria-hidden="true" tabindex="-1"></a>  wuthering_heights<span class="sc">$</span>count,</span>
+<span id="cb837-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x)</span>
+<span id="cb837-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-4" aria-hidden="true" tabindex="-1"></a>  (x<span class="sc">/</span><span class="fu">sum</span>(wuthering_heights<span class="sc">$</span>count))</span>
+<span id="cb837-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb837-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb837-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wuthering_heights, <span class="dv">30</span>)</span></code></pre></div>
 <pre><code>##          word count term_frequency
 ## 1  heathcliff   422    0.009619549
@@ -1074,10 +1082,20 @@ term frequencies for our words by dividing a word’s count by document length
 in the <code>aes()</code> field of <code>ggplot</code> to sort words in the descending order of their
 term frequency.</p>
 <div class="sourceCode" id="cb839"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb839-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb839-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>wuthering_heights[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ], <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">fct_reorder</span>(word, <span class="sc">-</span>term_frequency), <span class="at">y=</span>term_frequency)) <span class="sc">+</span></span>
-<span id="cb839-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb839-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb839-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;Top 50 words in Wuthering Heights&quot;</span>, <span class="at">x=</span><span class="st">&quot;Word&quot;</span>, <span class="at">y=</span><span class="st">&quot;Term Frequency&quot;</span>)</span></code></pre></div>
+<span id="cb839-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb839-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb839-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> wuthering_heights[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ],</span>
+<span id="cb839-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">fct_reorder</span>(word, <span class="sc">-</span>term_frequency), <span class="at">y =</span> term_frequency)</span>
+<span id="cb839-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb839-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb839-8"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb839-9"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb839-10"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb839-11"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb839-12"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Top 50 words in Wuthering Heights&quot;</span>, </span>
+<span id="cb839-13"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Word&quot;</span>, </span>
+<span id="cb839-14"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Term Frequency&quot;</span></span>
+<span id="cb839-15"><a href="data-forensics-and-cleaning-unstructured-data.html#cb839-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p><img src="19_data_forensics-unstructured-data_files/figure-html/unnamed-chunk-21-1.png" width="960" /></p>
 <p>This is a good start for creating a high-level view of the novel, but further
 tuning might be in order. We’ve already mentioned “mrs” and “mr” as two words
@@ -1101,11 +1119,14 @@ because they will impact the kinds of claims you make about your data later on.<
 We can make some comparisons by transforming the above code into a function:</p>
 <div class="sourceCode" id="cb840"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb840-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-1" aria-hidden="true" tabindex="-1"></a>term_table <span class="ot">&lt;-</span> <span class="cf">function</span>(text) {</span>
 <span id="cb840-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-2" aria-hidden="true" tabindex="-1"></a>  term_tab <span class="ot">&lt;-</span> <span class="fu">table</span>(text)</span>
-<span id="cb840-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-3" aria-hidden="true" tabindex="-1"></a>  term_tab <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">word=</span><span class="fu">names</span>(term_tab), <span class="at">count=</span><span class="fu">as.numeric</span>(term_tab))</span>
-<span id="cb840-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-4" aria-hidden="true" tabindex="-1"></a>  term_tab<span class="sc">$</span>term_frequency <span class="ot">&lt;-</span> <span class="fu">sapply</span>(term_tab<span class="sc">$</span>count, <span class="cf">function</span>(x) (x<span class="sc">/</span><span class="fu">sum</span>(term_tab<span class="sc">$</span>count)))</span>
-<span id="cb840-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-5" aria-hidden="true" tabindex="-1"></a>  term_tab <span class="ot">&lt;-</span> <span class="fu">arrange</span>(term_tab, <span class="fu">desc</span>(count))</span>
-<span id="cb840-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(term_tab)</span>
-<span id="cb840-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb840-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-3" aria-hidden="true" tabindex="-1"></a>  term_tab <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb840-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">word =</span> <span class="fu">names</span>(term_tab), </span>
+<span id="cb840-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="fu">as.numeric</span>(term_tab)</span>
+<span id="cb840-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb840-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-7" aria-hidden="true" tabindex="-1"></a>  term_tab<span class="sc">$</span>term_frequency <span class="ot">&lt;-</span> <span class="fu">sapply</span>(term_tab<span class="sc">$</span>count, <span class="cf">function</span>(x) (x<span class="sc">/</span><span class="fu">sum</span>(term_tab<span class="sc">$</span>count)))</span>
+<span id="cb840-8"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-8" aria-hidden="true" tabindex="-1"></a>  term_tab <span class="ot">&lt;-</span> <span class="fu">arrange</span>(term_tab, <span class="fu">desc</span>(count))</span>
+<span id="cb840-9"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(term_tab)</span>
+<span id="cb840-10"><a href="data-forensics-and-cleaning-unstructured-data.html#cb840-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>We already have a term table for <em>Wuthering Heights</em>. Let’s make one for <em>Dracula</em>.</p>
 <div class="sourceCode" id="cb841"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb841-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb841-1" aria-hidden="true" tabindex="-1"></a>dracula <span class="ot">&lt;-</span> <span class="fu">term_table</span>(cleaned_corpus[[<span class="dv">18</span>]]<span class="sc">$</span>content)</span>
 <span id="cb841-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb841-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dracula, <span class="dv">30</span>)</span></code></pre></div>
@@ -1143,8 +1164,8 @@ We can make some comparisons by transforming the above code into a function:</p>
 <p>Now we can compare the relative frequency of a word across two novels:</p>
 <div class="sourceCode" id="cb843"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb843-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-1" aria-hidden="true" tabindex="-1"></a>comparison_words <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;dark&quot;</span>, <span class="st">&quot;night&quot;</span>, <span class="st">&quot;ominous&quot;</span>)</span>
 <span id="cb843-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> comparison_words) {</span>
-<span id="cb843-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-3" aria-hidden="true" tabindex="-1"></a>  wh <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">wh=</span><span class="fu">subset</span>(wuthering_heights, word<span class="sc">==</span>i))</span>
-<span id="cb843-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-4" aria-hidden="true" tabindex="-1"></a>  drac <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">drac=</span><span class="fu">subset</span>(dracula, word<span class="sc">==</span>i))</span>
+<span id="cb843-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-3" aria-hidden="true" tabindex="-1"></a>  wh <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">wh =</span> <span class="fu">subset</span>(wuthering_heights, word <span class="sc">==</span> i))</span>
+<span id="cb843-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-4" aria-hidden="true" tabindex="-1"></a>  drac <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">drac =</span> <span class="fu">subset</span>(dracula, word <span class="sc">==</span> i))</span>
 <span id="cb843-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(wh)</span>
 <span id="cb843-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(drac)</span>
 <span id="cb843-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb843-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
@@ -1205,7 +1226,7 @@ preprocessing functions are generally a bit faster to run (in particular,
 <p>There is, however, one caveat to using <code>tokenizers</code>. It splits documents up to
 do text cleaning, but other functions in <code>tm</code> require non-split documents. If
 we use <code>tokenizers</code>, then, we need to do a quick workaround with <code>paste()</code>.</p>
-<div class="sourceCode" id="cb846"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb846-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb846-1" aria-hidden="true" tabindex="-1"></a>cleaned_corpus <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cleaned_corpus, <span class="cf">function</span>(x) <span class="fu">paste</span>(x, <span class="at">collapse=</span><span class="st">&quot; &quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb846"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb846-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb846-1" aria-hidden="true" tabindex="-1"></a>cleaned_corpus <span class="ot">&lt;-</span> <span class="fu">lapply</span>(cleaned_corpus, paste, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)</span></code></pre></div>
 <p>And then reformat that output as a corpus object:</p>
 <div class="sourceCode" id="cb847"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb847-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb847-1" aria-hidden="true" tabindex="-1"></a>cleaned_corpus <span class="ot">&lt;-</span> <span class="fu">Corpus</span>(<span class="fu">VectorSource</span>(cleaned_corpus))</span></code></pre></div>
 <p>Ultimately, it’s up to you to decide what workflow makes sense. Personally, I
@@ -1391,15 +1412,26 @@ function is a cutoff for the strength of a correlation.)</p>
 <p>From here, it would be useful to get a full count of all the terms in the corpus.
 We can transform the DTM into a matrix and then a data frame.</p>
 <div class="sourceCode" id="cb867"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb867-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb867-1" aria-hidden="true" tabindex="-1"></a>term_counts <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dtm)</span>
-<span id="cb867-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb867-2" aria-hidden="true" tabindex="-1"></a>term_counts <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sort</span>(<span class="fu">colSums</span>(term_counts), <span class="at">decreasing=</span><span class="cn">TRUE</span>))</span>
-<span id="cb867-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb867-3" aria-hidden="true" tabindex="-1"></a>term_counts <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">newColName=</span><span class="fu">rownames</span>(term_counts), term_counts)</span>
+<span id="cb867-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb867-2" aria-hidden="true" tabindex="-1"></a>term_counts <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sort</span>(<span class="fu">colSums</span>(term_counts), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb867-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb867-3" aria-hidden="true" tabindex="-1"></a>term_counts <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">newColName =</span> <span class="fu">rownames</span>(term_counts), term_counts)</span>
 <span id="cb867-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb867-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(term_counts) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;term&quot;</span>, <span class="st">&quot;count&quot;</span>)</span></code></pre></div>
 <p>As before, let’s plot the top 50 terms in these counts, but this time, they will
 cover the entire corpus:</p>
-<div class="sourceCode" id="cb868"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb868-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>term_counts[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ], <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">fct_reorder</span>(term, <span class="sc">-</span>count), <span class="at">y=</span>count)) <span class="sc">+</span></span>
-<span id="cb868-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb868-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb868-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;Top 50 words in 18 Nineteenth-Century Novels&quot;</span>, <span class="at">x=</span><span class="st">&quot;Word&quot;</span>, <span class="at">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb868"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb868-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb868-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> term_counts[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ], </span>
+<span id="cb868-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb868-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">fct_reorder</span>(term, <span class="sc">-</span>count), </span>
+<span id="cb868-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> count)</span>
+<span id="cb868-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb868-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb868-8"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb868-9"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb868-10"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb868-11"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb868-12"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Top 50 words in 18 Nineteenth-Century Novels&quot;</span>, </span>
+<span id="cb868-13"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Word&quot;</span>, </span>
+<span id="cb868-14"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Count&quot;</span></span>
+<span id="cb868-15"><a href="data-forensics-and-cleaning-unstructured-data.html#cb868-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p><img src="19_data_forensics-unstructured-data_files/figure-html/unnamed-chunk-40-1.png" width="960" /></p>
 <p>This looks good, though the words here are all pretty common. In fact, many of
 them are simply the most common words in the English language. “Time” is the
@@ -1434,28 +1466,42 @@ the term frequency for <span class="math inline">\(i\)</span> in <span class="ma
 the math specifically. And as it happens, <code>tm</code> has a way to perform the above
 math for each term in a corpus. We can implement tf–idf scores when making a
 document-term matrix:</p>
-<div class="sourceCode" id="cb869"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb869-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb869-1" aria-hidden="true" tabindex="-1"></a>dtm_tfidf <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(cleaned_corpus, <span class="at">control=</span><span class="fu">list</span>(<span class="at">weighting=</span>weightTfIdf))</span>
-<span id="cb869-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb869-2" aria-hidden="true" tabindex="-1"></a>dtm_tfidf<span class="sc">$</span>dimnames<span class="sc">$</span>Docs <span class="ot">&lt;-</span> manifest<span class="sc">$</span>title</span></code></pre></div>
+<div class="sourceCode" id="cb869"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb869-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb869-1" aria-hidden="true" tabindex="-1"></a>dtm_tfidf <span class="ot">&lt;-</span> <span class="fu">DocumentTermMatrix</span>(</span>
+<span id="cb869-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb869-2" aria-hidden="true" tabindex="-1"></a>  cleaned_corpus,</span>
+<span id="cb869-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb869-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">weighting =</span> weightTfIdf)</span>
+<span id="cb869-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb869-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb869-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb869-5" aria-hidden="true" tabindex="-1"></a>dtm_tfidf<span class="sc">$</span>dimnames<span class="sc">$</span>Docs <span class="ot">&lt;-</span> manifest<span class="sc">$</span>title</span></code></pre></div>
 <p>To see what difference it makes, let’s plot the top terms in our corpus using
 their tf–idf scores.</p>
 <div class="sourceCode" id="cb870"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb870-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb870-1" aria-hidden="true" tabindex="-1"></a>tfidf_counts <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dtm_tfidf)</span>
-<span id="cb870-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb870-2" aria-hidden="true" tabindex="-1"></a>tfidf_counts <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sort</span>(<span class="fu">colSums</span>(tfidf_counts), <span class="at">decreasing=</span><span class="cn">TRUE</span>))</span>
-<span id="cb870-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb870-3" aria-hidden="true" tabindex="-1"></a>tfidf_counts <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">newColName=</span><span class="fu">rownames</span>(tfidf_counts), tfidf_counts)</span>
+<span id="cb870-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb870-2" aria-hidden="true" tabindex="-1"></a>tfidf_counts <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">sort</span>(<span class="fu">colSums</span>(tfidf_counts), <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb870-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb870-3" aria-hidden="true" tabindex="-1"></a>tfidf_counts <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">newColName =</span> <span class="fu">rownames</span>(tfidf_counts), tfidf_counts)</span>
 <span id="cb870-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb870-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tfidf_counts) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;term&quot;</span>, <span class="st">&quot;tfidf&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb871"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb871-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>tfidf_counts[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ], <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">fct_reorder</span>(term, <span class="sc">-</span>tfidf), <span class="at">y=</span>tfidf)) <span class="sc">+</span></span>
-<span id="cb871-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb871-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="fl">0.5</span>, <span class="at">hjust=</span><span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb871-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">&quot;Words with the 50-highest tf--idf scores in 18 Nineteenth-Century Novels&quot;</span>, <span class="at">x=</span><span class="st">&quot;Word&quot;</span>, <span class="at">y=</span><span class="st">&quot;TF-IDF&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb871"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb871-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb871-2"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> tfidf_counts[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ], </span>
+<span id="cb871-3"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(</span>
+<span id="cb871-4"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">fct_reorder</span>(term, <span class="sc">-</span>tfidf), </span>
+<span id="cb871-5"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> tfidf)</span>
+<span id="cb871-6"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb871-7"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb871-8"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb871-9"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>)</span>
+<span id="cb871-10"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb871-11"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb871-12"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Words with the 50-highest tf--idf scores in 18 Nineteenth-Century Novels&quot;</span>, </span>
+<span id="cb871-13"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Word&quot;</span>, </span>
+<span id="cb871-14"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;TF-IDF&quot;</span></span>
+<span id="cb871-15"><a href="data-forensics-and-cleaning-unstructured-data.html#cb871-15" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <p><img src="19_data_forensics-unstructured-data_files/figure-html/unnamed-chunk-43-1.png" width="960" /></p>
 <p>Lots of names! That makes sense: heavily weighted terms in these novels are
 going to be terms that are unique to each text. Main characters’ names are used
 a lot in novels, and the main character names in these novels are all unique.</p>
 <p>To see in more concrete way how tf–idf scores might make a difference in the
 way we analyze our corpus, we’ll do two last things. First, we’ll look again at
-term correlations, using the same words from above with <code>findAssoscs()</code>, but
+term correlations, using the same words from above with <code>findAssocs()</code>, but
 this time we’ll use tf–idf scores.</p>
 <p>Here’s “boat”:</p>
-<div class="sourceCode" id="cb872"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb872-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb872-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findAssocs</span>(dtm_tfidf, <span class="st">&quot;boat&quot;</span>, .<span class="dv">85</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb872"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb872-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb872-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findAssocs</span>(dtm_tfidf, <span class="at">terms =</span> <span class="st">&quot;boat&quot;</span>, <span class="at">corlimit =</span> .<span class="dv">85</span>)</span></code></pre></div>
 <pre><code>## $boat
 ##    thumping       shore      bucket      cables         doo       geese 
 ##        0.95        0.93        0.92        0.92        0.92        0.92 
@@ -1486,7 +1532,7 @@ this time we’ll use tf–idf scores.</p>
 ##      pinned 
 ##        0.85</code></pre>
 <p>Here’s “writing”:</p>
-<div class="sourceCode" id="cb874"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb874-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb874-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findAssocs</span>(dtm_tfidf, <span class="st">&quot;writing&quot;</span>, .<span class="dv">85</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb874"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb874-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb874-1" aria-hidden="true" tabindex="-1"></a><span class="fu">findAssocs</span>(dtm_tfidf, <span class="at">terms =</span> <span class="st">&quot;writing&quot;</span>, <span class="at">corlimit =</span> .<span class="dv">85</span>)</span></code></pre></div>
 <pre><code>## $writing
 ##     hindrance      messages      disposal     inquiries      bedrooms 
 ##          0.92          0.91          0.90          0.90          0.89 
@@ -1519,7 +1565,7 @@ observations (or rows). Don’t forget the <code>t</code>!</p>
 column. In other words, we can find out not only the top terms for a novel, but
 the top most <em>unique</em> terms in that novel.</p>
 <p>Here’s <em>Dracula</em>:</p>
-<div class="sourceCode" id="cb877"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb877-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb877-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>Dracula, <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],])</span></code></pre></div>
+<div class="sourceCode" id="cb877"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb877-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb877-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>Dracula, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>], ])</span></code></pre></div>
 <pre><code>##  [1] &quot;helsing&quot;      &quot;mina&quot;         &quot;lucy&quot;         &quot;jonathan&quot;     &quot;van&quot;         
 ##  [6] &quot;harker&quot;       &quot;godalming&quot;    &quot;quincey&quot;      &quot;seward&quot;       &quot;professor&quot;   
 ## [11] &quot;morris&quot;       &quot;lucy&#39;s&quot;       &quot;harker&#39;s&quot;     &quot;diary&quot;        &quot;seward&#39;s&quot;    
@@ -1533,11 +1579,11 @@ the top most <em>unique</em> terms in that novel.</p>
 <p>Note here that some contractions have slipped through. Lemmatizing would take
 care of this, though we could also go back to the corpus object and add in
 another step with <code>tm_map()</code> and then make another DTM:</p>
-<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb879-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb879-1" aria-hidden="true" tabindex="-1"></a>cleaned_corpus <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(cleaned_corpus, <span class="cf">function</span>(x) <span class="fu">str_remove_all</span>(x, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&#39;s&quot;</span>, <span class="st">&quot; &quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb879-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb879-1" aria-hidden="true" tabindex="-1"></a>cleaned_corpus <span class="ot">&lt;-</span> <span class="fu">tm_map</span>(cleaned_corpus, str_remove_all, <span class="at">pattern =</span> <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&#39;s&quot;</span>, <span class="at">replacement =</span> <span class="st">&quot; &quot;</span>)<span class="er">)</span></span></code></pre></div>
 <p>We won’t bother to do this whole process now, but it’s a good example of how
 iterative the preprocessing workflow is.</p>
 <p>Here’s <em>Frankenstein</em>:</p>
-<div class="sourceCode" id="cb880"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb880-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb880-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>Frankenstein, <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],])</span></code></pre></div>
+<div class="sourceCode" id="cb880"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb880-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb880-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>Frankenstein, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>], ])</span></code></pre></div>
 <pre><code>##  [1] &quot;clerval&quot;      &quot;justine&quot;      &quot;elizabeth&quot;    &quot;felix&quot;        &quot;geneva&quot;      
 ##  [6] &quot;frankenstein&quot; &quot;safie&quot;        &quot;cottagers&quot;    &quot;dæmon&quot;        &quot;ingolstadt&quot;  
 ## [11] &quot;kirwin&quot;       &quot;agatha&quot;       &quot;victor&quot;       &quot;ernest&quot;       &quot;mont&quot;        
@@ -1549,7 +1595,7 @@ iterative the preprocessing workflow is.</p>
 ## [41] &quot;leghorn&quot;      &quot;monster&quot;      &quot;rhine&quot;        &quot;magistrate&quot;   &quot;belrive&quot;     
 ## [46] &quot;lavenza&quot;      &quot;salêve&quot;       &quot;saville&quot;      &quot;strasburgh&quot;   &quot;werter&quot;</code></pre>
 <p>And here’s <em>Sense and Sensibility</em>:</p>
-<div class="sourceCode" id="cb882"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb882-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb882-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>SenseandSensibility, <span class="at">decreasing=</span><span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>],])</span></code></pre></div>
+<div class="sourceCode" id="cb882"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb882-1"><a href="data-forensics-and-cleaning-unstructured-data.html#cb882-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(tfidf_df[<span class="fu">order</span>(tfidf_df<span class="sc">$</span>SenseandSensibility, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>], ])</span></code></pre></div>
 <pre><code>##  [1] &quot;elinor&quot;       &quot;marianne&quot;     &quot;dashwood&quot;     &quot;jennings&quot;     &quot;willoughby&quot;  
 ##  [6] &quot;lucy&quot;         &quot;brandon&quot;      &quot;barton&quot;       &quot;ferrars&quot;      &quot;colonel&quot;     
 ## [11] &quot;mrs&quot;          &quot;marianne&#39;s&quot;   &quot;edward&quot;       &quot;middleton&quot;    &quot;elinor&#39;s&quot;    
