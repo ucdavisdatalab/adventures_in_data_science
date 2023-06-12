@@ -1,52 +1,60 @@
 # Git Version Control Basics
 
-## Save, Stage, Commit
+This section covers the basics of using the Git Version Control Software to track and record changes to files on your local computer. 
 
-Git does not automatically preserve versions of every "saved" file. When working with Git, you save files as you always do, but this has no impact on the versions that are preserved in the repository. To create a "versions", you must first add saved files to a Staging area and then "Commit" your staged files to the repository. The Commits that you make constituted the versions of files that are preserved in the repository.
+## Learning Objectives  
 
-![](./img/save_stage_commit.png)
+After this lesson, you should be able to:  
+
+* Initiate a repository that is under Git version control
+* Stage and commit changes within your repository  
+* Utilize different git commands such as git log, git status 
+* Understand the basic concepts of how to compare and change previous commits  
 
 ## Creating Your First Repo
 
-Move to your Home directory
+We are going to introduce git but initializing a git tracked repository, and exploring git's functionality within that repository. To begin, move to your Home directory.
 
 ```
 $ cd ~
 ```
 
-note: The \$ character represents your command prompt. DO NOT type it into your terminal
+**Note:** The \$ character represents your command prompt. DO NOT type it into your terminal. For review of working in the Command Line, see [Section 1](https://ucdavisdatalab.github.io/adventures_in_data_science/working-with-the-command-line.html). 
 
-Create a new directory for this course module
+Next, create a new directory for this course module.
 
 ```
 $ cd ~
-$ mkdir dsadventures
+$ mkdir ist008
 ```
 
-Change to the new directory
+Change to the new directory.
 
 ```
-$ cd dsadventures
+$ cd ist008
 ```
 
-Put the new directory under version control
+Put the new directory under version control by initializing the Git VCS.
 
 ```
 $ git init
 ```
 
-
-## Checking the Status of a Repo
-
-To check the status of a repository use the followign command
+To check the status of a repository use the following command.
 
 ```
 $ git status
 ```
 
-## Version of a File
+## Storing Versions of a File  
 
-In Gitspeak, we 'commit' if version of a file to the repository to save a copy of the current working version of a file as a version. This is a multi-step process in which we first 'stage' the file to be committed and then 'commit' the file.
+Git is now initializing in our course directory, but Git does not automatically preserve versions of every "saved" file. When working with Git, you should save files as you always do, but this has no impact on the versions that are preserved in the repository. To create a "version", you must complete two steps. First add saved files to a Staging area and then "Commit" your staged files to the repository. The Commits that you make constituted the versions of files that are preserved in the repository.
+
+In the image below, there are various .html files in a directory that is tracked by Git. You may choose to only Stage two of those files (a.html and c.html). Then for each Stage and Commit there are several versions (C1-C4), one for each commit. 
+
+![](./img/save_stage_commit.png)
+
+In short, we 'stage' and 'commit' a file to the Git repository to save a copy of the current working version. The commands for this process are as follows. 
 
 STEP 1:  Place the file you want to version into the Staging Area
 
@@ -54,29 +62,31 @@ STEP 1:  Place the file you want to version into the Staging Area
 $ git add <filename>
 ```
 
-*Replace <filename> in the command above with the actual name of the file you want to version.*
+*Replace <filename> in the command above with the actual name of the file you want to version. Do NOT include the < and > symbols.*
 
-STEP 2: Commit Staged Files
+STEP 2: Commit staged files
 
 ```
-$ git commit -m 'A detailed comment explaining the nature of the versio being committed. Do not include any apostrophe's in your comment.'
+$ git commit -m 'A detailed comment explaining the nature of the version being committed. Do not include any apostrophes (') in your comment.'
 ```
 
 ## View a History of Your Commits
 
-To get a history of commits
+Git VCS tracks every commit you make. To get a history of commits you can use: 
 
 ```
 $ git log
 ```
 
-To see commit history with patch data (insertions and deletions) for a specified number of commits
+This log provides a summary of each commit, with a commit ID, the author, date, and commit message. Notice that these logs bring you into a Vim editor, with the colon (`:`) at the bottom of the prompt. Remember you can exit the Vim editor with the `q` command.  
+
+To see commit history with patch data (insertions and deletions) for a specified number of commits: 
 
 ```
 $ git log -p -2
 ```
 
-To see abbreviated stats for the commit history
+To see abbreviated stats for the commit history: 
 
 ```
 $ git log --stat
@@ -88,13 +98,15 @@ You can save a copy of your Git log to a text file with the following command:
 $ git --no-pager log > log.txt
 ```
 
-## Comparing Commits
+## Comparing Commits and Files  
+
+Git can compare the differences between difference saved versions of commits by naming the commit IDs we just saw in the log. In place of the `<commit>` placeholders, insert the commit IDs.  
 
 ```
 $ git diff <commit> <commit>
 ```
 
-## Comparing Files
+Git can also compare between commits and certain files, similar to above. Instead, use a commit ID and a file name.  
 
 ```
 $ git diff <commit> <file>
@@ -106,83 +118,53 @@ or
 $ git diff <commit>:<file> <commit>:<file>
 ```
 
-## To View an Earlier Commit
-
-```
-$ git checkout <commit>
-```
-
-To solve Detached Head problem either RESET HEAD as described below or just chekout another branch
-
-```
-git checkout <branch>
-```
-
-To save this older version as a parallel branch execute
-
-```
-$ git checkout -b <new_branch_name
-```
-
-This will save the older commit as a new branch running parallel to master.
-
 ## Undoing Things
 
-One of the common undos takes place when you commit too early and possibly forget to add some files, or you mess up your commit message. If you want to redo that commit, make the additional changes you forgot, stage them, and commit again using the --amend option
+When working locally in your Git repository, you are likely to make some mistakes. Some of the common mistakes you may want to undo include committing too early and possibly forgetting to add some files, or messing up your commit message. If you want to redo that commit, make the additional changes you forgot, stage them, and commit again using the --amend option
 
 ```
 $ git commit --amend
 ```
 
-To unstage a file for commit use
+If you would like to unstage a file for commit, you can use the following: 
 
 ```
 $ git reset HEAD <file>
 ```
 
-Throwing away changes you've made to a file
+You can also throw away changes you've made to a file
 
 ```
 $ git checkout -- <file>
 ```
 
-Rolling everything back to the last commit
+You can also roll back to a certain commit saved in your version control history, which will delete any uncommitted changed you've made. To roll everything back to the last commit:
 
 ```
 $ git reset --hard HEAD
 ```
 
-Rolling everything back to the next to last commit (The commit before the HEAD commit)
+Rolling everything back to the next to last commit (The commit before the HEAD commit):
 
 ```
 $ git reset --hard HEAD^
 ```
 
-Rolling everything back tp two commits before the head
+Rolling everything back tp two commits before the head:
 
 ```
 $ git reset --hard HEAD^2
 ```
 
-Rolling everything back to an identified commit using HASH/ID from log
+Rolling everything back to an identified commit using commit HASH/ID from the git log:
 
 ```
 $ git reset --hard <commit>
-```
-
-
-## When Things go Wrong!
-
-To reset everything back to an earlier commit and make sure that the HEAD pointer is pointing to the newly reset HEAD, do the following
-
-```
-$ git reset --hard <commit>
-$ git reset --soft HEAD@{1}
 ```
 
 ## Git Branching
 
-Branching provides a simple way to maintain multiple, side-by-side versions of the files in a repository.  Conceptually, branching a repository creates a copy of the codebase in its current state that you can work on without affecting the primary version from which it was copied.  This alows you to work down multiple paths without affecting the main (or other) codebase.
+Branching provides a simple way to maintain multiple, side-by-side versions of the files in a repository.  Conceptually, branching a repository creates a copy of the codebase in its current state that you can work on without affecting the primary version from which it was copied.  This allows you to work down multiple paths without affecting the main (or other) codebase.
 
 ![](./img/GIT-Branchand-its-Operations.png)
 
@@ -195,7 +177,7 @@ $ git branch
 To create a new branch
 
 ```
-$ git checkout -b hotfix
+$ git checkout -b <new branch name>
 ```
 
 New branches are created of the current working branch.  To change branches use
@@ -206,12 +188,12 @@ $ git checkout <branch name>
 
 ### Merging Branches
 
-When you merge a branch, git folds any changes that you made to files in an identified branch into the current working branch.  It also adds any new files.  When you perform a merge, a new commit will be automatically created to track the merge.  To merge branches, commit any changes to the branch you want to merge (in this example, the 'hotfix' branch) then checkout the branch into which you want to merge (for example, master), and then execute a merge command.
+When you merge a branch, git folds any changes that you made to files in an identified branch into the current working branch.  It also adds any new files.  When you perform a merge, a new commit will be automatically created to track the merge.  To merge branches, commit any changes to the branch you want to merge then checkout the branch into which you want to merge (for example, master), and then execute a merge command.
 
 ```
 $ git commit -m 'commiting staged files in hotfix branch'
 $ git checkout master
-$ git merge hotfix
+$ git merge <new branch name>
 
 ```
 
@@ -225,4 +207,4 @@ There are as many different branching workflows as there are development teams a
 
 ![](./img/branching_workflows.png)
 
-For example, let's consider a case where there is a team maintaining and developing a company website.  In this case, the "master" branch would contain the version of the code that is currently deployed on the live webserver.  The "dev" branch would contain a testable version of the code that reflects completed changes to the site made by all team members that have yet to be deployed.  Finally, the repository would also contain many topic branches, each of which holds code related to a particular change that was or is being worked on.  For exmaple, a team developing a new widget for visualizing data some area of the site would create a suitably named topic branch (somehting like "viz_widget") for this topic and do all their initial coding in this branch.  Once they have completed and tested their code in this branch, they would merge it into the "dev" branch.  The new code can then be vidwed and tested by others as part of the "dev" branch.  Once all topics branches for planned features for the next release of the website have been merged to "dev" and "dev" has been thoroughly testes (and fixed as necessary), "dev" is then merged into "master" and the "master" branch is then deployed to the live webserver.  
+For example, let's consider a case where there is a team maintaining and developing a company website.  In this case, the "master" branch would contain the version of the code that is currently deployed on the live webserver.  The "dev" branch would contain a testable version of the code that reflects completed changes to the site made by all team members that have yet to be deployed.  Finally, the repository would also contain many topic branches, each of which holds code related to a particular change that was or is being worked on.  For exmaple, a team developing a new widget for visualizing data some area of the site would create a suitably named topic branch (something like "viz_widget") for this topic and do all their initial coding in this branch.  Once they have completed and tested their code in this branch, they would merge it into the "dev" branch.  The new code can then be viewed and tested by others as part of the "dev" branch.  Once all topics branches for planned features for the next release of the website have been merged to "dev" and "dev" has been thoroughly testes (and fixed as necessary), "dev" is then merged into "master" and the "master" branch is then deployed to the live webserver.  
