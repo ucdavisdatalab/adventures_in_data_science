@@ -353,6 +353,15 @@ x * y
 x / y
 ```
 
+Note that if you are trying to run vectorized operations on vectors of different lengths, the values of the shorter vector will be *recycled*. For example, if we create a vector z with only three values, and try to add it to x, which has four values, we get the following result.  
+
+```{r, warning = T}
+z = c(-1, 7, 10)
+x + z
+```
+
+First, we get a warning, which lets us know that these vectors are not the same length. But we still get a result, which manages to make a calculation for the fourth value. To get this fourth value, it _recycles_ the shorter vector (z) by starting back at its first element, -1, and using that to add to the fourth element in x, 4. Thus our result, is x[4] + z[1] = 4 (or -1 + 3 = 4). This is something to be cautious of, because if values are recycled inadvertently, we'll have errors in our results.  
+
 Functions that are not vectorized tend to be ones that combine or aggregate
 values in some way. For instance, the `sum`, `length`, and `class` functions
 are not vectorized.
