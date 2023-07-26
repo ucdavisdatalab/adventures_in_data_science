@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Version Control | Adventures in Data Science</title>
+  <meta name="description" content="2 Version Control | Adventures in Data Science" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Version Control | Adventures in Data Science" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Version Control | Adventures in Data Science" />
+  
+  
+  
+
+<meta name="author" content="Dr. Carl Stahmer" />
+<meta name="author" content="Dr. Pamela L. Reynolds" />
+<meta name="author" content="Dr. Nick Ulle" />
+<meta name="author" content="Dr. Tyler Shoemaker" />
+<meta name="author" content="Dr. Michele Tobias" />
+<meta name="author" content="Dr. Wesley Brooks" />
+<meta name="author" content="Arthur Koehl" />
+<meta name="author" content="Carrie Alexander" />
+<meta name="author" content="Jared Joseph" />
+<meta name="author" content="Liza Wood" />
+
+
+<meta name="date" content="2023-07-26" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="command-line.html"/>
+<link rel="next" href="introduction-to-r.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.2/visNetwork.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://datalab.ucdavis.edu/">
+  <img src="img/datalab-logo-full-color-rgb.png" style="height: 100%; width: 100%; object-fit: contain" />
+</a></li>
+<li><a href="./" style="font-size: 18px">Adventures in Data Science</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="1" data-path="command-line.html"><a href="command-line.html"><i class="fa fa-check"></i><b>1</b> Command Line</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="command-line.html"><a href="command-line.html#learning-objectives"><i class="fa fa-check"></i><b>1.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="1.2" data-path="command-line.html"><a href="command-line.html#understanding-the-command-line"><i class="fa fa-check"></i><b>1.2</b> Understanding the Command Line</a></li>
+<li class="chapter" data-level="1.3" data-path="command-line.html"><a href="command-line.html#interacting-with-the-command-line"><i class="fa fa-check"></i><b>1.3</b> Interacting with the Command Line</a></li>
+<li class="chapter" data-level="1.4" data-path="command-line.html"><a href="command-line.html#common-command-line-commands"><i class="fa fa-check"></i><b>1.4</b> Common Command Line Commands</a></li>
+<li class="chapter" data-level="1.5" data-path="command-line.html"><a href="command-line.html#command-line-text-editors"><i class="fa fa-check"></i><b>1.5</b> Command Line Text Editors</a></li>
+<li class="chapter" data-level="1.6" data-path="command-line.html"><a href="command-line.html#basic-vim-commands"><i class="fa fa-check"></i><b>1.6</b> Basic Vim Commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="version-control.html"><a href="version-control.html"><i class="fa fa-check"></i><b>2</b> Version Control</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="version-control.html"><a href="version-control.html#learning-objectives-1"><i class="fa fa-check"></i><b>2.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="2.2" data-path="version-control.html"><a href="version-control.html#introduction-to-version-control"><i class="fa fa-check"></i><b>2.2</b> Introduction to Version Control</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="version-control.html"><a href="version-control.html#what-is-version-control"><i class="fa fa-check"></i><b>2.2.1</b> What is Version Control?</a></li>
+<li class="chapter" data-level="2.2.2" data-path="version-control.html"><a href="version-control.html#software-assisted-version-control"><i class="fa fa-check"></i><b>2.2.2</b> Software Assisted Version Control</a></li>
+<li class="chapter" data-level="2.2.3" data-path="version-control.html"><a href="version-control.html#local-vs-server-based-version-control"><i class="fa fa-check"></i><b>2.2.3</b> Local vs Server Based Version Control</a></li>
+<li class="chapter" data-level="2.2.4" data-path="version-control.html"><a href="version-control.html#central-vs-distributed-based-version-control"><i class="fa fa-check"></i><b>2.2.4</b> Central vs Distributed Based Version Control</a></li>
+<li class="chapter" data-level="2.2.5" data-path="version-control.html"><a href="version-control.html#how-computers-store-and-access-information"><i class="fa fa-check"></i><b>2.2.5</b> How Computers Store and Access Information</a></li>
+<li class="chapter" data-level="2.2.6" data-path="version-control.html"><a href="version-control.html#how-vcs-manage-your-files"><i class="fa fa-check"></i><b>2.2.6</b> How VCS Manage Your Files</a></li>
+<li class="chapter" data-level="2.2.7" data-path="version-control.html"><a href="version-control.html#additional-resources"><i class="fa fa-check"></i><b>2.2.7</b> Additional Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="version-control.html"><a href="version-control.html#git-local-version-control-basics"><i class="fa fa-check"></i><b>2.3</b> Git Local Version Control Basics</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="version-control.html"><a href="version-control.html#creating-your-first-repo"><i class="fa fa-check"></i><b>2.3.1</b> Creating Your First Repo</a></li>
+<li class="chapter" data-level="2.3.2" data-path="version-control.html"><a href="version-control.html#storing-versions-of-a-file"><i class="fa fa-check"></i><b>2.3.2</b> Storing Versions of a File</a></li>
+<li class="chapter" data-level="2.3.3" data-path="version-control.html"><a href="version-control.html#view-a-history-of-your-commits"><i class="fa fa-check"></i><b>2.3.3</b> View a History of Your Commits</a></li>
+<li class="chapter" data-level="2.3.4" data-path="version-control.html"><a href="version-control.html#comparing-commits-and-files"><i class="fa fa-check"></i><b>2.3.4</b> Comparing Commits and Files</a></li>
+<li class="chapter" data-level="2.3.5" data-path="version-control.html"><a href="version-control.html#undoing-things"><i class="fa fa-check"></i><b>2.3.5</b> Undoing Things</a></li>
+<li class="chapter" data-level="2.3.6" data-path="version-control.html"><a href="version-control.html#git-branching"><i class="fa fa-check"></i><b>2.3.6</b> Git Branching</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="version-control.html"><a href="version-control.html#git-remote-repositories"><i class="fa fa-check"></i><b>2.4</b> Git Remote Repositories</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="version-control.html"><a href="version-control.html#github-basics"><i class="fa fa-check"></i><b>2.4.1</b> GitHub Basics</a></li>
+<li class="chapter" data-level="2.4.2" data-path="version-control.html"><a href="version-control.html#basic-github-account-setup"><i class="fa fa-check"></i><b>2.4.2</b> Basic GitHub Account Setup</a></li>
+<li class="chapter" data-level="2.4.3" data-path="version-control.html"><a href="version-control.html#github-desktop-or-the-command-line"><i class="fa fa-check"></i><b>2.4.3</b> GitHub Desktop, or the Command Line?</a></li>
+<li class="chapter" data-level="2.4.4" data-path="version-control.html"><a href="version-control.html#sync-with-github"><i class="fa fa-check"></i><b>2.4.4</b> Sync with GitHub</a></li>
+<li class="chapter" data-level="2.4.5" data-path="version-control.html"><a href="version-control.html#cloning-a-repository"><i class="fa fa-check"></i><b>2.4.5</b> Cloning a Repository</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="introduction-to-r.html"><a href="introduction-to-r.html"><i class="fa fa-check"></i><b>3</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#learning-objectives-2"><i class="fa fa-check"></i><b>3.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="3.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#before-we-start"><i class="fa fa-check"></i><b>3.2</b> Before We Start</a></li>
+<li class="chapter" data-level="3.3" data-path="introduction-to-r.html"><a href="introduction-to-r.html#mathematical-operations"><i class="fa fa-check"></i><b>3.3</b> Mathematical Operations</a></li>
+<li class="chapter" data-level="3.4" data-path="introduction-to-r.html"><a href="introduction-to-r.html#variables"><i class="fa fa-check"></i><b>3.4</b> Variables</a></li>
+<li class="chapter" data-level="3.5" data-path="introduction-to-r.html"><a href="introduction-to-r.html#calling-functions"><i class="fa fa-check"></i><b>3.5</b> Calling Functions</a></li>
+<li class="chapter" data-level="3.6" data-path="introduction-to-r.html"><a href="introduction-to-r.html#help"><i class="fa fa-check"></i><b>3.6</b> HELP!</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#when-something-goes-wrong-and-it-will"><i class="fa fa-check"></i><b>3.6.1</b> When Something Goes Wrong (and it will)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="introduction-to-r.html"><a href="introduction-to-r.html#vectors"><i class="fa fa-check"></i><b>3.7</b> Vectors</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#indexing-vectors"><i class="fa fa-check"></i><b>3.7.1</b> Indexing Vectors</a></li>
+<li class="chapter" data-level="3.7.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#vectorization"><i class="fa fa-check"></i><b>3.7.2</b> Vectorization</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-frames"><i class="fa fa-check"></i><b>3.8</b> Data Frames</a>
+<ul>
+<li class="chapter" data-level="3.8.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#selecting-columns"><i class="fa fa-check"></i><b>3.8.1</b> Selecting Columns</a></li>
+<li class="chapter" data-level="3.8.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#inspecting-data"><i class="fa fa-check"></i><b>3.8.2</b> Inspecting Data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.9" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-types-classes"><i class="fa fa-check"></i><b>3.9</b> Data Types &amp; Classes</a>
+<ul>
+<li class="chapter" data-level="3.9.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#lists"><i class="fa fa-check"></i><b>3.9.1</b> Lists</a></li>
+<li class="chapter" data-level="3.9.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#implicit-coercion"><i class="fa fa-check"></i><b>3.9.2</b> Implicit Coercion</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html"><i class="fa fa-check"></i><b>4</b> Core Programming Concepts</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#learning-objectives-3"><i class="fa fa-check"></i><b>4.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="4.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#control-structures"><i class="fa fa-check"></i><b>4.2</b> Control Structures</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#if-statement"><i class="fa fa-check"></i><b>4.2.1</b> <em>If</em> Statement</a></li>
+<li class="chapter" data-level="4.2.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#relationship-operators"><i class="fa fa-check"></i><b>4.2.2</b> Relationship Operators</a></li>
+<li class="chapter" data-level="4.2.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#if-else-statement"><i class="fa fa-check"></i><b>4.2.3</b> <em>If Else</em> Statement</a></li>
+<li class="chapter" data-level="4.2.4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#ifelse-statement"><i class="fa fa-check"></i><b>4.2.4</b> <em>ifelse</em> Statement</a></li>
+<li class="chapter" data-level="4.2.5" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#the-switch-statement"><i class="fa fa-check"></i><b>4.2.5</b> The <em>switch</em> Statement</a></li>
+<li class="chapter" data-level="4.2.6" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#the-which-statement"><i class="fa fa-check"></i><b>4.2.6</b> The <em>which</em> Statement</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#iteration"><i class="fa fa-check"></i><b>4.3</b> Iteration</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#for-i-in-x-loops"><i class="fa fa-check"></i><b>4.3.1</b> For <em>i</em> in <em>x</em> Loops</a></li>
+<li class="chapter" data-level="4.3.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#while-loops"><i class="fa fa-check"></i><b>4.3.2</b> <em>While</em> Loops</a></li>
+<li class="chapter" data-level="4.3.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#repeat-loops"><i class="fa fa-check"></i><b>4.3.3</b> <em>Repeat</em> Loops</a></li>
+<li class="chapter" data-level="4.3.4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#break-and-next"><i class="fa fa-check"></i><b>4.3.4</b> <em>Break</em> and <em>Next</em></a></li>
+<li class="chapter" data-level="4.3.5" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#iterating-data.frame-rows-in-r"><i class="fa fa-check"></i><b>4.3.5</b> Iterating Data.Frame Rows in R</a></li>
+<li class="chapter" data-level="4.3.6" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#lapply"><i class="fa fa-check"></i><b>4.3.6</b> <em>lapply()</em></a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#functions"><i class="fa fa-check"></i><b>4.4</b> Functions</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#what-is-a-function"><i class="fa fa-check"></i><b>4.4.1</b> What is a function?</a></li>
+<li class="chapter" data-level="4.4.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#what-is-the-basic-syntax-of-a-function-in-r"><i class="fa fa-check"></i><b>4.4.2</b> What is the basic syntax of a function in R?</a></li>
+<li class="chapter" data-level="4.4.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#building-and-calling-functions"><i class="fa fa-check"></i><b>4.4.3</b> Building and calling functions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html"><i class="fa fa-check"></i><b>5</b> Files, Packages, and Data</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#learning-objectives-4"><i class="fa fa-check"></i><b>5.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="5.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#working-with-files"><i class="fa fa-check"></i><b>5.2</b> Working with Files</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#setup"><i class="fa fa-check"></i><b>5.2.1</b> Setup</a></li>
+<li class="chapter" data-level="5.2.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#exploring-files"><i class="fa fa-check"></i><b>5.2.2</b> Exploring Files</a></li>
+<li class="chapter" data-level="5.2.3" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#reading-and-writing-files-in-r"><i class="fa fa-check"></i><b>5.2.3</b> Reading and Writing Files in R</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#packages"><i class="fa fa-check"></i><b>5.3</b> Packages</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#cran"><i class="fa fa-check"></i><b>5.3.1</b> CRAN</a></li>
+<li class="chapter" data-level="5.3.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#using-packages"><i class="fa fa-check"></i><b>5.3.2</b> Using Packages</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#factors-special-values-and-indexing"><i class="fa fa-check"></i><b>5.4</b> Factors, Special Values, and Indexing</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#factors"><i class="fa fa-check"></i><b>5.4.1</b> Factors</a></li>
+<li class="chapter" data-level="5.4.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#special-values"><i class="fa fa-check"></i><b>5.4.2</b> Special Values</a></li>
+<li class="chapter" data-level="5.4.3" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#indexing"><i class="fa fa-check"></i><b>5.4.3</b> Indexing</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>6</b> Data Structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="data-structures.html"><a href="data-structures.html#learning-objectives-5"><i class="fa fa-check"></i><b>6.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="6.2" data-path="data-structures.html"><a href="data-structures.html#what-are-data"><i class="fa fa-check"></i><b>6.2</b> What are data?</a></li>
+<li class="chapter" data-level="6.3" data-path="data-structures.html"><a href="data-structures.html#tabular-data"><i class="fa fa-check"></i><b>6.3</b> Tabular Data</a></li>
+<li class="chapter" data-level="6.4" data-path="data-structures.html"><a href="data-structures.html#tree-document-data-structures"><i class="fa fa-check"></i><b>6.4</b> Tree / Document Data Structures</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-xml"><i class="fa fa-check"></i><b>6.4.1</b> Structuring Data as XML</a></li>
+<li class="chapter" data-level="6.4.2" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-json"><i class="fa fa-check"></i><b>6.4.2</b> Structuring Data as JSON</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="data-structures.html"><a href="data-structures.html#relational-databases"><i class="fa fa-check"></i><b>6.5</b> Relational Databases</a></li>
+<li class="chapter" data-level="6.6" data-path="data-structures.html"><a href="data-structures.html#non-hierarchical-relational-data"><i class="fa fa-check"></i><b>6.6</b> Non-Hierarchical Relational Data</a></li>
+<li class="chapter" data-level="6.7" data-path="data-structures.html"><a href="data-structures.html#geospatial-data"><i class="fa fa-check"></i><b>6.7</b> Geospatial Data</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="data-forensics.html"><a href="data-forensics.html"><i class="fa fa-check"></i><b>7</b> Data Forensics</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="data-forensics.html"><a href="data-forensics.html#learning-objectives-6"><i class="fa fa-check"></i><b>7.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="7.2" data-path="data-forensics.html"><a href="data-forensics.html#structural-summaries-cleaning"><i class="fa fa-check"></i><b>7.2</b> Structural Summaries &amp; Cleaning</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="data-forensics.html"><a href="data-forensics.html#dates"><i class="fa fa-check"></i><b>7.2.1</b> Dates</a></li>
+<li class="chapter" data-level="7.2.2" data-path="data-forensics.html"><a href="data-forensics.html#tidy-data"><i class="fa fa-check"></i><b>7.2.2</b> Tidy Data</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="data-forensics.html"><a href="data-forensics.html#statistical-forensics"><i class="fa fa-check"></i><b>7.3</b> Statistical Forensics</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="data-forensics.html"><a href="data-forensics.html#missing-values-1"><i class="fa fa-check"></i><b>7.3.1</b> Missing Values</a></li>
+<li class="chapter" data-level="7.3.2" data-path="data-forensics.html"><a href="data-forensics.html#outliers"><i class="fa fa-check"></i><b>7.3.2</b> Outliers</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="data-forensics.html"><a href="data-forensics.html#apply-functions"><i class="fa fa-check"></i><b>7.4</b> Apply Functions</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="data-forensics.html"><a href="data-forensics.html#the-sapply-function"><i class="fa fa-check"></i><b>7.4.1</b> The <code>sapply</code> Function</a></li>
+<li class="chapter" data-level="7.4.2" data-path="data-forensics.html"><a href="data-forensics.html#the-split-apply-pattern"><i class="fa fa-check"></i><b>7.4.2</b> The Split-Apply Pattern</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>8</b> Data Visualization</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="data-visualization.html"><a href="data-visualization.html#learning-objectives-7"><i class="fa fa-check"></i><b>8.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="8.2" data-path="data-visualization.html"><a href="data-visualization.html#principles-perception"><i class="fa fa-check"></i><b>8.2</b> Principles &amp; Perception</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="data-visualization.html"><a href="data-visualization.html#a-brief-history-of-data-visualization"><i class="fa fa-check"></i><b>8.2.1</b> A Brief History of Data Visualization</a></li>
+<li class="chapter" data-level="8.2.2" data-path="data-visualization.html"><a href="data-visualization.html#what-is-data-visualization"><i class="fa fa-check"></i><b>8.2.2</b> What is Data Visualization?</a></li>
+<li class="chapter" data-level="8.2.3" data-path="data-visualization.html"><a href="data-visualization.html#before-you-viz-make-a-plan"><i class="fa fa-check"></i><b>8.2.3</b> Before You Viz, Make a Plan</a></li>
+<li class="chapter" data-level="8.2.4" data-path="data-visualization.html"><a href="data-visualization.html#graphical-elements-of-a-plot"><i class="fa fa-check"></i><b>8.2.4</b> Graphical Elements of a Plot</a></li>
+<li class="chapter" data-level="8.2.5" data-path="data-visualization.html"><a href="data-visualization.html#principles-of-visual-perception"><i class="fa fa-check"></i><b>8.2.5</b> Principles of Visual Perception</a></li>
+<li class="chapter" data-level="8.2.6" data-path="data-visualization.html"><a href="data-visualization.html#accessible-data-visualizations"><i class="fa fa-check"></i><b>8.2.6</b> Accessible Data Visualizations</a></li>
+<li class="chapter" data-level="8.2.7" data-path="data-visualization.html"><a href="data-visualization.html#designing-statistical-graphics"><i class="fa fa-check"></i><b>8.2.7</b> Designing Statistical Graphics</a></li>
+<li class="chapter" data-level="8.2.8" data-path="data-visualization.html"><a href="data-visualization.html#tips-for-better-plots"><i class="fa fa-check"></i><b>8.2.8</b> Tips for Better Plots</a></li>
+<li class="chapter" data-level="8.2.9" data-path="data-visualization.html"><a href="data-visualization.html#references-and-additional-resources"><i class="fa fa-check"></i><b>8.2.9</b> References and Additional Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="data-visualization.html"><a href="data-visualization.html#data-viz-with-ggplot-in-r"><i class="fa fa-check"></i><b>8.3</b> Data Viz with <code>ggplot</code> in R</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="data-visualization.html"><a href="data-visualization.html#r-graphics-overview"><i class="fa fa-check"></i><b>8.3.1</b> R Graphics Overview</a></li>
+<li class="chapter" data-level="8.3.2" data-path="data-visualization.html"><a href="data-visualization.html#the-grammar-of-graphics"><i class="fa fa-check"></i><b>8.3.2</b> The Grammar of Graphics</a></li>
+<li class="chapter" data-level="8.3.3" data-path="data-visualization.html"><a href="data-visualization.html#saving-plots"><i class="fa fa-check"></i><b>8.3.3</b> Saving Plots</a></li>
+<li class="chapter" data-level="8.3.4" data-path="data-visualization.html"><a href="data-visualization.html#example-bar-plot"><i class="fa fa-check"></i><b>8.3.4</b> Example: Bar Plot</a></li>
+<li class="chapter" data-level="8.3.5" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>8.3.5</b> Remembering factors</a></li>
+<li class="chapter" data-level="8.3.6" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>8.3.6</b> Designing a Visualization</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html"><i class="fa fa-check"></i><b>9</b> Getting Data from the Web</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#learning-objectives-8"><i class="fa fa-check"></i><b>9.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="9.2" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#how-the-web-works"><i class="fa fa-check"></i><b>9.2</b> How the Web Works</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#client-server-architecture"><i class="fa fa-check"></i><b>9.2.1</b> Client-Server Architecture</a></li>
+<li class="chapter" data-level="9.2.2" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#understanding-urls"><i class="fa fa-check"></i><b>9.2.2</b> Understanding URLs</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#accessing-data-online"><i class="fa fa-check"></i><b>9.3</b> Accessing Data Online</a></li>
+<li class="chapter" data-level="9.4" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#apis"><i class="fa fa-check"></i><b>9.4</b> APIs</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#querying-to-an-api"><i class="fa fa-check"></i><b>9.4.1</b> Querying to an API</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#web-scraping"><i class="fa fa-check"></i><b>9.5</b> Web Scraping</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#whats-in-a-web-page"><i class="fa fa-check"></i><b>9.5.1</b> What’s in a Web Page?</a></li>
+<li class="chapter" data-level="9.5.2" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#rs-xml-parsers"><i class="fa fa-check"></i><b>9.5.2</b> R’s XML Parsers</a></li>
+<li class="chapter" data-level="9.5.3" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#xpath"><i class="fa fa-check"></i><b>9.5.3</b> XPath</a></li>
+<li class="chapter" data-level="9.5.4" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#the-web-scraping-workflow"><i class="fa fa-check"></i><b>9.5.4</b> The Web Scraping Workflow</a></li>
+<li class="chapter" data-level="9.5.5" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#css-selectors"><i class="fa fa-check"></i><b>9.5.5</b> CSS Selectors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html"><i class="fa fa-check"></i><b>10</b> Strings and Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#learning-objectives-9"><i class="fa fa-check"></i><b>10.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="10.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#printing-output"><i class="fa fa-check"></i><b>10.2</b> Printing Output</a></li>
+<li class="chapter" data-level="10.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences"><i class="fa fa-check"></i><b>10.3</b> Escape Sequences</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#raw-strings"><i class="fa fa-check"></i><b>10.3.1</b> Raw Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings"><i class="fa fa-check"></i><b>10.4</b> Character Encodings</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings-in-text-files"><i class="fa fa-check"></i><b>10.4.1</b> Character Encodings in Text Files</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#stringr-and-the-tidyverse"><i class="fa fa-check"></i><b>10.5</b> <code>stringr</code> and the <code>tidyverse</code></a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-tidyverse"><i class="fa fa-check"></i><b>10.5.1</b> The Tidyverse</a></li>
+<li class="chapter" data-level="10.5.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#stringr"><i class="fa fa-check"></i><b>10.5.2</b> <code>stringr</code></a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#regular-expressions"><i class="fa fa-check"></i><b>10.6</b> Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-wildcard"><i class="fa fa-check"></i><b>10.6.1</b> The Wildcard</a></li>
+<li class="chapter" data-level="10.6.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences-1"><i class="fa fa-check"></i><b>10.6.2</b> Escape Sequences</a></li>
+<li class="chapter" data-level="10.6.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#anchors"><i class="fa fa-check"></i><b>10.6.3</b> Anchors</a></li>
+<li class="chapter" data-level="10.6.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-classes"><i class="fa fa-check"></i><b>10.6.4</b> Character Classes</a></li>
+<li class="chapter" data-level="10.6.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#quantifiers"><i class="fa fa-check"></i><b>10.6.5</b> Quantifiers</a></li>
+<li class="chapter" data-level="10.6.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#groups"><i class="fa fa-check"></i><b>10.6.6</b> Groups</a></li>
+<li class="chapter" data-level="10.6.7" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#extracting-matches"><i class="fa fa-check"></i><b>10.6.7</b> Extracting Matches</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html"><i class="fa fa-check"></i><b>11</b> Optical Character Recognition</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#learning-objectives-10"><i class="fa fa-check"></i><b>11.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="11.2" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#what-is-optical-character-recognition"><i class="fa fa-check"></i><b>11.2</b> What is Optical Character Recognition?</a></li>
+<li class="chapter" data-level="11.3" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#loading-page-images"><i class="fa fa-check"></i><b>11.3</b> Loading Page Images</a></li>
+<li class="chapter" data-level="11.4" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#running-ocr"><i class="fa fa-check"></i><b>11.4</b> Running OCR</a></li>
+<li class="chapter" data-level="11.5" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#accuracy"><i class="fa fa-check"></i><b>11.5</b> Accuracy</a></li>
+<li class="chapter" data-level="11.6" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#unreadable-text"><i class="fa fa-check"></i><b>11.6</b> Unreadable Text</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="statistics.html"><a href="statistics.html"><i class="fa fa-check"></i><b>12</b> Statistics</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="statistics.html"><a href="statistics.html#introduction"><i class="fa fa-check"></i><b>12.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="statistics.html"><a href="statistics.html#mice_pot-dataset"><i class="fa fa-check"></i><b>12.1.1</b> <code>mice_pot</code> dataset</a></li>
+<li class="chapter" data-level="12.1.2" data-path="statistics.html"><a href="statistics.html#barnacles-dataset"><i class="fa fa-check"></i><b>12.1.2</b> <code>barnacles</code> dataset</a></li>
+<li class="chapter" data-level="12.1.3" data-path="statistics.html"><a href="statistics.html#sample-and-population"><i class="fa fa-check"></i><b>12.1.3</b> Sample and population</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="statistics.html"><a href="statistics.html#uses-of-simulation"><i class="fa fa-check"></i><b>12.2</b> Uses of simulation</a></li>
+<li class="chapter" data-level="12.3" data-path="statistics.html"><a href="statistics.html#mathematical-statistics"><i class="fa fa-check"></i><b>12.3</b> Mathematical statistics</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="statistics.html"><a href="statistics.html#law-of-large-numbers"><i class="fa fa-check"></i><b>12.3.1</b> Law of large numbers</a></li>
+<li class="chapter" data-level="12.3.2" data-path="statistics.html"><a href="statistics.html#central-limit-theorem"><i class="fa fa-check"></i><b>12.3.2</b> Central limit theorem</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="statistics.html"><a href="statistics.html#statistical-inference"><i class="fa fa-check"></i><b>12.4</b> Statistical inference</a>
+<ul>
+<li class="chapter" data-level="12.4.1" data-path="statistics.html"><a href="statistics.html#confidence-intervals"><i class="fa fa-check"></i><b>12.4.1</b> Confidence intervals</a></li>
+<li class="chapter" data-level="12.4.2" data-path="statistics.html"><a href="statistics.html#two-population-test"><i class="fa fa-check"></i><b>12.4.2</b> Two-population test</a></li>
+<li class="chapter" data-level="12.4.3" data-path="statistics.html"><a href="statistics.html#hypothesis-tests-for-non-normal-data"><i class="fa fa-check"></i><b>12.4.3</b> Hypothesis tests for non-normal data</a></li>
+</ul></li>
+<li class="chapter" data-level="12.5" data-path="statistics.html"><a href="statistics.html#regression"><i class="fa fa-check"></i><b>12.5</b> Regression</a>
+<ul>
+<li class="chapter" data-level="12.5.1" data-path="statistics.html"><a href="statistics.html#fitting-a-regression-line"><i class="fa fa-check"></i><b>12.5.1</b> Fitting a regression line</a></li>
+<li class="chapter" data-level="12.5.2" data-path="statistics.html"><a href="statistics.html#assumptions-and-diagnostics"><i class="fa fa-check"></i><b>12.5.2</b> Assumptions and diagnostics</a></li>
+<li class="chapter" data-level="12.5.3" data-path="statistics.html"><a href="statistics.html#functions-for-inspecting-regression-fits"><i class="fa fa-check"></i><b>12.5.3</b> Functions for inspecting regression fits</a></li>
+<li class="chapter" data-level="12.5.4" data-path="statistics.html"><a href="statistics.html#a-model-that-fails-diagnostics"><i class="fa fa-check"></i><b>12.5.4</b> A model that fails diagnostics</a></li>
+<li class="chapter" data-level="12.5.5" data-path="statistics.html"><a href="statistics.html#predictions-and-variability"><i class="fa fa-check"></i><b>12.5.5</b> Predictions and variability</a></li>
+</ul></li>
+<li class="chapter" data-level="12.6" data-path="statistics.html"><a href="statistics.html#model-selection"><i class="fa fa-check"></i><b>12.6</b> Model selection</a></li>
+<li class="chapter" data-level="12.7" data-path="statistics.html"><a href="statistics.html#cross-validation"><i class="fa fa-check"></i><b>12.7</b> Cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html"><i class="fa fa-check"></i><b>13</b> Reshaping Tabular Data</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#learning-objectives-11"><i class="fa fa-check"></i><b>13.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="13.2" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#introduction-1"><i class="fa fa-check"></i><b>13.2</b> Introduction</a></li>
+<li class="chapter" data-level="13.3" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#columns-into-rows"><i class="fa fa-check"></i><b>13.3</b> Columns into Rows</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#how-to-pivot-longer-without-tidyr"><i class="fa fa-check"></i><b>13.3.1</b> How to Pivot Longer without <strong>tidyr</strong></a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#rows-into-columns"><i class="fa fa-check"></i><b>13.4</b> Rows into Columns</a></li>
+<li class="chapter" data-level="13.5" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#separating-values"><i class="fa fa-check"></i><b>13.5</b> Separating Values</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="network-analysis.html"><a href="network-analysis.html"><i class="fa fa-check"></i><b>14</b> Network Analysis</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="network-analysis.html"><a href="network-analysis.html#learning-objectives-12"><i class="fa fa-check"></i><b>14.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="14.2" data-path="network-analysis.html"><a href="network-analysis.html#what-is-a-network"><i class="fa fa-check"></i><b>14.2</b> What is a network?</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research"><i class="fa fa-check"></i><b>14.2.1</b> Networks in research</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="network-analysis.html"><a href="network-analysis.html#network-data"><i class="fa fa-check"></i><b>14.3</b> Network Data</a>
+<ul>
+<li class="chapter" data-level="14.3.1" data-path="network-analysis.html"><a href="network-analysis.html#edgelist"><i class="fa fa-check"></i><b>14.3.1</b> Edgelist</a></li>
+<li class="chapter" data-level="14.3.2" data-path="network-analysis.html"><a href="network-analysis.html#adjacency-matrix"><i class="fa fa-check"></i><b>14.3.2</b> Adjacency Matrix</a></li>
+<li class="chapter" data-level="14.3.3" data-path="network-analysis.html"><a href="network-analysis.html#edge-weights"><i class="fa fa-check"></i><b>14.3.3</b> Edge Weights</a></li>
+<li class="chapter" data-level="14.3.4" data-path="network-analysis.html"><a href="network-analysis.html#attributes"><i class="fa fa-check"></i><b>14.3.4</b> Attributes</a></li>
+<li class="chapter" data-level="14.3.5" data-path="network-analysis.html"><a href="network-analysis.html#create-an-example-network"><i class="fa fa-check"></i><b>14.3.5</b> Create an Example Network</a></li>
+<li class="chapter" data-level="14.3.6" data-path="network-analysis.html"><a href="network-analysis.html#components"><i class="fa fa-check"></i><b>14.3.6</b> Components</a></li>
+<li class="chapter" data-level="14.3.7" data-path="network-analysis.html"><a href="network-analysis.html#limitations-of-network-data"><i class="fa fa-check"></i><b>14.3.7</b> Limitations of Network Data</a></li>
+<li class="chapter" data-level="14.3.8" data-path="network-analysis.html"><a href="network-analysis.html#projected-networks"><i class="fa fa-check"></i><b>14.3.8</b> Projected Networks</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="network-analysis.html"><a href="network-analysis.html#graph-level-properties"><i class="fa fa-check"></i><b>14.4</b> Graph Level Properties</a>
+<ul>
+<li class="chapter" data-level="14.4.1" data-path="network-analysis.html"><a href="network-analysis.html#directed-or-un-directed"><i class="fa fa-check"></i><b>14.4.1</b> Directed or Un-directed</a></li>
+<li class="chapter" data-level="14.4.2" data-path="network-analysis.html"><a href="network-analysis.html#density"><i class="fa fa-check"></i><b>14.4.2</b> Density</a></li>
+<li class="chapter" data-level="14.4.3" data-path="network-analysis.html"><a href="network-analysis.html#centralization"><i class="fa fa-check"></i><b>14.4.3</b> Centralization</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="network-analysis.html"><a href="network-analysis.html#node-level-properties"><i class="fa fa-check"></i><b>14.5</b> Node Level Properties</a>
+<ul>
+<li class="chapter" data-level="14.5.1" data-path="network-analysis.html"><a href="network-analysis.html#degree"><i class="fa fa-check"></i><b>14.5.1</b> Degree</a></li>
+<li class="chapter" data-level="14.5.2" data-path="network-analysis.html"><a href="network-analysis.html#geodesic-distance"><i class="fa fa-check"></i><b>14.5.2</b> Geodesic Distance</a></li>
+<li class="chapter" data-level="14.5.3" data-path="network-analysis.html"><a href="network-analysis.html#centrality"><i class="fa fa-check"></i><b>14.5.3</b> Centrality</a></li>
+</ul></li>
+<li class="chapter" data-level="14.6" data-path="network-analysis.html"><a href="network-analysis.html#network-workflow"><i class="fa fa-check"></i><b>14.6</b> Network Workflow</a></li>
+<li class="chapter" data-level="14.7" data-path="network-analysis.html"><a href="network-analysis.html#network-tools"><i class="fa fa-check"></i><b>14.7</b> Network Tools</a>
+<ul>
+<li class="chapter" data-level="14.7.1" data-path="network-analysis.html"><a href="network-analysis.html#network-models"><i class="fa fa-check"></i><b>14.7.1</b> Network Models</a></li>
+<li class="chapter" data-level="14.7.2" data-path="network-analysis.html"><a href="network-analysis.html#network-visualization"><i class="fa fa-check"></i><b>14.7.2</b> Network Visualization</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html"><i class="fa fa-check"></i><b>15</b> Data Forensics and Cleaning: Unstructured Data</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#learning-objectives-13"><i class="fa fa-check"></i><b>15.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="15.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#using-a-file-manifest"><i class="fa fa-check"></i><b>15.2</b> Using a File Manifest</a></li>
+<li class="chapter" data-level="15.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#loading-a-corpus"><i class="fa fa-check"></i><b>15.3</b> Loading a Corpus</a></li>
+<li class="chapter" data-level="15.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#preprocessing"><i class="fa fa-check"></i><b>15.4</b> Preprocessing</a>
+<ul>
+<li class="chapter" data-level="15.4.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizing-and-bags-of-words"><i class="fa fa-check"></i><b>15.4.1</b> Tokenizing and Bags of Words</a></li>
+<li class="chapter" data-level="15.4.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-normalization"><i class="fa fa-check"></i><b>15.4.2</b> Text Normalization</a></li>
+<li class="chapter" data-level="15.4.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#stop-words"><i class="fa fa-check"></i><b>15.4.3</b> Stop Words</a></li>
+<li class="chapter" data-level="15.4.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizers"><i class="fa fa-check"></i><b>15.4.4</b> Tokenizers</a></li>
+<li class="chapter" data-level="15.4.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-chunking-and-n-grams"><i class="fa fa-check"></i><b>15.4.5</b> Document Chunking and N-grams</a></li>
+</ul></li>
+<li class="chapter" data-level="15.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#counting-terms"><i class="fa fa-check"></i><b>15.5</b> Counting Terms</a>
+<ul>
+<li class="chapter" data-level="15.5.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#term-frequency"><i class="fa fa-check"></i><b>15.5.1</b> Term Frequency</a></li>
+<li class="chapter" data-level="15.5.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#plotting-term-frequency"><i class="fa fa-check"></i><b>15.5.2</b> Plotting Term Frequency</a></li>
+<li class="chapter" data-level="15.5.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#comparing-term-frequencies-across-documents"><i class="fa fa-check"></i><b>15.5.3</b> Comparing Term Frequencies Across Documents</a></li>
+</ul></li>
+<li class="chapter" data-level="15.6" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-mining-pipepline"><i class="fa fa-check"></i><b>15.6</b> Text Mining Pipepline</a></li>
+<li class="chapter" data-level="15.7" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-term-matrix"><i class="fa fa-check"></i><b>15.7</b> Document Term Matrix</a></li>
+<li class="chapter" data-level="15.8" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-analytics"><i class="fa fa-check"></i><b>15.8</b> Corpus Analytics</a>
+<ul>
+<li class="chapter" data-level="15.8.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-term-counts"><i class="fa fa-check"></i><b>15.8.1</b> Corpus Term Counts</a></li>
+<li class="chapter" data-level="15.8.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tfidf-scores"><i class="fa fa-check"></i><b>15.8.2</b> tf–idf Scores</a></li>
+<li class="chapter" data-level="15.8.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#unique-terms-in-a-document"><i class="fa fa-check"></i><b>15.8.3</b> Unique Terms in a Document</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html"><i class="fa fa-check"></i><b>16</b> Data Forensics and Cleaning: Geospatial Data</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#learning-objectives-14"><i class="fa fa-check"></i><b>16.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="16.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#what-is-geospatial-data"><i class="fa fa-check"></i><b>16.2</b> What is Geospatial Data?</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#attributes-1"><i class="fa fa-check"></i><b>16.2.1</b> Attributes</a></li>
+<li class="chapter" data-level="16.2.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinate-reference-system"><i class="fa fa-check"></i><b>16.2.2</b> Coordinate Reference System</a></li>
+<li class="chapter" data-level="16.2.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinates"><i class="fa fa-check"></i><b>16.2.3</b> Coordinates</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#geospatial-data-models"><i class="fa fa-check"></i><b>16.3</b> Geospatial Data Models</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#vector-data"><i class="fa fa-check"></i><b>16.3.1</b> Vector Data</a></li>
+<li class="chapter" data-level="16.3.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#raster-data"><i class="fa fa-check"></i><b>16.3.2</b> Raster Data</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#data-structures-applied-to-geospatial-data"><i class="fa fa-check"></i><b>16.4</b> Data Structures Applied to Geospatial Data</a></li>
+<li class="chapter" data-level="16.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-geospatial-data"><i class="fa fa-check"></i><b>16.5</b> Cleaning Geospatial Data</a>
+<ul>
+<li class="chapter" data-level="16.5.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#example-data"><i class="fa fa-check"></i><b>16.5.1</b> Example Data</a></li>
+<li class="chapter" data-level="16.5.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#making-location-data-usable"><i class="fa fa-check"></i><b>16.5.2</b> Making Location Data Usable</a></li>
+<li class="chapter" data-level="16.5.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-location-data"><i class="fa fa-check"></i><b>16.5.3</b> Cleaning Location Data</a></li>
+<li class="chapter" data-level="16.5.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-attribute-data"><i class="fa fa-check"></i><b>16.5.4</b> Cleaning Attribute Data</a></li>
+<li class="chapter" data-level="16.5.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#checking-coordinate-reference-systems"><i class="fa fa-check"></i><b>16.5.5</b> Checking Coordinate Reference Systems</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#conclusions"><i class="fa fa-check"></i><b>16.6</b> Conclusions</a></li>
+<li class="chapter" data-level="16.7" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#optional-further-reading"><i class="fa fa-check"></i><b>16.7</b> Optional Further Reading</a></li>
+</ul></li>
+<li class="divider"></li>
+<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
+  <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;" />
+</a>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Adventures in Data Science</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="version-control" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> Version Control<a href="version-control.html#version-control" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This lesson covers the background information on Version Control Software (VCS) to track and record changes to files on your local computer. It then focuses on Git Version Control Software to track and record changes to files on your local computer and how to connect it to the GitHub platform for remote/server based version control.</p>
+<div id="learning-objectives-1" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Learning Objectives<a href="version-control.html#learning-objectives-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Understand the purpose of using Version Control Software (VCS)<br />
+</li>
+<li>Understand the different types of VCS: local/serve and centralized/distributed</li>
+<li>Understand what a repository is<br />
+</li>
+<li>Initiate a repository that is under Git version control</li>
+<li>Stage and commit changes within your repository<br />
+</li>
+<li>Utilize different git commands such as git log, git status</li>
+<li>Understand the functionality of GitHub<br />
+</li>
+<li>Set up a GitHub account that is authenticated by an SSH key<br />
+</li>
+<li>Sync a local Git repository to a remote GitHub repository from the Command Line<br />
+</li>
+<li>Clone a remote GitHub repository locally to your computer</li>
+</ul>
+</div>
+<div id="introduction-to-version-control" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Introduction to Version Control<a href="version-control.html#introduction-to-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="what-is-version-control" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> What is Version Control?<a href="version-control.html#what-is-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Version control</strong> describes a process of storing and organizing multiple versions (or copies) of documents that you create. Approaches to version control range from simple to complex and can involve the use of various human workflows and/or software applications to accomplish the overall goal of storing and managing multiple versions of the same document(s).</p>
+<p>Most people have a folder/directory somewhere on their computer that looks something like this:</p>
+<p><img src="img/mac_finder_1.png" /></p>
+<p>Or perhaps, this:</p>
+<p><img src="img/mac_window_2.png" /></p>
+<p>This is a rudimentary form of version control that relies completely on the human workflow of saving multiple versions of a file. This system works minimally well, in that it does provide you with a history of file versions theoretically organized by their time sequence. But this <strong>filesystem method</strong> provides no information about how the file has changed from version to version, why you might have saved a particular version, or specifically how the various versions are related. This human-managed filesystem approach is more subject to error than software-assisted version control systems. It is not uncommon for users to make mistakes when naming file versions, or to go back and edit files out of sequence. Software-assisted version control systems (VCS) such as Git were designed to solve this problem.</p>
+</div>
+<div id="software-assisted-version-control" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Software Assisted Version Control<a href="version-control.html#software-assisted-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Version control software has its roots in the software development community, where it is common for many coders to work on the same file, sometimes synchronously, amplifying the need to track and understand revisions. But nearly all types of computer files, not just code, can be tracked using modern version control systems. IBM’s OS/360 IEBUPDTE software update tool is widely regarded as the earliest and most widely adopted precursor to modern, version control systems. Its release in 1972 of the Source Code Control System (SCCS) package marked the first, fully fledged system designed specifically for software version control.</p>
+<p>Today’s marketplace offers many options when it comes to choosing a version control software system. They include systems such as Git, Visual Source Safe, Subversion, Mercurial, CVS, and Plastic SCM, to name a few. Each of these systems offers its twist on version control, differing sometimes in the area of user functionality, sometimes in how it handles things on the back-end, and sometimes both. This course focuses on the Git VCS, but in the sections that follow we offer some general information about classes of version control systems to help you better understand how Git does what it does and help you make more informed decisions about how to deploy it for you own work.</p>
+</div>
+<div id="local-vs-server-based-version-control" class="section level3 hasAnchor" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Local vs Server Based Version Control<a href="version-control.html#local-vs-server-based-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>There are two general types of version control systems: <strong>Local</strong> and <strong>Server</strong> (sometimes called Cloud) based systems. When working with a <strong>Local VCS</strong>, all files, metadata, and everything associated with the version control system live on your local drive in a universe unto itself. Working locally is a perfectly reasonable option for those who work independently (not as part of a team), have no need to regularly share their files or file versions, and who have robust back-up practices for their local storage drive(s). Working locally is also sometimes the only option for projects involving protected data and/or proprietary code that cannot be shared.</p>
+<p><strong>Server based VCS</strong> utilize software running on your local computer that communicates with a remote server (or servers) that store your files and data. Depending on the system being deployed, files and data may reside exclusively on the server and are downloaded to temporary local storage only when a file is being actively edited. Or, the system may maintain continuous local and remote versions of your files. Server based systems facilitate team science because they allow multiple users to have access to the same files, and all their respective versions, via the server. They can also provide an important, non-local back-up of your files, protecting you from loss of data should your local storage fail.</p>
+</div>
+<div id="central-vs-distributed-based-version-control" class="section level3 hasAnchor" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span> Central vs Distributed Based Version Control<a href="version-control.html#central-vs-distributed-based-version-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Server based version control systems can generally be segmented into two distinct categories: 1) Centralized Version Control Systems (Centralized VCS) and 2) Distributed Version Control Systems (Distributed VCS).</p>
+<p><strong>Centralized VCS</strong> is the oldest and, surprisingly to many, still the dominant form of version control architecture worldwide. Centralized VCS implement a “spoke and wheel” architecture to provided server based version control.</p>
+<p><img src="img/spoke_and_where_cloud.png" /></p>
+<p>With the spoke and wheel architecture, the server maintains a centralized collection of file versions. Users utilize version control clients to “check-out” a file of interest to their local file storage, where they are free to make changes to the file. Centralized VCS typically restrict other users from checking out editable versions of a file if another user currently has the file checked out. Once the user who has checked out the file has finished making changes, they “check-in” their new version, which is then stored on the server from where it can be retrieved and “checked-out” by another user. As can be seen, Centralized VCS provide a very controlled and ordered universe that ensures file integrity and tracking of changes. However, this regulation comes at a cost. Namely, it reduces the ease with which multiple users can work simultaneously on the same file.</p>
+<p><strong>Distributed VCS</strong> are not dependent on a central repository as a means of sharing files or tracking versions. Distributed VCS implement a network architecture (as opposed to the spoke and wheel of the Centralized VCS as pictured above) to allow each user to communicate directly with every other user.</p>
+<p><img src="img/distributed_network.png" /></p>
+<p>In Distributed VCS, each user maintains their own version history of the files being tracked, and the VCS software communicates between users to keep the various local file systems in sync with each other. With this type of system, the local versions of two different users will diverge from each other if both users make changes to the file. This divergence will remain in place until the local repositories are synced, at which time the VCS stitches (or merges) the two different versions of the file into a single version that reflects the changes made by each individual, and then saves the stitched version of the file onto both systems as the current version. Various mechanisms can then be used to resolve the conflicts that may arise during this merge process. Distributed VCS offer greater flexibility and facilitate collaborative work, but a lack of understanding of the sync/merge workflow can cause problems. It is not uncommon for a user to forget to sync their local repository with the repositories of other team members and, as a result, work for extended periods of time on outdated files that don’t reflect their teammates and result in work inefficiencies and merge challenges.</p>
+<p>An important feature of Distributed VCS is that many users and organizations choose to include a central server as a node in the distributed network. This gives use <strong>the best of both worlds</strong> by creating an hybrid universe in which some users will sync directly to each other while other users will sync through a central server.</p>
+<p><img src="img/hybrid_network.png" /></p>
+<p>Syncing with a cloud-based server provides an extra level of backup for your files and also facilitates communication between users. But treating the server as just another node on the network (as opposed to a centralized point of control) puts the control and flexibility back in the hands of the individual developer. For example, in a true Centralized CVS, if the server goes down then nobody can check files in and out of the server, which means that nobody can work. But in a Distributed CVS this is not an issue. Users can continue to work on local versions and the system will sync any changes when the server becomes available.</p>
+<p><strong>Git, which we use for this course, is a Distributed VCS.</strong> You can use Git to share and sync repositories directly with other users or through a central Git server such as, for example, GitHub or GitLab.</p>
+</div>
+<div id="how-computers-store-and-access-information" class="section level3 hasAnchor" number="2.2.5">
+<h3><span class="header-section-number">2.2.5</span> How Computers Store and Access Information<a href="version-control.html#how-computers-store-and-access-information" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>When we think about Version Control, we typically think about managing changes to individual files. From the user perspective, the <strong>File</strong> is typically the minimum accessible unit of information. Whether working with images, tabular data, or written text, we typically use software to open a File that contains the information we want to view or edit. As such, it comes as a surprise to most users that the concept of Files, and their organizing containers (<strong>Folders</strong> or <strong>Directories</strong>), are not intrinsic to how computers themselves store and interact with data.</p>
+<p>For all of their computing power and seeming intelligence, computers still only know two things: 0 and 1. In computer speak, we call this a <strong>binary system</strong>, and the unit of memory on a hard-disk, flash drive, or computer chip that stores each 1 or 0 is called a <strong>bit</strong>. You can think of your computer’s storage device (regardless of what kind it is) as a presenting a large grid, where each box is a bit:</p>
+<p><img src="img/empty_sectors.png" /></p>
+<p>In the above example, as with most computer storage, the bits in our storage grid are addressable, meaning that we can designate a particular bit using a row and column number such as, for example, A7, or E12. Also, remember, that each bit can only contain one of two values: 0 or 1. So, in practice, our storage grid would actually look something like this:</p>
+<p><img src="img/filled_bits.png" /></p>
+<p>All of the complex information that we store in the computer is translated to this binary language prior to storage using a system called <strong>Unicode</strong>. You can think of Unicode as a codebook that assigns a unique combination of 8, 16, 32, 64, etc. (depending on how old your computer is) ones and zeros to each letter, numeral, or symbol. For example, the 8-bit Unicode for the upper case letter “A” is “01000001”, and the 8-bit Unicode character for the digit “3” is “00110011”. The above grid actually spells out the phrase, “Call me Ishmael”, the opening line of Herman Melville’s novel <em>Moby Dick</em>.</p>
+<p>An important aspect of how computers store information in binary form is that, unlike most human readable forms of data storage, there is no right to left, up or down, or any other regularized organization of bits on a storage medium. When you save a file on your computer, the computer simply looks for any open bits and starts recording information. The net result is that the contents of single file are frequently randomly interleaved with data from other files. This mode of storage is used because it maximizes the use of open bits on the storage device. But it presents the singular problem of not making data readable in a regularized, linear fashion. To solve this problem, all computers reserve a particular part of their internal memory for a <strong>“Directory”</strong> which stores a sector map of all chunks of data. For example, if you create a file called README.txt with the word “hello” in it, the computer would randomly store the Unicode for the five characters in the word “hello” on the storage device and make a directory entry something like the following:</p>
+<p><img src="img/directory.png" /></p>
+<p>Understanding the Directory concept and how computers store information is crucial to understanding how VCS mange your Files.</p>
+</div>
+<div id="how-vcs-manage-your-files" class="section level3 hasAnchor" number="2.2.6">
+<h3><span class="header-section-number">2.2.6</span> How VCS Manage Your Files<a href="version-control.html#how-vcs-manage-your-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Most users think about version control as a process of managing files. For example, if I might have a directory called “My Project” that holds several files related to this project as follows:</p>
+<p><img src="img/mac_finder_3.png" /></p>
+<p>One approach to managing changes to the above project files would be to store multiple versions of each file as in the figure below for the file analysis.r:</p>
+<p><img src="img/version_tree.png" /></p>
+<p>In fact, many VCS do exactly this. They treat each file as the minimum unit of data and simply save various versions of each file along with some additional information about the version. This approach can work reasonably well. However, it has limitations. First, this approach can unnecessarily consume space on the local storage device, especially if you are saving many versions of a very large file. It also has difficulty dealing with changes in filenames, typically treating the same file with a new name as a completely new file, thereby breaking the chain of version history.</p>
+<p><strong>To combat these issues, good VCS don’t actually manage files at all. They manage Directories.</strong> Distributed VCS like Git take this alternate approach to data storage that is Directory, rather than file, based.</p>
+<p>Git (and many other Distributed VCS) manage your files as collections of data rather than collections of files. Git’s primary unit of management is the <strong>“Repository,”</strong> or “Repo” for short, which is aligned with your computer’s Directory/Folder structure. Consider, for example, the following file structure:</p>
+<p><img src="img/TT_tree_mobile.jpg" /></p>
+<p>Here we see a user, Tom’s, home directory, which contains three sub directories (Data, Thesis, and Tools) and one file (Notes.txt). Both the Data and Tools directories contain sub files and/or directories. If Tom wanted to track changes to the two files in the Data directory, he would first create a Git repository by placing the Data directory <strong>“under version control.”</strong></p>
+<p>When a repository is created, the Git system writes a collection of <em>hidden files</em> into the Data Directory that it uses to store information about all of the data that lives under that directory. This includes information about the addition, renaming, and deletion of both files and folders as well as information about changes to the data contained in the files themselves. Additions, deletions and versions of files are tracked and stored not as copies of files, but rather as a set of instructions that describes changes made to the underling data and the directory structure that describes them.</p>
+</div>
+<div id="additional-resources" class="section level3 hasAnchor" number="2.2.7">
+<h3><span class="header-section-number">2.2.7</span> Additional Resources<a href="version-control.html#additional-resources" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The <a href="https://git-scm.com/book/en/v2">Git Book</a> is the definitive Git resource and provides an excellent reference for everything that we will cover in the Interactive session. There is no need to read the book prior to the session, but it’s a good reference resource to have available as you begin to work with Git after the workshop.</p>
+</div>
+</div>
+<div id="git-local-version-control-basics" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> Git Local Version Control Basics<a href="version-control.html#git-local-version-control-basics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="creating-your-first-repo" class="section level3 hasAnchor" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> Creating Your First Repo<a href="version-control.html#creating-your-first-repo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We are going to introduce git but initializing a git tracked repository, and exploring git’s functionality within that repository. To begin, move to your Home directory.</p>
+<pre><code>$ cd ~</code></pre>
+<p><strong>Note:</strong> The $ character represents your command prompt. DO NOT type it into your terminal. For review of working in the Command Line, see Section <a href="working-with-the-command-line.html">1</a>.</p>
+<p>Next, create a new directory for this course module.</p>
+<pre><code>$ cd ~
+$ mkdir ist008</code></pre>
+<p>Change to the new directory.</p>
+<pre><code>$ cd ist008</code></pre>
+<p>Put the new directory under version control by initializing the Git VCS.</p>
+<pre><code>$ git init</code></pre>
+<p>To check the status of a repository use the following command.</p>
+<pre><code>$ git status</code></pre>
+</div>
+<div id="storing-versions-of-a-file" class="section level3 hasAnchor" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span> Storing Versions of a File<a href="version-control.html#storing-versions-of-a-file" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Git is now initializing in our course directory, but Git does not automatically preserve versions of every “saved” file. When working with Git, you should save files as you always do, but this has no impact on the versions that are preserved in the repository. To create a “version”, you must complete two steps. First add saved files to a Staging area and then “Commit” your staged files to the repository. The Commits that you make constituted the versions of files that are preserved in the repository.</p>
+<p>In the image below, there are various .html files in a directory that is tracked by Git. You may choose to only Stage two of those files (a.html and c.html). Then for each Stage and Commit there are several versions (C1-C4), one for each commit.</p>
+<p><img src="img/save_stage_commit.png" /></p>
+<p>In short, we ‘stage’ and ‘commit’ a file to the Git repository to save a copy of the current working version. The commands for this process are as follows.</p>
+<p>STEP 1: Place the file you want to version into the Staging Area</p>
+<pre><code>$ git add &lt;filename&gt;</code></pre>
+<p><em>Replace <filename> in the command above with the actual name of the file you want to version. Do NOT include the &lt; and &gt; symbols.</em></p>
+<p>STEP 2: Commit staged files</p>
+<pre><code>$ git commit -m &#39;A detailed comment explaining the nature of the version being committed. Do not include any apostrophes (&#39;) in your comment.&#39;</code></pre>
+</div>
+<div id="view-a-history-of-your-commits" class="section level3 hasAnchor" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span> View a History of Your Commits<a href="version-control.html#view-a-history-of-your-commits" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Git VCS tracks every commit you make. To get a history of commits you can use:</p>
+<pre><code>$ git log</code></pre>
+<p>This log provides a summary of each commit, with a commit ID, the author, date, and commit message. Notice that these logs bring you into a Vim editor, with the colon (<code>:</code>) at the bottom of the prompt. Remember you can exit the Vim editor with the <code>q</code> command.</p>
+<p>To see commit history with patch data (insertions and deletions) for a specified number of commits:</p>
+<pre><code>$ git log -p -2</code></pre>
+<p>To see abbreviated stats for the commit history:</p>
+<pre><code>$ git log --stat</code></pre>
+<p>You can save a copy of your Git log to a text file with the following command:</p>
+<pre><code>$ git --no-pager log &gt; log.txt</code></pre>
+</div>
+<div id="comparing-commits-and-files" class="section level3 hasAnchor" number="2.3.4">
+<h3><span class="header-section-number">2.3.4</span> Comparing Commits and Files<a href="version-control.html#comparing-commits-and-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Git can compare the differences between difference saved versions of commits by naming the commit IDs we just saw in the log. In place of the <code>&lt;commit&gt;</code> placeholders, insert the commit IDs.</p>
+<pre><code>$ git diff &lt;commit&gt; &lt;commit&gt;</code></pre>
+<p>Git can also compare between commits and certain files, similar to above. Instead, use a commit ID and a file name.</p>
+<pre><code>$ git diff &lt;commit&gt; &lt;file&gt;</code></pre>
+<p>or</p>
+<pre><code>$ git diff &lt;commit&gt;:&lt;file&gt; &lt;commit&gt;:&lt;file&gt;</code></pre>
+</div>
+<div id="undoing-things" class="section level3 hasAnchor" number="2.3.5">
+<h3><span class="header-section-number">2.3.5</span> Undoing Things<a href="version-control.html#undoing-things" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>When working locally in your Git repository, you are likely to make some mistakes. Some of the common mistakes you may want to undo include committing too early and possibly forgetting to add some files, or messing up your commit message. If you want to redo that commit, make the additional changes you forgot, stage them, and commit again using the –amend option</p>
+<pre><code>$ git commit --amend</code></pre>
+<p>If you would like to unstage a file for commit, you can use the following:</p>
+<pre><code>$ git reset HEAD &lt;file&gt;</code></pre>
+<p>You can also throw away changes you’ve made to a file</p>
+<pre><code>$ git checkout -- &lt;file&gt;</code></pre>
+<p>You can also roll back to a certain commit saved in your version control history, which will delete any uncommitted changed you’ve made. To roll everything back to the last commit:</p>
+<pre><code>$ git reset --hard HEAD</code></pre>
+<p>Rolling everything back to the next to last commit (The commit before the HEAD commit):</p>
+<pre><code>$ git reset --hard HEAD^</code></pre>
+<p>Rolling everything back to two commits before the head:</p>
+<pre><code>$ git reset --hard HEAD^2</code></pre>
+<p>Rolling everything back to an identified commit using commit HASH/ID from the git log:</p>
+<pre><code>$ git reset --hard &lt;commit&gt;</code></pre>
+</div>
+<div id="git-branching" class="section level3 hasAnchor" number="2.3.6">
+<h3><span class="header-section-number">2.3.6</span> Git Branching<a href="version-control.html#git-branching" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Branching provides a simple way to maintain multiple, side-by-side versions of the files in a repository. Conceptually, branching a repository creates a copy of the codebase in its current state that you can work on without affecting the primary version from which it was copied. This allows you to work down multiple paths without affecting the main (or other) codebase.</p>
+<p><img src="img/GIT-Branchand-its-Operations.png" /></p>
+<p>To see a list of branches in your repository</p>
+<pre><code>$ git branch</code></pre>
+<p>To create a new branch</p>
+<pre><code>$ git checkout -b &lt;new branch name&gt;</code></pre>
+<p>New branches are created of the current working branch. To change branches use</p>
+<pre><code>$ git checkout &lt;branch name&gt;</code></pre>
+<div id="merging-branches" class="section level4 hasAnchor" number="2.3.6.1">
+<h4><span class="header-section-number">2.3.6.1</span> Merging Branches<a href="version-control.html#merging-branches" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>When you merge a branch, git folds any changes that you made to files in an identified branch into the current working branch. It also adds any new files. When you perform a merge, a new commit will be automatically created to track the merge. To merge branches, commit any changes to the branch you want to merge then checkout the branch into which you want to merge (for example, master), and then execute a merge command.</p>
+<pre><code>$ git commit -m &#39;commiting staged files in hotfix branch&#39;
+$ git checkout master
+$ git merge &lt;new branch name&gt;
+</code></pre>
+</div>
+<div id="branching-workflows" class="section level4 hasAnchor" number="2.3.6.2">
+<h4><span class="header-section-number">2.3.6.2</span> Branching Workflows<a href="version-control.html#branching-workflows" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>There are as many different branching workflows as there are development teams and projects. However, over the years something approximating an “industry standard” has evolved as follows:</p>
+<ol style="list-style-type: decimal">
+<li>The “master” or “primary” branch is typically reserved for the current, live and in production version of the codebase.</li>
+<li>The “development” or “dev” branch holds the current, combined, working version of the code.</li>
+<li>“topic” branches are created on-the-fly by individuals and are focused on particular coding efforts, one each for each development task.</li>
+</ol>
+<p><img src="img/branching_workflows.png" /></p>
+<p>For example, let’s consider a case where there is a team maintaining and developing a company website. In this case, the “master” branch would contain the version of the code that is currently deployed on the live webserver. The “dev” branch would contain a testable version of the code that reflects completed changes to the site made by all team members that have yet to be deployed. Finally, the repository would also contain many topic branches, each of which holds code related to a particular change that was or is being worked on. For example, a team developing a new widget for visualizing data some area of the site would create a suitably named topic branch (something like “viz_widget”) for this topic and do all their initial coding in this branch. Once they have completed and tested their code in this branch, they would merge it into the “dev” branch. The new code can then be viewed and tested by others as part of the “dev” branch. Once all topics branches for planned features for the next release of the website have been merged to “dev” and “dev” has been thoroughly testes (and fixed as necessary), “dev” is then merged into “master” and the “master” branch is then deployed to the live webserver.</p>
+</div>
+</div>
+</div>
+<div id="git-remote-repositories" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> Git Remote Repositories<a href="version-control.html#git-remote-repositories" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="github-basics" class="section level3 hasAnchor" number="2.4.1">
+<h3><span class="header-section-number">2.4.1</span> GitHub Basics<a href="version-control.html#github-basics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In this course, we will work with the <a href="https://github.com/">GitHub</a> platform, which in its simplest form is a hosting service for Git repositories. Much like
+Dropbox or Google Drive, it gives you a space to remotely store your code and
+related files. This can be useful when working on projects that require, for
+example, some kind of server, whether for the purposes of running large,
+potentially time-consuming data analyses or for serving up public-facing content
+(like a website). For such projects, GitHub acts as a reference point with which
+you can <strong>push</strong> changes on one computer up to the server and <strong>pull</strong> them down from the server on onto another computer. The process would look something like the following, where pushing and pulling from a remote branch entails keeping a reference point for a project that you’re developing locally:</p>
+<img src="img/github_workflow.png" />
+<center>
+<a href="https://www.reddit.com/r/git/comments/99ul9f/git_workflow_diagram_showcasing_the_role_of/">Image source.</a>
+</center>
+<p><br></p>
+<p>With this diagram in mind, it’s not much of a conceptual leap to imagine how two
+or more people could work from the same remote repository. Each would pull that
+repository onto their respective local computers, make a branch, implement their
+changes, and push those changes back to the remote source. That way, multiple
+parts of a project could be under development simultaneously, and any such
+changes made to that project would be trackable according to the logic of version control.</p>
+<p>Simultaneously pushing and pulling on multiple computers would look something
+like the following:</p>
+<p><img src="img/github_as_hub.png" /></p>
+<center>
+<a href="https://gist.github.com/fentontaylor/c6110b2e20e29a656645ce03d1848964">Image source.</a>
+</center>
+<div id="communicating-through-github" class="section level4 hasAnchor" number="2.4.1.1">
+<h4><span class="header-section-number">2.4.1.1</span> Communicating Through GitHub<a href="version-control.html#communicating-through-github" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>What makes GitHub special is the fact that, more than being
+simply a place to store files, the service is above all a <em>communication channel</em>.
+Where GitHub extends the functionality of version control is not just where it
+offers various forms of cloud hosting; it is also where GitHub provides tools
+that let people talk about the code they’re working on. It’s a place where team
+members can propose and explain the changes they make, look at changes others
+have made, track and discuss any bugs that might come up, get feedback from
+others, and plan for any future changes the team intends to make.</p>
+<p>Learning how to use GitHub, then, is as much about learning how to communicate
+effectively through the different facets of the service as it is about
+acquainting yourself with new technical skills (i.e., using your computer to
+track code remotely).</p>
+<p>A short summary of the different facets of communication GitHub provides
+includes:</p>
+<ul>
+<li>Documentation, often through README files</li>
+<li>Issue tracking for bug reporting and assigning tasks</li>
+<li>Pull requests for proposing and discussing changes</li>
+<li>Wikis, which may feature additional documentation, tutorials, etc.</li>
+<li>Project boards for long-term planning</li>
+<li>Various graph visualizations for project overview</li>
+</ul>
+<p>Additionally, GitHub users can monitor and modify other projects’ code using
+“Watch”, “Star”, and “Fork” functionalities. The service also provides teams
+with the ability to specify licensing information for their projects.</p>
+</div>
+<div id="what-should-i-push-to-github" class="section level4 hasAnchor" number="2.4.1.2">
+<h4><span class="header-section-number">2.4.1.2</span> What Should I Push to GitHub?<a href="version-control.html#what-should-i-push-to-github" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>A quick word about what should and shouldn’t be pushed to a remote repository,
+especially with an eye toward what we’ve said about communication. You can, of
+course, host large data files on GitHub, but there are a few caveats. For one,
+the site does have a storage limit, and it can also become quite inefficient to
+have team members constantly push/pull large files to/from GitHub. Further,
+hosting data files might not be particularly relevant to what a team might need
+to discuss. Data may change often over the course of a project, but tracking
+individual observations might not be necessary—more meaningful would be a
+conversation about how code has made, or might make, such changes. The latter
+is likely to be something that GitHub is better suited to facilitate.</p>
+<p>It’s best, then, to host your data files separately from GitHub, either by way
+of a remote database or some kind of cloud service like Google Drive. Exceptions
+may come up, however, so the decision about what to track should ultimately be
+one made by the team.</p>
+<p>Examples of what should be tracked with GitHub:</p>
+<ul>
+<li>Code</li>
+<li>Documentation</li>
+<li>Make files</li>
+<li>Some supporting media (small images, for example)</li>
+</ul>
+<p>Finally, note that even though you can set a repository to either “Public” or
+“Private” (which controls who can see your project), it’s recommended that you
+refrain from uploading various access credentials (API keys, database passwords,
+etc.) to GitHub.</p>
+</div>
+</div>
+<div id="basic-github-account-setup" class="section level3 hasAnchor" number="2.4.2">
+<h3><span class="header-section-number">2.4.2</span> Basic GitHub Account Setup<a href="version-control.html#basic-github-account-setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>To use GitHub, you need to make a (free) account. You can do so by going to
+<a href="https://github.com/">github.com</a>. Once you’re there, click “Sign Up” in the
+top-right corner of the page. This should take you to a form, which asks you to
+enter a <strong>username</strong>, <strong>email address</strong>, and <strong>password</strong>. After you’ve entered
+in this information (and completed a quick CAPTCHA), GitHub will make you an
+account. Then, the site will prompt you to complete an optional survey. Fill it
+out, or scroll to the bottom to skip it.</p>
+<p>Either way, you’ll need to then verify your email address. Go to your inbox and
+look for an email from GitHub. Click the “Verify email address” button. Doing so
+will take you to your homepage, where, if you’d like, you can add a few details
+about yourself.</p>
+<p><img src="img/github_new_homepage.png" /></p>
+<p>You now have a GitHub account!</p>
+<div id="locally-setting-up-your-git-credentials" class="section level4 hasAnchor" number="2.4.2.1">
+<h4><span class="header-section-number">2.4.2.1</span> Locally Setting Up Your Git Credentials<a href="version-control.html#locally-setting-up-your-git-credentials" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Regardless of how you make your commits, you will need to use the command line
+to provide Git with some information about who will be making commits. You
+may have already done this, however (and sometimes your computer does it
+automatically). To check, enter the following two commands in either Terminal
+(Mac) or Git Bash (Windows):</p>
+<pre><code>git config --global user.name
+git config --global user.email</code></pre>
+<p>If you see your name (or some kind of username) and your email after entering
+the above commands, you’re set. If nothing happens when you type them, you’ll
+need to provide this information with the following:</p>
+<pre><code>git config --global user.name &quot;&lt;your name&gt;&quot;
+git config --global user.email &quot;&lt;your email&gt;&quot;</code></pre>
+<p>You can check whether this was successful by simply calling either, or both, of
+the first two commands. They should echo back the information you’ve just
+entered.</p>
+</div>
+<div id="ssh-keys-and-github" class="section level4 hasAnchor" number="2.4.2.2">
+<h4><span class="header-section-number">2.4.2.2</span> SSH Keys and GitHub<a href="version-control.html#ssh-keys-and-github" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>When you work with remote repositories on GitHub, you’ll often need to enter
+your username/password to identify yourself. This is for two reasons: 1) it
+allows GitHub to track who has made changes to what files; 2) it adds a layer
+of security to projects, letting teams control who can make changes to their
+files. Repositories can be either public or private, and this layer of security
+helps teams control who has access to files in the first place.</p>
+<p>It can be a pain, though, to have to enter and re-enter your credentials when
+making changes. More, passwords can be lost or worse, stolen. To avoid these
+problems, we can set up an <strong>SSH key</strong>. SSH keys (short for “Secure Shell”)
+are special, machine-readable credentials that allow users to safely connect
+and authenticate with remote servers over unsecure networks.</p>
+<p>An SSH key has two parts:</p>
+<ol style="list-style-type: decimal">
+<li>A <em>public key</em>, which encrypts messages intended for a particular recipient.
+This can be stored on remote servers, or even shared with others, to facilitate
+secure data transfers</li>
+<li>A <em>private key</em>, which deciphers messages encrypted by the public key. Your
+private key is the only thing capable of unlocking what is sent with your public
+key. It stays on your computer and should never be shared with anyone</li>
+</ol>
+<p>Beyond what security measures an SSH key brings, it also acts as your digital
+signature. GitHub uses this internally to verify that you are, in fact, who
+you say you are when you commit code to a repository.</p>
+</div>
+<div id="connecting-to-github-with-ssh" class="section level4 hasAnchor" number="2.4.2.3">
+<h4><span class="header-section-number">2.4.2.3</span> Connecting to GitHub with SSH<a href="version-control.html#connecting-to-github-with-ssh" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>GitHub offers thorough, straightforward documentation for setting up an SSH key
+with its services, which we won’t repeat here. Instead, please visit the link
+below and follow the step-by-step instructions there to get yourself set up
+with a key.</p>
+<p><a href="https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh">Connecting to GitHub with SSH</a></p>
+<p>The following steps at the link above are required:</p>
+<ul>
+<li>Checking for existing SSH keys</li>
+<li>Generating a new SSH key and adding it to the ssh-agent</li>
+<li>Adding a new SSH key to your GitHub account</li>
+<li>Testing your SSH connection</li>
+</ul>
+<p>Once you have completed these steps, be sure you can successfully run the
+following command:</p>
+<pre><code>ssh -T git@github.com</code></pre>
+<p>If your connection is successful, you will see this message (a warning may first
+appear—see the documentation on GitHub for more information):</p>
+<pre><code>Hi &lt;your username&gt;! You&#39;ve successfully authenticated, but GitHub does not 
+provide shell access.</code></pre>
+</div>
+</div>
+<div id="github-desktop-or-the-command-line" class="section level3 hasAnchor" number="2.4.3">
+<h3><span class="header-section-number">2.4.3</span> GitHub Desktop, or the Command Line?<a href="version-control.html#github-desktop-or-the-command-line" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Remember that Git is separate from GitHub. The latter is a service that’s been
+built around the former. One part of the services that GitHub offers is an
+application called <a href="https://desktop.github.com/">GitHub Desktop</a>, which allows
+users to manage their local repositories with a point-and-click graphical user
+interface (or GUI). Ultimately, it’s a matter of preference whether you use the
+GUI or stick with the command line for your own projects, but it is generally a good idea to become proficient at interacting with GitHub via the command line. One of the primary
+reasons for this has to do with the fact that not every computer you use will
+have GitHub’s GUI installed—or even have a screen! Many remote servers offer
+command line-only access, and if you ever want to sync your files with these
+machines, you’ll need to do so without GitHub Desktop. Luckily, GitHub
+seamlessly extends Git commands, so using the service without the GUI is, as
+we’ll see, quite straightforward.</p>
+</div>
+<div id="sync-with-github" class="section level3 hasAnchor" number="2.4.4">
+<h3><span class="header-section-number">2.4.4</span> Sync with GitHub<a href="version-control.html#sync-with-github" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Now that you’re all set up with GitHub, it’s time to sync the website with a
+local repository on your computer. We’ll start by creating a test repository on your local Git instance.</p>
+<p>First, use the command line to make a new directory in your Home folder:</p>
+<pre><code>mkdir ~/my_first_remote_directory</code></pre>
+<p>Put this directory under version control with Git:</p>
+<pre><code>cd ~/my_first_remote_directory
+git init</code></pre>
+<p>With Vim, make a README markdown file:</p>
+<pre><code>vim README.md</code></pre>
+<p>Write and save “Hello world!” in the file. You should see something like the
+following:</p>
+<p><img src="img/hello_world.png" /></p>
+<p>Exit Vim with <code>:wq</code>. Then, add README.md to Git and commit your changes. Don’t forget to
+write a short note in the commit message.</p>
+<pre><code>git add README.md
+git commit -m &#39;Add a README file&#39;</code></pre>
+<p>You should see the following:</p>
+<p><img src="img/commit_readme.png" /></p>
+<div id="preparing-to-sync-your-repository" class="section level4 hasAnchor" number="2.4.4.1">
+<h4><span class="header-section-number">2.4.4.1</span> Preparing to Sync Your Repository<a href="version-control.html#preparing-to-sync-your-repository" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>So far so good! All we’ve done is repeat the normal workflow for putting files
+under version control, explained in <a href="https://ucdavisdatalab.github.io/adventures_in_data_science/git-version-control-basics.html">Section 3</a>. But now we need to step away from the command line for
+a moment and prepare a space for receiving this repository on GitHub.</p>
+<p>To do so, go to github.com and, on your homepage, click the “Create repository”
+button. You’ll be taken to this page:</p>
+<p><img src="img/new_repository.png" /></p>
+<p>There are a few things of note here:</p>
+<ul>
+<li>Repository name: your repository’s name, which should be the same as what’s on your computer</li>
+<li>Description: a short (1-2 sentence) explanation of what’s in this repository</li>
+<li>Public/private setting: repositories may be either “public” (viewable by anyone) or “private” (only viewable by you and those to whom you grant access)</li>
+<li>Initialize with details, including:
+<ul>
+<li>A README file: a form of documentation; provides information about the files in the repository</li>
+<li>A .gitignore file: instructs Git to ignore specific files or filetypes</li>
+<li>A license: governs the use or redistribution of your files</li>
+</ul></li>
+</ul>
+<p>Because we’re initializing this repository from an existing directory, we won’t
+bother with most of the extra details. But we do need a title, which should be
+the same as what’s on your local computer (“my_first_remote_directory”). A
+description is helpful but not necessary for our purposes; the same goes for a
+license. Finally, we will choose to make this a public repository (meaning
+anyone can see it).</p>
+<p><img src="img/new_repository_details.png" /></p>
+</div>
+<div id="pushing-a-local-repository" class="section level4 hasAnchor" number="2.4.4.2">
+<h4><span class="header-section-number">2.4.4.2</span> Pushing a Local Repository<a href="version-control.html#pushing-a-local-repository" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Once you’ve entered the above information, click “Create repository.” GitHub
+will take you to a new screen, which gives you a number of options for making or
+uploading new files to the repository.</p>
+<p><img src="img/new_repository_options.png" /></p>
+<p>Since we already have a repository made, we need to use the “Push an existing
+repository from the command line.” Pushing our repository is as easy as
+sequentially entering into the command line the three commands GitHub provides.</p>
+<pre><code>git remote add origin git@github.com:&lt;your user account&gt;/my_first_remote_directory.git
+git branch -M main
+git push -u origin</code></pre>
+<p>On the command line, that looks like this:</p>
+<p><img src="img/push_repository_command_line.png" /></p>
+<p>To summarize the above, we’ve done the following:</p>
+<ol style="list-style-type: decimal">
+<li>Associated GitHub’s remote repository with our local repository (<code>git remote</code> etc.)</li>
+<li>Made a new branch in our local repository called “main” (<code>git branch -M main</code>)</li>
+<li>Pushed the contents of main (from <code>origin</code>) to a new, corresponding remote branch on GitHub</li>
+</ol>
+<p>From here on out, when you want to update the remote repository with further
+changes, you can simply use the shorthand <code>git push</code> after the usual save, add,
+commit steps. Importantly, Git will only update the branch you’re on when you
+enter <code>git push</code>, so before making any pushes, it’s a good idea to run a quick
+<code>git status</code> command to make sure you’re on the branch you want to be on.</p>
+<p>When you make your changes, the GitHub site won’t immediately refresh itself,
+but if you click on the “&lt; &gt; Code” tab or on the name of the directory, you’ll
+see that the repository has been synced and your README.md file is now online.</p>
+<p><img src="img/new_repository_synced.png" /></p>
+<p>Note that GitHub automatically looks for a README file in your repository. If it
+finds one that contains renderable <a href="https://guides.github.com/features/mastering-markdown/">markdown</a> code, it will
+render the file on your repository’s main page. (More information about writing
+effective README files is available through the DataLab’s data documentation
+<a href="https://ucdavisdatalab.github.io/workshop_how-to-data-documentation/">workshop</a>.)</p>
+</div>
+<div id="tracking-files-remotely" class="section level4 hasAnchor" number="2.4.4.3">
+<h4><span class="header-section-number">2.4.4.3</span> Tracking Files Remotely<a href="version-control.html#tracking-files-remotely" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>With this repository made, GitHub can start tracking changes you make to your
+files, such as Git does locally. The process works exactly like the one you
+do for Git, though it requires one more step.</p>
+<p>First, we’ll alter our README.md. Reopen the file with Vim, skip a line down
+from the line you’ve already written, and add “My name is <your name>.” Save and
+quit.</p>
+<p><img src="img/hello_world_changed.png" /></p>
+<p>Then, add the file and commit your changes.</p>
+<p><img src="img/commit_readme_update.png" /></p>
+<p>If you want to push these changes to your remote repository, simply enter <code>git push</code>.
+You’ll see a similar message appear about enumerating, counting, and writing
+objects to GitHub. Afterwards, if you refresh your file on GitHub, you should
+see your changes:</p>
+<p><img src="img/new_repository_synced_updated.png" /></p>
+<p>Note that your commit message appears here as well:</p>
+<p><img src="img/new_repository_synced_message_highlight.png" /></p>
+<p>If you click the commit tag:</p>
+<p><img src="img/new_repository_synced_commit_tag.png" /></p>
+<p>You’ll be taken to another page, which shows you the differences between your
+old version and the new one:</p>
+<p><img src="img/github_vdiff.png" /></p>
+</div>
+<div id="pulling-changes-from-a-remote-repository" class="section level4 hasAnchor" number="2.4.4.4">
+<h4><span class="header-section-number">2.4.4.4</span> Pulling Changes from a Remote Repository<a href="version-control.html#pulling-changes-from-a-remote-repository" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Before moving on, it’s also worth noting that we can pull changes directly from
+GitHub. If a file has been altered on the remote version of a project, GitHub
+offers functionality for syncing that file with your local copy (or creating a
+new file altogether, if need be).</p>
+<p>For example, if you return to the main page of “my_first_remote_directory”, you
+can alter the README directly on GitHub. Click the pencil in the right-hand
+corner of the rendered file.</p>
+<p><img src="img/new_repository_pencil_highlight.png" /></p>
+<p>This will open up a text editor interface. Using it, add “What’s yours?” on the
+fifth line of the document. The complete document should look like this:</p>
+<pre><code>Hello world!
+
+My name is &lt;your name&gt;
+
+What&#39;s yours?</code></pre>
+<p>Scroll to the bottom and click the green “Commit changes” button. This is the
+equivalent of doing <code>git add &lt;file&gt;</code> and <code>git commit -m &lt;message&gt;</code> on the
+command line.</p>
+<p>You’ll see something like the following:</p>
+<p><img src="img/updated_readme.png" /></p>
+<p>Back on the command line, if you type <code>git status</code>, you’ll see that your local
+repository is now out of sync.</p>
+<p><img src="img/branch_behind.png" /></p>
+<p>If you haven’t made any changes to your directory, syncing it with the remote
+version can be achieved with a straightforward pull command:</p>
+<pre><code>git pull</code></pre>
+<p>Once you enter this command, your command line should look something like this:</p>
+<p><img src="img/git_pull.png" /></p>
+<p>Your files are now synced.</p>
+</div>
+</div>
+<div id="cloning-a-repository" class="section level3 hasAnchor" number="2.4.5">
+<h3><span class="header-section-number">2.4.5</span> Cloning a Repository<a href="version-control.html#cloning-a-repository" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>While tracking your own files remotely with GitHub is great for managing and
+storing your files, this doesn’t quite tap into the full use of the service.
+Remember, GitHub is above all a communication channel, in which people can share
+and discuss the code/files they’re working on. We haven’t yet taken advantage of
+much of what makes GitHub useful: getting files for a project, modifying them,
+discussing the changes with team members, and implementing those changes.</p>
+<div id="how-to-clone-a-repository" class="section level4 hasAnchor" number="2.4.5.1">
+<h4><span class="header-section-number">2.4.5.1</span> How to Clone a Repository<a href="version-control.html#how-to-clone-a-repository" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>To start using GitHub collaboratively, we need to retrieve, or <strong>clone</strong>, a
+repository. This will create a local copy of project files.</p>
+<p>First, go back to your Home directory. You’ll be putting a repository here (in
+command line speak, the repository will be a “child” of Home).</p>
+<pre><code>cd ~</code></pre>
+<p>Then, go to the following link: <a href="https://github.com/ucdavis-datalab-training/workshop_git_for_teams_sandbox">https://github.com/ucdavis-datalab-training/workshop_git_for_teams_sandbox</a></p>
+<p>Once there, click on the green “Code” button, which should show the following:</p>
+<p><img src="img/clone_repository_github_view.png" /></p>
+<p>Since you have SSH keys, select the “SSH” option. Copy the text GitHub provides
+to your clipboard. Then, in the command line, type <code>git clone</code>, add a space,
+and paste in the line of text GitHub generated for you. The full command should
+look like this:</p>
+<pre><code>git clone git@github.com:ucdavis-datalab-training/workshop_git_for_teams_sandbox.git</code></pre>
+<p>Hit “Enter”. If you’d like, you can use <code>ls</code> to see the newly made directory.
+You should see something like the following:</p>
+<p><img src="img/clone_repository_command_line_view.png" /></p>
+<p>If you <code>cd</code> into the directory and then type <code>ls -a</code>, you’ll see a README.md
+file and a .git file, which contains all the logging info for the repository.</p>
+<p><img src="img/clone_repository_lsa.png" /></p>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="command-line.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="introduction-to-r.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/02_version-control.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/02_version-control.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

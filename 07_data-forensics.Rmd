@@ -1,0 +1,756 @@
+Data Forensics
+==============
+
+This lesson covers a variety of ways to investigate and summarize tabular data
+in order to understand the data better and identify potential problems. The
+lesson also describes how to fix some of the most common data problems.
+
+Learning Objectives
+-------------------
+
+After this lesson, you should be able to:
+
+* Cleaning and Forensics:
+  + Explain what it means for a data set to be "tidy"
+  + Convert columns to appropriate data types
+  + Locate and count missing values in a data set
+  + Explain what it means for a value to be an "outlier"
+  + Locate and count outliers in a data set
+
+* Statistical Summaries:
+  * Explain the location statistics mean, median, and mode
+  * Explain the scale statistics range and standard deviation
+  * Apply Functions
+      + Use apply functions to compute summaries of multiple columns
+      + Use the split-apply pattern to compute grouped summaries
+
+
+Structural Summaries & Cleaning
+-------------------------------
+
+Whenever you load a data set into R, your next step should be to investigate
+the data's structure. This step is important because it can help you identify
+whether:
+
+* The data was loaded correctly
+* There are structural problems with the data that will make it difficult to
+  use if they aren't fixed
+
+Section \@ref(inspecting-data) and Section \@ref(inspecting-the-data)
+demonstrated several functions for getting structural summaries of data. Some
+of these are:
+
+* `str` to get a detailed structural summary
+* `head`, `tail` to preview the data
+* `nrow`, `ncol`, `dim`, `length` to get dimension information
+* `names`, `colnames`, `rownames` to get element names
+* `class`, `typeof` to get classes and types
+
+
+Let's look at some examples using a data set collected from the classified
+advertisements website Craigslist. The data set contains information from ads
+for rentals in the Sacramento area. First we need to load the data set:
+
+```{r}
+cl = read.csv("data/cl_rentals.csv")
+```
+
+Now we can use the `str` function to check the classes of the columns:
+```{r}
+str(cl)
+```
+
+Often when you load a new data set, some of the columns won't have the correct
+data type (or class) for what you want to do. For instance, in the Craigslist
+data, the `pets`, `laundry`, and `parking` columns all contain categorical
+data, so they should be factors.
+
+You can convert these columns to factors with the `factor` function from
+Section \@ref(factors):
+
+```{r}
+cl$pets = factor(cl$pets)
+cl$laundry = factor(cl$laundry)
+cl$parking = factor(cl$parking)
+```
+
+There's another way we could've done this that uses only two lines of code, no
+matter how many columns there are:
+
+```{r, eval = FALSE}
+cols = c("pets", "laundry", "parking")
+cl[cols] = lapply(cl[cols], factor)
+```
+
+We'll learn more about the `lapply` function in Section \@ref(apply-functions).
+
+You can use whichever approach is more convenient and makes more sense to you.
+If there were other columns to convert, we'd go through the same steps with the
+appropriate conversion function.
+
+R provides `as.` functions to convert to the most common data types. For
+instance, `as.character` converts an object to a string:
+
+```{r}
+x = 3.1
+class(x)
+
+y = as.character(x)
+y
+class(y)
+```
+
+The `read.csv` function does a good job at identifying columns of numbers, so
+it's rarely necessary to convert columns of numbers manually. However, you may
+have to do this for data you got some other way (rather than loading a file).
+For instance, it's common to make these conversions when scraping data from the
+web.
+
+It's also a good idea to convert categorical columns into factors with the
+`factor` function, and to convert columns of dates into dates (more about this
+in the next section).
+
+
+### Dates
+
+There several built-in functions and also many packages for date processing.
+In particular, there are three Tidyverse packages for processing dates and
+times:
+
+* [lubridate][], the primary package for working with dates and times
+* [hms][], a package specifically for working with times
+* [clock][], a new package for working with dates and times
+
+[lubridate]: https://lubridate.tidyverse.org/
+[hms]: https://hms.tidyverse.org/
+[clock]: https://clock.r-lib.org/
+
+We'll focus on the lubridate package. As always, you'll have to install the
+package if you haven't already, and then load it:
+
+```{r}
+# install.packages("lubridate")
+library(lubridate)
+```
+
+The most common task is to convert a string into a date or time class. For
+instance, when you load a data set, you might have dates that look like this:
+
+```{r}
+dates = c("Jan 10, 2021", "Sep 3, 2018", "Feb 28, 1982")
+dates
+```
+
+These are strings, so it's relatively difficult to sort the dates, do
+arithmetic on them, or extract just one part (such as the year). There are
+several lubridate functions to automatically convert strings into dates. They
+are named with one letter for each part of the date. For instance, the dates in
+the example have the month (m), then the day (d), and then the year (y), so we
+can use the `mdy` function:
+
+```{r}
+result = mdy(dates)
+result
+class(result)
+```
+
+Notice that the dates now have class `Date`, one of R's built-in classes for
+representing dates, and that they print differently. You can find a full list
+of the automatic string to date conversion functions in the lubridate
+documentation.
+
+Occasionally, a date string may have a format that lubridate can't convert
+automatically. In that case, you can use the `fast_strptime` function to
+describe the format in detail. At a minimum, the function requires two
+arguments: the vector of strings to convert and a format string.
+
+The format string describes the format of the dates, and is based on the syntax
+of `strptime`, a function provided by many programming languages for converting
+strings to dates (including R). In a format string, a percent sign `%` followed
+by a character is called a _specification_ and has a special meaning. Here are
+a few of the most useful ones:
+
+| Specification | Description      | January 29, 2015
+|:------------- |:---------------- |:----------------
+| `%Y`          | 4-digit year     | 2015
+| `%y`          | 2-digit year     | 15
+| `%m`          | 2-digit month    | 01
+| `%B`          | full month name  | January
+| `%b`          | short month name | Jan
+| `%d`          | day of month     | 29
+| `%%`          | literal %        | %
+
+You can find a complete list in `?fast_strptime`. Other characters in the
+format string do not have any special meaning. Write the format string so that
+it matches the format of the dates you want to convert.
+
+For example, let's try converting an unusual time format:
+```{r}
+odd_time = "6 minutes, 32 seconds after 10 o'clock"
+fast_strptime(odd_time, "%M minutes, %S seconds after %H o'clock")
+```
+
+R usually represents dates with the class `Date`, and date-times with the
+classes `POSIXct` and `POSIXlt`. The difference between the two date-time
+classes is somewhat technical, but you can read more about it in `?POSIXlt`.
+
+There is no built-in class to represent times alone, which is why the result in
+the example above includes a date. Nonetheless, the hms package provides the
+`hms` class to represent times without dates.
+
+Once you've converted a string to a date, the lubridate package provides a
+variety of functions to get or set the parts individually. Here are a few
+examples:
+
+```{r}
+day(result)
+month(result)
+```
+
+You can find a complete list in the lubridate documentation.
+
+Now let's convert the `date_updated` column in the Craigslist data. It's always
+a good idea to test your format string before saving the results back into the
+data frame:
+```{r}
+dates = ymd_hms(cl$date_updated)
+head(dates)
+```
+
+The `as.Date` function returns `NA` if conversion failed, so in this case it
+looks like the dates were converted correctly. Now we can save the dates back
+into the data frame.
+
+```{r}
+cl$date_updated = dates
+```
+
+
+### Tidy Data
+
+Many functions require data frames that are in **tidy** form. Before we see the
+requirements for a data set to be tidy, we need to define or review some
+terminology from statistics.
+
+A **feature** (also called a **covariate**) is measurement of something,
+usually across multiple subjects. For example, we might decide to measure the
+heights of everyone in the class. Each person in the class is a subject, and
+the height measurement is a feature. Features don't have to be quantitative. If
+we also asked each person their favorite color, then favorite
+color would be another feature in our data set. Features are usually, but not
+always, the columns in a tabular data set.
+
+An **observation** is a set of features measured for a single subject or at a
+single time. So in the preceding example, the combined height and favorite
+color measurement for one student is one observation. Observations are usually,
+but not always, the rows in a tabular data set.
+
+Now we can define what it means to be tidy. A tabular data set is tidy if and
+only if:
+
+1. Each observation has its own row.
+2. Each feature has its own column.
+3. Each value has its own cell.
+
+These rules ensure that all of the values are visually organized and are easy
+to access with R's built-in indexing operations. For instance, the `$` operator
+gets a column, and in a tidy data set, columns are features. The rules also
+reflect the way statisticians traditionally arrange tabular data sets.
+
+When you first look at a data set, think about what the observations are and
+what the features are. If the data set comes with documentation, it may help
+you figure this out. Since this data set is a tidy data set, we already know
+each row is an observation and each column is a feature.
+
+Chapter \@ref(reshaping-tabular-data) gives examples of tidy and untidy data,
+as well as explanations of how to make untidy data tidy.
+
+
+Statistical Forensics
+---------------------
+
+After investigating the data's structure, it's a good idea to check some basic
+statistical properties. This step is important because it can help you identify
+limitations of and patterns in the data.
+
+Which statistics are appropriate for a given feature often depends on the type
+of the feature. Recall from Section \@ref(data-types-classes) that the types
+statisticians typically think about are:
+
+* **Categorical**
+    + **Nominal** - data separated into specific categories, with no order. For
+      example, hair color (red, brown, blonde, ...) is categorical.
+    + **Ordinal** - data separated into specific categories, with an order. For
+      example, school level (elementary, middle, high, college) is ordinal.
+* **Numerical**
+    + **Discrete** - integers, or a finite set of decimal numbers with no
+      values in between. Sometimes discrete values can also be treated as
+      ordinal. For example, month as a number (1, 2, ..., 12) is discrete.
+    + **Continuous** - decimal numbers. There are no specific categories, but
+      there is an order. For example, height in inches is numerical.
+
+The `table` function, which was introduced in Section \@ref(inspecting-data),
+is great for summarizing categorical (and sometimes discrete) data. For
+example:
+
+```{r}
+table(cl$pets)
+```
+
+What about numerical data?
+
+Two important questions to ask about data are:
+
+1. Where is it? This is the _location_ of the data.
+
+2. How spread out is it? This is the _scale_ of the data.
+
+Let's use the data
+
+```r
+x = c(-2, -1, -1, -1, 0, 2, 6)
+```
+
+as an example.
+
+Location is generally summarized with a number near the middle or center of
+the data. A few options are:
+
+1.  **Mode** - the value that appears most frequently. The mode can be
+    calculated for any kind of data, but doesn't work well for continuous data.
+
+    For our example, the mode of `x` is -1. You can compute the mode with
+    `table`:
+
+    ```r
+    table(x)
+    ```
+
+2.  **Median** - sort the data, then find the value in the middle. The median
+    can be calculated for ordinal or numerical data.
+
+    For our example, the median is -1. Compute this with `median`:
+
+    ```r
+    median(x)
+    ```
+
+3.  **Mean** - the balancing point of the data, if a waiter was trying to
+    balance the data on a tray. The mean can only be calculated for numerical
+    data.
+
+    For our example the mean is 0.4285. Compute this with `mean`:
+
+    ```r
+    mean(x)
+    ```
+
+Adding large values to the data affects the mean more than the median:
+
+```r
+y = c(x, 100)
+mean(y)
+median(y)
+```
+
+Because of this, we say that the median is **robust**.
+
+The mean is good for getting a general idea of where the center of the data
+is, while comparing it with the median reveals whether there are any
+unusually large or small values.
+
+Scale is generally summarized by a number that says how far the data is from
+the center (mean, median, etc...). Two options are:
+
+1.  **Standard Deviation** - square root of the average squared distance to the
+    mean (the distance from a point to a mean is called a **deviation**). You
+    can think of this as approximately the average distance from a data point
+    to the mean. As a rule of thumb, most of the data will be within 3 standard
+    deviations of the mean.
+
+    You can compute the standard deviation with `sd`:
+
+    ```r
+    sd(x)
+    ```
+
+2.  **Interquartile Range** (IQR) - difference between the 75th and 25th
+    percentile. The median is the 50th **percentile** of the data; it's at the
+    middle of the sorted data. We can also consider other percentiles. For
+    instance, the 25th percentile is the value one-quarter of the way through
+    the sorted data.
+
+    **Quantile** is another word for percentile. **Quartile** specifically
+    refers to the 25th, 50th, and 75th percentiles because they separate the
+    data into four parts (hence "quart-").
+
+    You can compute quantiles with `quantile`, or compute the IQR directly with
+    `IQR`:
+
+    ```r
+    quantile(x)
+    
+    # IQR
+    IQR(x)
+    ```
+
+The IQR is more robust than the standard deviation.
+
+Many of the functions for computing statistical summaries have a parameter
+`na.rm` to ignore missing values. Setting `na.rm = TRUE` is often useful when
+you're just trying to do an initial investigation of the data. However, in a
+more complete analysis, you should think carefully about what the missing
+values mean, whether they follow any patterns, and whether there are enough
+non-missing values for statistical summaries to be good representatives of the
+data.
+
+Finally, the `summary` function computes a detailed statistical summary of an R
+object. For data frames, the function computes a summary of each column,
+guessing an appropriate statistic based on the column's data type.
+
+
+### Missing Values
+
+If your data contains missing values, it's important to think about why the
+values are missing. Statisticians use two different terms to describe why data
+is missing:
+
+* missing at random (MAR)
+* missing not at random (MNAR) - causes bias!
+
+When values are **missing at random**, the cause for missingness is not related
+to any of the other features. This is rare in practice. For example, if people
+in a food survey accidentally overlook some questions.
+
+When values are **missing not at random**, the cause for missingness depends on
+other features. These features may or may not be in the data set. Think of this
+as a form of censorship. For example, if people in a food survey refuse to
+report how much sugar they ate on days where they ate junk food, data is
+missing not at random. Values MNAR can bias an analysis.
+
+The default way to handle missing values in R is to ignore them. This is just a
+default, not necessarily the best or even an appropriate way to deal with them.
+You can remove missing values from a data set by indexing:
+
+```{r}
+cl_no_sqft_na = cl[!is.na(cl$sqft), ]
+
+head(cl_no_sqft_na)
+```
+
+The `na.omit` function is less precise than indexing, because it removes rows
+that have a missing value in _any_ column. This means lots of information gets
+lost.
+
+Another way to handle missing values is to **impute**, or fill in, the values
+with estimates based on other data in the data set. We won't get into the
+details of how to impute missing values here, since it is a fairly deep
+subject. Generally it is safe to impute MAR values, but not MNAR values.
+
+
+
+### Outliers
+
+An **outlier** is an anomalous or extreme value in a data set. We can picture
+this as a value that's far away from most of the other values. Sometimes
+outliers are a natural part of the data set. In other situations, outliers can
+indicate errors in how the data were measured, recorded, or cleaned.
+
+There's no specific definition for "extreme" or "far away". A good starting
+point for detecting outliers is to make a plot that shows how the values are
+distributed. Box plots and density plots work especially well for this (you'll
+learn about how to make plots in a later lesson):
+
+```{r}
+library(ggplot2)
+
+ggplot(cl, aes(x = sqft)) + geom_boxplot()
+```
+
+Statisticians tend to use the rule of thumb that any value more than 3 standard
+deviations away from the mean is an outlier. You can use the `scale` function
+to compute how many standard deviations the elements in a column are from their
+mean:
+
+```{r}
+z = scale(cl$sqft)
+head(z)
+
+which(z <= -3 | 3 <= z)
+```
+
+Be careful to think about what your specific data set measures, as this
+definition isn't appropriate in every situation.
+
+How can you handle outliers? First, try inspecting other features from the row
+to determine whether the outlier is a valid measurement or an error. When an
+outlier is valid, keep it.
+
+If the outlier interferes with a plot you want to make, you can adjust the x
+and y limits on plots as needed to "ignore" the outlier. Make sure to mention
+this in the plot's title or caption.
+
+When an outlier is not valid, first try to correct it. For example:
+
+* Correct with a different covariate from the _same observation_.
+* Estimate with a mean or median of similar observations. This is another
+  example of imputing values.
+
+For example, in the Craigslist data, we can use the `text` column to try to
+correct outliers:
+
+```{r}
+cat(cl$text[1261])
+```
+
+Based on the text, this apartment is 819 square feet, not 8190 square feet. So
+we can reassign the value:
+```{r}
+cl$sqft[1261] = 819
+```
+
+If other features don't help with correction, try getting information from
+external sources. If you can't correct the outlier but know it's invalid,
+replace it with a missing value `NA`.
+
+
+
+Apply Functions
+---------------
+
+Section \@ref(vectorization) introduced vectorization, a convenient and
+efficient way to compute multiple results. That section also mentioned that
+some of R's functions---the ones that summarize or aggregate data---are not
+vectorized.
+
+The `class` function is an example of a function that's not vectorized. If we
+call the `class` function on the Craigslist data set, we get just one result
+for the data set as a whole:
+
+```{r}
+class(cl)
+```
+
+What if we want to get the class of each column? We can get the class for a
+single column by selecting the column with `$`, the dollar sign operator:
+
+```{r}
+class(cl$pets)
+```
+
+But what if we want the classes for all the columns? We could write a call to
+`class` for each column, but that would be tedious. When you're working with a
+programming language, you should try to avoid tedium; there's usually a better,
+more automated way.
+
+Section \@ref(lists) pointed out that data frames are technically lists, where
+each column is one element. With that in mind, what we need here is a line of
+code that calls `class` on each element of the data frame. The idea is similar
+to vectorization, but since we have a list and a non-vectorized function, we
+have to do a bit more than just call `class(cl)`.
+
+The `lapply` function calls, or _applies_, a function on each element of a list
+or vector. The syntax is:
+
+```
+lapply(X, FUN, ...)
+```
+
+The function `FUN` is called once for each element of `X`, with the element as
+the first argument. The `...` is for additional arguments to `FUN`, which are
+held constant across all the elements.
+
+Let's try this out with the Craigslist data and the `class` function:
+
+```{r}
+lapply(cl, class)
+```
+
+The result is similar to if the `class` function was vectorized. In fact, if we
+use a vector and a vectorized function with `lapply`, the result is nearly
+identical to the result from vectorization:
+
+```{r}
+x = c(1, 2, pi)
+
+sqrt(x)
+
+lapply(x, sqrt)
+```
+
+The only difference is that the result from `lapply` is a list. In fact, the
+`lapply` function always returns a list with one element for each element of
+the input data. The "l" in `lapply` stands for "list".
+
+The `lapply` function is one member of a family of functions called **apply
+functions**. All of the apply functions provide ways to apply a function
+repeatedly to different parts of a data structure. We'll meet a few more apply
+functions soon.
+
+When you have a choice between using vectorization or an apply function, you
+should always choose vectorization. Vectorization is clearer---compare the two
+lines of code above---and it's also significantly more efficient. In fact,
+vectorization is the most efficient way to call a function repeatedly in R.
+
+As we saw with the `class` function, there are some situations where
+vectorization is not possible. That's when you should think about using an
+apply function.
+
+
+### The `sapply` Function
+
+The related `sapply` function calls a function on each element of a list or
+vector, and simplifies the result. That last part is the crucial difference
+compared to `lapply`. When results from the calls all have the same type and
+length, `sapply` returns a vector or matrix instead of a list. When the results
+have different types or lengths, the result is the same as for `lapply`. The
+"s" in `sapply` stands for "simplify".
+
+For instance, if we use `sapply` to find the classes of the columns in the
+Craigslist data, we get a character vector:
+
+```{r}
+sapply(cl, class)
+```
+
+Likewise, if we use `sapply` to compute the `sqrt` values, we get a numeric
+vector, the same as from vectorization:
+
+```{r}
+sapply(x, sqrt)
+```
+
+In spite of that, vectorization is still more efficient than `sapply`, so use
+vectorization instead when possible.
+
+Apply functions are incredibly useful for summarizing data. For example,
+suppose we want to compute the medians for all of the columns in the Craigslist
+data set that are numeric.
+
+First, we need to identify the columns. One way to do this is with the
+`is.numeric` function. Despite the name, this function actually tests whether
+its argument is a real number, not whether it its argument is a numeric vector.
+In other words, it also returns true for integer values. We can use `sapply` to
+apply this function to all of the columns in the Craigslist data set:
+
+```{r}
+is_number = sapply(cl, is.numeric)
+is_number
+```
+
+In general, it's a good habit to use R to do things rather than do them
+manually. You'll get more practice programming, and your code will be more
+flexible if you want to adapt it to other data sets.
+
+Now that we know which columns are numeric, we can use the `median` function to
+compute medians. We only want to compute medians for those columns, so we need
+to subset the data:
+
+```{r}
+sapply(cl[, is_number], median, na.rm = TRUE)
+```
+
+
+
+### The Split-Apply Pattern
+
+In a data set with categorical features, it's often useful to compute something
+for each category. The `lapply` and `sapply` functions can compute something
+for each element of a data structure, but categories are not necessarily
+elements.
+
+For example, the Craigslist data set has four different categories in the
+`laundry` column. If we want all of the rows in one category, one way to get
+them is by indexing:
+
+```{r}
+shared = cl[cl$laundry == "shared", ]
+head(shared)
+```
+
+To get all four categories, we'd have to do this four times. If we want to
+compute something for each category, say the mean of the `price` column, we
+also have to repeat that computation four times. Here's what it would look like
+for just the `shared` category:
+
+```{r}
+mean(shared$price, na.rm = TRUE)
+```
+
+If the categories were elements, we could avoid writing code to index each
+category, and just use the `sapply` (or `lapply`) function to apply the `mean`
+function to each.
+
+The `split` function splits a vector or data frame into groups based on a
+vector of categories. The first argument to `split` is the data, and the
+second argument is a congruent vector of categories.
+
+We can use `split` to elegantly compute means of `price` broken down by
+`laundry`. First, we split the data by category. Since we only want to compute
+on the `price` column, we only split that column:
+
+```{r}
+by_laundry = split(cl$price, cl$laundry)
+class(by_laundry)
+names(by_laundry)
+```
+ 
+The result from `split` is a list with one element for each category. The
+individual elements contain pieces of the original `price` column:
+
+```{r}
+head(by_laundry$hookup)
+```
+
+Since the categories are elements in the split data, now we can use `sapply`
+the same way we did in previous examples:
+
+```{r}
+sapply(by_laundry, mean, na.rm = TRUE)
+```
+
+This two-step process is a data science idiom called the **split-apply
+pattern**. First you use `split` to convert categories into list elements, then
+you use an apply function to compute something on each category. Any time you
+want to compute results by category, you should think of this pattern.
+
+The split-apply pattern is so useful that R provides the `tapply` function as a
+shortcut. The `tapply` function is equivalent to calling `split` and then
+`sapply`. Like `split`, the first argument is the data and the second argument
+is a congruent vector of categories. The third argument is a function to apply,
+like the function argument in `sapply`.
+
+We can use `tapply` to compute the `price` means by `laundry` type for the
+Craigslist data:
+
+```{r}
+tapply(cl$price, cl$laundry, mean, na.rm = TRUE)
+```
+
+Notice that the result is identical to the one we computed before.
+
+The "t" in `tapply` stands for "table", because the `tapply` function is a
+generalization of the `table` function. If you use `length` as the third
+argument to `tapply`, you get the same results as you would from using the
+`table` function on the category vector.
+
+The `aggregate` function is closely related to `tapply`. It computes the same
+results, but organizes them into a data frame with one row for each category.
+In some cases, this format is more convenient. The arguments are the same,
+except that the second argument must be a list or data frame rather than a
+vector. 
+
+As an example, here's the result of using `aggregate` to compute the
+`price` means:
+
+```{r}
+aggregate(cl$price, list(cl$laundry), mean, na.rm = TRUE)
+```
+
+The `lapply`, `sapply`, and `tapply` functions are the three most important
+functions in the family of apply functions, but there are many more. You can
+learn more about all of R's apply functions by reading [this Stack Overflow
+post][apply].
+
+[apply]: https://stackoverflow.com/a/7141669
+

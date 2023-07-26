@@ -1,0 +1,390 @@
+Optical Character Recognition
+=============================
+
+This lesson focuses on extracting data from non-digital sources, such as printed documents, using several packages for Optical Character Recognition.
+
+## Learning Objectives 
+
+After this lesson, you should be able to:  
+
+* Understand the usefulness of OCR
+* Describe how OCR 'reads' 
+* Differentiate between how `print()` and `cat()` represent formatting 
+* Describe different strategies for improving OCR accuracy 
+
+
+## What is Optical Character Recognition?
+
+Much of the data we've used in the course thus far has been **born-digital**. 
+That is, we've used data that originates from a digital source and does not exist 
+elsewhere in some other form. Think back, for example, to the lecture on strings 
+in R: your homework required you to type text directly into RStudio, manipulate 
+it, and print it to screen. But millions, even billions, of data-rich documents 
+do not originate from digital sources. The United States Census, for example, 
+dates back to 1790; we still have these records and could go study them to get a 
+sense of what the population was like hundreds of years ago. Likewise, printing 
+and publishing far precedes the advent of computers; much of the literary record 
+is still bound up between the covers books or stowed away in archives. Computers, 
+however, can't read the way we read, so if we wanted to use digital methods to 
+analyze such materials, we'd need to convert them into a computationally 
+tractable form. How do we do so?
+
+One way would be to transcribe documents by hand, either by typing out 
+**plaintext** versions with word processing software or by using other data entry 
+methods like keypunching to record the information those documents contain. 
+Amazon's Mechanical Turk service is an example of this kind of data entry. It's 
+also worth noting that, for much of the history of computing, data entry was 
+highly gendered and considered to be "dumb", secretarial work that young women 
+would perform. Much of the divisions between "cool" coding and computational grunt 
+work that, in a broad, cultural sense, continue to inform how we think about 
+programming, and indeed who gets to program, stem from such perceptions. In 
+spite of (or perhaps because of) such perceptions, huge amounts of data owe their 
+existence to manual data entry. That said, the process itself is expensive, time 
+consuming, error-prone, and, well, dull.
+
+**Optical character recognition**, or OCR, is an attempt to offload the work of 
+digitization onto computers. Speaking in a general sense, this process ingests 
+images of print pages (such as those available on 
+[Google Books](https://books.google.com/) or [HathiTrust](https://www.hathitrust.org/)), 
+applies various **preprocessing** procedures to those images to make them a bit 
+easier to read, and then scans through them, trying to match the features it 
+finds with a "vocabulary" of text elements it keeps as a point of reference. 
+When it makes a match, OCR records a character and enters it into a **text buffer** 
+(a temporary data store). Oftentimes this buffer also includes formatting data 
+for spaces, new lines, paragraphs, and so on. When OCR is finished, it outputs 
+its matches as a data object, which you can then further manipulate or analyze 
+using other code.
+
+## Loading Page Images
+
+OCR "reads" by tracking pixel variations across page images. This means every 
+page you want to digitize must be converted into an image format. For the 
+purposes of introducing you to OCR, we won't go through the process of creating 
+these images from scratch; instead, we'll be using ready-made examples. The most 
+common page image formats you'll encounter are `pdf` and `png`. They're 
+lightweight, portable, and usually retain the image quality OCR software needs 
+to find text.
+
+The `pdftools` package is good for working with these files:
+
+```{r, message = FALSE}
+# install.packages("pdftools")
+library(pdftools)
+```
+
+Once you've downloaded/installed it, you can load a `pdf` into RStudio from your 
+computer by entering its filesystem location as a string and assigning that 
+string to a variable, like so:
+
+```
+pdf <- "./pdf_sample.pdf"
+```
+
+Note that we haven't used a special load function, like `read.csv()` or 
+`readRDS()`. `pdftools` will grab this file from its location and load it 
+properly when you run a process on it. (You can also just write the string out in 
+whatever function you want to call, but we'll keep our `pdf` location in a variable 
+for the sake of clarity.)
+
+The same method works with web addresses. We'll be using web material. First, 
+write out an address and assign it to a variable.
+
+```{r}
+pdf <- "https://datalab.ucdavis.edu/adventures-in-datascience/pdf_sample.pdf"
+```
+
+Some `pdf` files will have text data already encoded into them. This is 
+especially the case if someone made a file with word processing software (like 
+when you write a paper in Word and email a `pdf` to your TA or professor). You 
+can check whether a `pdf` has text data with `pdf_text()`. Assign this function's 
+output to a variable and print it to screen with `cat()`, like so:
+
+```{r, attr.output='style="max-height: 500px;"'}
+text_data <- pdf_text(pdf)
+cat(text_data)
+```
+
+See how the RStudio terminal recreates the original formatting from the `pdf`. 
+If you were to use `print()` on the text output, you'd see all the line breaks 
+and spaces `pdf_text()` created to match its output with the file. This 
+re-creation would be even more apparent if you were to save the output to a new 
+file with `write()`. Doing so would produce a close, plaintext approximation of 
+the original `pdf`.
+
+You can also process multi-page `pdf` files with `pdf_text()`, with more or less 
+success. It can transcribe whole books and will keep them in a single text 
+buffer, which you can then assign to a variable or save to a file. Keep in mind, 
+however, that if your `pdf` files have headers, footers, page numbers, chapter 
+breaks, or other such paratextual information, `pdf_text()` will pick this up 
+and include it in its output. A later lecture in the course will discuss how to 
+go about dealing with this extra data.
+
+If, when you run `pdf_text()`, you find that your file already contains text 
+data, you're set! There's no need to perform OCR and you can immediately start 
+working with your data. However, if you run the function and find that it outputs 
+a blank character string, you'll need to OCR it. The next section shows you how.
+
+## Running OCR
+
+First, you'll need to download/install another package, `tesseract`, which 
+complements `pdftools`. The latter only loads/reads `pdfs`, whereas `tesseract` 
+actually performs OCR. Download/install `tesseract`: 
+
+```{r}
+# install.packages("tesseract")
+library(tesseract)
+```
+
+And assign a new `pdf` to a new variable:
+
+```{r eval=FALSE}
+new_pdf <- "https://jeroen.github.io/images/ocrscan.pdf"
+```
+
+```{r echo=FALSE}
+new_pdf <- "img/blurry_page_image.png"
+```
+
+To run OCR on this `pdf`, use the following:
+
+```{r FACSIMILE_OCR, cache=TRUE}
+ocr_output <- ocr(new_pdf)
+```
+
+Print the output to screen with `cat()` and see if the process worked:
+
+```{r}
+cat(ocr_output)
+```
+
+Voila! You've just digitized text. The formatting is a little off, but things 
+look good overall. And most importantly, it looks like everything has been 
+transcribed correctly.
+
+As you ran this process, you might've noticed that a new `png` file briefly 
+appeared on your computer. This is because `tesseract` converts `pdfs` to `png` 
+under the hood as part of its pre-processing work and then silently deletes that 
+`png` when it outputs its matches. If you have a collection of `pdf` files that 
+you'd like to OCR, it can sometimes be faster and less memory intensive to 
+convert them all to `png` first. You can perform this conversion like so:
+
+```{r, echo = F}
+new_pdf <- "https://jeroen.github.io/images/ocrscan.pdf"
+```
+
+```{r png_conversion, cache=TRUE}
+png <- pdf_convert(new_pdf, format="png", filenames= "img/png_example.png")
+```
+
+In addition to making a `png` object in your RStudio environment, `pdf_convert()` 
+will also save that file directly to your working directory. Imagine, for 
+example, how you might put a vector of `pdf` files through a `for` loop and save 
+them to a directory, where they can be stored until you're ready to OCR them.
+
+```
+pdfs <- c("list.pdf", "of.pdf", "files.pdf", "to.pdf", "convert.pdf")
+outfiles <- c("list.png", "of.png", "files.png", "to.png", "convert.png")
+
+for (i in 1:length(pdfs)) {
+	pdf_convert(pdfs[i], format="png", filenames=outfiles[i])
+}
+```
+
+`ocr()` can work with a number of different image types. It takes `pngs` in the 
+same way as it takes `pdfs`:
+
+```{r}
+png_ocr_output <- ocr(png)
+```
+
+## Accuracy
+
+If you `cat()` the output from the above `png` file, you might notice that the 
+text is messier than it was when we used `pdf_text_ocr()`.
+
+```{r}
+cat(png_ocr_output)
+```
+
+This doesn't have to do with the `png` file format per se but rather with the 
+way we created our file. If you open it, you'll see that it's quite blurry, 
+which has made it harder for `ocr()` to match the text it represents:
+
+![](./img/blurry_page_image.png)
+
+This blurriness is because `pdf_convert()` defaults its conversions to 72 dpi, 
+or dots per inch. **Dpi** is a measure of image resolution (originally from 
+inkjet printing), which describes the amount of pixels your computer uses to 
+create images. More pixels means higher image resolution, though this comes with 
+a trade off: images with a high dpi are also bigger and take up more space on your 
+computer. Usually, a dpi of 150 is sufficient for most OCR jobs, especially if 
+your documents were printed with technologies like typewriters, dot matrix 
+printers, and so on and if they feature fairly legible typefaces (Times New Roman, 
+for example). A dpi of 300, however, is ideal. You can set the dpi in 
+`pdf_convert()` by adding a dpi argument in the function:
+
+```{r hi_res_png_conversion, cache=TRUE}
+hi_res_png <- pdf_convert(new_pdf, format="png", dpi=150, filenames="./img/hi_res_png_example.png")
+```
+
+Another function, `ocr_data()`outputs a data frame that contains all of the words 
+`tesseract` found when it scanned through your image, along with a column of 
+**confidence scores**. These scores, which range from 0-100, provide valuable 
+information about how well the OCR process has performed, which in turn may 
+tell you whether you need to modify your `pdf` or `png` files further before 
+OCRing them (more on this below). Generally, you can trust scores of 93 and 
+above.
+
+To get confidence scores for an OCR job, call `ocr_data()` and subset the 
+`confidence` column, like so:
+
+```{r, cache=TRUE}
+ocr_data <- ocr_data(hi_res_png)
+confidence_scores <- ocr_data$confidence
+print(confidence_scores)
+```
+
+The mean is a good indicator of the overall OCR quality:
+
+```{r}
+confidence_mean <- mean(confidence_scores)
+print(confidence_mean)
+```
+
+Looks pretty good, though there were a few low scores that dragged the score 
+down a bit. Let's look at the median:
+
+```{r}
+confidence_median <- median(confidence_scores)
+print(confidence_median)
+```
+
+We can work with that!
+
+If we want to check our output a bit more closely, we can do two things. First, 
+we can look directly at `ocr_data` and compare, row by row, a given word and its  
+confidence score.
+
+```{r}
+head(ocr_data, 25)
+```
+
+That's a lot of information though. Something a little more sparse might be 
+better. We can use base R's `table()` function to count the number of times 
+unique words appear in the OCR data. We do this with the `word` column in our 
+`ocr_data` variable from above:
+
+```{r}
+ocr_vocabulary <- table(ocr_data$word)
+ocr_vocabulary <- as.data.frame(ocr_vocabulary)
+```
+
+Let's look at the first 30 words:
+
+```{r}
+head(ocr_vocabulary, 30)
+```
+
+This representation makes it easy to spot errors like discrepancies in spelling. 
+We could correct those either manually or with string matching. One way to further
+examine this table is to look for words that only appear once or twice in the 
+output; among such entries you'll often find misspellings. The table does, however, 
+have its limitations. Looking at this data can quickly become overwhelming if 
+you send in too much text. Additionally, notice that punctuation "sticks" to words 
+and that uppercase and lowercase variants of words are counted separately, 
+rather than together. These quirks are fine, useful even, if we're just 
+spot-checking for errors, but we'd need to further clean this data if we wanted 
+to use it in computational text analysis. A later lecture will discuss other 
+methods that we can use to clean text.
+
+When working in a data-forensic mode with page images, it's a good idea to pull 
+a few files at random and run them through `ocr_data()` to see what you're 
+working with. OCR accuracy is often wholly reliant on the quality of the page 
+images, and most of the work that goes into digitizing text involves properly 
+preparing those images for OCR. Adjustments include making sure images are 
+converted to black and white, increasing image contrast and brightness, increasing 
+dpi, and rotating images so that their text is more or less horizontal. 
+`tesseract` performs some of these tasks itself, but you can also do them ahead 
+of time and often you'll have more control over quality this way. The `tesseract` 
+documentation goes into detail about what you can do to improve accuracy before 
+even opening RStudio; we can't cover this in depth, but keep the resource in mind 
+as you work with this type of material. And remember: the only way to completely 
+trust your accuracy is to go through the OCR output yourself. It's a very common 
+thing to have to make small tweaks to output. In this sense, we haven't quite left 
+the era of hand transcription.
+
+## Unreadable Text
+
+All that said, these various strategies for improving accuracy will only get you 
+so far if your page images are composed in a way OCR just can't read. OCR systems 
+contain a lot of in-built assumptions about what "normal" text is, and they are 
+incredibly brittle when they encounter text that diverges from that norm. Early 
+systems, for example, required documents to be printed with special, machine-readable 
+typefaces; texts that contained anything other than this design couldn't be read. 
+Now, OCR is much better at handling a variety of text styling, but systems still 
+struggle with old print materials like **blackletter**.
+
+![](./img/blackletter_example.jpg)
+
+Running:
+
+```{r ballad_ocr, cache=TRUE}
+ballad <- "https://ebba.english.ucsb.edu/images/cache/hunt_1_18305_2448x2448.jpg"
+ballad_out <- ocr(ballad)
+```
+
+Produces:
+
+```{r, attr.output='style="max-height: 500px;"'}
+cat(ballad_out)
+```
+
+(Note by the way that this example used a `jpg` file. `ocr()` can handle those too.)
+
+Even though every page is an "image" to OCR, OCR struggles with imagistic or 
+unconventional page layouts, as well as inset graphics. Add to that sub-par scans 
+of archival documents, as in the newspaper page below, and the output will 
+contain way more errors than correct matches.
+
+![](./img/chronicling_america_example.png)
+
+```{r newspaper_ocr, cache=TRUE, eval=FALSE}
+newspaper <- "https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf"
+newspaper_ocr <- ocr(newspaper)
+```
+
+```{r newspaper_ocr_hidden, cache=TRUE, echo=FALSE}
+newspaper <- "./img/chronicling_america_example.png"
+newspaper_ocr <- ocr(newspaper)
+```
+
+Beautifully messy output results:
+
+```{r}
+cat(newspaper_ocr)
+```
+
+One strategy you might use to work with sources like this is to crop out 
+everything you don't want to OCR. This would be especially effective if, for 
+example, you had a newspaper column that always appeared in the top left-hand 
+corner of the page. You could preprocess your page images so that they only 
+showed that part of the newspaper and left out any ads, images, or extra text. 
+Doing so would likely increase the quality of your OCR output. Such a strategy 
+can be achieved outside of R with software ranging from Adobe Photoshop or the 
+open-source GIMP to Apple's Automator workflows. Within R, packages like 
+`tabulizer` and `magick` enable this. You won't, however, be required to use 
+these tools in the course, though we may have a chance to demonstrate some of them 
+during lecture.
+
+There are several other scenarios where OCR might not be able to read text. 
+Two final (and major) ones are worth highlighting. First, for a long time OCR 
+support for non-alphabetic writing systems was all but nonexistent. New datasets 
+have been released in recent years that mostly rectify these absences, but 
+sometimes support remains spotty and your mileage may vary. Second, OCR continues 
+to struggle with handwriting. While it is possible to train unsupervised learning 
+processes on datasets of handwriting and get good results, as of yet there is no 
+general purpose method for OCRing handwritten texts. The various ways people 
+write just don't conform to the standardized methods of printing that enable 
+computers to recognize text in images. If, someday, you figure out a solution 
+for this, you'll have solved one of the most challenging problems in computer 
+vision and pattern recognition to date!

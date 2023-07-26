@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>1 Command Line | Adventures in Data Science</title>
+  <meta name="description" content="1 Command Line | Adventures in Data Science" />
+  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="1 Command Line | Adventures in Data Science" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta name="github-repo" content="ucdavisdatalab/adventures_in_data_science" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="1 Command Line | Adventures in Data Science" />
+  
+  
+  
+
+<meta name="author" content="Dr. Carl Stahmer" />
+<meta name="author" content="Dr. Pamela L. Reynolds" />
+<meta name="author" content="Dr. Nick Ulle" />
+<meta name="author" content="Dr. Tyler Shoemaker" />
+<meta name="author" content="Dr. Michele Tobias" />
+<meta name="author" content="Dr. Wesley Brooks" />
+<meta name="author" content="Arthur Koehl" />
+<meta name="author" content="Carrie Alexander" />
+<meta name="author" content="Jared Joseph" />
+<meta name="author" content="Liza Wood" />
+
+
+<meta name="date" content="2023-07-26" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="version-control.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.2/visNetwork.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="https://datalab.ucdavis.edu/">
+  <img src="img/datalab-logo-full-color-rgb.png" style="height: 100%; width: 100%; object-fit: contain" />
+</a></li>
+<li><a href="./" style="font-size: 18px">Adventures in Data Science</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Overview</a></li>
+<li class="chapter" data-level="1" data-path="command-line.html"><a href="command-line.html"><i class="fa fa-check"></i><b>1</b> Command Line</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="command-line.html"><a href="command-line.html#learning-objectives"><i class="fa fa-check"></i><b>1.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="1.2" data-path="command-line.html"><a href="command-line.html#understanding-the-command-line"><i class="fa fa-check"></i><b>1.2</b> Understanding the Command Line</a></li>
+<li class="chapter" data-level="1.3" data-path="command-line.html"><a href="command-line.html#interacting-with-the-command-line"><i class="fa fa-check"></i><b>1.3</b> Interacting with the Command Line</a></li>
+<li class="chapter" data-level="1.4" data-path="command-line.html"><a href="command-line.html#common-command-line-commands"><i class="fa fa-check"></i><b>1.4</b> Common Command Line Commands</a></li>
+<li class="chapter" data-level="1.5" data-path="command-line.html"><a href="command-line.html#command-line-text-editors"><i class="fa fa-check"></i><b>1.5</b> Command Line Text Editors</a></li>
+<li class="chapter" data-level="1.6" data-path="command-line.html"><a href="command-line.html#basic-vim-commands"><i class="fa fa-check"></i><b>1.6</b> Basic Vim Commands</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="version-control.html"><a href="version-control.html"><i class="fa fa-check"></i><b>2</b> Version Control</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="version-control.html"><a href="version-control.html#learning-objectives-1"><i class="fa fa-check"></i><b>2.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="2.2" data-path="version-control.html"><a href="version-control.html#introduction-to-version-control"><i class="fa fa-check"></i><b>2.2</b> Introduction to Version Control</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="version-control.html"><a href="version-control.html#what-is-version-control"><i class="fa fa-check"></i><b>2.2.1</b> What is Version Control?</a></li>
+<li class="chapter" data-level="2.2.2" data-path="version-control.html"><a href="version-control.html#software-assisted-version-control"><i class="fa fa-check"></i><b>2.2.2</b> Software Assisted Version Control</a></li>
+<li class="chapter" data-level="2.2.3" data-path="version-control.html"><a href="version-control.html#local-vs-server-based-version-control"><i class="fa fa-check"></i><b>2.2.3</b> Local vs Server Based Version Control</a></li>
+<li class="chapter" data-level="2.2.4" data-path="version-control.html"><a href="version-control.html#central-vs-distributed-based-version-control"><i class="fa fa-check"></i><b>2.2.4</b> Central vs Distributed Based Version Control</a></li>
+<li class="chapter" data-level="2.2.5" data-path="version-control.html"><a href="version-control.html#how-computers-store-and-access-information"><i class="fa fa-check"></i><b>2.2.5</b> How Computers Store and Access Information</a></li>
+<li class="chapter" data-level="2.2.6" data-path="version-control.html"><a href="version-control.html#how-vcs-manage-your-files"><i class="fa fa-check"></i><b>2.2.6</b> How VCS Manage Your Files</a></li>
+<li class="chapter" data-level="2.2.7" data-path="version-control.html"><a href="version-control.html#additional-resources"><i class="fa fa-check"></i><b>2.2.7</b> Additional Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="version-control.html"><a href="version-control.html#git-local-version-control-basics"><i class="fa fa-check"></i><b>2.3</b> Git Local Version Control Basics</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="version-control.html"><a href="version-control.html#creating-your-first-repo"><i class="fa fa-check"></i><b>2.3.1</b> Creating Your First Repo</a></li>
+<li class="chapter" data-level="2.3.2" data-path="version-control.html"><a href="version-control.html#storing-versions-of-a-file"><i class="fa fa-check"></i><b>2.3.2</b> Storing Versions of a File</a></li>
+<li class="chapter" data-level="2.3.3" data-path="version-control.html"><a href="version-control.html#view-a-history-of-your-commits"><i class="fa fa-check"></i><b>2.3.3</b> View a History of Your Commits</a></li>
+<li class="chapter" data-level="2.3.4" data-path="version-control.html"><a href="version-control.html#comparing-commits-and-files"><i class="fa fa-check"></i><b>2.3.4</b> Comparing Commits and Files</a></li>
+<li class="chapter" data-level="2.3.5" data-path="version-control.html"><a href="version-control.html#undoing-things"><i class="fa fa-check"></i><b>2.3.5</b> Undoing Things</a></li>
+<li class="chapter" data-level="2.3.6" data-path="version-control.html"><a href="version-control.html#git-branching"><i class="fa fa-check"></i><b>2.3.6</b> Git Branching</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="version-control.html"><a href="version-control.html#git-remote-repositories"><i class="fa fa-check"></i><b>2.4</b> Git Remote Repositories</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="version-control.html"><a href="version-control.html#github-basics"><i class="fa fa-check"></i><b>2.4.1</b> GitHub Basics</a></li>
+<li class="chapter" data-level="2.4.2" data-path="version-control.html"><a href="version-control.html#basic-github-account-setup"><i class="fa fa-check"></i><b>2.4.2</b> Basic GitHub Account Setup</a></li>
+<li class="chapter" data-level="2.4.3" data-path="version-control.html"><a href="version-control.html#github-desktop-or-the-command-line"><i class="fa fa-check"></i><b>2.4.3</b> GitHub Desktop, or the Command Line?</a></li>
+<li class="chapter" data-level="2.4.4" data-path="version-control.html"><a href="version-control.html#sync-with-github"><i class="fa fa-check"></i><b>2.4.4</b> Sync with GitHub</a></li>
+<li class="chapter" data-level="2.4.5" data-path="version-control.html"><a href="version-control.html#cloning-a-repository"><i class="fa fa-check"></i><b>2.4.5</b> Cloning a Repository</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="introduction-to-r.html"><a href="introduction-to-r.html"><i class="fa fa-check"></i><b>3</b> Introduction to R</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#learning-objectives-2"><i class="fa fa-check"></i><b>3.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="3.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#before-we-start"><i class="fa fa-check"></i><b>3.2</b> Before We Start</a></li>
+<li class="chapter" data-level="3.3" data-path="introduction-to-r.html"><a href="introduction-to-r.html#mathematical-operations"><i class="fa fa-check"></i><b>3.3</b> Mathematical Operations</a></li>
+<li class="chapter" data-level="3.4" data-path="introduction-to-r.html"><a href="introduction-to-r.html#variables"><i class="fa fa-check"></i><b>3.4</b> Variables</a></li>
+<li class="chapter" data-level="3.5" data-path="introduction-to-r.html"><a href="introduction-to-r.html#calling-functions"><i class="fa fa-check"></i><b>3.5</b> Calling Functions</a></li>
+<li class="chapter" data-level="3.6" data-path="introduction-to-r.html"><a href="introduction-to-r.html#help"><i class="fa fa-check"></i><b>3.6</b> HELP!</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#when-something-goes-wrong-and-it-will"><i class="fa fa-check"></i><b>3.6.1</b> When Something Goes Wrong (and it will)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="introduction-to-r.html"><a href="introduction-to-r.html#vectors"><i class="fa fa-check"></i><b>3.7</b> Vectors</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#indexing-vectors"><i class="fa fa-check"></i><b>3.7.1</b> Indexing Vectors</a></li>
+<li class="chapter" data-level="3.7.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#vectorization"><i class="fa fa-check"></i><b>3.7.2</b> Vectorization</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-frames"><i class="fa fa-check"></i><b>3.8</b> Data Frames</a>
+<ul>
+<li class="chapter" data-level="3.8.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#selecting-columns"><i class="fa fa-check"></i><b>3.8.1</b> Selecting Columns</a></li>
+<li class="chapter" data-level="3.8.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#inspecting-data"><i class="fa fa-check"></i><b>3.8.2</b> Inspecting Data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.9" data-path="introduction-to-r.html"><a href="introduction-to-r.html#data-types-classes"><i class="fa fa-check"></i><b>3.9</b> Data Types &amp; Classes</a>
+<ul>
+<li class="chapter" data-level="3.9.1" data-path="introduction-to-r.html"><a href="introduction-to-r.html#lists"><i class="fa fa-check"></i><b>3.9.1</b> Lists</a></li>
+<li class="chapter" data-level="3.9.2" data-path="introduction-to-r.html"><a href="introduction-to-r.html#implicit-coercion"><i class="fa fa-check"></i><b>3.9.2</b> Implicit Coercion</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html"><i class="fa fa-check"></i><b>4</b> Core Programming Concepts</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#learning-objectives-3"><i class="fa fa-check"></i><b>4.1</b> Learning objectives</a></li>
+<li class="chapter" data-level="4.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#control-structures"><i class="fa fa-check"></i><b>4.2</b> Control Structures</a>
+<ul>
+<li class="chapter" data-level="4.2.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#if-statement"><i class="fa fa-check"></i><b>4.2.1</b> <em>If</em> Statement</a></li>
+<li class="chapter" data-level="4.2.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#relationship-operators"><i class="fa fa-check"></i><b>4.2.2</b> Relationship Operators</a></li>
+<li class="chapter" data-level="4.2.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#if-else-statement"><i class="fa fa-check"></i><b>4.2.3</b> <em>If Else</em> Statement</a></li>
+<li class="chapter" data-level="4.2.4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#ifelse-statement"><i class="fa fa-check"></i><b>4.2.4</b> <em>ifelse</em> Statement</a></li>
+<li class="chapter" data-level="4.2.5" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#the-switch-statement"><i class="fa fa-check"></i><b>4.2.5</b> The <em>switch</em> Statement</a></li>
+<li class="chapter" data-level="4.2.6" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#the-which-statement"><i class="fa fa-check"></i><b>4.2.6</b> The <em>which</em> Statement</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#iteration"><i class="fa fa-check"></i><b>4.3</b> Iteration</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#for-i-in-x-loops"><i class="fa fa-check"></i><b>4.3.1</b> For <em>i</em> in <em>x</em> Loops</a></li>
+<li class="chapter" data-level="4.3.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#while-loops"><i class="fa fa-check"></i><b>4.3.2</b> <em>While</em> Loops</a></li>
+<li class="chapter" data-level="4.3.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#repeat-loops"><i class="fa fa-check"></i><b>4.3.3</b> <em>Repeat</em> Loops</a></li>
+<li class="chapter" data-level="4.3.4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#break-and-next"><i class="fa fa-check"></i><b>4.3.4</b> <em>Break</em> and <em>Next</em></a></li>
+<li class="chapter" data-level="4.3.5" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#iterating-data.frame-rows-in-r"><i class="fa fa-check"></i><b>4.3.5</b> Iterating Data.Frame Rows in R</a></li>
+<li class="chapter" data-level="4.3.6" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#lapply"><i class="fa fa-check"></i><b>4.3.6</b> <em>lapply()</em></a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#functions"><i class="fa fa-check"></i><b>4.4</b> Functions</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#what-is-a-function"><i class="fa fa-check"></i><b>4.4.1</b> What is a function?</a></li>
+<li class="chapter" data-level="4.4.2" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#what-is-the-basic-syntax-of-a-function-in-r"><i class="fa fa-check"></i><b>4.4.2</b> What is the basic syntax of a function in R?</a></li>
+<li class="chapter" data-level="4.4.3" data-path="core-programming-concepts.html"><a href="core-programming-concepts.html#building-and-calling-functions"><i class="fa fa-check"></i><b>4.4.3</b> Building and calling functions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html"><i class="fa fa-check"></i><b>5</b> Files, Packages, and Data</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#learning-objectives-4"><i class="fa fa-check"></i><b>5.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="5.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#working-with-files"><i class="fa fa-check"></i><b>5.2</b> Working with Files</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#setup"><i class="fa fa-check"></i><b>5.2.1</b> Setup</a></li>
+<li class="chapter" data-level="5.2.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#exploring-files"><i class="fa fa-check"></i><b>5.2.2</b> Exploring Files</a></li>
+<li class="chapter" data-level="5.2.3" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#reading-and-writing-files-in-r"><i class="fa fa-check"></i><b>5.2.3</b> Reading and Writing Files in R</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#packages"><i class="fa fa-check"></i><b>5.3</b> Packages</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#cran"><i class="fa fa-check"></i><b>5.3.1</b> CRAN</a></li>
+<li class="chapter" data-level="5.3.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#using-packages"><i class="fa fa-check"></i><b>5.3.2</b> Using Packages</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#factors-special-values-and-indexing"><i class="fa fa-check"></i><b>5.4</b> Factors, Special Values, and Indexing</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#factors"><i class="fa fa-check"></i><b>5.4.1</b> Factors</a></li>
+<li class="chapter" data-level="5.4.2" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#special-values"><i class="fa fa-check"></i><b>5.4.2</b> Special Values</a></li>
+<li class="chapter" data-level="5.4.3" data-path="files-packages-and-data.html"><a href="files-packages-and-data.html#indexing"><i class="fa fa-check"></i><b>5.4.3</b> Indexing</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="data-structures.html"><a href="data-structures.html"><i class="fa fa-check"></i><b>6</b> Data Structures</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="data-structures.html"><a href="data-structures.html#learning-objectives-5"><i class="fa fa-check"></i><b>6.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="6.2" data-path="data-structures.html"><a href="data-structures.html#what-are-data"><i class="fa fa-check"></i><b>6.2</b> What are data?</a></li>
+<li class="chapter" data-level="6.3" data-path="data-structures.html"><a href="data-structures.html#tabular-data"><i class="fa fa-check"></i><b>6.3</b> Tabular Data</a></li>
+<li class="chapter" data-level="6.4" data-path="data-structures.html"><a href="data-structures.html#tree-document-data-structures"><i class="fa fa-check"></i><b>6.4</b> Tree / Document Data Structures</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-xml"><i class="fa fa-check"></i><b>6.4.1</b> Structuring Data as XML</a></li>
+<li class="chapter" data-level="6.4.2" data-path="data-structures.html"><a href="data-structures.html#structuring-data-as-json"><i class="fa fa-check"></i><b>6.4.2</b> Structuring Data as JSON</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="data-structures.html"><a href="data-structures.html#relational-databases"><i class="fa fa-check"></i><b>6.5</b> Relational Databases</a></li>
+<li class="chapter" data-level="6.6" data-path="data-structures.html"><a href="data-structures.html#non-hierarchical-relational-data"><i class="fa fa-check"></i><b>6.6</b> Non-Hierarchical Relational Data</a></li>
+<li class="chapter" data-level="6.7" data-path="data-structures.html"><a href="data-structures.html#geospatial-data"><i class="fa fa-check"></i><b>6.7</b> Geospatial Data</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="data-forensics.html"><a href="data-forensics.html"><i class="fa fa-check"></i><b>7</b> Data Forensics</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="data-forensics.html"><a href="data-forensics.html#learning-objectives-6"><i class="fa fa-check"></i><b>7.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="7.2" data-path="data-forensics.html"><a href="data-forensics.html#structural-summaries-cleaning"><i class="fa fa-check"></i><b>7.2</b> Structural Summaries &amp; Cleaning</a>
+<ul>
+<li class="chapter" data-level="7.2.1" data-path="data-forensics.html"><a href="data-forensics.html#dates"><i class="fa fa-check"></i><b>7.2.1</b> Dates</a></li>
+<li class="chapter" data-level="7.2.2" data-path="data-forensics.html"><a href="data-forensics.html#tidy-data"><i class="fa fa-check"></i><b>7.2.2</b> Tidy Data</a></li>
+</ul></li>
+<li class="chapter" data-level="7.3" data-path="data-forensics.html"><a href="data-forensics.html#statistical-forensics"><i class="fa fa-check"></i><b>7.3</b> Statistical Forensics</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="data-forensics.html"><a href="data-forensics.html#missing-values-1"><i class="fa fa-check"></i><b>7.3.1</b> Missing Values</a></li>
+<li class="chapter" data-level="7.3.2" data-path="data-forensics.html"><a href="data-forensics.html#outliers"><i class="fa fa-check"></i><b>7.3.2</b> Outliers</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="data-forensics.html"><a href="data-forensics.html#apply-functions"><i class="fa fa-check"></i><b>7.4</b> Apply Functions</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="data-forensics.html"><a href="data-forensics.html#the-sapply-function"><i class="fa fa-check"></i><b>7.4.1</b> The <code>sapply</code> Function</a></li>
+<li class="chapter" data-level="7.4.2" data-path="data-forensics.html"><a href="data-forensics.html#the-split-apply-pattern"><i class="fa fa-check"></i><b>7.4.2</b> The Split-Apply Pattern</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="data-visualization.html"><a href="data-visualization.html"><i class="fa fa-check"></i><b>8</b> Data Visualization</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="data-visualization.html"><a href="data-visualization.html#learning-objectives-7"><i class="fa fa-check"></i><b>8.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="8.2" data-path="data-visualization.html"><a href="data-visualization.html#principles-perception"><i class="fa fa-check"></i><b>8.2</b> Principles &amp; Perception</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="data-visualization.html"><a href="data-visualization.html#a-brief-history-of-data-visualization"><i class="fa fa-check"></i><b>8.2.1</b> A Brief History of Data Visualization</a></li>
+<li class="chapter" data-level="8.2.2" data-path="data-visualization.html"><a href="data-visualization.html#what-is-data-visualization"><i class="fa fa-check"></i><b>8.2.2</b> What is Data Visualization?</a></li>
+<li class="chapter" data-level="8.2.3" data-path="data-visualization.html"><a href="data-visualization.html#before-you-viz-make-a-plan"><i class="fa fa-check"></i><b>8.2.3</b> Before You Viz, Make a Plan</a></li>
+<li class="chapter" data-level="8.2.4" data-path="data-visualization.html"><a href="data-visualization.html#graphical-elements-of-a-plot"><i class="fa fa-check"></i><b>8.2.4</b> Graphical Elements of a Plot</a></li>
+<li class="chapter" data-level="8.2.5" data-path="data-visualization.html"><a href="data-visualization.html#principles-of-visual-perception"><i class="fa fa-check"></i><b>8.2.5</b> Principles of Visual Perception</a></li>
+<li class="chapter" data-level="8.2.6" data-path="data-visualization.html"><a href="data-visualization.html#accessible-data-visualizations"><i class="fa fa-check"></i><b>8.2.6</b> Accessible Data Visualizations</a></li>
+<li class="chapter" data-level="8.2.7" data-path="data-visualization.html"><a href="data-visualization.html#designing-statistical-graphics"><i class="fa fa-check"></i><b>8.2.7</b> Designing Statistical Graphics</a></li>
+<li class="chapter" data-level="8.2.8" data-path="data-visualization.html"><a href="data-visualization.html#tips-for-better-plots"><i class="fa fa-check"></i><b>8.2.8</b> Tips for Better Plots</a></li>
+<li class="chapter" data-level="8.2.9" data-path="data-visualization.html"><a href="data-visualization.html#references-and-additional-resources"><i class="fa fa-check"></i><b>8.2.9</b> References and Additional Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="data-visualization.html"><a href="data-visualization.html#data-viz-with-ggplot-in-r"><i class="fa fa-check"></i><b>8.3</b> Data Viz with <code>ggplot</code> in R</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="data-visualization.html"><a href="data-visualization.html#r-graphics-overview"><i class="fa fa-check"></i><b>8.3.1</b> R Graphics Overview</a></li>
+<li class="chapter" data-level="8.3.2" data-path="data-visualization.html"><a href="data-visualization.html#the-grammar-of-graphics"><i class="fa fa-check"></i><b>8.3.2</b> The Grammar of Graphics</a></li>
+<li class="chapter" data-level="8.3.3" data-path="data-visualization.html"><a href="data-visualization.html#saving-plots"><i class="fa fa-check"></i><b>8.3.3</b> Saving Plots</a></li>
+<li class="chapter" data-level="8.3.4" data-path="data-visualization.html"><a href="data-visualization.html#example-bar-plot"><i class="fa fa-check"></i><b>8.3.4</b> Example: Bar Plot</a></li>
+<li class="chapter" data-level="8.3.5" data-path="data-visualization.html"><a href="data-visualization.html#remembering-factors"><i class="fa fa-check"></i><b>8.3.5</b> Remembering factors</a></li>
+<li class="chapter" data-level="8.3.6" data-path="data-visualization.html"><a href="data-visualization.html#designing-a-visualization"><i class="fa fa-check"></i><b>8.3.6</b> Designing a Visualization</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html"><i class="fa fa-check"></i><b>9</b> Getting Data from the Web</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#learning-objectives-8"><i class="fa fa-check"></i><b>9.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="9.2" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#how-the-web-works"><i class="fa fa-check"></i><b>9.2</b> How the Web Works</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#client-server-architecture"><i class="fa fa-check"></i><b>9.2.1</b> Client-Server Architecture</a></li>
+<li class="chapter" data-level="9.2.2" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#understanding-urls"><i class="fa fa-check"></i><b>9.2.2</b> Understanding URLs</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#accessing-data-online"><i class="fa fa-check"></i><b>9.3</b> Accessing Data Online</a></li>
+<li class="chapter" data-level="9.4" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#apis"><i class="fa fa-check"></i><b>9.4</b> APIs</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#querying-to-an-api"><i class="fa fa-check"></i><b>9.4.1</b> Querying to an API</a></li>
+</ul></li>
+<li class="chapter" data-level="9.5" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#web-scraping"><i class="fa fa-check"></i><b>9.5</b> Web Scraping</a>
+<ul>
+<li class="chapter" data-level="9.5.1" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#whats-in-a-web-page"><i class="fa fa-check"></i><b>9.5.1</b> What’s in a Web Page?</a></li>
+<li class="chapter" data-level="9.5.2" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#rs-xml-parsers"><i class="fa fa-check"></i><b>9.5.2</b> R’s XML Parsers</a></li>
+<li class="chapter" data-level="9.5.3" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#xpath"><i class="fa fa-check"></i><b>9.5.3</b> XPath</a></li>
+<li class="chapter" data-level="9.5.4" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#the-web-scraping-workflow"><i class="fa fa-check"></i><b>9.5.4</b> The Web Scraping Workflow</a></li>
+<li class="chapter" data-level="9.5.5" data-path="getting-data-from-the-web.html"><a href="getting-data-from-the-web.html#css-selectors"><i class="fa fa-check"></i><b>9.5.5</b> CSS Selectors</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html"><i class="fa fa-check"></i><b>10</b> Strings and Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#learning-objectives-9"><i class="fa fa-check"></i><b>10.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="10.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#printing-output"><i class="fa fa-check"></i><b>10.2</b> Printing Output</a></li>
+<li class="chapter" data-level="10.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences"><i class="fa fa-check"></i><b>10.3</b> Escape Sequences</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#raw-strings"><i class="fa fa-check"></i><b>10.3.1</b> Raw Strings</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings"><i class="fa fa-check"></i><b>10.4</b> Character Encodings</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-encodings-in-text-files"><i class="fa fa-check"></i><b>10.4.1</b> Character Encodings in Text Files</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#stringr-and-the-tidyverse"><i class="fa fa-check"></i><b>10.5</b> <code>stringr</code> and the <code>tidyverse</code></a>
+<ul>
+<li class="chapter" data-level="10.5.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-tidyverse"><i class="fa fa-check"></i><b>10.5.1</b> The Tidyverse</a></li>
+<li class="chapter" data-level="10.5.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#stringr"><i class="fa fa-check"></i><b>10.5.2</b> <code>stringr</code></a></li>
+</ul></li>
+<li class="chapter" data-level="10.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#regular-expressions"><i class="fa fa-check"></i><b>10.6</b> Regular Expressions</a>
+<ul>
+<li class="chapter" data-level="10.6.1" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#the-wildcard"><i class="fa fa-check"></i><b>10.6.1</b> The Wildcard</a></li>
+<li class="chapter" data-level="10.6.2" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#escape-sequences-1"><i class="fa fa-check"></i><b>10.6.2</b> Escape Sequences</a></li>
+<li class="chapter" data-level="10.6.3" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#anchors"><i class="fa fa-check"></i><b>10.6.3</b> Anchors</a></li>
+<li class="chapter" data-level="10.6.4" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#character-classes"><i class="fa fa-check"></i><b>10.6.4</b> Character Classes</a></li>
+<li class="chapter" data-level="10.6.5" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#quantifiers"><i class="fa fa-check"></i><b>10.6.5</b> Quantifiers</a></li>
+<li class="chapter" data-level="10.6.6" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#groups"><i class="fa fa-check"></i><b>10.6.6</b> Groups</a></li>
+<li class="chapter" data-level="10.6.7" data-path="strings-and-regular-expressions.html"><a href="strings-and-regular-expressions.html#extracting-matches"><i class="fa fa-check"></i><b>10.6.7</b> Extracting Matches</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html"><i class="fa fa-check"></i><b>11</b> Optical Character Recognition</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#learning-objectives-10"><i class="fa fa-check"></i><b>11.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="11.2" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#what-is-optical-character-recognition"><i class="fa fa-check"></i><b>11.2</b> What is Optical Character Recognition?</a></li>
+<li class="chapter" data-level="11.3" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#loading-page-images"><i class="fa fa-check"></i><b>11.3</b> Loading Page Images</a></li>
+<li class="chapter" data-level="11.4" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#running-ocr"><i class="fa fa-check"></i><b>11.4</b> Running OCR</a></li>
+<li class="chapter" data-level="11.5" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#accuracy"><i class="fa fa-check"></i><b>11.5</b> Accuracy</a></li>
+<li class="chapter" data-level="11.6" data-path="optical-character-recognition.html"><a href="optical-character-recognition.html#unreadable-text"><i class="fa fa-check"></i><b>11.6</b> Unreadable Text</a></li>
+</ul></li>
+<li class="chapter" data-level="12" data-path="statistics.html"><a href="statistics.html"><i class="fa fa-check"></i><b>12</b> Statistics</a>
+<ul>
+<li class="chapter" data-level="12.1" data-path="statistics.html"><a href="statistics.html#introduction"><i class="fa fa-check"></i><b>12.1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="12.1.1" data-path="statistics.html"><a href="statistics.html#mice_pot-dataset"><i class="fa fa-check"></i><b>12.1.1</b> <code>mice_pot</code> dataset</a></li>
+<li class="chapter" data-level="12.1.2" data-path="statistics.html"><a href="statistics.html#barnacles-dataset"><i class="fa fa-check"></i><b>12.1.2</b> <code>barnacles</code> dataset</a></li>
+<li class="chapter" data-level="12.1.3" data-path="statistics.html"><a href="statistics.html#sample-and-population"><i class="fa fa-check"></i><b>12.1.3</b> Sample and population</a></li>
+</ul></li>
+<li class="chapter" data-level="12.2" data-path="statistics.html"><a href="statistics.html#uses-of-simulation"><i class="fa fa-check"></i><b>12.2</b> Uses of simulation</a></li>
+<li class="chapter" data-level="12.3" data-path="statistics.html"><a href="statistics.html#mathematical-statistics"><i class="fa fa-check"></i><b>12.3</b> Mathematical statistics</a>
+<ul>
+<li class="chapter" data-level="12.3.1" data-path="statistics.html"><a href="statistics.html#law-of-large-numbers"><i class="fa fa-check"></i><b>12.3.1</b> Law of large numbers</a></li>
+<li class="chapter" data-level="12.3.2" data-path="statistics.html"><a href="statistics.html#central-limit-theorem"><i class="fa fa-check"></i><b>12.3.2</b> Central limit theorem</a></li>
+</ul></li>
+<li class="chapter" data-level="12.4" data-path="statistics.html"><a href="statistics.html#statistical-inference"><i class="fa fa-check"></i><b>12.4</b> Statistical inference</a>
+<ul>
+<li class="chapter" data-level="12.4.1" data-path="statistics.html"><a href="statistics.html#confidence-intervals"><i class="fa fa-check"></i><b>12.4.1</b> Confidence intervals</a></li>
+<li class="chapter" data-level="12.4.2" data-path="statistics.html"><a href="statistics.html#two-population-test"><i class="fa fa-check"></i><b>12.4.2</b> Two-population test</a></li>
+<li class="chapter" data-level="12.4.3" data-path="statistics.html"><a href="statistics.html#hypothesis-tests-for-non-normal-data"><i class="fa fa-check"></i><b>12.4.3</b> Hypothesis tests for non-normal data</a></li>
+</ul></li>
+<li class="chapter" data-level="12.5" data-path="statistics.html"><a href="statistics.html#regression"><i class="fa fa-check"></i><b>12.5</b> Regression</a>
+<ul>
+<li class="chapter" data-level="12.5.1" data-path="statistics.html"><a href="statistics.html#fitting-a-regression-line"><i class="fa fa-check"></i><b>12.5.1</b> Fitting a regression line</a></li>
+<li class="chapter" data-level="12.5.2" data-path="statistics.html"><a href="statistics.html#assumptions-and-diagnostics"><i class="fa fa-check"></i><b>12.5.2</b> Assumptions and diagnostics</a></li>
+<li class="chapter" data-level="12.5.3" data-path="statistics.html"><a href="statistics.html#functions-for-inspecting-regression-fits"><i class="fa fa-check"></i><b>12.5.3</b> Functions for inspecting regression fits</a></li>
+<li class="chapter" data-level="12.5.4" data-path="statistics.html"><a href="statistics.html#a-model-that-fails-diagnostics"><i class="fa fa-check"></i><b>12.5.4</b> A model that fails diagnostics</a></li>
+<li class="chapter" data-level="12.5.5" data-path="statistics.html"><a href="statistics.html#predictions-and-variability"><i class="fa fa-check"></i><b>12.5.5</b> Predictions and variability</a></li>
+</ul></li>
+<li class="chapter" data-level="12.6" data-path="statistics.html"><a href="statistics.html#model-selection"><i class="fa fa-check"></i><b>12.6</b> Model selection</a></li>
+<li class="chapter" data-level="12.7" data-path="statistics.html"><a href="statistics.html#cross-validation"><i class="fa fa-check"></i><b>12.7</b> Cross-validation</a></li>
+</ul></li>
+<li class="chapter" data-level="13" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html"><i class="fa fa-check"></i><b>13</b> Reshaping Tabular Data</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#learning-objectives-11"><i class="fa fa-check"></i><b>13.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="13.2" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#introduction-1"><i class="fa fa-check"></i><b>13.2</b> Introduction</a></li>
+<li class="chapter" data-level="13.3" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#columns-into-rows"><i class="fa fa-check"></i><b>13.3</b> Columns into Rows</a>
+<ul>
+<li class="chapter" data-level="13.3.1" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#how-to-pivot-longer-without-tidyr"><i class="fa fa-check"></i><b>13.3.1</b> How to Pivot Longer without <strong>tidyr</strong></a></li>
+</ul></li>
+<li class="chapter" data-level="13.4" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#rows-into-columns"><i class="fa fa-check"></i><b>13.4</b> Rows into Columns</a></li>
+<li class="chapter" data-level="13.5" data-path="reshaping-tabular-data.html"><a href="reshaping-tabular-data.html#separating-values"><i class="fa fa-check"></i><b>13.5</b> Separating Values</a></li>
+</ul></li>
+<li class="chapter" data-level="14" data-path="network-analysis.html"><a href="network-analysis.html"><i class="fa fa-check"></i><b>14</b> Network Analysis</a>
+<ul>
+<li class="chapter" data-level="14.1" data-path="network-analysis.html"><a href="network-analysis.html#learning-objectives-12"><i class="fa fa-check"></i><b>14.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="14.2" data-path="network-analysis.html"><a href="network-analysis.html#what-is-a-network"><i class="fa fa-check"></i><b>14.2</b> What is a network?</a>
+<ul>
+<li class="chapter" data-level="14.2.1" data-path="network-analysis.html"><a href="network-analysis.html#networks-in-research"><i class="fa fa-check"></i><b>14.2.1</b> Networks in research</a></li>
+</ul></li>
+<li class="chapter" data-level="14.3" data-path="network-analysis.html"><a href="network-analysis.html#network-data"><i class="fa fa-check"></i><b>14.3</b> Network Data</a>
+<ul>
+<li class="chapter" data-level="14.3.1" data-path="network-analysis.html"><a href="network-analysis.html#edgelist"><i class="fa fa-check"></i><b>14.3.1</b> Edgelist</a></li>
+<li class="chapter" data-level="14.3.2" data-path="network-analysis.html"><a href="network-analysis.html#adjacency-matrix"><i class="fa fa-check"></i><b>14.3.2</b> Adjacency Matrix</a></li>
+<li class="chapter" data-level="14.3.3" data-path="network-analysis.html"><a href="network-analysis.html#edge-weights"><i class="fa fa-check"></i><b>14.3.3</b> Edge Weights</a></li>
+<li class="chapter" data-level="14.3.4" data-path="network-analysis.html"><a href="network-analysis.html#attributes"><i class="fa fa-check"></i><b>14.3.4</b> Attributes</a></li>
+<li class="chapter" data-level="14.3.5" data-path="network-analysis.html"><a href="network-analysis.html#create-an-example-network"><i class="fa fa-check"></i><b>14.3.5</b> Create an Example Network</a></li>
+<li class="chapter" data-level="14.3.6" data-path="network-analysis.html"><a href="network-analysis.html#components"><i class="fa fa-check"></i><b>14.3.6</b> Components</a></li>
+<li class="chapter" data-level="14.3.7" data-path="network-analysis.html"><a href="network-analysis.html#limitations-of-network-data"><i class="fa fa-check"></i><b>14.3.7</b> Limitations of Network Data</a></li>
+<li class="chapter" data-level="14.3.8" data-path="network-analysis.html"><a href="network-analysis.html#projected-networks"><i class="fa fa-check"></i><b>14.3.8</b> Projected Networks</a></li>
+</ul></li>
+<li class="chapter" data-level="14.4" data-path="network-analysis.html"><a href="network-analysis.html#graph-level-properties"><i class="fa fa-check"></i><b>14.4</b> Graph Level Properties</a>
+<ul>
+<li class="chapter" data-level="14.4.1" data-path="network-analysis.html"><a href="network-analysis.html#directed-or-un-directed"><i class="fa fa-check"></i><b>14.4.1</b> Directed or Un-directed</a></li>
+<li class="chapter" data-level="14.4.2" data-path="network-analysis.html"><a href="network-analysis.html#density"><i class="fa fa-check"></i><b>14.4.2</b> Density</a></li>
+<li class="chapter" data-level="14.4.3" data-path="network-analysis.html"><a href="network-analysis.html#centralization"><i class="fa fa-check"></i><b>14.4.3</b> Centralization</a></li>
+</ul></li>
+<li class="chapter" data-level="14.5" data-path="network-analysis.html"><a href="network-analysis.html#node-level-properties"><i class="fa fa-check"></i><b>14.5</b> Node Level Properties</a>
+<ul>
+<li class="chapter" data-level="14.5.1" data-path="network-analysis.html"><a href="network-analysis.html#degree"><i class="fa fa-check"></i><b>14.5.1</b> Degree</a></li>
+<li class="chapter" data-level="14.5.2" data-path="network-analysis.html"><a href="network-analysis.html#geodesic-distance"><i class="fa fa-check"></i><b>14.5.2</b> Geodesic Distance</a></li>
+<li class="chapter" data-level="14.5.3" data-path="network-analysis.html"><a href="network-analysis.html#centrality"><i class="fa fa-check"></i><b>14.5.3</b> Centrality</a></li>
+</ul></li>
+<li class="chapter" data-level="14.6" data-path="network-analysis.html"><a href="network-analysis.html#network-workflow"><i class="fa fa-check"></i><b>14.6</b> Network Workflow</a></li>
+<li class="chapter" data-level="14.7" data-path="network-analysis.html"><a href="network-analysis.html#network-tools"><i class="fa fa-check"></i><b>14.7</b> Network Tools</a>
+<ul>
+<li class="chapter" data-level="14.7.1" data-path="network-analysis.html"><a href="network-analysis.html#network-models"><i class="fa fa-check"></i><b>14.7.1</b> Network Models</a></li>
+<li class="chapter" data-level="14.7.2" data-path="network-analysis.html"><a href="network-analysis.html#network-visualization"><i class="fa fa-check"></i><b>14.7.2</b> Network Visualization</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="15" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html"><i class="fa fa-check"></i><b>15</b> Data Forensics and Cleaning: Unstructured Data</a>
+<ul>
+<li class="chapter" data-level="15.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#learning-objectives-13"><i class="fa fa-check"></i><b>15.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="15.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#using-a-file-manifest"><i class="fa fa-check"></i><b>15.2</b> Using a File Manifest</a></li>
+<li class="chapter" data-level="15.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#loading-a-corpus"><i class="fa fa-check"></i><b>15.3</b> Loading a Corpus</a></li>
+<li class="chapter" data-level="15.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#preprocessing"><i class="fa fa-check"></i><b>15.4</b> Preprocessing</a>
+<ul>
+<li class="chapter" data-level="15.4.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizing-and-bags-of-words"><i class="fa fa-check"></i><b>15.4.1</b> Tokenizing and Bags of Words</a></li>
+<li class="chapter" data-level="15.4.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-normalization"><i class="fa fa-check"></i><b>15.4.2</b> Text Normalization</a></li>
+<li class="chapter" data-level="15.4.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#stop-words"><i class="fa fa-check"></i><b>15.4.3</b> Stop Words</a></li>
+<li class="chapter" data-level="15.4.4" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tokenizers"><i class="fa fa-check"></i><b>15.4.4</b> Tokenizers</a></li>
+<li class="chapter" data-level="15.4.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-chunking-and-n-grams"><i class="fa fa-check"></i><b>15.4.5</b> Document Chunking and N-grams</a></li>
+</ul></li>
+<li class="chapter" data-level="15.5" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#counting-terms"><i class="fa fa-check"></i><b>15.5</b> Counting Terms</a>
+<ul>
+<li class="chapter" data-level="15.5.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#term-frequency"><i class="fa fa-check"></i><b>15.5.1</b> Term Frequency</a></li>
+<li class="chapter" data-level="15.5.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#plotting-term-frequency"><i class="fa fa-check"></i><b>15.5.2</b> Plotting Term Frequency</a></li>
+<li class="chapter" data-level="15.5.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#comparing-term-frequencies-across-documents"><i class="fa fa-check"></i><b>15.5.3</b> Comparing Term Frequencies Across Documents</a></li>
+</ul></li>
+<li class="chapter" data-level="15.6" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#text-mining-pipepline"><i class="fa fa-check"></i><b>15.6</b> Text Mining Pipepline</a></li>
+<li class="chapter" data-level="15.7" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#document-term-matrix"><i class="fa fa-check"></i><b>15.7</b> Document Term Matrix</a></li>
+<li class="chapter" data-level="15.8" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-analytics"><i class="fa fa-check"></i><b>15.8</b> Corpus Analytics</a>
+<ul>
+<li class="chapter" data-level="15.8.1" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#corpus-term-counts"><i class="fa fa-check"></i><b>15.8.1</b> Corpus Term Counts</a></li>
+<li class="chapter" data-level="15.8.2" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#tfidf-scores"><i class="fa fa-check"></i><b>15.8.2</b> tf–idf Scores</a></li>
+<li class="chapter" data-level="15.8.3" data-path="data-forensics-and-cleaning-unstructured-data.html"><a href="data-forensics-and-cleaning-unstructured-data.html#unique-terms-in-a-document"><i class="fa fa-check"></i><b>15.8.3</b> Unique Terms in a Document</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="16" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html"><i class="fa fa-check"></i><b>16</b> Data Forensics and Cleaning: Geospatial Data</a>
+<ul>
+<li class="chapter" data-level="16.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#learning-objectives-14"><i class="fa fa-check"></i><b>16.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="16.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#what-is-geospatial-data"><i class="fa fa-check"></i><b>16.2</b> What is Geospatial Data?</a>
+<ul>
+<li class="chapter" data-level="16.2.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#attributes-1"><i class="fa fa-check"></i><b>16.2.1</b> Attributes</a></li>
+<li class="chapter" data-level="16.2.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinate-reference-system"><i class="fa fa-check"></i><b>16.2.2</b> Coordinate Reference System</a></li>
+<li class="chapter" data-level="16.2.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#coordinates"><i class="fa fa-check"></i><b>16.2.3</b> Coordinates</a></li>
+</ul></li>
+<li class="chapter" data-level="16.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#geospatial-data-models"><i class="fa fa-check"></i><b>16.3</b> Geospatial Data Models</a>
+<ul>
+<li class="chapter" data-level="16.3.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#vector-data"><i class="fa fa-check"></i><b>16.3.1</b> Vector Data</a></li>
+<li class="chapter" data-level="16.3.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#raster-data"><i class="fa fa-check"></i><b>16.3.2</b> Raster Data</a></li>
+</ul></li>
+<li class="chapter" data-level="16.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#data-structures-applied-to-geospatial-data"><i class="fa fa-check"></i><b>16.4</b> Data Structures Applied to Geospatial Data</a></li>
+<li class="chapter" data-level="16.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-geospatial-data"><i class="fa fa-check"></i><b>16.5</b> Cleaning Geospatial Data</a>
+<ul>
+<li class="chapter" data-level="16.5.1" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#example-data"><i class="fa fa-check"></i><b>16.5.1</b> Example Data</a></li>
+<li class="chapter" data-level="16.5.2" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#making-location-data-usable"><i class="fa fa-check"></i><b>16.5.2</b> Making Location Data Usable</a></li>
+<li class="chapter" data-level="16.5.3" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-location-data"><i class="fa fa-check"></i><b>16.5.3</b> Cleaning Location Data</a></li>
+<li class="chapter" data-level="16.5.4" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#cleaning-attribute-data"><i class="fa fa-check"></i><b>16.5.4</b> Cleaning Attribute Data</a></li>
+<li class="chapter" data-level="16.5.5" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#checking-coordinate-reference-systems"><i class="fa fa-check"></i><b>16.5.5</b> Checking Coordinate Reference Systems</a></li>
+</ul></li>
+<li class="chapter" data-level="16.6" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#conclusions"><i class="fa fa-check"></i><b>16.6</b> Conclusions</a></li>
+<li class="chapter" data-level="16.7" data-path="data-forensics-and-cleaning-geospatial-data.html"><a href="data-forensics-and-cleaning-geospatial-data.html#optional-further-reading"><i class="fa fa-check"></i><b>16.7</b> Optional Further Reading</a></li>
+</ul></li>
+<li class="divider"></li>
+<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
+  <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;" />
+</a>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Adventures in Data Science</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="command-line" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> Command Line<a href="command-line.html#command-line" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>This lesson provides an introduction to the Command Line, equipping you with the tools to open and work within your systems’ files without a Graphical User Interface.</p>
+<div id="learning-objectives" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Learning Objectives<a href="command-line.html#learning-objectives" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Understand the components of your Command Line prompt</li>
+<li>Execute commands into the Command Line</li>
+<li>Identify common commands and flags to navigate your system<br />
+</li>
+<li>Open and interact with Vim text editor using common Vim commands</li>
+</ul>
+</div>
+<div id="understanding-the-command-line" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> Understanding the Command Line<a href="command-line.html#understanding-the-command-line" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Most users interact with their computer through a Graphical User Interface (GUI) that allows them to use a mouse, keyboard, and graphical elements on screen (such as file menus, pictures of folders and files, etc.) to perform their work. Users tend to conflate their Operating System and their GUI because computer hardware and software manufacturers tightly pack these two concerns as a convenience to users. But the <em>Windows 10</em> or <em>Mac Big Sur</em> operating system that makes your computer work and the <em>Windows 10</em> or <em>Mac Big Sur</em> GUI that you interact with are, in fact completely different and separable software packages and it is possible to use different methods/software to interact with your computer than the stock, tightly coupled GUI that launches automatically when you turn on your computer.</p>
+<p>Because computer manufacturers like Windows and Mac devote so many resources to the development of their system GUIs, there are few viable (at present, none, commercially available) competing GUIs for these platforms. This is not the case in the Linux world, however, where users have several system GUI packages from which to choose and can seamlessly switch between them as desired. Despite the lack of competition/choice on the GUI front when it comes to interacting with your computer, there are other, non-graphical ways of communicating directly with your operating system that exist for all operating systems. We call these “Command Line” interfaces. The Command Line offers a text-only, non graphical means of interacting with your computer. In the early days of computing, all user interaction with the computer happened at the command line. In the current days of graphical user interfaces, using the Command Line requires you to launch a special program that provides Command Line access.</p>
+<p><strong>Mac users</strong> will use an application called “Terminal” which ships by default with the Mac operating system. To launch the Terminal application, go to:</p>
+<blockquote>
+<p>Applications -&gt; Utilities -&gt; Terminal</p>
+</blockquote>
+<p>When you launch the application, you will see something like this:</p>
+<p><img src="img/mac_terminal.png" /></p>
+<p>Windows users will use an application called Git Bash, which was installed on your system when you installed Git. To launch Git Bash, go to:</p>
+<blockquote>
+<p>Click on the Windows Start Menu and search for “Git Bash”</p>
+</blockquote>
+<p>Alternatively,</p>
+<blockquote>
+<p>Click on the Windows Start Menu, select Programs, and browse to Git Bash</p>
+</blockquote>
+<p>When you launch the application, you will see something like this:</p>
+<p><img src="img/bash.png" /></p>
+</div>
+<div id="interacting-with-the-command-line" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> Interacting with the Command Line<a href="command-line.html#interacting-with-the-command-line" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>While it can look intimidating to those raised on the GUI, working with the Command Line is actually quite simple. Instead of pointing and clicking on things to make them happen, you type written commands.</p>
+<p>The figure below shows a new, empty Command Line Interface in the Mac Terminal application</p>
+<p><img src="img/terminal.png" /></p>
+<p>The Command Line prompt contains a lot of valuable information. The beginning of the line, “(base) MacPro-F5KWP01GF694” tells us exactly which computer we are communication with. This may seem redundant, but it is actually possible to interact with computers other than the one you are typing on by connecting to them via the Command Line over the network.</p>
+<p><img src="img/terminal_machine_identifier.png" /></p>
+<p>The bit of information after the colon, in this example the “~” character tells us where in the computer’s filesystem we are. We’ll learn more about this later, for now you need to understand that the “~” character means that you are in your home directory.</p>
+<p><img src="img/terminal_file_path.png" /></p>
+<p>The next piece of information we are given is the username under which we are logged into the computer, in this case, my local username, “cstahmer”.</p>
+<p><img src="img/terminal_user.png" /></p>
+<p>After the username, we see the “$” character. This is known as the <em>Command Prompt</em>. It is an indicator that the Command Line application is waiting for you to enter something. The Command Prompt character is used throughout these materials when giving command examples. When working through materials, DO NOT ENTER the Command Prompt. It will already be there telling you that the computer is ready to receive your command.</p>
+<p><img src="img/terminal_command_prompt.png" /></p>
+<p>Depending on your system and/or Command Line interface, you may or may not also see a solid or flashing box that appears after the Command Prompt. This is a <em>Cursor Position Indicator</em>, which tells you where the current cursor is in the terminal. This is useful if you need to go back and correct an error. Generally speaking, you can’t click a mouse in a terminal app to edit text. You need to use your computer’s right and left arrows to move the cursor to the correct location and then make your edit.</p>
+<p><img src="img/terminal_cursor_position.png" /></p>
+<p>As noted earlier, we interact with the Command Line by typing commands. The figure below shows an example of a simple command, “echo” being entered into the Command Line.</p>
+<p><img src="img/terminal_echo_command.png" /></p>
+<p>The “echo” command prints back to screen any text that you supply to the command. It literally echoes your text. To execute, this or any command, you simply hit the “return” or “enter” key on your keyboard. You’ll see that when you execute a Command Line command the system performs the indicated operation, prints any output from the operation to screen and then delivers a new Command Line prompt.</p>
+<p><img src="img/terminal_echo_outptu.png" /></p>
+<p>Note that depending on your particular system and/or Command Line interface, things might look slightly different on your computer. However, the basic presentation and function as described above will be the same.</p>
+</div>
+<div id="common-command-line-commands" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> Common Command Line Commands<a href="command-line.html#common-command-line-commands" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>During our hands-on, in-class session we will practice using the following Command Line commands. Be prepared to have this page ready as a reference during class to make things easier.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-1">Table 1.1: </span></caption>
+<colgroup>
+<col width="7%" />
+<col width="29%" />
+<col width="62%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">Command Name</th>
+<th align="left">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ls</td>
+<td align="left">List</td>
+<td align="left">Lists all files in the current directory.</td>
+</tr>
+<tr class="even">
+<td align="left">ls -l</td>
+<td align="left">List with Long flag</td>
+<td align="left">Lists additional information about each file.</td>
+</tr>
+<tr class="odd">
+<td align="left">ls -a</td>
+<td align="left">List with All flag</td>
+<td align="left">Lists all files, including hidden files.</td>
+</tr>
+<tr class="even">
+<td align="left">pwd</td>
+<td align="left">Print Working Directory</td>
+<td align="left">Prints the current working directory.</td>
+</tr>
+<tr class="odd">
+<td align="left">mkdir</td>
+<td align="left">Make Directory</td>
+<td align="left">Creates a new file directory.</td>
+</tr>
+<tr class="even">
+<td align="left">cd</td>
+<td align="left">Change Directory</td>
+<td align="left">Navigates to another directory on the file system.</td>
+</tr>
+<tr class="odd">
+<td align="left">mv</td>
+<td align="left">Move</td>
+<td align="left">Moves files.</td>
+</tr>
+<tr class="even">
+<td align="left">cp</td>
+<td align="left">Copy</td>
+<td align="left">Copies files.</td>
+</tr>
+<tr class="odd">
+<td align="left">rm</td>
+<td align="left">Remove/delete</td>
+<td align="left">Deletes files.</td>
+</tr>
+</tbody>
+</table>
+<p>For a more complete list of Unix Commands, see the <a href="http://www.mathcs.emory.edu/~valerie/courses/fall10/155/resources/unix_cheatsheet.html">Unix Cheat Sheet</a>.</p>
+</div>
+<div id="command-line-text-editors" class="section level2 hasAnchor" number="1.5">
+<h2><span class="header-section-number">1.5</span> Command Line Text Editors<a href="command-line.html#command-line-text-editors" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The Command Line also features a variety of different text editors, similar in nature to Microsoft Word or Mac Pages but much more stripped down. These editors are only accessible from the Command Line; we won’t spend very much time with them, but it is important to know how to use them so that you can open, read, and write directly in the Command Line window.</p>
+<p>Macs and Git Bash both ship with a text editor called <strong>Vim</strong> (other common editors include Emacs and Nano). To open a file with vim, type <code>vi</code> in a Command Line window, followed by the filename. If you want to create a new file, simply type the filename you’d like to use for that file after <code>vi</code>.</p>
+<p><img src="img/vim_open.png" /></p>
+<p>Vim works a bit differently than other text editors and word processors. It has a number of ‘modes,’ which provide different forms of interaction with a file’s data. We will focus on two modes, <strong>Normal</strong> mode and <strong>Insert</strong>. When you open a file with Vim, the program starts in Normal mode. This mode is command-based and, somewhat strangely, it doesn’t let you insert text directly in the document (the reasons for this have to do with Vim’s underlying design philosophy: we edit text more than we write it on the Command Line).</p>
+<p>To insert text in your document, switch to Insert mode by pressing <code>i</code>. You can check whether you’re in Insert mode by looking at the bottom left hand portion of the window, which should read <code>-- INSERT --</code>.</p>
+<p><img src="img/vim_insert_mode.png" /></p>
+<p>Once you are done inserting text, pressing <code>ESC</code> (the Escape key) will bring you back to Normal mode. From here, you can save and quit your file, though these actions differ from other text editors and word processors: saving and quitting with Vim works through a sequence of key commands (or chords), which you enter from Normal mode.</p>
+<p>To save a file in Vim, make sure you are in Normal mode and then enter <code>:w</code>. Note the colon, which must be included. After you’ve entered this key sequence, in the bottom left hand corner of your window you should see “[filename] XL, XC written” (<em>L</em> stands for “lines” and <em>C</em> stands for “characters”).</p>
+<p><img src="img/vim_save.png" /></p>
+<p>To quit Vim, enter <code>:q</code>. This should take you back to your Command Line and, if you have created a new file, you will now see that file in your window.</p>
+<p>If you don’t want to save the changes you’ve made in a file, you can toss them out by typing <code>:q!</code> in place of <code>:w</code> and then <code>:q</code>. Also, in Vim key sequences for save, quit, and hundreds of other commands can be chained together. For example, instead of separately inputting <code>:w</code> and <code>:q</code> to save and quite a file, you can use <code>:wq</code>, which will produce the same effect. There are dozens of base commands like this in Vim, and the program can be customized far beyond what we need for our class. More information about this text editor can be found <a href="https://vim.fandom.com/wiki/Vim_Tips_Wiki">here</a>.</p>
+</div>
+<div id="basic-vim-commands" class="section level2 hasAnchor" number="1.6">
+<h2><span class="header-section-number">1.6</span> Basic Vim Commands<a href="command-line.html#basic-vim-commands" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<table>
+<caption><span id="tab:unnamed-chunk-2">Table 1.2: </span></caption>
+<thead>
+<tr class="header">
+<th align="left">Command</th>
+<th align="left">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">esc</td>
+<td align="left">Enter Normal mode.</td>
+</tr>
+<tr class="even">
+<td align="left">i</td>
+<td align="left">Enter Insert mdoe.</td>
+</tr>
+<tr class="odd">
+<td align="left">:w</td>
+<td align="left">Save.</td>
+</tr>
+<tr class="even">
+<td align="left">:q</td>
+<td align="left">Quit.</td>
+</tr>
+<tr class="odd">
+<td align="left">:q!</td>
+<td align="left">Quit without saving.</td>
+</tr>
+</tbody>
+</table>
+<p>For a more complete list of Vim commands, see this <a href="https://vim.rtorr.com/">Cheat Sheet</a>.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="version-control.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/edit/master/01_command-line.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/ucdavisdatalab/adventures_in_data_science/blob/master/01_command-line.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
