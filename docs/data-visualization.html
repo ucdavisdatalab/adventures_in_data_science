@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>8 Data Visualization | Adventures in Data Science</title>
   <meta name="description" content="8 Data Visualization | Adventures in Data Science" />
-  <meta name="generator" content="bookdown 0.34 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.37 and GitBook 2.6.7" />
 
   <meta property="og:title" content="8 Data Visualization | Adventures in Data Science" />
   <meta property="og:type" content="book" />
@@ -32,7 +32,7 @@
 <meta name="author" content="Liza Wood" />
 
 
-<meta name="date" content="2023-07-26" />
+<meta name="date" content="2024-02-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -61,7 +61,7 @@
 <link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
 <link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
 <script src="libs/vis-9.1.0/vis-network.min.js"></script>
 <script src="libs/visNetwork-binding-2.1.2/visNetwork.js"></script>
@@ -71,7 +71,7 @@
 
 <style type="text/css">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -143,6 +143,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging div.csl-entry {
   margin-left:2em;
@@ -1174,9 +1175,9 @@ three layers every plot must have are:</p>
 <h4><span class="header-section-number">8.3.2.1</span> Making a Plot<a href="data-visualization.html#making-a-plot" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>For the plotting examples, let’s take the wine reviews data that we have been
 working with, and subset it to focus in on Cabernet Sauvignon from the Central Valley.</p>
-<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="data-visualization.html#cb434-1" tabindex="-1"></a>wine_revs <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/wine_enthusiast_rankings.csv&quot;</span>)</span>
-<span id="cb434-2"><a href="data-visualization.html#cb434-2" tabindex="-1"></a>wine_cv <span class="ot">&lt;-</span> wine_revs[wine_revs<span class="sc">$</span>region_2 <span class="sc">==</span> <span class="st">&quot;Central Valley&quot;</span> <span class="sc">&amp;</span> </span>
-<span id="cb434-3"><a href="data-visualization.html#cb434-3" tabindex="-1"></a>                       wine_revs<span class="sc">$</span>variety <span class="sc">==</span> <span class="st">&quot;Cabernet Sauvignon&quot;</span>,]</span></code></pre></div>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb434-1"><a href="data-visualization.html#cb434-1" tabindex="-1"></a>wine_revs <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">&quot;data/wine_enthusiast_rankings.csv&quot;</span>)</span>
+<span id="cb434-2"><a href="data-visualization.html#cb434-2" tabindex="-1"></a>wine_cv <span class="ot">=</span> <span class="fu">subset</span>(wine_revs, region_2 <span class="sc">==</span> <span class="st">&quot;Central Valley&quot;</span> <span class="sc">&amp;</span></span>
+<span id="cb434-3"><a href="data-visualization.html#cb434-3" tabindex="-1"></a>                   variety <span class="sc">==</span> <span class="st">&quot;Cabernet Sauvignon&quot;</span>)</span></code></pre></div>
 <p>Next we need to load <code>ggplot2</code>. As always, if this is your first time using the
 package, you’ll have to install it. Then you can load the package:</p>
 <div class="sourceCode" id="cb435"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb435-1"><a href="data-visualization.html#cb435-1" tabindex="-1"></a><span class="co"># install.packages(&quot;ggplot2&quot;)</span></span>
@@ -1228,72 +1229,87 @@ data and geometry layer like this, to see exactly which aesthetics need to be
 set.</p>
 <p>As we’ll see later, it’s possible to add multiple geometries to a plot.</p>
 </div>
-<div id="layer-3-aesthetics" class="section level5 unnumbered hasAnchor">
-<h5>Layer 3: Aesthetics<a href="data-visualization.html#layer-3-aesthetics" class="anchor-section" aria-label="Anchor link to header"></a></h5>
-<p>The <strong>aes</strong>thetic layer determines the relationship between the data and the
-geometry. Use the aesthetic layer to map features in the data to <strong>aesthetics</strong>
+<div id="layer-3-aesthetic-mappings" class="section level5 unnumbered hasAnchor">
+<h5>Layer 3: Aesthetic Mappings<a href="data-visualization.html#layer-3-aesthetic-mappings" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>The <strong>aes</strong>thetic mapping determines the relationship between the data and the
+geometry. Use this mapping to connect features in the data to <strong>aesthetics</strong>
 (visual elements) of the geometry.</p>
-<p>The <code>aes</code> function creates an aesthetic layer. The syntax is:</p>
+<p>The <code>aes</code> function creates an aesthetic mapping. The syntax is:</p>
 <pre><code>aes(AESTHETIC = FEATURE, ...)</code></pre>
-<p>The names of the aesthetics depend on the geometry, but some common ones are
+<p>Which aesthetics are relevant depends on the geometry, but some common ones are
 <code>x</code>, <code>y</code>, <code>color</code>, <code>fill</code>, <code>shape</code>, <code>alpha</code>, and <code>size</code>. There is more information about
 and examples of aesthetic names in the documentation.</p>
 <p>For example, if we want to put the <code>price</code> feature on the x-axis, the
-aesthetic layer should be:</p>
+aesthetic mapping should be:</p>
 <div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb440-1"><a href="data-visualization.html#cb440-1" tabindex="-1"></a><span class="fu">aes</span>(<span class="at">x =</span> price)</span></code></pre></div>
 <p>In the <code>aes</code> function, column names are never quoted.</p>
-<p>Unlike most layers, the aesthetic layer is not added to the plot with the <code>+</code>
-operator. Instead, you can pass the aesthetic layer as the second argument to
-the <code>ggplot</code> function:</p>
-<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb441-1"><a href="data-visualization.html#cb441-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<p>There are a few ways to attach the aesthetic mapping to your plot. The simplest method is to add the aesthetic mapping to the plot like any other layer. This embeds an assumption that there is only one mapping for this plot. When this is not the case, we will soon see that specifying the mapping as the <code>mapping</code> argument of the geometry is a more precise way to say what data features map to what aesthtics. For now, we use the simple method.</p>
+<div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb441-1"><a href="data-visualization.html#cb441-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb441-2"><a href="data-visualization.html#cb441-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points) <span class="sc">+</span></span>
+<span id="cb441-3"><a href="data-visualization.html#cb441-3" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Aesthetics can be informed by data (e.g. the price column), or by constant values
 (e.g. the color “blue”). Whether the value is informed by the data or constant will
 determine where to place that piece of information. Constant values should not be placed
-inside the aesthetic layer. If you set a constant value <em>inside</em> of the aesthetic
-layer, the results you get might not be what you expect. For instance, suppose
+inside an aesthetic mapping because a mapping connects data features to aethetics and a constant value is not a data feature. If you set a constant value <em>inside</em> of the aesthetic
+mapping, the results you get might not be what you expect. For instance, suppose
 we want to make the points blue:</p>
-<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="data-visualization.html#cb442-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="data-visualization.html#cb442-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb442-2"><a href="data-visualization.html#cb442-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb442-3"><a href="data-visualization.html#cb442-3" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Instead, if you want to set an aesthetic to a constant value, rather than one that’s
-data dependent, do so <em>outside</em> of the aesthetic layer.</p>
-<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="data-visualization.html#cb443-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
+data dependent, do so <em>outside</em> of the aesthetic mapping.</p>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="data-visualization.html#cb443-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb443-2"><a href="data-visualization.html#cb443-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points) <span class="sc">+</span></span>
+<span id="cb443-3"><a href="data-visualization.html#cb443-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Notice that when we specify the color “blue” (outside of aesthetic mapping), R understands what we mean. There is a <a href="http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf">long list of color names that R recognizes</a>. But you can also use specific hex codes or palettes like were recommended in the previous section on <a href="https://ucdavisdatalab.github.io/adventures_in_data_science/data-visualization-principles-perception.html#accessible-data-visualizations">Accessible Data Visualizations</a>.</p>
 <p>Another useful constant aesthetic is the <code>alpha</code> argument, which adjusts the transparency of the points using a range between 0-1 (alpha = 0 is fully transparent and alpha = 1 is not transparent). This can be useful because <code>geom_point</code> will stack points with the exact same values on top of one another, which is hard to tell when they are all completely filled in a certain color (e.g. alpha = 1).</p>
-<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb444-1"><a href="data-visualization.html#cb444-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">alpha =</span> .<span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb444-1"><a href="data-visualization.html#cb444-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb444-2"><a href="data-visualization.html#cb444-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points) <span class="sc">+</span></span>
+<span id="cb444-3"><a href="data-visualization.html#cb444-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="at">alpha =</span> .<span class="dv">3</span>)</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
 <div id="per-geometry-aesthetics" class="section level5 unnumbered hasAnchor">
 <h5>Per-geometry Aesthetics<a href="data-visualization.html#per-geometry-aesthetics" class="anchor-section" aria-label="Anchor link to header"></a></h5>
-<p>When you pass an aesthetic layer to the <code>ggplot</code> function, it applies to the
-entire plot. You can also set an aesthetic layer individually for each
-geometry, by passing the layer as the first argument in the <code>geom_</code> function. Before we test this out, let’s make a smaller subset of our wines, what we’ll called underrated_wines, based on those that are less than $20 and have scores higher than 85.</p>
-<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="data-visualization.html#cb445-1" tabindex="-1"></a>underrated_wines <span class="ot">&lt;-</span> wine_cv[wine_cv<span class="sc">$</span>price <span class="sc">&lt;</span> <span class="dv">20</span> <span class="sc">&amp;</span> wine_cv<span class="sc">$</span>points <span class="sc">&gt;</span> <span class="dv">85</span>, ]</span>
+<p>When you add an aesthetic mapping to the <code>ggplot</code> function, it applies to the
+entire plot. You can also set an aesthetic mapping individually for each
+geometry, by passing the mapping as the <code>mapping</code> argument in the <code>geom_</code> function. Before we test this out, let’s make a smaller subset of our wines, what we’ll called <code>underrated_wines</code>, because they cost less than $20 and have scores higher than 85.</p>
+<div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="data-visualization.html#cb445-1" tabindex="-1"></a>underrated_wines <span class="ot">&lt;-</span> <span class="fu">subset</span>(wine_cv, price <span class="sc">&lt;</span> <span class="dv">20</span> <span class="sc">&amp;</span> points <span class="sc">&gt;</span> <span class="dv">85</span>)</span>
 <span id="cb445-2"><a href="data-visualization.html#cb445-2" tabindex="-1"></a><span class="fu">nrow</span>(underrated_wines)</span></code></pre></div>
 <pre><code>## [1] 40</code></pre>
-<p>Now, let’s first set the aesthetics in the <code>ggplot</code> functions, and add color by
+<p>Now, let’s first add the aesthetic mapping to the <code>ggplot</code> functions, and add color by
 region to take a look at where these wines are from within the Central Valley.</p>
-<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="data-visualization.html#cb447-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="data-visualization.html#cb447-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines) <span class="sc">+</span></span>
+<span id="cb447-2"><a href="data-visualization.html#cb447-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1) <span class="sc">+</span></span>
+<span id="cb447-3"><a href="data-visualization.html#cb447-3" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Now let’s add another geometry to better understand the effect of aesthetic
 placements. Let’s add a <code>geom_text</code> layer to add labels to the plot based on who
 ranked this wine. We need to specify the variables that we want to label with in the aesthetics, and add a new geom layer:</p>
-<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb448-1"><a href="data-visualization.html#cb448-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
-<span id="cb448-2"><a href="data-visualization.html#cb448-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb448-1"><a href="data-visualization.html#cb448-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines) <span class="sc">+</span></span>
+<span id="cb448-2"><a href="data-visualization.html#cb448-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1, <span class="at">label =</span> taster_name) <span class="sc">+</span></span>
+<span id="cb448-3"><a href="data-visualization.html#cb448-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb448-4"><a href="data-visualization.html#cb448-4" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>In the example above, both geometries (<code>geom_point</code> and <code>geom_text</code>), take on the same color aesthetic mapping. So, where we put the aesthetics matters. If we move the color aesthetic to the <code>geom_text</code> layer, how does the plot change?</p>
-<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="data-visualization.html#cb449-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
-<span id="cb449-2"><a href="data-visualization.html#cb449-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="data-visualization.html#cb449-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines) <span class="sc">+</span></span>
+<span id="cb449-2"><a href="data-visualization.html#cb449-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name) <span class="sc">+</span> </span>
+<span id="cb449-3"><a href="data-visualization.html#cb449-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb449-4"><a href="data-visualization.html#cb449-4" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">mapping=</span><span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>We can also move the color aesthetic to the <code>geom_text</code> layer to experiment:</p>
-<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="data-visualization.html#cb450-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span> </span>
-<span id="cb450-2"><a href="data-visualization.html#cb450-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p>We can also move the color aesthetic to the <code>geom_point</code> layer to experiment:</p>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb450-1"><a href="data-visualization.html#cb450-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines) <span class="sc">+</span></span>
+<span id="cb450-2"><a href="data-visualization.html#cb450-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name) <span class="sc">+</span> </span>
+<span id="cb450-3"><a href="data-visualization.html#cb450-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">color =</span> region_1)) <span class="sc">+</span></span>
+<span id="cb450-4"><a href="data-visualization.html#cb450-4" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p>How might we be able to better see all 40 of the observations? Let’s try the <code>position</code> argument within each geometry, where <code>position = position_jitter()</code> will adjust (or “jitter”) the points.</p>
-<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="data-visualization.html#cb451-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name)) <span class="sc">+</span></span>
-<span id="cb451-2"><a href="data-visualization.html#cb451-2" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb451-3"><a href="data-visualization.html#cb451-3" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="data-visualization.html#cb451-1" tabindex="-1"></a><span class="fu">ggplot</span>(underrated_wines) <span class="sc">+</span></span>
+<span id="cb451-2"><a href="data-visualization.html#cb451-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">label =</span> taster_name) <span class="sc">+</span></span>
+<span id="cb451-3"><a href="data-visualization.html#cb451-3" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> region_1), <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
+<span id="cb451-4"><a href="data-visualization.html#cb451-4" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">seed =</span> <span class="dv">1</span>))</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 </div>
 <div id="other-layers-scales-and-themes" class="section level5 unnumbered hasAnchor">
@@ -1303,23 +1319,27 @@ Most of the functions in the scales layer are prefixed with <code>scale_</code>,
 all of them.</p>
 <p>The <code>labs</code> function is especially important, because it’s used to set the title
 and axis labels:</p>
-<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="data-visualization.html#cb452-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
-<span id="cb452-2"><a href="data-visualization.html#cb452-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb452-3"><a href="data-visualization.html#cb452-3" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
-<span id="cb452-4"><a href="data-visualization.html#cb452-4" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="data-visualization.html#cb452-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb452-2"><a href="data-visualization.html#cb452-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1) <span class="sc">+</span> </span>
+<span id="cb452-3"><a href="data-visualization.html#cb452-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb452-4"><a href="data-visualization.html#cb452-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb452-5"><a href="data-visualization.html#cb452-5" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>)</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>You can add <code>theme</code> layers that change the non-data components of the figure. ggplot2 comes with several themes which can be useful to quickly change the look of your visualization. The complete list of themes is available at <a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="uri">https://ggplot2.tidyverse.org/reference/ggtheme.html</a>. theme_classic(), theme_minimal(), and theme_light() are popular.</p>
-<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="data-visualization.html#cb453-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb453-2"><a href="data-visualization.html#cb453-2" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
-<span id="cb453-3"><a href="data-visualization.html#cb453-3" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
-<span id="cb453-4"><a href="data-visualization.html#cb453-4" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="data-visualization.html#cb453-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb453-2"><a href="data-visualization.html#cb453-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1) <span class="sc">+</span></span>
+<span id="cb453-3"><a href="data-visualization.html#cb453-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb453-4"><a href="data-visualization.html#cb453-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb453-5"><a href="data-visualization.html#cb453-5" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
+<span id="cb453-6"><a href="data-visualization.html#cb453-6" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>We can also save ggplots as objects:</p>
-<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="data-visualization.html#cb454-1" tabindex="-1"></a>wine_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1)) <span class="sc">+</span> </span>
-<span id="cb454-2"><a href="data-visualization.html#cb454-2" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb454-3"><a href="data-visualization.html#cb454-3" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
-<span id="cb454-4"><a href="data-visualization.html#cb454-4" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
-<span id="cb454-5"><a href="data-visualization.html#cb454-5" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb454-1"><a href="data-visualization.html#cb454-1" tabindex="-1"></a>wine_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb454-2"><a href="data-visualization.html#cb454-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> price, <span class="at">y =</span> points, <span class="at">color =</span> region_1) <span class="sc">+</span> </span>
+<span id="cb454-3"><a href="data-visualization.html#cb454-3" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb454-4"><a href="data-visualization.html#cb454-4" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Central Valley Cabernet Sauvignon price by wine score points&quot;</span>, </span>
+<span id="cb454-5"><a href="data-visualization.html#cb454-5" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Price ($)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Points&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Region&quot;</span>) <span class="sc">+</span></span>
+<span id="cb454-6"><a href="data-visualization.html#cb454-6" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
 <p>Note what kind of object this is:</p>
 <div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="data-visualization.html#cb455-1" tabindex="-1"></a><span class="fu">typeof</span>(wine_plot)</span></code></pre></div>
 <pre><code>## [1] &quot;list&quot;</code></pre>
@@ -1368,11 +1388,14 @@ computed manually on the y-axis.</p>
 <div id="position-adjustment" class="section level4 hasAnchor" number="8.3.4.1">
 <h4><span class="header-section-number">8.3.4.1</span> Position adjustment<a href="data-visualization.html#position-adjustment" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. For bar plots, this will take the <code>fill</code> argument instead of the <code>color</code> argument. (The <code>color</code> argument will outline the bars in a color, whereas the <code>fill</code> argument will fill them in with a default color scheme.)</p>
-<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="data-visualization.html#cb462-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name)) </span></code></pre></div>
+<div class="sourceCode" id="cb462"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb462-1"><a href="data-visualization.html#cb462-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb462-2"><a href="data-visualization.html#cb462-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> region_1) <span class="sc">+</span></span>
+<span id="cb462-3"><a href="data-visualization.html#cb462-3" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name)) </span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>Automatically, <code>geom_bar()</code> positions the grouped colors or fills on top of one another, with the default argument <code>position = "identity"</code>. If you want to change the position of the groupings, you can set <code>position = "dodge"</code> to set the groups side-by-side.</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="data-visualization.html#cb463-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> </span>
-<span id="cb463-2"><a href="data-visualization.html#cb463-2" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">fill =</span> taster_name), <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="data-visualization.html#cb463-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb463-2"><a href="data-visualization.html#cb463-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> region_1) <span class="sc">+</span> </span>
+<span id="cb463-3"><a href="data-visualization.html#cb463-3" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">fill =</span> taster_name), <span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) </span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
 </div>
@@ -1485,7 +1508,9 @@ the <code>levels</code> function:</p>
 <pre><code>## [1] &quot;Clarksburg&quot;     &quot;Clements Hills&quot; &quot;Dunnigan Hills&quot; &quot;Lodi&quot;          
 ## [5] &quot;Yolo County&quot;</code></pre>
 <p>Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the regions in our wine reviews data.</p>
-<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="data-visualization.html#cb472-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="data-visualization.html#cb472-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb472-2"><a href="data-visualization.html#cb472-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> region_1) <span class="sc">+</span></span>
+<span id="cb472-3"><a href="data-visualization.html#cb472-3" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <div id="assigning-factor-levels" class="section level4 hasAnchor" number="8.3.5.1">
 <h4><span class="header-section-number">8.3.5.1</span> Assigning factor levels<a href="data-visualization.html#assigning-factor-levels" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1497,7 +1522,9 @@ the <code>levels</code> function:</p>
 <pre><code>## [1] &quot;Lodi&quot;           &quot;Clarksburg&quot;     &quot;Yolo County&quot;    &quot;Clements Hills&quot;
 ## [5] &quot;Dunnigan Hills&quot;</code></pre>
 <p>Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the region_1 factor.</p>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="data-visualization.html#cb475-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv, <span class="fu">aes</span>(<span class="at">x =</span> region_1_f)) <span class="sc">+</span> <span class="fu">geom_bar</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="data-visualization.html#cb475-1" tabindex="-1"></a><span class="fu">ggplot</span>(wine_cv) <span class="sc">+</span></span>
+<span id="cb475-2"><a href="data-visualization.html#cb475-2" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> region_1_f) <span class="sc">+</span></span>
+<span id="cb475-3"><a href="data-visualization.html#cb475-3" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code></pre></div>
 <p><img src="08_data-visualization_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 </div>
 </div>
