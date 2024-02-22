@@ -664,9 +664,9 @@ For the plotting examples, let's take the wine reviews data that we have been
 working with, and subset it to focus in on Cabernet Sauvignon from the Central Valley.
 
 ```{r}
-wine_revs <- read.csv("data/wine_enthusiast_rankings.csv")
-wine_cv <- wine_revs[wine_revs$region_2 == "Central Valley" & 
-                       wine_revs$variety == "Cabernet Sauvignon",]
+wine_revs = read.csv("data/wine_enthusiast_rankings.csv")
+wine_cv = subset(wine_revs, region_2 == "Central Valley" &
+                   variety == "Cabernet Sauvignon")
 ```
 
 Next we need to load `ggplot2`. As always, if this is your first time using the 
@@ -732,52 +732,56 @@ set.
 As we'll see later, it's possible to add multiple geometries to a plot.
 
 
-##### Layer 3: Aesthetics {-}
+##### Layer 3: Aesthetic Mappings {-}
 
-The **aes**thetic layer determines the relationship between the data and the
-geometry. Use the aesthetic layer to map features in the data to **aesthetics**
+The **aes**thetic mapping determines the relationship between the data and the
+geometry. Use this mapping to connect features in the data to **aesthetics**
 (visual elements) of the geometry.
 
-The `aes` function creates an aesthetic layer. The syntax is:
+The `aes` function creates an aesthetic mapping. The syntax is:
 ```
 aes(AESTHETIC = FEATURE, ...)
 ```
 
-The names of the aesthetics depend on the geometry, but some common ones are
+Which aesthetics are relevant depends on the geometry, but some common ones are
 `x`, `y`, `color`, `fill`, `shape`, `alpha`, and `size`. There is more information about
 and examples of aesthetic names in the documentation.
 
 For example, if we want to put the `price` feature on the x-axis, the
-aesthetic layer should be:
+aesthetic mapping should be:
 ```{r, eval=FALSE}
 aes(x = price)
 ```
 
 In the `aes` function, column names are never quoted.
 
-Unlike most layers, the aesthetic layer is not added to the plot with the `+`
-operator. Instead, you can pass the aesthetic layer as the second argument to
-the `ggplot` function:
+There are a few ways to attach the aesthetic mapping to your plot. The simplest method is to add the aesthetic mapping to the plot like any other layer. This embeds an assumption that there is only one mapping for this plot. When this is not the case, we will soon see that specifying the mapping as the `mapping` argument of the geometry is a more precise way to say what data features map to what aesthtics. For now, we use the simple method.
 ```{r}
-ggplot(wine_cv, aes(x = price, y = points)) + geom_point()
+ggplot(wine_cv) +
+  aes(x = price, y = points) +
+  geom_point()
 ```
 
 Aesthetics can be informed by data (e.g. the price column), or by constant values
 (e.g. the color "blue"). Whether the value is informed by the data or constant will
 determine where to place that piece of information. Constant values should not be placed
-inside the aesthetic layer. If you set a constant value *inside* of the aesthetic 
-layer, the results you get might not be what you expect. For instance, suppose
+inside an aesthetic mapping because a mapping connects data features to aethetics and a constant value is not a data feature. If you set a constant value *inside* of the aesthetic 
+mapping, the results you get might not be what you expect. For instance, suppose
 we want to make the points blue:
 
 ```{r}
-ggplot(wine_cv, aes(x = price, y = points, color = "blue")) + geom_point()
+ggplot(wine_cv) +
+  aes(x = price, y = points, color = "blue") +
+  geom_point()
 ```
 
 Instead, if you want to set an aesthetic to a constant value, rather than one that's
-data dependent, do so *outside* of the aesthetic layer. 
+data dependent, do so *outside* of the aesthetic mapping. 
 
 ```{r}
-ggplot(wine_cv, aes(x = price, y = points)) + geom_point(color = "blue")
+ggplot(wine_cv) +
+  aes(x = price, y = points) +
+  geom_point(color = "blue")
 ```
 
 Notice that when we specify the color "blue" (outside of aesthetic mapping), R understands what we mean. There is a [long list of color names that R recognizes](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf). But you can also use specific hex codes or palettes like were recommended in the previous section on [Accessible Data Visualizations](https://ucdavisdatalab.github.io/adventures_in_data_science/data-visualization-principles-perception.html#accessible-data-visualizations).
@@ -785,24 +789,28 @@ Notice that when we specify the color "blue" (outside of aesthetic mapping), R u
 Another useful constant aesthetic is the `alpha` argument, which adjusts the transparency of the points using a range between 0-1 (alpha = 0 is fully transparent and alpha = 1 is not transparent). This can be useful because `geom_point` will stack points with the exact same values on top of one another, which is hard to tell when they are all completely filled in a certain color (e.g. alpha = 1).
 
 ```{r}
-ggplot(wine_cv, aes(x = price, y = points)) + geom_point(color = "blue", alpha = .3)
+ggplot(wine_cv) +
+  aes(x = price, y = points) +
+  geom_point(color = "blue", alpha = .3)
 ```
 
 ##### Per-geometry Aesthetics {-}
 
-When you pass an aesthetic layer to the `ggplot` function, it applies to the
-entire plot. You can also set an aesthetic layer individually for each
-geometry, by passing the layer as the first argument in the `geom_` function. Before we test this out, let's make a smaller subset of our wines, what we'll called underrated_wines, based on those that are less than $20 and have scores higher than 85.
+When you add an aesthetic mapping to the `ggplot` function, it applies to the
+entire plot. You can also set an aesthetic mapping individually for each
+geometry, by passing the mapping as the `mapping` argument in the `geom_` function. Before we test this out, let's make a smaller subset of our wines, what we'll called `underrated_wines`, because they cost less than $20 and have scores higher than 85.
 
 ```{r}
-underrated_wines <- wine_cv[wine_cv$price < 20 & wine_cv$points > 85, ]
+underrated_wines <- subset(wine_cv, price < 20 & points > 85)
 nrow(underrated_wines)
 ```
 
-Now, let's first set the aesthetics in the `ggplot` functions, and add color by
+Now, let's first add the aesthetic mapping to the `ggplot` functions, and add color by
 region to take a look at where these wines are from within the Central Valley.
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, color = region_1)) + geom_point()
+ggplot(underrated_wines) +
+  aes(x = price, y = points, color = region_1) +
+  geom_point()
 ```
 
 
@@ -811,26 +819,33 @@ placements. Let's add a `geom_text` layer to add labels to the plot based on who
 ranked this wine. We need to specify the variables that we want to label with in the aesthetics, and add a new geom layer:
 
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, color = region_1, label = taster_name)) +
-  geom_point() + geom_text(size = 3)
+ggplot(underrated_wines) +
+  aes(x = price, y = points, color = region_1, label = taster_name) +
+  geom_point() +
+  geom_text(size = 3)
 ```
 
 In the example above, both geometries (`geom_point` and `geom_text`), take on the same color aesthetic mapping. So, where we put the aesthetics matters. If we move the color aesthetic to the `geom_text` layer, how does the plot change?
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) + 
-  geom_point() + geom_text(aes(color = region_1), size = 3)
+ggplot(underrated_wines) +
+  aes(x = price, y = points, label = taster_name) + 
+  geom_point() +
+  geom_text(mapping=aes(color = region_1), size = 3)
 ```
 
 
-We can also move the color aesthetic to the `geom_text` layer to experiment: 
+We can also move the color aesthetic to the `geom_point` layer to experiment: 
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) + 
-  geom_point(aes(color = region_1)) + geom_text(size = 3)
+ggplot(underrated_wines) +
+  aes(x = price, y = points, label = taster_name) + 
+  geom_point(mapping = aes(color = region_1)) +
+  geom_text(size = 3)
 ```
 
 How might we be able to better see all 40 of the observations? Let's try the `position` argument within each geometry, where `position = position_jitter()` will adjust (or "jitter") the points.
 ```{r}
-ggplot(underrated_wines, aes(x = price, y = points, label = taster_name)) +
+ggplot(underrated_wines) +
+  aes(x = price, y = points, label = taster_name) +
   geom_point(aes(color = region_1), position = position_jitter(seed = 1)) + 
   geom_text(size = 3, position = position_jitter(seed = 1))
 ```
@@ -844,7 +859,8 @@ all of them.
 The `labs` function is especially important, because it's used to set the title
 and axis labels:
 ```{r}
-ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + 
+ggplot(wine_cv) +
+  aes(x = price, y = points, color = region_1) + 
   geom_point() +
   labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
        x = "Price ($)", y = "Points", color = "Region")
@@ -854,7 +870,9 @@ You can add `theme` layers that change the non-data components of the figure. gg
 
 
 ```{r}
-ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + geom_point() +
+ggplot(wine_cv) +
+  aes(x = price, y = points, color = region_1) +
+  geom_point() +
   labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
        x = "Price ($)", y = "Points", color = "Region") +
   theme_minimal()
@@ -863,7 +881,8 @@ ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + geom_point() +
 We can also save ggplots as objects:
 
 ```{r}
-wine_plot <- ggplot(wine_cv, aes(x = price, y = points, color = region_1)) + 
+wine_plot <- ggplot(wine_cv) +
+  aes(x = price, y = points, color = region_1) + 
   geom_point() +
   labs(title = "Central Valley Cabernet Sauvignon price by wine score points", 
        x = "Price ($)", y = "Points", color = "Region") +
@@ -932,14 +951,17 @@ computed manually on the y-axis.
 Just as you added color to group the scatter plot data, you may want to add a color grouping to the bar plot. For bar plots, this will take the `fill` argument instead of the `color` argument. (The `color` argument will outline the bars in a color, whereas the `fill` argument will fill them in with a default color scheme.)  
 
 ```{r}
-ggplot(wine_cv, aes(x = region_1)) + geom_bar(aes(fill = taster_name)) 
+ggplot(wine_cv) +
+  aes(x = region_1) +
+  geom_bar(aes(fill = taster_name)) 
 ```
 
 Automatically, `geom_bar()` positions the grouped colors or fills on top of one another, with the default argument `position = "identity"`. If you want to change the position of the groupings, you can set `position = "dodge"` to set the groups side-by-side.
 
 ```{r}
-ggplot(wine_cv, aes(x = region_1)) + 
-  geom_bar(aes(fill = taster_name), position = "dodge") 
+ggplot(wine_cv) +
+  aes(x = region_1) + 
+  geom_bar(mapping = aes(fill = taster_name), position = "dodge") 
 ```
 
 ### Remembering factors
@@ -994,7 +1016,9 @@ levels(factor(wine_cv$region_1))
 
 Notice that factors default the level order to be in alphabetical order. This is also true when we plot characters, which you can notice if we again call the bar plot we made that counted up the regions in our wine reviews data.
 ```{r}
-ggplot(wine_cv, aes(x = region_1)) + geom_bar()
+ggplot(wine_cv) +
+  aes(x = region_1) +
+  geom_bar()
 ```
 
 #### Assigning factor levels
@@ -1010,7 +1034,9 @@ levels(wine_cv$region_1_f)
 Now we can run the same plotting code, but see that the order of the x axis changed, based on the levels of the region_1 factor. 
 
 ```{r}
-ggplot(wine_cv, aes(x = region_1_f)) + geom_bar()
+ggplot(wine_cv) +
+  aes(x = region_1_f) +
+  geom_bar()
 ```
 
 
