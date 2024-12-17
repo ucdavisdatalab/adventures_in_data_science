@@ -22,9 +22,10 @@ After this lesson, you should be able to:
   * Use the help function
 :::
 
-## Before We Start
 
-**What are R and RStudio?**
+## Getting Started
+
+### What are R and RStudio?
 
 * [R][] is both a free and open source programming language designed for
   statistical computing and graphics, and the software for interpreting the
@@ -42,55 +43,120 @@ After this lesson, you should be able to:
 [R]: https://www.r-project.org/
 [RStudio]: https://posit.co/products/open-source/rstudio/
 
-You can download R for free [here](https://cloud.r-project.org/).
-You can download RStudio Desktop Open-Source Edition for free [here](https://www.rstudio.com/products/rstudio/download/).
+::: {.callout-important}
+You can download R for free [here][r-download].
 
-**Why learn R?** There are many advantages to working with R.
+You can download RStudio Desktop Open-Source Edition for free
+[here][rstudio-download].
+:::
 
-* **Scientific integrity.** Working with a scripting language like R facilitates reproducible research. Having the commands for an analysis captured in code promotes transparency and reproducibility. Someone using your code and data should be able to exactly reproduce your analyses. An increasing number of research journals not only encourage, but are beginning to require, submission of code along with a manuscript.
-* **Many data types and sizes.** R was designed for statistical computing and thus incorporates many data structures and types to facilitate analyses. It can also connect to local and cloud databases.
-* **Graphics.** R has built-in plotting functionalities that allow you to adjust any aspect of your graph to effectively tell the story of your data.
-* **Open and cross-platform.** Because R is free, open-source software that works across many different operating systems, anyone can inspect the source code, and report and fix bugs. It is supported by a large community of users and developers.
-* **Interdisciplinary and extensible.** Because anyone can write and share R packages, it provides a framework for integrating approaches across domains, encouraging innovation.
+[r-download]: https://cloud.r-project.org/
+[rstudio-download]: https://posit.co/download/rstudio-desktop/
 
-**Navigating the interface**
+### Why Learn R?
+
+There are many advantages to working with R:
+
+* **Scientific integrity.** Working with a scripting language like R
+  facilitates reproducible research. Having the commands for an analysis
+  captured in code promotes transparency and reproducibility. Someone using
+  your code and data should be able to exactly reproduce your analyses. An
+  increasing number of research journals not only encourage, but are beginning
+  to require, submission of code along with a manuscript.
+* **Many data types and sizes.** R was designed for statistical computing and
+  thus incorporates many data structures and types to facilitate analyses. It
+  can also connect to local and cloud databases.
+* **Graphics.** R has built-in plotting functionalities that allow you to
+  adjust any aspect of your graph to effectively tell the story of your data.
+* **Open and cross-platform.** Because R is free, open-source software that
+  works across many different operating systems, anyone can inspect the source
+  code, and report and fix bugs. It is supported by a large community of users
+  and developers.
+* **Interdisciplinary and extensible.** Because anyone can write and share R
+  packages, it provides a framework for integrating approaches across domains,
+  encouraging innovation.
+
+### Navigating the Interface
 
 The first time you open RStudio, you'll see a window divided into several
 panes, like this:
 
 ![](/images/ch03/rstudio_start.png)
 
-The exact presentation of the panes might be slightly different depending on your operating system, versions of R and RStudio, and any set preferences. Generally, the panes include:
+The exact presentation of the panes might be slightly different depending on
+your operating system, versions of R and RStudio, and any set preferences.
+Generally, the panes include:
 
-* **Source** is your script. You can write your code here and save this as a .R file and re-run to reproduce your results.
-* **Console** is where you run the code. You can type directly here, but anything entered here won't be saved when you exit RStudio.
-* **Environment/history** lists all the objects you have created (including your data) and the commands you have run.
-* **Files/plots/packages/help/viewer** pane is useful for locating files on your machine to read into R, inspecting any graphics you create, seeing a list of available packages, and getting help.
+* **Source** is your script. You can write your code here and save this as a .R
+  file and re-run to reproduce your results.
+* **Console** is where you run the code. You can type directly here, but
+  anything entered here won't be saved when you exit RStudio.
+* **Environment/history** lists all the objects you have created (including
+  your data) and the commands you have run.
+* **Files/plots/packages/help/viewer** pane is useful for locating files on
+  your machine to read into R, inspecting any graphics you create, seeing a
+  list of available packages, and getting help.
 
-To interact with R, compose your code in the source pane and use the execute (or run) command to send them to the console. ([Shortcuts](https://github.com/rstudio/cheatsheets/raw/master/rstudio-ide.pdf): You can use the shortcut Ctrl + Enter, or Cmd + Return, to run a line of code.)
+To interact with R, compose your code in the source pane and use the execute
+(or run) command to send them to the console.
 
-*_Create a script file for today's lecture and save it to your lecture_3 folder under ist008_2022 in your home directory. (It's good practice to keep your projects organized., Some suggested sub-folders for a research project might be: data, documents, scripts, and, depending on your needs, other relevant outputs or products such as figures._*
+::: {.callout-tip}
+You can use the keyboard shortcut `Ctrl + Enter` (on macOS: `Cmd + Enter`) to
+run a line of code.
+
+For more keyboard shortcuts, see the [official RStudio
+Cheatsheet][rstudio-cheat].
+:::
+
+[rstudio-cheat]: https://rstudio.github.io/cheatsheets/rstudio-ide.pdf
+
+In your `~/ist008/` directory, create a `lecture03/` directory for today's
+lecture. Then create a new R script and save it in the `lecture03/` directory.
+
+::: {.callout-tip}
+It's a good habit to make a new directory for every project or lecture.
+
+For projects, some useful subdirectories to create are:
+
+* `data/` to store data sets
+* `docs/` to store documents
+* `outputs/` to store outputs such as plots and cleaned data sets
+* `R/` to store R code
+:::
 
 ## Mathematical Operations
 
-R works by the process of "REPL": Read-Evaluate-Print-Loop:
+R runs as a **read-evaluate-print loop**, or REPL. This means:
 
-1. R waits for you to type an expression (a single piece of code) and press `Enter`.
-2. R then **reads** in your expressions and parses them. It reads whether the expression is syntactically correct. If so, it will then
-3. **evaluate** the code to compute a result.
-4. R then **prints** the result in the console and
-5. **loops** back around to wait for your next expression.
+1. R waits until you type an expression (a single piece of code) and press
+   `Enter`, then **reads** and parses what you typed, checking whether it is a
+   syntactically valid expression.
+2. R **evaluates** the expression, computing the result.
+3. R **prints** the result in the R console.
+4. Finally, R **loops** back to step 1 to wait for your next expression.
 
-You can use R like a calculator to see how it processes expressions.
+You can use R like a calculator to see how it processes expressions:
 
 ```{r echo=T, results='hide'}
 7 + 2
 ```
-R always puts the result on a separate line (or lines) from your code. In this case, the result begins with the tag `[1]`, which is a hint from R that the
-result is a *vector* and that this line starts with the *element* at position 1. We'll learn more about vectors later in this lesson, and eventually learn
-about other data types that are displayed differently.
 
-If you enter an incomplete expression, R will get stuck at the evaluate step and change the prompt to `+`, then wait for you to type the rest of the expression and press the `Enter` key. If this happens, you can finish entering the expression on the new line, or you can cancel it by pressing the `Esc` key (or `Ctrl-c` if you're using R without RStudio). R can only tell an expression is incomplete if it's missing something that it is expecting, like the second operand here:
+R always puts the result on a separate line (or lines) from your code.
+
+::: {.callout-note}
+In this case, the result begins with the tag `[1]`, which is a hint from R that
+the result is a *vector* and that this line starts with the *element* at
+position 1. We'll learn more about vectors later in this lesson, and eventually
+learn about other data types that are displayed differently.
+:::
+
+If you enter an incomplete expression, R will get stuck at the evaluate step
+and change the prompt to `+`, then wait for you to type the rest of the
+expression and press the `Enter` key. If this happens, you can finish entering
+the expression on the new line, or you can cancel it by pressing the `Esc` key
+(or `Ctrl + c` if you're using R without RStudio). R can only tell an
+expression is incomplete if it's missing something that it is expecting, like
+the second operand here:
 
 ```{r echo=T, results='hide', error=TRUE}
 7 -
@@ -111,7 +177,10 @@ Let's do more math! Other arithmetic operators are:
 2 * 12
 ```
 
-Arithmetic in R follows an **order of operations** (aka _PEMDAS_): parenthesis, exponents, multiplication and division, addition and subtraction. You can combine these and use parentheses to make more complicated expressions, just as you would when writing a mathematical expression.
+Arithmetic in R follows an **order of operations** (aka _PEMDAS_): parenthesis,
+exponents, multiplication and division, addition and subtraction. You can
+combine these and use parentheses to make more complicated expressions, just as
+you would when writing a mathematical expression.
 
 For example, to estimate the area of a circle with radius 3, you can write:
 
@@ -132,26 +201,44 @@ You can also perform other operations in R:
 3 < 1
 ```
 
-*Tip: You can write R expressions with any number of spaces (including none) around the operators and R will still compute the result. Nevertheless, putting spaces in your code makes it easier for you and others to read, so it's good to make it a habit. Put spaces around most operators, after commas, and after keywords.*
+::: {.callout-tip}
+You can write R expressions with any number of spaces (including none) around
+the operators and R will still compute the result. Nevertheless, putting spaces
+in your code makes it easier for you and others to read, so it's good to make
+it a habit. Put spaces around most operators, after commas, and after
+keywords.
+:::
 
 
 ## Variables
 
-Since R is designed for mathematics and statistics, you might expect that it provides a better approximation for $\pi$ than `3.14`. R and most other programming languages allow you to create and store values called **variables**. Variables allow you to reuse the result of a computation, write general expressions (such as `a*x + b`), and break up your code into smaller steps so it's easier to test and understand.
+Since R is designed for mathematics and statistics, you might expect that it
+provides a better approximation for $\pi$ than `3.14`. R and most other
+programming languages allow you to create and store values called
+**variables**. Variables allow you to reuse the result of a computation, write
+general expressions (such as `a*x + b`), and break up your code into smaller
+steps so it's easier to test and understand.
 
-R has a built in variable called 'pi' for the value of $\pi$. You can display a variable's value by entering its name in the console:
+R has a built in variable called 'pi' for the value of $\pi$. You can display a
+variable's value by entering its name in the console:
 
 ```{r echo=T, results='hide'}
 pi
 ```
 
-You can also use variables in mathematical expressions. Here's a more precise calculation of the area of a circle with radius 3:
+You can also use variables in mathematical expressions. Here's a more precise
+calculation of the area of a circle with radius 3:
 
 ```{r echo=T, results='hide'}
 pi *3^2
 ```
 
-You can define your own variables with the assignment operator '=' or '<-'. Variable names can contain letters, numbers, dots `.`, and underscores `_`, but they *cannot* begin with a number. Spaces and other symbols are not allowed in variable names. In general, variable names should be descriptive but concise, and should not use the same name as common (base R) functions like mean, T, median, sum, etc..
+You can define your own variables with the assignment operator '=' or '<-'.
+Variable names can contain letters, numbers, dots `.`, and underscores `_`, but
+they *cannot* begin with a number. Spaces and other symbols are not allowed in
+variable names. In general, variable names should be descriptive but concise,
+and should not use the same name as common (base R) functions like mean, T,
+median, sum, etc..
 
 Let's make some more variables:
 
@@ -162,7 +249,9 @@ fantastic.variable2 = x
 x <- y / 2
 ```
 
-In R, variables are **copy-on-write**.  When we change a variable ("write"), R automatically copies the original value so dependent variables are unchanged until they are re-run.
+In R, variables are **copy-on-write**.  When we change a variable ("write"), R
+automatically copies the original value so dependent variables are unchanged
+until they are re-run.
 
 ```{r echo=T, results='hide'}
 x <- 13
@@ -171,64 +260,110 @@ x <- 16
 y
 ```
 
-Why do you think copy-on-write is helpful? Where do you think it could trip you up?
+Why do you think copy-on-write is helpful? Where do you think it could trip you
+up?
 
 
 ## Calling Functions
 
-R has many **functions** (reusable commands) built-in that allow you to compute mathematical operations, statistics, and perform other computing tasks on your variables. You can think of a function as a machine that takes some inputs and uses them to produce some output. Code that uses a function is said to *call* that function. When you call a function, the values that you assign as input are called **arguments**. The output is called the **return value**.
+R has many **functions** (reusable commands) built-in that allow you to compute
+mathematical operations, statistics, and perform other computing tasks on your
+variables. You can think of a function as a machine that takes some inputs and
+uses them to produce some output. Code that uses a function is said to *call*
+that function. When you call a function, the values that you assign as input
+are called **arguments**. The output is called the **return value**.
 
-We call a function by writing its name followed by a parentheses containing the arguments.
+We call a function by writing its name followed by a parentheses containing the
+arguments.
 
 ```{r echo=T, results='hide'}
 log(10)
 sqrt(9)
 ```
 
-Many functions have multiple parameters and can accept multiple arguments. For example, the `sum` function accepts any number of arguments and adds them all together. When you call a function with multiple arguments, separate the arguments with commas.
+Many functions have multiple parameters and can accept multiple arguments. For
+example, the `sum` function accepts any number of arguments and adds them all
+together. When you call a function with multiple arguments, separate the
+arguments with commas.
 
 ```{r echo=T, results='hide'}
 sum(5, 4, 1)
 ```
-When you call a function, R assigns each argument to a **parameter**. Parameters are special variables that represent the inputs to a function and only exist
-while that function runs. For example, the `log` function, which computes a logarithm, has parameters `x` and `base` for the operand and base of the
-logarithm, respectively.
 
-By default, R assigns arguments to parameters based on their order. The first argument is assigned to the function's first parameter, the second to the second, and so on. If you know the order that a function expects to receive the parameters then you can list them separated by commas. Here the argument 64 is assigned to the parameter `x`, and the argument 2 is assigned to the parameter `base`.
+When you call a function, R assigns each argument to a **parameter**.
+Parameters are special variables that represent the inputs to a function and
+only exist while that function runs. For example, the `log` function, which
+computes a logarithm, has parameters `x` and `base` for the operand and base of
+the logarithm, respectively.
+
+By default, R assigns arguments to parameters based on their order. The first
+argument is assigned to the function's first parameter, the second to the
+second, and so on. If you know the order that a function expects to receive the
+parameters then you can list them separated by commas. Here the argument 64 is
+assigned to the parameter `x`, and the argument 2 is assigned to the parameter
+`base`.
 
 ```{r echo=T, results='hide'}
 log(64, 2)
 ```
 
-You can also assign arguments to parameters by name with `=` (but not with `<-`), overriding their positions.
+You can also assign arguments to parameters by name with `=` (but not with
+`<-`), overriding their positions.
 
 ```{r echo=T, results='hide'}
 log(64, base = 2)
 log(base = 2, x= 64)
 ```
 
-*Tip: Both of these expressions are equivalent, so which one should you use? When you write code, choose whatever seems the clearest to you. Leaving parameter names out of calls saves typing, but including some or all of them can make the code easier to understand.*
-
+::: {.callout-tip}
+Both of these expressions are equivalent, so which one should you use? When you
+write code, choose whatever seems the clearest to you. Leaving parameter names
+out of calls saves typing, but including some or all of them can make the code
+easier to understand.
+:::
 
 Not sure what parameters a specific function needs? Read on for how to get...
 
 ## HELP!
 
-This is just the beginning, and there are lots of resources to help you learn more. R has built-in help files that can be accessed with the **`?`** and **`help`** commands. You can also search within the help documentation using the **`??`** commands. There's also a vibrant online help community. Here are some examples of how you can use all this help to help yourself:
+This is just the beginning, and there are lots of resources to help you learn
+more. R has built-in help files that can be accessed with the `?` and `help`
+commands. You can also search within the help documentation using the `??`
+command. There's also a vibrant online help community. Here are some examples
+of how you can use all this help to help yourself:
 
-**?** The help pages for all of R's built-in functions usually have the same name as the function itself. Function help pages usually include a brief description, a list of parameters, a description of the return value, and some examples. To open the help page for the `log` function:
+**?** The help pages for all of R's built-in functions usually have the same
+name as the function itself. Function help pages usually include a brief
+description, a list of parameters, a description of the return value, and some
+examples. To open the help page for the `log` function:
 
 ```{r, eval = FALSE}
 ?log
 ```
 
-There are also help pages for other topics, such as built-in mathematical constants (such as `?pi`), data sets (such as `?cars`), and operators. To look up the help page for an operator, put the operator's name in single or double quotes. For example, this code opens the help page for the arithmetic operators:
+There are also help pages for other topics, such as built-in mathematical
+constants (such as `?pi`), data sets (such as `?cars`), and operators. To look
+up the help page for an operator, put the operator's name in single or double
+quotes. For example, this code opens the help page for the arithmetic
+operators:
 
 ```{r, eval = FALSE}
 ?"+"
 ```
 
-*Tip: It's always okay to put single or double quotes around the name of the page when you use `?`, but they're only required if it contains arithmetic commands or non-alphabetic characters. So `?sqrt`, `?'sqrt'`, and `?"sqrt"` all open the documentation for `sqrt`, the square root function. Why does this work?  R treats anything inside single or double quotes as literal text rather than as an expression to evaluate. In programming jargon, a piece of literal text is called a _string_. You can use whichever kind of quotes you prefer, but the quote at the beginning of the string must match the quote at the end. We'll learn more about strings in later lessons when we cover working with unstructured data.*
+::: {.callout-tip}
+It's always okay to put single or double quotes around the name of the page
+when you use `?`, but they're only required if it contains arithmetic commands
+or non-alphabetic characters. So `?sqrt`, `?'sqrt'`, and `?"sqrt"` all open the
+documentation for `sqrt`, the square root function. Why does this work?  R
+treats anything inside single or double quotes as literal text rather than as
+an expression to evaluate.
+
+In programming jargon, a piece of literal text is called a **string**. You can
+use whichever kind of quotes you prefer, but the quote at the beginning of the
+string must match the quote at the end. We'll learn more about strings in later
+lessons when we cover working with unstructured data.
+:::
 
 **??** Sometimes you might not know the name of the help page you want to look up. You can do a general search of R's help pages with `??` followed by a string of search terms. For example, to get a list of all help pages related to linear models:
 
@@ -236,28 +371,67 @@ There are also help pages for other topics, such as built-in mathematical consta
 ??"linear model"
 ```
 
-This search function doesn't always work well, and it's often more efficient to use an online search engine. When you search for help with R online, include
-"R" as a search term. Alternatively, you can use [RSeek][rseek], which restricts the search to a selection of R-related websites.
+This search function doesn't always work well, and it's often more efficient to
+use an online search engine. When you search for help with R online, include
+"R" as a search term. Alternatively, you can use [RSeek][rseek], which
+restricts the search to a selection of R-related websites.
 
 [rseek]: https://rseek.org/
 
-In later lessons we'll learn about packages, which are sharable bundles of code. You'll often need to look up the documentation to get help figuring out how to work with a new package. You can view a package's help documentation using `packageDescription("Name")`.
+In later lessons we'll learn about packages, which are sharable bundles of
+code. You'll often need to look up the documentation to get help figuring out
+how to work with a new package. You can view a package's help documentation
+using `packageDescription("Name")`.
 
 
 ### When Something Goes Wrong (and it will)
 
-Sooner or later you'll run some code and get an error message or result you didn't expect. Don't panic! Even experienced programmers make mistakes regularly, so learning how to diagnose and fix problems is vital. We call this troubleshooting or debugging.
+Sooner or later you'll run some code and get an error message or result you
+didn't expect. Don't panic! Even experienced programmers make mistakes
+regularly, so learning how to diagnose and fix problems is vital. We call this
+troubleshooting or debugging.
 
 Stay calm and try going through these steps:
 
-1. If R returned a warning or error message, read it! If you're not sure what the message means, try searching for it online.
-2. Check your code for typ0s. Did you capitalize something that should be lower case? Are you missing or have an extra comma, quote, parenthesis?
-3. Test your code one line at a time, starting from the beginning. After each line that assigns a variable, check that the value of the variable is what you expect. Try to determine the exact line where the problem originates (which may differ from the line that emits an error!). Sometimes the "shut it down and restart" trick really works - you might have created a variable and forgot about it, and you need a fresh start for the code to work as intended.
+1. If R returned a warning or error message, read it! If you're not sure what
+   the message means, try searching for it online.
+2. Check your code for typ0s. Did you capitalize something that should be lower
+   case? Are you missing or have an extra comma, quote, parenthesis?
+3. Test your code one line at a time, starting from the beginning. After each
+   line that assigns a variable, check that the value of the variable is what
+   you expect. Try to determine the exact line where the problem originates
+   (which may differ from the line that emits an error!). Sometimes the "shut
+   it down and restart" trick really works---you might have created a variable
+   and forgot about it, and you need a fresh start for the code to work as
+   intended.
 
-**If all else fails, just Google it.** [Stack Overflow](https://stackoverflow.com/questions/tagged/r) is a popular question and answer website and you can often find solutions to your problems there, or pick up tips to help you tackle your problem in a new way. On CRAN, check out the [Intro to R Manual](http://cran.r-project.org/doc/manuals/R-intro.pdf) and [R FAQ](http://cran.r-project.org/doc/FAQ/R-FAQ.html). Many regions also have grassroots R-Users Groups that you can join and ask for help. Just remember to pay it forward and use your new found R prowess to help others in the community on their learning journeys!
+**If all else fails, just Google it.** [Stack Overflow][so-r] is a popular
+question and answer website and you can often find solutions to your problems
+there, or pick up tips to help you tackle your problem in a new way. On CRAN,
+check out the [Intro to R Manual][r-intro] and [R FAQ][r-faq]. Many regions
+also have grassroots R-Users Groups that you can join and ask for help. Just
+remember to pay it forward and use your new found R prowess to help others in
+the community on their learning journeys!
 
-*Tip: When asking for help, clearly state the problem and provide a [reproducible example](http://adv-r.had.co.nz/Reproducibility.html). [R also has a posting guide](http://www.r-project.org/posting-guide.html) to help you write questions that are more likely to get a helpful reply. It's also a good idea to save your `sessionInfo()` so you can show others how your machine and session was configured. Doing this before coming to office hours for a programming class is also highly recommended!*
+[so-r]: https://stackoverflow.com/questions/tagged/r
+[r-intro]: http://cran.r-project.org/doc/manuals/R-intro.pdf
+[r-faq]: http://cran.r-project.org/doc/FAQ/R-FAQ.html
 
+::: {.callout-tip}
+When asking for help, clearly state the problem and provide a [reproducible
+example][reprex]. Take a look at StackOverflow's [How do I ask a good question?
+guide][so-how] and R's [Posting guide][r-posting] before you write your first
+question. These guides will help you write questions that are more likely to
+get a useful reply.
+
+It's also a good idea to save your `sessionInfo()` so you can show others how
+your machine and session was configured. Doing this before coming to office
+hours for a programming class is also highly recommended!
+:::
+
+[reprex]: https://stackoverflow.com/help/minimal-reproducible-example
+[so-how]: https://stackoverflow.com/help/how-to-ask
+[r-posting]: http://www.r-project.org/posting-guide.html
 
 
 ## Vectors
@@ -268,8 +442,8 @@ element. For example, a single value, like `3`, is a vector with 1 element. So
 every value that you've worked with in R so far was a vector.
 
 The elements of a vector must all be the same type of data (we say the elements
-are **homogeneous**). A vector can contain integers, decimal numbers, strings (text),
-or several other types of data, but not a mix these all at once.
+are **homogeneous**). A vector can contain integers, decimal numbers, strings
+(text), or several other types of data, but not a mix these all at once.
 
 You can combine or concatenate vectors to create a longer vector with the `c`
 function:
@@ -373,14 +547,23 @@ x * y
 x / y
 ```
 
-Note that if you are trying to run vectorized operations on vectors of different lengths, the values of the shorter vector will be *recycled*. For example, if we create a vector z with only three values, and try to add it to x, which has four values, we get the following result.
+Note that if you are trying to run vectorized operations on vectors of
+different lengths, the values of the shorter vector will be **recycled**. For
+example, if we create a vector z with only three values, and try to add it to
+x, which has four values, we get the following result.
 
 ```{r, warning = T}
 z = c(-1, 7, 10)
 x + z
 ```
 
-First, we get a warning, which lets us know that these vectors are not the same length. But we still get a result, which manages to make a calculation for the fourth value. To get this fourth value, it _recycles_ the shorter vector (z) by starting back at its first element, -1, and using that to add to the fourth element in x, 4. Thus our result, is x[4] + z[1] = 4 (or -1 + 3 = 4). This is something to be cautious of, because if values are recycled inadvertently, we'll have errors in our results.
+First, we get a warning, which lets us know that these vectors are not the same
+length. But we still get a result, which manages to make a calculation for the
+fourth value. To get this fourth value, R recycles the shorter vector `z` by
+going back to its first element, `-1`, and using that to add to the fourth
+element in `x` (`4`). Thus our result is `x[4] + z[1] = 4` (or `-1 + 3 = 4`).
+This is something to be cautious of, because if values are recycled
+inadvertently, we'll have errors in our results.
 
 Functions that are not vectorized tend to be ones that combine or aggregate
 values in some way. For instance, the `sum`, `length`, and `class` functions
@@ -446,24 +629,37 @@ column:
 sum(my.data$distance.mi)
 ```
 
-*Preview of future lesson content: What if you want to extract a row from your data frame? For example, to pull out all responses from only the 11th row, you would subset it:*
+::: {.callout-note}
+Preview of future lesson content: what if you want to extract a row from your
+data frame?
+
+For example, to pull out all responses from only the 11th row, you
+would subset it:
+
 ```{r echo=T, results='hide'}
 my.data[11, ]
 ```
+:::
 
 ### Inspecting Data
 
-You can print a small dataset, but it can be slow and hard to read especially if there are a lot of columns. R has many built in functions to inspect objects:
+You can print a small dataset, but it can be slow and hard to read especially
+if there are a lot of columns. R has many built in functions to inspect
+objects:
 
-```{r echo=T, results='hide'}
-head(my.data) # this prints only the beginning of the dataset
-tail(my.data) # this prints only the end of the dataset
-nrow(my.data) # number of rows
-ncol(my.data) # number of columns
-ls(my.data) # lists the names of the columns alphabetically
-names(my.data) # lists the names of the columns as they appear in the data frame
-rownames(my.data) # names of the rows
-```
+
+| Expression | Description
+|------------|------------
+| `head`     | Get only the beginning of the data set.
+| `tail`     | Get only the end of the data set.
+| `nrow`     | Get the number of rows.
+| `ncol`     | Get the number of columns.
+| `ls`       | Get the names of the columns in alphabetical order.
+| `names`    | Get the names of the columns in their actual order.
+| `rownames` | Get the names of the rows.
+
+: {.striped .hover}
+
 
 A highly informative function for inspecting the structure of a data frame or
 other object is `str`:
@@ -481,16 +677,16 @@ are `woof`:
 table(my.data$pets)
 ```
 
-*Additional reading: Check out this DataLab workshop on ["Keeping Your Data
-Tidy"][tidy] that covers best practices for structuring, naming, and organizing
-your data frames (and spreadsheets).*
+::: {.callout-note title="See also"}
+Check out DataLab's [Keeping Your Data Tidy workshop][tidy], which covers best
+practices for structuring, naming, and organizing your data frames (and
+spreadsheets).
+:::
 
 [tidy]: https://ucdavisdatalab.github.io/workshop_keeping_data_tidy/#spreadsheet-best-practices
 
 
-
-Data Types & Classes
---------------------
+## Data Types & Classes
 
 Data can be categorized into different _types_ based on sets of shared
 characteristics. For instance, statisticians tend to think about whether data
@@ -534,6 +730,7 @@ The built-in classes you'll use all the time correspond to vectors and lists
 | character | `"hi"`, `"YAY"`       | Text strings
 | list      | `list(TRUE, 1, "hi")` | Ordered collection of heterogeneous elements
 
+: {.striped .hover}
 
 The class of a vector is the same as the class of its elements:
 
@@ -588,6 +785,8 @@ that represent more sophisticated data structures:
 | matrix     | Two-dimensional ordered collection of homogeneous elements
 | array      | Multi-dimensional ordered collection of homogeneous elements
 | data.frame | Data frames
+
+: {.striped .hover}
 
 For these, the class is usually different from the type. We'll learn more about
 most of these later on.
