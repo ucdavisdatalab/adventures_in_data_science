@@ -30,11 +30,11 @@ After this lesson, you should be able to:
 
 Most people have a folder/directory somewhere on their computer that looks something like this:
 
-![](./img/mac_finder_1.png)
+![](/images/ch02/mac_finder_1.png)
 
 Or perhaps, this:
 
-![](./img/mac_window_2.png)
+![](/images/ch02/mac_window_2.png)
 
 This is a rudimentary form of version control that relies completely on the human workflow of saving multiple versions of a file. This system works minimally well, in that it does provide you with a history of file versions theoretically organized by their time sequence. But this **filesystem method** provides no information about how the file has changed from version to version, why you might have saved a particular version, or specifically how the various versions are related. This human-managed filesystem approach is more subject to error than software-assisted version control systems. It is not uncommon for users to make mistakes when naming file versions, or to go back and edit files out of sequence. Software-assisted version control systems (VCS) such as Git were designed to solve this problem.
 
@@ -56,19 +56,19 @@ Server based version control systems can generally be segmented into two distinc
 
 **Centralized VCS** is the oldest and, surprisingly to many, still the dominant form of version control architecture worldwide. Centralized VCS implement a “spoke and wheel” architecture to provided server based version control.
 
-![](./img/spoke_and_where_cloud.png)
+![](/images/ch02/spoke_and_where_cloud.png)
 
 With the spoke and wheel architecture, the server maintains a centralized collection of file versions. Users utilize version control clients to “check-out” a file of interest to their local file storage, where they are free to make changes to the file. Centralized VCS typically restrict other users from checking out editable versions of a file if another user currently has the file checked out. Once the user who has checked out the file has finished making changes, they “check-in” their new version, which is then stored on the server from where it can be retrieved and "checked-out" by another user. As can be seen, Centralized VCS provide a very controlled and ordered universe that ensures file integrity and tracking of changes. However, this regulation comes at a cost. Namely, it reduces the ease with which multiple users can work simultaneously on the same file.
 
 **Distributed VCS** are not dependent on a central repository as a means of sharing files or tracking versions. Distributed VCS implement a network architecture (as opposed to the spoke and wheel of the Centralized VCS as pictured above) to allow each user to communicate directly with every other user.
 
-![](./img/distributed_network.png)
+![](/images/ch02/distributed_network.png)
 
 In Distributed VCS, each user maintains their own version history of the files being tracked, and the VCS software communicates between users to keep the various local file systems in sync with each other. With this type of system, the local versions of two different users will diverge from each other if both users make changes to the file. This divergence will remain in place until the local repositories are synced, at which time the VCS stitches (or merges) the two different versions of the file into a single version that reflects the changes made by each individual, and then saves the stitched version of the file onto both systems as the current version. Various mechanisms can then be used to resolve the conflicts that may arise during this merge process. Distributed VCS offer greater flexibility and facilitate collaborative work, but a lack of understanding of the sync/merge workflow can cause problems. It is not uncommon for a user to forget to sync their local repository with the repositories of other team members and, as a result, work for extended periods of time on outdated files that don’t reflect their teammates and result in work inefficiencies and merge challenges.
 
 An important feature of Distributed VCS is that many users and organizations choose to include a central server as a node in the distributed network. This gives use **the best of both worlds** by creating an hybrid universe in which some users will sync directly to each other while other users will sync through a central server.
 
-![](./img/hybrid_network.png)
+![](/images/ch02/hybrid_network.png)
 
 Syncing with a cloud-based server provides an extra level of backup for your files and also facilitates communication between users. But treating the server as just another node on the network (as opposed to a centralized point of control) puts the control and flexibility back in the hands of the individual developer. For example, in a true Centralized CVS, if the server goes down then nobody can check files in and out of the server, which means that nobody can work. But in a Distributed CVS this is not an issue. Users can continue to work on local versions and the system will sync any changes when the server becomes available.
 
@@ -80,17 +80,17 @@ When we think about Version Control, we typically think about managing changes t
 
 For all of their computing power and seeming intelligence, computers still only know two things: 0 and 1. In computer speak, we call this a **binary system**, and the unit of memory on a hard-disk, flash drive, or computer chip that stores each 1 or 0 is called a **bit**. You can think of your computer’s storage device (regardless of what kind it is) as a presenting a large grid, where each box is a bit:
 
-![](./img/empty_sectors.png)
+![](/images/ch02/empty_sectors.png)
 
 In the above example, as with most computer storage, the bits in our storage grid are addressable, meaning that we can designate a particular bit using a row and column number such as, for example, A7, or E12. Also, remember, that each bit can only contain one of two values: 0 or 1. So, in practice, our storage grid would actually look something like this:
 
-![](./img/filled_bits.png)
+![](/images/ch02/filled_bits.png)
 
 All of the complex information that we store in the computer is translated to this binary language prior to storage using a system called **Unicode**.  You can think of Unicode as a codebook that assigns a unique combination of 8, 16, 32, 64, etc. (depending on how old your computer is) ones and zeros to each letter, numeral, or symbol. For example, the 8-bit Unicode for the upper case letter “A” is “01000001”, and the 8-bit Unicode character for the digit “3” is “00110011”. The above grid actually spells out the phrase, “Call me Ishmael”, the opening line of Herman Melville’s novel *Moby Dick*.
 
 An important aspect of how computers store information in binary form is that, unlike most human readable forms of data storage, there is no right to left, up or down, or any other regularized organization of bits on a storage medium. When you save a file on your computer, the computer simply looks for any open bits and starts recording information. The net result is that the contents of single file are frequently randomly interleaved with data from other files. This mode of storage is used because it maximizes the use of open bits on the storage device. But it presents the singular problem of not making data readable in a regularized, linear fashion. To solve this problem, all computers reserve a particular part of their internal memory for a **“Directory”** which stores a sector map of all chunks of data. For example, if you create a file called README.txt with the word “hello” in it, the computer would randomly store the Unicode for the five characters in the word “hello” on the storage device and make a directory entry something like the following:
 
-![](./img/directory.png)
+![](/images/ch02/directory.png)
 
 Understanding the Directory concept and how computers store information is crucial to understanding how VCS mange your Files.
 
@@ -98,11 +98,11 @@ Understanding the Directory concept and how computers store information is cruci
 
 Most users think about version control as a process of managing files. For example, if I might have a directory called “My Project” that holds several files related to this project as follows:
 
-![](./img/mac_finder_3.png)
+![](/images/ch02/mac_finder_3.png)
 
 One approach to managing changes to the above project files would be to store multiple versions of each file as in the figure below for the file analysis.r:
 
-![](./img/version_tree.png)
+![](/images/ch02/version_tree.png)
 
 In fact, many VCS do exactly this. They treat each file as the minimum unit of data and simply save various versions of each file along with some additional information about the version. This approach can work reasonably well. However, it has limitations. First, this approach can unnecessarily consume space on the local storage device, especially if you are saving many versions of a very large file. It also has difficulty dealing with changes in filenames, typically treating the same file with a new name as a completely new file, thereby breaking the chain of version history.
 
@@ -110,7 +110,7 @@ In fact, many VCS do exactly this. They treat each file as the minimum unit of d
 
 Git (and many other Distributed VCS) manage your files as collections of data rather than collections of files. Git’s primary unit of management is the **“Repository,”** or “Repo” for short, which is aligned with your computer’s Directory/Folder structure. Consider, for example, the following file structure:
 
-![](./img/TT_tree_mobile.jpg)
+![](/images/ch02/TT_tree_mobile.jpg)
 
 Here we see a user, Tom’s, home directory, which contains three sub directories (Data, Thesis, and Tools) and one file (Notes.txt).  Both the Data and Tools directories contain sub files and/or directories. If Tom wanted to track changes to the two files in the Data directory, he would first create a Git repository by placing the Data directory **“under version control.”**
 
@@ -164,7 +164,7 @@ Git is now initializing in our course directory, but Git does not automatically 
 
 In the image below, there are various .html files in a directory that is tracked by Git. You may choose to only Stage two of those files (a.html and c.html). Then for each Stage and Commit there are several versions (C1-C4), one for each commit.
 
-![](./img/save_stage_commit.png)
+![](/images/ch02/save_stage_commit.png)
 
 In short, we 'stage' and 'commit' a file to the Git repository to save a copy of the current working version. The commands for this process are as follows.
 
@@ -278,7 +278,7 @@ $ git reset --hard <commit>
 
 Branching provides a simple way to maintain multiple, side-by-side versions of the files in a repository.  Conceptually, branching a repository creates a copy of the codebase in its current state that you can work on without affecting the primary version from which it was copied.  This allows you to work down multiple paths without affecting the main (or other) codebase.
 
-![](./img/GIT-Branchand-its-Operations.png)
+![](/images/ch02/GIT-Branchand-its-Operations.png)
 
 To see a list of branches in your repository
 
@@ -317,7 +317,7 @@ There are as many different branching workflows as there are development teams a
 2. The "development" or "dev" branch holds the current, combined, working version of the code.
 3. "topic" branches are created on-the-fly by individuals and are focused on particular coding efforts, one each for each development task.
 
-![](./img/branching_workflows.png)
+![](/images/ch02/branching_workflows.png)
 
 For example, let's consider a case where there is a team maintaining and developing a company website.  In this case, the "master" branch would contain the version of the code that is currently deployed on the live webserver.  The "dev" branch would contain a testable version of the code that reflects completed changes to the site made by all team members that have yet to be deployed.  Finally, the repository would also contain many topic branches, each of which holds code related to a particular change that was or is being worked on.  For example, a team developing a new widget for visualizing data some area of the site would create a suitably named topic branch (something like "viz_widget") for this topic and do all their initial coding in this branch.  Once they have completed and tested their code in this branch, they would merge it into the "dev" branch.  The new code can then be viewed and tested by others as part of the "dev" branch.  Once all topics branches for planned features for the next release of the website have been merged to "dev" and "dev" has been thoroughly testes (and fixed as necessary), "dev" is then merged into "master" and the "master" branch is then deployed to the live webserver.
 
@@ -333,7 +333,7 @@ potentially time-consuming data analyses or for serving up public-facing content
 (like a website). For such projects, GitHub acts as a reference point with which
 you can **push** changes on one computer up to the server and **pull** them down from the server on onto another computer. The process would look something like the following, where pushing and pulling from a remote branch entails keeping a reference point for a project that you're developing locally:
 
-![](./img/github_workflow.png)
+![](/images/ch02/github_workflow.png)
 <center>
 [Image source.](https://www.reddit.com/r/git/comments/99ul9f/git_workflow_diagram_showcasing_the_role_of/)
 </center><br>
@@ -348,7 +348,7 @@ changes made to that project would be trackable according to the logic of versio
 Simultaneously pushing and pulling on multiple computers would look something
 like the following:
 
-![](./img/github_as_hub.png)
+![](/images/ch02/github_as_hub.png)
 
 <center>
 [Image source.](https://gist.github.com/fentontaylor/c6110b2e20e29a656645ce03d1848964)
@@ -432,7 +432,7 @@ look for an email from GitHub. Click the "Verify email address" button. Doing so
 will take you to your homepage, where, if you'd like, you can add a few details
 about yourself.
 
-![](./img/github_new_homepage.png)
+![](/images/ch02/github_new_homepage.png)
 
 You now have a GitHub account!
 
@@ -565,7 +565,7 @@ vim README.md
 Write and save "Hello world!" in the file. You should see something like the
 following:
 
-![](./img/hello_world.png)
+![](/images/ch02/hello_world.png)
 
 Exit Vim with `:wq`. Then, add README.md to Git and commit your changes. Don't forget to
 write a short note in the commit message.
@@ -577,7 +577,7 @@ git commit -m 'Add a README file'
 
 You should see the following:
 
-![](./img/commit_readme.png)
+![](/images/ch02/commit_readme.png)
 
 #### Preparing to Sync Your Repository
 
@@ -588,7 +588,7 @@ a moment and prepare a space for receiving this repository on GitHub.
 To do so, go to github.com and, on your homepage, click the "Create repository"
 button. You'll be taken to this page:
 
-![](./img/new_repository.png)
+![](/images/ch02/new_repository.png)
 
 There are a few things of note here:
 
@@ -607,7 +607,7 @@ description is helpful but not necessary for our purposes; the same goes for a
 license. Finally, we will choose to make this a public repository (meaning
 anyone can see it).
 
-![](./img/new_repository_details.png)
+![](/images/ch02/new_repository_details.png)
 
 #### Pushing a Local Repository
 
@@ -615,7 +615,7 @@ Once you've entered the above information, click "Create repository." GitHub
 will take you to a new screen, which gives you a number of options for making or
 uploading new files to the repository.
 
-![](./img/new_repository_options.png)
+![](/images/ch02/new_repository_options.png)
 
 Since we already have a repository made, we need to use the "Push an existing
 repository from the command line." Pushing our repository is as easy as
@@ -629,7 +629,7 @@ git push -u origin
 
 On the command line, that looks like this:
 
-![](./img/push_repository_command_line.png)
+![](/images/ch02/push_repository_command_line.png)
 
 To summarize the above, we've done the following:
 
@@ -647,7 +647,7 @@ When you make your changes, the GitHub site won't immediately refresh itself,
 but if you click on the "< > Code" tab or on the name of the directory, you'll
 see that the repository has been synced and your README.md file is now online.
 
-![](./img/new_repository_synced.png)
+![](/images/ch02/new_repository_synced.png)
 
 Note that GitHub automatically looks for a README file in your repository. If it
 finds one that contains renderable [markdown](https://guides.github.com/features/mastering-markdown/) code, it will
@@ -665,31 +665,31 @@ First, we'll alter our README.md. Reopen the file with Vim, skip a line down
 from the line you've already written, and add "My name is <your name>." Save and
 quit.
 
-![](./img/hello_world_changed.png)
+![](/images/ch02/hello_world_changed.png)
 
 Then, add the file and commit your changes.
 
-![](./img/commit_readme_update.png)
+![](/images/ch02/commit_readme_update.png)
 
 If you want to push these changes to your remote repository, simply enter `git push`.
 You'll see a similar message appear about enumerating, counting, and writing
 objects to GitHub. Afterwards, if you refresh your file on GitHub, you should
 see your changes:
 
-![](./img/new_repository_synced_updated.png)
+![](/images/ch02/new_repository_synced_updated.png)
 
 Note that your commit message appears here as well:
 
-![](./img/new_repository_synced_message_highlight.png)
+![](/images/ch02/new_repository_synced_message_highlight.png)
 
 If you click the commit tag:
 
-![](./img/new_repository_synced_commit_tag.png)
+![](/images/ch02/new_repository_synced_commit_tag.png)
 
 You'll be taken to another page, which shows you the differences between your
 old version and the new one:
 
-![](./img/github_vdiff.png)
+![](/images/ch02/github_vdiff.png)
 
 #### Pulling Changes from a Remote Repository
 
@@ -702,7 +702,7 @@ For example, if you return to the main page of "my_first_remote_directory", you
 can alter the README directly on GitHub. Click the pencil in the right-hand
 corner of the rendered file.
 
-![](./img/new_repository_pencil_highlight.png)
+![](/images/ch02/new_repository_pencil_highlight.png)
 
 This will open up a text editor interface. Using it, add "What's yours?" on the
 fifth line of the document. The complete document should look like this:
@@ -721,12 +721,12 @@ command line.
 
 You'll see something like the following:
 
-![](./img/updated_readme.png)
+![](/images/ch02/updated_readme.png)
 
 Back on the command line, if you type `git status`, you'll see that your local
 repository is now out of sync.
 
-![](./img/branch_behind.png)
+![](/images/ch02/branch_behind.png)
 
 If you haven't made any changes to your directory, syncing it with the remote
 version can be achieved with a straightforward pull command:
@@ -737,7 +737,7 @@ git pull
 
 Once you enter this command, your command line should look something like this:
 
-![](./img/git_pull.png)
+![](/images/ch02/git_pull.png)
 
 Your files are now synced.
 
@@ -767,7 +767,7 @@ Then, go to the following link: [https://github.com/ucdavis-datalab-training/wor
 
 Once there, click on the green "Code" button, which should show the following:
 
-![](./img/clone_repository_github_view.png)
+![](/images/ch02/clone_repository_github_view.png)
 
 Since you have SSH keys, select the "SSH" option. Copy the text GitHub provides
 to your clipboard. Then, in the command line, type `git clone`, add a space,
@@ -781,9 +781,9 @@ git clone git@github.com:ucdavis-datalab-training/workshop_git_for_teams_sandbox
 Hit "Enter". If you'd like, you can use `ls` to see the newly made directory.
 You should see something like the following:
 
-![](./img/clone_repository_command_line_view.png)
+![](/images/ch02/clone_repository_command_line_view.png)
 
 If you `cd` into the directory and then type `ls -a`, you'll see a README.md
 file and a .git file, which contains all the logging info for the repository.
 
-![](./img/clone_repository_lsa.png)
+![](/images/ch02/clone_repository_lsa.png)
