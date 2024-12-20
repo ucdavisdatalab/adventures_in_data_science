@@ -1,11 +1,18 @@
-Getting Data from the Web
-=========================
+---
+format:
+  html:
+    df-print: kable
+---
 
-The internet in general and the World Wide Web specifically serves as a
-vast source of data suitable for answering a wide range of research questions.
-In this lesson we cover several common methods for acquiring this data.
+```{r, echo=FALSE, results=FALSE}
+source("R/ch09.R")
+```
 
-## Learning Objectives
+# Getting Data from the Web
+
+The internet in general and the World Wide Web specifically serves as a vast
+source of data suitable for answering a wide range of research questions. In
+this lesson we cover several common methods for acquiring this data.
 
 After this lesson, you should be able to:
 
@@ -111,7 +118,7 @@ url_path <- c("/species/common_birds.htm")
 birds_columns <- c("protocol", "server", "path to file")
 birds_table <- data.frame(url_protocol, url_domain, url_path)
 colnames(birds_table) <- birds_columns
-kable(birds_table[,], caption = "")
+birds_table[,]
 ```
 
 We've already discussed Internet Protocols and domain names. The file path portion of the URL can also provide valuable information about the server. It reads exactly like a Unix file path on the command line. The path `/species/common_birds.htm` indicates that the file `common_birds.htm` is in the `species` directory on the server.
@@ -144,7 +151,7 @@ url_query <- c("?ft=dragon&numkw=52")
 birds_columns <- c("protocol", "server", "path to file", "query string")
 birds_table <- data.frame(url_protocol, url_domain, url_path, url_query)
 colnames(birds_table) <- birds_columns
-kable(birds_table[,], caption = "")
+birds_table[,]
 ```
 
 Query strings always appear at the end of the URL and begin with the `?` character followed by a series of key/value pairs separated by the `&` character. In the above example we see that two parameters are submitted to the server via the query string as follows:
@@ -675,9 +682,9 @@ tab = xml_find_all(tables, "//*[contains(@class, 'sortable')]")
 tab
 ```
 
-Now we get just one table! Here we used a second XPath applied only to the
-results from the first, but we also could've done this all with one XPath:
-`//table[contains(@class, 'sortable')]`.
+Now we get just two tables, and the second one is the one we want! Here we used
+a second XPath applied only to the results from the first, but we also could've
+done this all with one XPath: `//table[contains(@class, 'sortable')]`.
 
 The next part of extracting the data is to extract the value from each
 individual cell in the table. HTML tables have a strict layout order, with tags
@@ -686,7 +693,7 @@ reassemble them into a data frame, but the rvest function `html_table` can do
 it for us automatically:
 ```{r}
 cities = html_table(tab, fill = TRUE)
-cities = cities[[1]]
+cities = cities[[2]]
 head(cities)
 ```
 
@@ -699,7 +706,10 @@ first row is part of the header, and the column types are not correct.
 
 ```{r}
 # Fix column names.
-names(cities) = c("city", "type", "county", "population", "mi2", "km2", "date")
+names(cities) = c(
+  "city", "type", "county", "population2020", "population2010",
+  "population_change", "mi2", "km2", "density", "date"
+)
 
 # Remove fake first row.
 cities = cities[-1, ]
@@ -714,6 +724,7 @@ string_ where the components of the date are indicated by codes that start with
 about the different date format codes in `?strptime`.
 
 Here's the code to convert the dates in the data frame:
+
 ```{r}
 dates = as.Date(cities$date, "%B %m, %Y")
 cities$date = dates
@@ -722,19 +733,19 @@ cities$date = dates
 We can also convert the population to a number:
 
 ```{r}
-class(cities$population)
+class(cities$population2020)
 
 # Remove commas and footnotes (e.g., [1]) before conversion
 library(stringr)
 
-pop = str_replace_all(cities$population, ",", "")
+pop = str_replace_all(cities$population2020, ",", "")
 pop = str_replace_all(pop, "\\[[0-9]+\\]", "")
 pop = as.numeric(pop)
 
 # Check for missing values, which can mean conversion failed
 any(is.na(pop))
 
-cities$population = pop
+cities$population2020 = pop
 ```
 
 #### Case Study: The CA Aggie
