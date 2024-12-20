@@ -1,3 +1,8 @@
+---
+format:
+  html:
+    df-print: kable
+---
 # Data Structures
 
 This lesson provides a conceptual introduction to different ways of structuring
@@ -36,16 +41,8 @@ The first step in the data forensics process is understanding the format(s) thro
 Tabular Data is the most ubiquitous form of data storage and the one most familiar to most users. Tabular data consists of organizing data in a table of rows and columns. Traditionally, each column in the table represents a Field of Variable and each row represents an observation or entity. For example, the table below shows a tabular organization of a subset of the *mtcars* dataset:
 
 ```{r, echo=FALSE}
-mtcars_name <- c("Mazda RX4","Mazda RX4 Wag","Datsun 710","Hornet 4 Drive","Hornet Sportabout","Valiant","Duster 360","Merc 240D","Merc 230","Merc 280")
 mtcars_columns <- c("mpg", "cyl", "disp", "hp")
-mtcars_mpg <- c(21.0,21.0,22.8,21.4,18.7,18.1,14.3,24.4,22.8,19.2)
-mtcars_cyl <- c(6,6,4,6,8,6,8,4,4,6)
-mtcars_disp <- c(160.0,160.0,108.0,258.0,360.0,225.0,360.0,146.7,140.8,167.6)
-mtcars_hp <- c(110,110,93,110,175,105,245,62,95,123)
-mtcars_table <- data.frame(mtcars_mpg, mtcars_cyl, mtcars_disp, mtcars_hp)
-colnames(mtcars_table) <- mtcars_columns
-rownames(mtcars_table) <- mtcars_name
-kable(mtcars_table[,], caption = "")
+mtcars[1:10, mtcars_columns]
 ```
 
 ## Tree / Document Data Structures
@@ -323,6 +320,7 @@ RDBMS have three primary purposes as a data storage format:
 
 Items 2 and 3 above are accomplished at the software level, by deploying strict checks on data input, complex data indexing systems, and implementing redundant, automated, backup systems, to name just a few of the functionalities offered by RDBMS. Item 1 above, reducing duplication of data, is accomplished by using a specific, "relational" data structure that encourages the use of controlled lists of data mapped to individual observations. Looking at our mtcars subset data, for example, we see that while there are ten observations, there are only 6 makes of cars. To represent this in RDBMS, we first create a "Table," a named collection of data, that contains a unique list of car makes:
 
+::: {#fig-make-table}
 ```{r, echo=FALSE}
 mtcars_rel_make_columns <- c("id", "Make")
 mtcars_rel_make_rows <- c(1:6)
@@ -331,11 +329,15 @@ mtcars_rel_makes <- c("Mazda","Datsun","Hornet", "Valiant","Duster","Merc")
 mtcars_rel_make_table <- data.frame(mtcars_real_make_ids, mtcars_rel_makes)
 colnames(mtcars_rel_make_table) <- mtcars_rel_make_columns
 rownames(mtcars_rel_make_table) <- mtcars_rel_make_rows
-kable(mtcars_rel_make_table[,], caption = "MAKE_TABLE")
+mtcars_rel_make_table
 ```
+
+`MAKE_TABLE`
+:::
 
 Once we have a table of unique lists, we then create and populate a table of our cars, associating each car with its appropriate make from the MAKE_TABLE table:
 
+::: {#fig-cars-table}
 ```{r, echo=FALSE}
 mtcars_rel_cars_columns <- c("Make", "Model", "mpg", "cyl", "disp", "hp")
 mtcars_rel_cars_rows <- c(1:10)
@@ -348,8 +350,11 @@ mtcars_rel_cars_hp <- c(110,110,93,110,175,105,245,62,95,123)
 mtcars_rel_cars_table <- data.frame(mtcars_rel_cars_makes, mtcars_rel_cars_models, mtcars_rel_cars_mpg, mtcars_rel_cars_cyl, mtcars_rel_cars_disp, mtcars_rel_cars_hp)
 colnames(mtcars_rel_cars_table) <- mtcars_rel_cars_columns
 rownames(mtcars_rel_cars_table) <- mtcars_rel_cars_rows
-kable(mtcars_rel_cars_table[,], caption = "CARS_TABLE")
+mtcars_rel_cars_table
 ```
+
+`CARS_TABLE`
+:::
 
 In the above table, we only normalized the car Make field. In a fully normalized RDBMS data structure, we would also create a control table for the Model field in anticipation of the fact that we could have more than one observation for a given model. Fully normalized RBDMS data structures use control tables for all fields that contain string data. The image below shows a sample Entry Relationship Diagram (ERD) for a more complex dataset relating to course offerings and enrollments. Each line connecting two tables marks a field in a "join" table that uses the id field in a control table (known as a foreign key) to associate information in the control table with the  records in the join table.
 
