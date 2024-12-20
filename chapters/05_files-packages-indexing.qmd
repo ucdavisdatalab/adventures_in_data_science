@@ -24,36 +24,40 @@ After this lesson, you should be able to:
 
 ### Setup
 
-To follow along, download this zip file from the following URL:
-[https://datalab.ucdavis.edu/adventures-in-datascience/best_in_show.zip](https://datalab.ucdavis.edu/adventures-in-datascience/best_in_show.zip)
+::: {.callout-important}
+To follow along, download [this zip file][zip]!
+:::
+
+[zip]: https://datalab.ucdavis.edu/adventures-in-datascience/best_in_show.zip
 
 Navigate to where you want to save your work:
-```
+
+```sh
 cd ~/Documents/
 ```
 
 Next, make a directory:
-```
-mkdir files_in_r
-```
 
-```
+```sh
+mkdir files_in_r
 cd files_in_r
 ```
 
 Copy the downloaded zip file into that directory:
 
-```
+```sh
 cp ~/Downloads/best_in_show.zip .
 ```
 
 Unzip the file:
-```
+
+```sh
 unzip best_in_show.zip
 ```
 
 Navigate to the newly created directory
-```
+
+```sh
 cd best_in_show
 ```
 
@@ -64,29 +68,34 @@ constantly test assumptions that you may have.
 
 This process is a key part of programming and of working in the command line.
 
-Lets start by seeing what we have, which we do with the `ls` command:
-```
+Let's start by seeing what we have, which we do with the `ls` command:
+
+```sh
 ls
 ```
 
 Remember that `ls` can be modified with flags, for example, to see *all* the
 files including hidden ones, use the `-a` flag:
-```
+
+```sh
 ls -a
 ```
 
 You can see more information about the files with the `-l` flag:
-```
+
+```sh
 ls -l
 ```
 
 Modifiers can be combined for `ls`:
-```
+
+```sh
 ls -la
 ```
 
 You can use `du -h` to see the disk usage (file size) of a given file:
-```
+
+```sh
 du -h dogs.csv
 ```
 
@@ -94,11 +103,13 @@ du -h dogs.csv
 units. Being aware of the size of a file early on can help debug issues with
 running out of disk space, as well as issues down the line in the analysis
 process. For example, reading in too many too large files into R can create
-issues for you by overloading your system's RAM (your computer's working memory).
+issues for you by overloading your system's RAM (your computer's working
+memory).
 
 You can view the disk usage for all the files in the directory with the
 wildcard symbol `*`:
-```
+
+```sh
 du -h *
 ```
 
@@ -122,7 +133,8 @@ with.
 
 On the command line, you can get information about the type of a file
 by using the `file` command followed by the name of a file:
-```
+
+```sh
 file dogs.csv
 ```
 
@@ -130,8 +142,8 @@ Note that `file` uses a series of tests (learn more by reading `man file`),
 to determine the file type and may not always perfectly report the type of the
 file.
 
-The output of `file` is the file name followed by a colon and then a description
-of the file type.
+The output of `file` is the file name followed by a colon and then a
+description of the file type.
 
 In this case, the output tells us that dogs.csv is a CSV text file.
 
@@ -139,13 +151,15 @@ A **comma-separated values** (CSV) file records tabular data
 using one line per row, with commas separating columns.
 
 From the command line we can read text files with `vim`:
-```
+
+```sh
 vim dogs.csv
 ```
 
 To see the type of all the files in the directory you can use the wildcard `*`
 operator:
-```
+
+```sh
 file *
 ```
 
@@ -158,7 +172,8 @@ and take up less storage space (bytes).
 
 For demonstrations sake, see what happens when you try to use vim to 'read'
 a binary data file:
-```
+
+```sh
 vim dogs.rds
 ```
 
@@ -192,8 +207,9 @@ files.
 
 #### The Working Directory
 
-The _working directory_ is the starting point R uses for relative paths.
-Think of the working directory as the directory R is currently "at" or watching.
+The **working directory** is the starting point R uses for relative paths.
+Think of the working directory as the directory R is currently "at" or
+watching.
 
 The function `getwd` returns the absolute path for the current working
 directory, as a string. It doesn't require any arguments:
@@ -201,6 +217,7 @@ directory, as a string. It doesn't require any arguments:
 ```{r, eval=FALSE}
 getwd()
 ```
+
 On your computer, the output from `getwd` will likely be different. This is a
 very useful function for getting your bearings when you write relative paths.
 If you write a relative path and it doesn't work as expected, the first thing
@@ -222,8 +239,11 @@ and can always be avoided by using appropriate relative paths. If you call
 computers. It's fine to use `setwd` interactively (in the R console), but avoid
 making your saved code dependent on it.
 
-When working in RStudio, you can set the working directory _at the start of your
-session_ in `session` -> `Set Working Directory` -> `To Source File Location`
+::: {.callout-tip}
+When working in RStudio, you can set the working directory _at the start of
+your session_ in `Session` -> `Set Working Directory` -> `To Source File
+Location`.
+:::
 
 Another function that's useful for dealing with the working directory and file
 system is `list.files`. The `list.files` function returns the names of all of
@@ -238,10 +258,10 @@ list.files("~/")
 list.files()
 ```
 
-If you call `list.files` with an invalid path or
-an empty directory, the output is `character(0)`:
+If you call `list.files` with an invalid path or an empty directory, the output
+is `character(0)`:
 
-```{r, eval=FALSE}
+```{r}
 list.files("/this/path/is/fake/")
 ```
 
@@ -249,13 +269,14 @@ Later on, we'll learn about what `character(0)` means more generally.
 
 #### Reading a CSV File
 
-Let's go ahead and read the `dogs.csv` file we extracted from the zip file
-at the start.
+Let's go ahead and read the `dogs.csv` file we extracted from the zip file at
+the start.
 
 R provides a very easy built-in function for reading CSV files, and a variety
 of other formats for text files containing tabular data.
 
-To read a csv file into R, use `read.csv`:
+To read a CSV file into R, use `read.csv`:
+
 ```{r, eval=FALSE}
 dogs = read.csv('dogs.csv')
 ```
@@ -266,12 +287,14 @@ dogs = read.csv('dogs.csv')
 dogs = readRDS('data/dogs.rds')
 ```
 
-Whenever you import data into R, it is crucial to check that things went
-as expected. To check things went according to our expectation, look at the output of the `read.csv` function, which we saved into `dogs`.
+Whenever you import data into R, it is crucial to check that things went as
+expected. To check things went according to our expectation, look at the output
+of the `read.csv` function, which we saved into `dogs`.
 
 Let's see what the output is. We can check what the object is with the `class`
-function.
-```{r, eval=FALSE}
+function:
+
+```{r}
 class(dogs)
 ```
 
@@ -280,104 +303,119 @@ because data frames represent tabular data, and csv files contain tabular data.
 
 We can get more information with the `str` function. `str` concisely gives
 information about the content of an R object:
-```{r, eval=FALSE}
+
+```{r}
 str(dogs)
 ```
 
 Let's check the dimensions of our dataset:
-```{r, eval=FALSE}
+
+```{r}
 dim(dogs)
 ```
 
 Recall we can access the number of rows with:
-```{r, eval=FALSE}
+
+```{r}
 nrow(dogs)
 ```
 
 And the number of columns:
-```{r, eval=FALSE}
+
+```{r}
 ncol(dogs)
 ```
 
 To display the first rows from the dataset, use `head`:
-```{r, eval=FALSE}
+
+```{r}
 head(dogs)
 ```
 
 And to display the last rows from the dataset, use `tail`:
-```{r, eval=FALSE}
+
+```{r}
 tail(dogs)
 ```
 
+<!-- FIXME: the table in this section had to be removed due to licensing -->
+<!--
 #### Reader Functions for Tabular Data
 
-The `read.csv` function is a shortcut for `read.table`, a general purpose
-function for reading tabular data from plain-text files into R.
+Note that the main differences between these functions relates to the `sep`
+parameter, which specifies the separator character between columns. In CSV
+files, the columns are separated by commas (hence the name comma separated
+values). In other versions of these functions, the columns are separated by
+tabs, signaled as `\t`. These separators---the commas and tabs---can also be
+called **delimiters**. Knowing which delimiter a function uses is important,
+particularly if you have those symbols in your data.
 
-The `read.csv` function acts just like `read.table`, but with the arguments
-`sep = ","` and `header = TRUE`.
+::: {.callout-note title="See also"}
+Table of R's read functions
+(https://rstudio-education.github.io/hopr/dataio.html)
+:::
+-->
 
-Table of R's read functions (https://rstudio-education.github.io/hopr/dataio.html)
-
-| Function      | Defaults                            | Use
-| :--------     | :--------                           | :---
-|`read.table`   |sep = " ", header = FALSE            | General-purpose read function
-|`read.csv`     |sep = ",", header = TRUE             | Comma-separated-variable (CSV) files
-|`read.delim`   |sep = "\t", header = TRUE            | Tab-delimited files
-|`read.csv2`    |sep = ";", header = TRUE, dec = ","  | CSV files with European decimal format
-|`read.delim2`  |sep = "\t", header = TRUE, dec = "," | Tab-delimited files with European decimal format
-
-Note that the main differences between these functions relates to the 'sep' argument, which specifies a separator character. In .csv files, the columns of the table are separated by commas (hence the name: CSV = comma separated values). In other versions of these read functions the columns are separated by tabs, signaled as `\t`. These separators -- the commas and tabs -- can also be called **delimiters**. Knowing which delimiter a function uses is important, particularly if you have those symbols in your data.
 
 #### Writing an RDS
 
-You can save any R object, such as a data frame, as an RDS file.
-RDS files are a great option for storing data that is intended to be loaded
-into R. Data saved as RDS can be quickly and accurately loaded out of and
-back into R without losing any information.
+You can save any R object, such as a data frame, as an RDS file. RDS files are
+a great option for storing data that is intended to be loaded into R. Data
+saved as RDS can be quickly and accurately loaded out of and back into R
+without losing any information.
 
 This isn't always the case when saving data in plain text formats such as CSV.
 Any R-related metadata associated with the object you are saving will be
-maintained in the RDS format. This is useful in the case of data frames if
-your data contains factors, or dates, or other specific class attributes that
-won't be represented in a csv. You would need to reproduce the process for
-parsing the data into R.
+maintained in the RDS format. This is useful in the case of data frames if your
+data contains factors, or dates, or other specific class attributes that won't
+be represented in a csv. You would need to reproduce the process for parsing
+the data into R.
 
 Additionally, RDS files often times take significantly less disk space to save,
 as they are a compressed format. RDS files in general are faster to read.
 
-However, its important to keep in mind that RDS files are meant to be used
-only in R. If you save data as an RDS, you are assuming that however is using
-that data will have access to and an understanding of R.
+However, its important to keep in mind that RDS files are meant to be used only
+in R. If you save data as an RDS, you are assuming that however is using that
+data will have access to and an understanding of R.
 
-As a result, its common to use the RDS format for saving intermediary data
-in a project. While when exporting results to a collaborator, or the internet
-you would most likely want to use a commonly used plain-text format such as
-CSV.
+As a result, its common to use the RDS format for saving intermediary data in a
+project. While when exporting results to a collaborator, or the internet you
+would most likely want to use a commonly used plain-text format such as CSV.
 
-Use `saveRDS` to save our data as an rds file with the `rds` file extension.
+Use `saveRDS` to save our data as an RDS file with the `rds` file extension.
+
 ```{r, eval=FALSE}
 saveRDS(dogs, "./outputs/dogs.rds")
 ```
 
-It's easy to load RDS files in R with `readRDS`:
+You can load data saved in RDS files with `readRDS`:
+
 ```{r, eval=FALSE}
 dogs = readRDS("./outputs/dogs.rds")
 ```
 
-#### Writing a csv
+#### Writing a CSV
 
-We just saved and read the dogs data as an RDS file, and we can practice saving data in other forms, such as a comma separated values (csv) file. Because we will be re-using the class survey data from the first week, let's go ahead and save this data frame as a csv in your working directory.
+We just saved and read the dogs data as an RDS file, and we can practice saving
+data in other forms, such as a comma separated values (CSV) file. Because we
+will be re-using the class survey data from the first week, let's go ahead and
+save this data frame as a CSV in your working directory.
 
-First, you will want to create a folder called "data" in your working directory. You can do this in your console with the `dir.create()` function (this is like the `mkdir` command used in the command line). (Hint: make sure you are in your class working directory). You can run the following in your console:
+First, you will want to create a folder called `data/` in your working
+directory. You can do this in your console with the `dir.create()` function
+(this is like the `mkdir` command used in the command line). (Hint: make sure
+you are in your class working directory). You can run the following in your
+console:
 
 ```
 dir.create("data")
 ```
 
-You can also use a point-and-click method by finding the New Folder button in the bottom right pane of RStudio, under the Files tab.
+You can also use a point-and-click method by finding the `New Folder` button in
+the bottom right pane of RStudio, under the `Files` tab.
 
-Next, let's manually create the `my.data` data frame once more, by copying and pasting the code below.
+Next, let's manually create the `my.data` data frame once more, by copying and
+pasting the code below.
 
 ```{r}
 pets <- c("Cats rule, dogs drool", "Cats rule, dogs drool",
@@ -398,14 +436,16 @@ major <- c("Computer Science", "Genetics & Genomics", "Computer Science",
 my.data <- data.frame(place, distance.mi, time.min, major, pets)
 ```
 
-Now that we have a data frame called `my.data`, we can use the `write.csv()` function to save this data frame as a csv in our data folder. Let's call it class_survey.csv.
+Now that we have a data frame called `my.data`, we can use the `write.csv`
+function to save this data frame as a csv in our data folder. Let's call it
+`class_survey.csv`.
 
 ```{r, eval=FALSE}
 write.csv(my.data, "data/class_survey.csv", row.names = F)
 ```
 
-Now this data will be available to us for future use without having to copy and paste anymore.
-
+Now this data will be available to us for future use without having to copy and
+paste.
 
 #### Excel Files in R
 
@@ -418,21 +458,21 @@ variety of tasks, including loading Excel files.
 ## Packages
 
 Lots of the most useful parts of R do not come pre-loaded when you install R.
-Packages bundle together code, documentation and data. It's easy to share,
-and easy to include in your own code. Users have contributed thousands
-of R packages which can be found online.
+Packages bundle together code, documentation and data. It's easy to share, and
+easy to include in your own code. Users have contributed thousands of R
+packages which can be found online.
 
 You can think of a package as one or more functions that are related to a
 specific task, that you can include in your code.
 
-Packages need to be installed on your system and then loaded into
-your R session.
+Packages need to be installed on your system and then loaded into your R
+session.
 
 
 ### CRAN
 
-**Comprehensive R Archive Network** (CRAN) is the main website that makes
-R packages accessible.
+The **Comprehensive R Archive Network** (CRAN) is the main website that makes R
+packages accessible.
 
 #### readxl
 
@@ -447,10 +487,11 @@ and then loaded into the R session.
 #### Installing Packages
 
 You can install packages from CRAN onto your system using `install.packages`.
-It will search for the package on CRAN, and download the code onto your computer
-in a place that R can access.
+It will search for the package on CRAN, and download the code onto your
+computer in a place that R can access.
 
 To install the `readxl` package, we pass the name to `install.packages`:
+
 ```{r, eval=FALSE}
 install.packages("readxl")
 ```
@@ -460,14 +501,16 @@ install.packages("readxl")
 Even if the package is on your system, it is not automatically loaded into R.
 
 Every time you restart R you will need to reload each package that your script
-uses. Do so with `library` at the top of your script for each package that
-you will use.
+uses. Do so with `library` at the top of your script for each package that you
+will use.
 
 This signals to you and anyone else that uses your script which packages are
 required to run the code, and will stop the execution of the script if any of
 the packages are not found.
 
-To load in the `readxl` package we installed in the previous step, use `library`:
+To load in the `readxl` package we installed in the previous step, use
+`library`:
+
 ```{r, eval=FALSE}
 library("readxl")
 ```
@@ -485,7 +528,9 @@ to find them.
 
 #### Example: Load Excel Data
 
-With the `excel_sheets` function in `readxl`, we can list all the sheets in an excel spreadsheet:
+With the `excel_sheets` function in `readxl`, we can list all the sheets in an
+Excel spreadsheet:
+
 ```{r, eval=FALSE}
 sheets = excel_sheets("./data/dogs.xlsx")
 ```
@@ -545,6 +590,7 @@ of the analysis.
 
 
 You can use the `factor` function to convert a vector into a factor:
+
 ```{r}
 colors = c("red", "green", "red", "blue")
 colors = factor(colors)
@@ -553,13 +599,15 @@ colors
 
 Notice that factors are printed differently than strings.
 
-The categories of a factor are called _levels_. You can list the levels with
+The categories of a factor are called **levels**. You can list the levels with
 the `levels` function:
+
 ```{r}
 levels(colors)
 ```
 
 Factors remember all possible levels even if you take a subset:
+
 ```{r}
 colors[1:3]
 ```
@@ -570,6 +618,7 @@ factor, the missing levels will still be represented on the plot.
 
 You can make a factor forget levels that aren't present with the `droplevels`
 function:
+
 ```{r}
 droplevels(colors[1:3])
 ```
@@ -714,6 +763,7 @@ look at unique behavior for some of these later on.
 
 The first way to use `[` to select elements is to leave the index blank. This
 selects all elements:
+
 ```{r}
 x[]
 ```
@@ -997,7 +1047,7 @@ TRUE || TRUE
 
 For the final expression, notice R only combines the first element of each
 vector. The others are ignored. In other words, the short-circuit operators are
-_not_ vectorized! Because of this, generally you _should not use*_ the
+_not_ vectorized! Because of this, generally you _should not use_ the
 short-circuit operators for indexing. Their main use is in writing conditions
 for control structures (\@ref(control-structures)) and loops
 (\@ref(iterating-loops)).
@@ -1110,8 +1160,7 @@ result = dogs[dogs$group == "toy", c("breed", "popularity", "weight")]
 head(result)
 ```
 
-##### The Drop Parameter {-}
-
+::: {.callout-caution title="The Drop Parameter"}
 If you use two-dimensional indexing with `[` to select exactly one column, you
 get a vector:
 
@@ -1130,3 +1179,4 @@ class(result)
 ```
 
 The default is `drop = TRUE`.
+:::
