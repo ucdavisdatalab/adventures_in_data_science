@@ -1,72 +1,110 @@
 # Core Programming Concepts
 
-This lesson provides an introduction to core programming concepts: control
-structures, iteration, and functions.
+This lesson provides an introduction to core programming concepts: control flow
+structures (including loops) and functions.
 
 ::: {.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
-  * Identify common control structures and their uses
-  * Evaluate conditions using relationship operators
-  * Write for and while loops to iterate operations based on items in a list
-  * Understand how iteration across lists and data.frames differs
-  * Compare iteration between for loops and apply functions
-  * Explain what a function is
-  * Read and understand the basic syntax of a function in R
-  * Use this syntax to build your own function
+* Identify common control flow structures and their uses
+* Evaluate conditions using comparison operators
+* Write for- and while-loops to run code repeatedly
+* Understand how iteration across lists and data frames differs
+* Compare iteration between for-loops and apply functions
+* Read and understand the basic syntax of a function definition in R
+* Define your own functions
 :::
 
-## Control Structures
+## Control Flow Structures
 
-Control Structures are functions in computer programming the evaluate conditions (like, for example, the value of a variable) and change the way code behaves based upon evaluated values. For example, you might to perform one function if the value stored in the variable *x* is greater than 5 and a different function if it is less than less than 5. The [Wikiversit Control Structures page](https://en.wikiversity.org/wiki/Control_structures) contains a good, general description of control structures that is not programming language specific. The information that follows provides examples of the most frequently used R control structures and how to implement them. For more complete documentation on control structures in R run the following help command:
+**Control flow structures** are computer programming commands that change the
+order in which code runs (the **flow of control** in the program).
+Specifically, control flow structures can check conditions, such as the value
+of a variable, to decide what code to run next. They can also run a section of
+code more than once.
 
-```
+For example, you might want to call one function if the value stored in the
+variable `x` is greater than 5 and a different function if it is less than 5.
+
+::: {.callout-note title="See also"}
+The [Wikiversity Control Structures page][wiki-control] contains a good
+description of control flow structures that is not specific to any particular
+programming language.
+
+For complete documentation on control flow structures in R, see the [Control
+Flow chapter][adv-r-control] in Advanced R. You can also get more details from
+the R control flow help page:
+
+```r
 ?Control
 ```
+:::
 
-### *If* Statement
+[wiki-control]: https://en.wikiversity.org/wiki/Control_structures
+[adv-r-control]: https://adv-r.hadley.nz/control-flow.html
 
-The "If Statement" is the most basic of the R control structures. It tests whether a particular condition is true. For example, the below statement tests whether the value of the variable *x* is greater than 5. If it is, the code prints the phrase "Yay!" to screen. If it is not, the code does nothing:
+The sections that follow provide examples of the most frequently used R control
+structures and how to implement them.
 
-```
+
+
+## If-expressions
+
+An **if-expression** runs some code only if a particular condition is met.
+
+For example, suppose we want R to print `Yay!` only if the value of the
+variable `x` is greater than 5. We can write an if-expression in R with the
+`if` keyword:
+
+```{r}
 x <- 7
 if (x > 5) {
-     print("Yay!")
+  message("Yay!")
 }
 ```
 
-Note, the general syntax in the example is:
+When the condition is not met, R does not call the `message` function and
+nothing is printed.
 
-```
-control_statement (condition) {
-     #code to execute condition is true
+More generally, the syntax for if-expressions is:
+
+```r
+if (condition) {
+  # Code to run if condition is true
 }
 ```
 
-While you will occasionally see variations in how control structures are present, this is a fairly universal syntax across computer programming languages. The specific control structure being invoked is followed by the *condition* to be tested. Any actions to be performed if the condition evaluates to TRUE are place between curly brackets {} following the condition.
+This is a fairly universal control flow structure across programming languages,
+setting aside minor differences in syntax. In R, the condition must be an
+expression that evaluates to a single logical (`TRUE` or `FALSE`) value. The
+code to run when the condition is `TRUE` is placed between curly brackets `{}`
+following the condition.
 
-### Relationship Operators
 
-The most common conditions evaluate whether one value is equal to ( *x* == *y*), equal to or greater than (*x* => *y*), equal to or lesser than (*x* <= *y*), greater than (*x* > *y*), or lesser than (*x* < *y*) another value.
+### Comparison Operators
 
-Another common task is to test whether a BOOLEAN value is TRUE or FALSE. The syntax for this evaluation is:
+The most common conditions evaluate whether one value is equal to (`x == y`),
+equal to or greater than (`x => y`), equal to or lesser than (`x <= y`),
+greater than (`x > y`), or lesser than (`x < y`) another value.
 
-```
-if (*x*) { #do something}
-```
-
-Control structures in R also have a negation symbol which allows you to specify a negative condition. For example, the conditional statement in the following code evaluates to TRUE (meaning any code placed between the curly brackets will be executed) if the x IS NOT EQUAL to 5:
-
-```
-if (x !=5) { #do something}
-```
-
-### *If Else* Statement
-
-The "If Else" statement is similar to the "If Statement," but it allows you specify one code path to execute if the conditional evaluates to TRUE and another to execute if the conditional evaluates to FALSE:
+Control structures in R also have a negation symbol which allows you to specify
+a negative condition. For example, the conditional statement in the following
+code evaluates to TRUE (meaning any code placed between the curly brackets will
+be executed) if the x IS NOT EQUAL to 5:
 
 ```
-x <- 7
+if (x != 5) { #do something}
+```
+
+### If-else-expressions
+
+An **if-else-expression** is an extension of an if-expression that allows you
+to also specify some code to run only if the condition evaluates to false.
+
+For example:
+
+```{r}
+x <- 2
 if (x > 5) {
      print("Yay!")
 } else {
@@ -74,215 +112,338 @@ if (x > 5) {
 }
 ```
 
-### *ifelse* Statement
+::: {.callout-note}
+The R function `ifelse` is similar to an if-else-expression, but operates
+element-by-element on vectors. The condition should be a logical vector with
+*multiple* elements. For example:
 
-R also offers a combined if/else syntax for quick execution of small code chunks:
-
+```{r}
+x <- c(0, 1, -1, 2)
+ifelse(x <= 0, "non-positive", "positive")
 ```
-x <- 12
-ifelse(x <= 10, "x less than 10", "x greater than 10")
-```
 
-### The *switch* Statement
+If you only need to test a single condition, it is clearer and more efficient
+to use an if-else-expression than to use `ifelse`.
+:::
 
-The *switch* statement provides a mechanism for selecting between multiple possible conditions. For example, the following code returns one of several possible values from a list based upon the value of a variable:
+### Switch-expressions
 
-```
+A **switch-expression** provides a way to select from multiple values based on
+an index value. In R, `switch` is a function that returns one of its arguments
+based on the value of its first argument. For example, the following code
+returns the value of the argument at position `x + 1` (the `+ 1` is because
+`switch` never returns its first argument):
+
+```{r}
 x <- 3
-switch(x,"red","green","blue")
+switch(x, "red", "green", "blue")
 ```
-*Note: if you pass switch a value that exceeds the number of elements in the list R will not compute a reply.*
 
-### The *which* Statement
+Note: if you pass `switch` a value that exceeds the number of elements listed,
+R will not compute a reply.
 
-The *which* statement is not a true conditional statement, but it provides a very useful way to test the values of a dataset and tell you which elements match a particular condition. In the example below, we load the R IRIS dataset and find out which rows have a Petal.Length greater than 1.4:
+### The `which` Function
 
+The `which` function returns the integer positions of all `TRUE` values in a
+logical vector.
+
+For example, suppose we want to check which cars in R's built-in `mtcars` data
+set have engines with more than 4 cylinders:
+
+```{r}
+which(mtcars$cyl > 4)
 ```
-data("iris")
-rows <- which(iris$Petal.Length > 1.4)
-```
-*note:  you can see all of the R. build in datasets with the data() command.*
 
-## Iteration
+::: {.callout-tip}
+R and many packages have built-in data sets. To list them all, run `data()` in
+the R console.
+:::
 
-In computer programming iteration is a specific type of control structure that repeatedly runs a specified operation either for a set number of iterations or until some condition is met.  For example, you might want your code to perform the same math operation on all of the numbers stored in a vector of values; or perhaps you want the computer to look through a list until it finds the first entry with a value greater than 10; or, maybe you just want the computer to sound an alarm exactly 5 times.  Each of these is a type of iteration or "Loop" as they are also commonly called.
+## Loops
 
-### For *i* in *x* Loops
+A **loop** is a specific type of control flow structure that repeatedly runs a
+specified operation either for a set number of iterations or until some
+condition is met.  For example, you might want your code to perform the same
+math operation on all of the numbers stored in a vector of values; or perhaps
+you want the computer to look through a list until it finds the first entry
+with a value greater than 10; or, maybe you just want the computer to sound an
+alarm exactly 5 times.  Each of these is a type of iteration or "Loop" as they
+are also commonly called.
 
-The most common type of loop is the "For *i* in *x*" loop which iterates through each value (*i*) in a list (*x*) and does something with each value.  For example, assume that x is a vector containing the following four names names:  *Sue, John, Heather, George*, and that we want to print each of these names to screen.  We can do so with the following code:
+### For-loops
 
-```
-x <- c("Sue", "John", "Heather", "George")
-for (i in x) {
-	print(i)
+The most common type of loop is the **for-loop**, typically written `for x in
+xs`, which iterates through and does something with each element `x` of a
+vector `xs`. In R, for-loops have the following syntax:
+
+```r
+for (x in xs) {
+  # Code to do something for each element x
 }
 ```
 
-In the first line of code, we create our vector of names (*x*).  Next we begin our "For i in x loop", which has the following general syntax, which is similar to that of the conditional statements you've already mastered:
+For example, assume that `names` is a vector containing the following four
+names: `Sue`, `John`, `Heather`, and `George`, and that we want to print each
+of these names to screen. We can do so with the following code:
 
-*for (condition) {}*
-
-Beginning with the first element of the vector *x*, which in our case is "Sue", for each iteration of the for loop the value of the corresponding element in *x* is assigned to the variable *i* and then *i* can be acted upon in the code included between the curly brackets of the function call.  In our case we simply tell the computer to print the value of *i* to the screen.  With each iteration, the next value in our vector is assigned to *i* and is subsequently printed to screen, resulting in the following output:
-
+```{r}
+names <- c("Sue", "John", "Heather", "George")
+for (name in names) {
+  message(name)
+}
 ```
-[1] "Sue"
-[1] "John"
-[1] "Heather"
-[1] "George"
-```
+In the first line of code, we create our vector of names `names`. Next, we
+begin our for-loop.
 
-In addition to acting on vectors or lists, For loops can also be coded to simply execute a chunk of code a designated number of times.  For example, the following code will print "Hello World!" to screen exactly 10 times:
+Beginning with the first element of `names` (which is `Sue`), for each
+iteration of the for-loop the value of the corresponding element in `names` is
+assigned to the variable `name` and then `name` can be acted upon in the code
+included between the curly brackets. In our case we tell the computer to print
+the value of `name` to the screen. With each iteration, the next value in our
+vector is assigned to `name` and is subsequently printed to screen.
 
-```
-for (i in 1:10) {
-	print("Hello World!")
+In R, for-loops can iterate over the elements of any object with elements, not
+just vectors.
+
+In some cases, we just want to run a chunk of code a designated number of
+times. To do this, we can use the `:` operator to create a vector numbers that
+"counts off" the iterations. For example, the following code will print "Hello
+World!" to screen exactly 5 times:
+
+```{r}
+for (i in 1:5) {
+  message("Hello World!")
 }
 ```
 
-### *While* Loops
+### While-loops
 
-Unlike *For* loops, which iterate a defined number of times based on the length of a list of range of values provided in the method declaration, *While* loops continue to iterate infinitely as long as (while) a defined condition is met.  For example, assume you have a Boolean variable *x* the value of which is *TRUE*.  You might want to write code that performs some function repeatedly until the value of *x* is switched to *FALSE*.  A good example of this is a case where your program asks the user to enter data, which can then be evaluated for correctness before the you allow the program to move on in its execution.  In the example below, we ask the user to tell us the secret of the universe.  If the user answers with the correct answer (42), the code moves on.  But if the user provides and incorrect answer, the code iterates back to the beginning of the loop and asks for input again.
+Unlike a for-loop, which iterates a fixed number of times based on the length
+of the provided vector, a **while-loop** continues to iterate forever as long
+as (*while*) a condition is met.
 
-```
+For example, assume you have a variable `x` with value `TRUE`. You might want
+to run a chunk of code repeatedly until the value of `x` is changed to `FALSE`.
+A good example of this is a case where your program asks the user to enter
+data, which can then be evaluated for correctness before the you allow the
+program to move on in its execution.
+
+In the example below, we ask the user to tell us the secret of the universe. If
+the user gives the correct answer `42`, the program moves on. But if the user
+provides an incorrect answer, the program jumps back to the beginning of the
+loop and asks for input again.
+
+```r
 response <- 0
-while (response!=42) {
-  response <- as.integer(readline(prompt="What is the answer to the Ultimate Question of Life, the Universe, and Everything? "));
+prompt <- "What is the answer to the Ultimate Question of Life, the Universe, and Everything? "
+while (response != 42) {
+  response <- as.integer(readline(prompt = prompt))
 }
 ```
 
-### *Repeat* Loops
+### Repeat-loops and the `break` Keyword
 
-Like *While* loops, *Repeat* loops continue to iterate until a specified condition is met; but with *Repeat* loops that condition is defined not as an argument to the function but is a specific call to "break" that appears in the functions executable code.  In the example below we assign the value 1 to a variable *i* and then loop through code that prints and then iterates the value of i until it reaches 10, at which time we forceably exit the loop:
+A **repeat-loop** is a special case of a while-loop where no condition is
+specified. This means the repeat-loop will continue iterating forever unless
+you specifically write code to exit the loop.
 
-```
+In R, you can use the `break` keyword to immediately exit a loop, skipping any
+remaining code and iterations. Generally, you'll want to put `break` in a
+conditional expression, so that the loop can run for more than one iteration.
+
+In the example below, we assign the value `1` to a variable `i` and then
+iterate over code that prints and then increments the value of `i`. In each
+iteration, the also code checks whether `i` exceeds `5`, at which point we use
+`break` to exit the loop.
+
+```{r}
 i <- 1
 repeat {
-	print(i)
-	i = i+1
-	if (i > 10){
-		break
-	}
+  message(i)
+  i <- i + 1
+  if (i > 5){
+    break
+  }
 }
 ```
 
-### *Break* and *Next*
+The `break` keyword can actually be used inside any kind of loop (for-, while-,
+and repeat-) in order to force an exit. This can be useful in a variety of
+contexts where you want to test for multiple conditions as a means of stopping
+iteration.
 
-In the previous section we saw the use of the *break* statement to force an exit from a *repeat* loop based on a conditional evaluation in an *if* statement.   *Break* can actually be used inside any conditional (*for*, *while*, *repeat*) in order to force the end of iteration.  This can be useful in a variety of contexts where you want to test for multiple conditions as a means of stopping iteration.
+### The `next` Keyword
 
-The *next* command is similar to *break* in that it can be used inside any iteration structure to force R to skip execution of the iteration code for particular cases only.  For example, we use next below to iterate through the numbers 1 to 10 and print all values to screen EXCEPT the value 5:
+The `next` keyword is similar to `break` in that it can be used inside any loop
+to force R to immediately jump to the next iteration, skipping any remaining
+code for the current iteration.
 
-```
-for (i in 1:10) {
-  if (i == 5){
+For example, we use `next` below to iterate through the numbers 1 to 5 and
+print all values to screen EXCEPT the value 2:
+
+```{r}
+for (i in 1:5) {
+  if (i == 2){
     next
   }
-  print(i)
+  message(i)
 }
 ```
 
-### Iterating Data.Frame Rows in R
+### Iterating Over Rows of a Data Frame
 
-In the section on *for* loops above, we learned that you can easily iterate across all values of a list using a "for *i* in *x*" loop.  Working with R data.frames adds a bit of complexity to this process.  Because R was developed as a language for statistical analysis, which always involves the comparison of multiple observations of the same variable (for example, all of the weights recorded across all patients), the default behavior of the "for *i* in *x*" loop when applied to data.frames is to iterate across columns (variables) rather than rows (observations).  Consider the following example:
+In the section on *for* loops above, we learned that you can use a for-loop to
+iterate over each element of vector. You can also use for-loops to iterate over
+data frames, since they also have elements. Because R was developed as a
+programming language for statistical analysis, and statisticians are often
+interested in summarizing or transforming all observations of a given variable,
+(for example, all of the weights recorded across all patients), the "elements"
+of a data frame are actually the columns (variables) rather than the rows
+(observations).
 
-```
-for (i in iris) {
-  print(i)
+Try running this example:
+
+```r
+for (x in mtcars) {
+  message(x)
 }
 ```
 
-If you run the above code, in the first iteration R will assign the vector of values contained in the first column (Sepal.Length) to *i*, in the second iteration it will assign vector of values contained in the second column (Sepal.Width) to *i*, etc.
+In the first iteration, R will assign the vector of values in the first column
+(`mpg`) to `x`, in the second iteration it will assign the vector of values in
+the second column (`cyl`) to `x`, and so on for each column.
 
-Iterating through the data columns of a data.frame is useful for many (if not most) operations.  However, there are time when we want to iterate through data one observation at a time.  To accomplish this, we nee do specifically direct R to move through the data.frame by row, as follows:
+Iterating through the columns of a data frame is useful for many (if not most)
+operations. However, there are times when we want to iterate through data one
+observation at a time. To accomplish this, we need to specifically direct R to
+move through the data frame by row, as follows:
 
 ```
-for (i in 1:nrow(iris)) {
-  thisrow <- iris[i,]
-  print(thisrow)
+for (i in 1:nrow(mtcars)) {
+  row <- mtcars[i, ]
+  message(row)
 }
 ```
 
-### *lapply()*
+### The `lapply` Function
 
-R has a built-in class of functions known as the *apply* family that provide a shorthand for iterating through collections of data.  These behave like a *for* loop, but require much less actual code to accomplish. The *lapply* function iterates across lists, such as vectors.  When you invoke *lapply* it applies a defined operation to each item in the submitted list and returns a list of equal length that contains the results of this calculation.  In the code below, we assign the values 1 through 10 to a vector and then use *lapply* to subtract 1 from each item in the vector and finally print the results to screen:
+R has a built-in family of functions known as the **apply functions** that
+provide a shorthand for iterating over elements in containers. These are
+similar to for-loops, but are typically much more concise.
 
+The fundamental apply function is `lapply`. The `lapply` function calls
+*another function* on each element of a vector or other container, and returns
+the results in a list of the same length as the original vector.
+
+In the code below, we assign the values 1 through 10 to a vector and then use
+`lapply` to subtract 1 from each element. We then print out the results:
+
+```{r}
+v <- 1:10
+results <- lapply(v, function(x) (x - 1))
+message(results)
 ```
-v <- c(1:10)
-results <- lapply(v, function(x) (x-1))
-print(results)
-```
 
-We could accomplish the exact same thing with the following *for* loop
+This is similar to the following for-loop:
 
-```
+```{r}
 v <- c(1:10)
 for (i in v) {
-	x <- i - 1
-	print(x)
+  x <- i - 1
+  message(x)
 }
 ```
 
-The basic syntax of *lapply* is:
+The basic syntax of `lapply` is:
 
-lapply(list, function)
+```r
+lapply(DATA, FUNCTION)
+```
 
-where "list" is some list object supplied and "function" is pre-defined chunk of code that will be executed.  You'll learn more about functions in a future lesson.
+where `DATA` is a container to iterate over and `FUNCTION` is a function to
+call on each element. You'll learn more about functions in the next section.
 
 ## Functions
 
-### What is a function?
+### What Is a Function?
 
-Why build code several or a hundred times when you can build it once and then call and run it as many times as you want? The answer is, don't! A function allows you to perform an action multiple times in R by calling it and applying it in similar contexts.
+Why build code several or a hundred times when you can build it once and then
+call and run it as many times as you want? The answer is, don't! A function
+allows you to perform an action multiple times in R by calling it and applying
+it in similar contexts.
 
-For instance, if you build a function that checks the class of all vectors in a data frame, you can name this function and then apply it to do the same operation with any other data frame. Or, if you build a function that graphs the correlation between two numeric vectors and exports this graph to a .png file, you can call this same function and apply it to two other vectors, again and again as needed. Functions can greatly increase the efficiency of your programming, and allow you to create flexible and customized solutions.
+For instance, if you build a function that checks the class of all vectors in a
+data frame, you can name this function and then apply it to do the same
+operation with any other data frame. Or, if you build a function that graphs
+the correlation between two numeric vectors and exports this graph to a `.png`
+file, you can call this same function and apply it to two other vectors, again
+and again as needed. Functions can greatly increase the efficiency of your
+programming, and allow you to create flexible and customized solutions.
 
+### How Are Functions Defined in R?
 
-### What is the basic syntax of a function in R?
+You can define a your own functions in R with the following syntax:
 
-The basic syntax of a function in R, or the way it should be written so that R recognizes it and applies it do perform actions, is usually stated as follows:
-
-```
-function_name <- function(argument_1, argument_2, ...) {
-   Function body
+```r
+FUNCTION_NAME <- function(PARAMETER_1, PARAMETER_2, ...) {
+   # Code to run when the function is called
 }
-
 ```
 
-What this does not demonstrate is that there are actually two steps to a function: building it, and applying it. We will look at both steps in the following [code from DataCamp:](https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what)
+What this does not demonstrate is that there are actually two steps to a
+function: building it and calling it. We will look at both steps in the
+following [code from
+DataCamp:](https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what)
 
-### Building and calling functions
+### Building and Calling Functions
 
-#### Step 1: Building the function
-The code chunk builds the function, setting "myFirstFun" as the name, or variable, to which they have assigned the function. The function itself runs from the word "function" down through the closing curly brace.
+#### Step 1: Building the Function
 
-```
+The code chunk builds the function, setting `myFirstFun` as the name, or
+variable, to which they have assigned the function. The function itself runs
+from the word `function` down through the closing curly brace.
+
+```{r}
 myFirstFun <- function(n)
 {
   # Compute the square of integer `n`
-  n*n
+  n * n
 }
 ```
 
-**What is an argument?** In the above example, "(n)" is the argument. R looks for this argument (in this case, "n") in the body of the function, which in this case is n*n.
+**What is a parameter?** In the above example, `n` is the only parameter.
 
-When we run the above script, the function is saved as an object into the global environment so that it can be called elsewhere, as demonstrated in the code chunks below.
+When we run the above code, the function is saved as an object into the global
+environment so that it can be called elsewhere, as demonstrated in the code
+chunks below.
 
-*The function has no effect unless you apply it. Until that happens, the function will do nothing but wait to be called.*
+*The function has no effect unless you apply it. Until that happens, the
+function will do nothing but wait to be called.*
 
 #### Step 2: Calling the function
 
-The code chunk below calls "myFirstFun(n)" and tells R to assign the results of the operation the function performs (n*n) to the variable "u". But if we run this code as it is (with "n" in the parentheses), we will get an error (unless we have previously assigned "n" as a variable with a value that will accept the operation to be performed — so "n" needs to be a number in this case so that it can be multiplied). We do not actually want to perform the function on the letter "n" but rather, on a number that we will insert in the place of "n."
+The code chunk below calls `myFirstFun` and tells R to assign the results of
+the operation the function performs (`n * n`) to the variable `u`.
 
-We can apply this function by setting "n" as a number, such as 2, in the example below.
-```
-# Call the function with argument `n`
+We can apply this function by setting `n` as a number, such as 2, as in the
+example below:
+
+```{r}
+# Call the function with argument 2
 u <- myFirstFun(2)
 
-# Call `u`
 u
 ```
 
-Once we have changed "n" to a number, R then performs this operation and saves the result to a new variable "u". We can then ask R to tell us what "u" is, and R returns or prints the results of the function, which in this case, is the number 4 (2*2).
+Once we have set `n` to a number, R then performs this operation and saves the
+result to a new variable `u`. We can then ask R to tell us what `u` is, and R
+returns or prints the results of the function, which in this case, is the
+number `4` (`2 * 2`).
 
-The image below shows the results we get if we attempt to run the function without changing the argument "n" to a number (giving us an error), and the results when we change "n" to the number "2" which assigns the result of the function (4) to "u", or the number "3" which assigns the result of the function (now 9) to "u".
+The image below shows the results we get if we attempt to run the function
+without changing the argument `n` to a number (giving us an error), and the
+results when we set `n` to the number `2`, which assigns the result of the
+function (`4`) to `u`, or the number `3` which assigns the result of the
+function (now `9`) to `u`.
 
 ![](/images/ch04/sample_lec7.png)
