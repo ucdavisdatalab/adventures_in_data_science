@@ -10,14 +10,14 @@ This lesson will introduce the theoretical and logistical underpinnings of netwo
 
 ## Learning Objectives
 
-After this lesson, you should be able to:  
+After this lesson, you should be able to:
 
 -   Understand what a network is.
 -   Understand what is and is not relational data.
 -   Understand the shortcomings and limitations of network analysis.
 -   Evaluate a network dataset and interpret the generated metrics.
 
-## What is a network?  
+## What is a network?
 
 You are all most likely familiar now with tabular data; rows and columns containing information. It looks like this:
 
@@ -35,14 +35,14 @@ net_url1 = "./img/male-teacher_emoji.png"
 net_url2 = "./img/female-student_emoji.png"
 net_url3 = "./img/female-health-worker_emoji.png"
 net_url4 = "./img/male-scientist_emoji.png"
-nodes = data.frame(id = 1:4, 
+nodes = data.frame(id = 1:4,
                     shape = "image",
                     title = c("<p style='color: black;'>Name: J<br>Age: 30<br>Widgets: 1</p>", "<p style='color: black;'>Name: Y<br>Age: 21<br>Widgets: 3</p>", "<p style='color: black;'>Name: G<br>Age: 32<br>Widgets: 4</p>", "<p style='color: black;'>Name: Z<br>Age: 48<br>Widgets: 8</p>"),
                     image = c(net_url1, net_url2, net_url3, net_url4))
 
 edges = data.frame(from = c(2,4,3,3), to = c(1,2,4,2), label = c("Siblings", "Student", "Friends", "Parent"))
 
-visNetwork(nodes, edges, width = "100%") %>% 
+visNetwork(nodes, edges, width = "100%") %>%
   visNodes(shapeProperties = list(useBorderWithImage = FALSE), size = 50) %>%
   visEdges(length = 200, scaling = list(min = 400)) %>%
   visInteraction(zoomView = FALSE) %>%
@@ -107,7 +107,7 @@ Networks are based on relational data. This means the core data requirement is t
 
 ### Edgelist
 
-An edgelist is a two-column dataframe with a *from* and *to* column. Each row represents one edge or tie, with the possibility of adding in more information. Here is an example of a basic edgelist. Let's load in the example data you downloaded and look at some of it. 
+An edgelist is a two-column dataframe with a *from* and *to* column. Each row represents one edge or tie, with the possibility of adding in more information. Here is an example of a basic edgelist. Let's load in the example data you downloaded and look at some of it.
 
 ```{r}
 # load in the data
@@ -147,7 +147,7 @@ kable(head(toy_attributes, n = 10))
 
 Before we start exploring specific measures, we'll create a toy network to use as an example. Let's start by loading in some packages.
 
-`statnet` is one of the major network packages in R. It allows you to compute many of the most common network measures, and run simulations called *Exponential Random Graph Models*. We'll stick with the basics for now! 
+`statnet` is one of the major network packages in R. It allows you to compute many of the most common network measures, and run simulations called *Exponential Random Graph Models*. We'll stick with the basics for now!
 
 ```{r message=FALSE, warning=FALSE}
 # Run this to load statnet, if you need to install it, do so now.
@@ -361,7 +361,7 @@ visNetwork(toy_attributes, toy_edgelist[c(1:5,7,10,13,15),1:2], main = "Low Dens
 
 Consider the two networks below. The first "star" network would be considered highly centralized, as one node connects to all the others, while the rest of the nodes have no connections to each other. This star network would have a edge centralization score of 1, as 100% of the ties are connected with one node. The loop network would have a score of 0, as every node is equally connected to each other.
 
-Centralization is a measure of how unevenly node level metrics are distributed in a network. This is helpful when trying to understand if some nodes in the network have a larger influence, or are is some way more important than others. 
+Centralization is a measure of how unevenly node level metrics are distributed in a network. This is helpful when trying to understand if some nodes in the network have a larger influence, or are is some way more important than others.
 
 ```{r echo=FALSE}
 # create a dummy network to show the star shape
@@ -392,7 +392,7 @@ Most node level measures are only helpful within the context of the network they
 
 *Degree* counts how many edges are connected to a node. You can count incoming, outgoing, or total (Freeman) degree. Incoming and outgoing degree only matter in directed networks. In un-directed networks, only total edges are applicable. Degree gives a very rough measure of how popular or central a node is in the network. If a node has more ties, it may indicate that node as being more central or important the network as a whole.
 
-Degree is a raw count of the number of edges a node has, this makes the interpretation of degree highly dependent on the size of the network. In a small network with only 25 total edges, having 10 of them would be significant. In a larger network with 250 total edges, 10 edges could be less impressive. Degree should thus be interpreted in the cortex of other nodes in the network. 
+Degree is a raw count of the number of edges a node has, this makes the interpretation of degree highly dependent on the size of the network. In a small network with only 25 total edges, having 10 of them would be significant. In a larger network with 250 total edges, 10 edges could be less impressive. Degree should thus be interpreted in the cortex of other nodes in the network.
 
 Let's scale the node sizes of our toy network based on their total degree numbers. We'll get degree counts for each of our nodes using the `degree()` function. We can save that into our dataframe and network for use later. For now I am naming columns to work specifically with `visNetwork`, we'll make a proper dataframe for analyses later using data we saved in the network object. In our visualization, you can click on any node to highlight only the edges connected to that node.
 
@@ -413,7 +413,7 @@ visNetwork(toy_attributes, toy_edgelist, main = "Degree Example") %>% visInterac
 
 ### Geodesic Distance
 
-**Geodesic Distance** is "the length of the shortest path via the edges or binary connections between nodes" [@kadushinUnderstandingSocialNetworks2012]. In other words, if we treat the network as a map we can move along, with the nodes being stopping places and the edges being paths, the geodesic is the shortest possible path we can use to walk between two nodes. 
+**Geodesic Distance** is "the length of the shortest path via the edges or binary connections between nodes" [@kadushinUnderstandingSocialNetworks2012]. In other words, if we treat the network as a map we can move along, with the nodes being stopping places and the edges being paths, the geodesic is the shortest possible path we can use to walk between two nodes.
 
 Nodes that on average have a shorter geodesic distance between all the other nodes in the network are considered to have have greater access to the resources in a network. This is because a node with a low average geodesic distance can theoretically "reach" the other nodes with less effort because it does not need to travel as far.
 
@@ -436,7 +436,7 @@ Lets add thus to our network and plot it. I will also add some color and labels 
 
 ```{r Geodesic, echo=TRUE, message=FALSE, warning=FALSE}
 # add mean geodesic distance to network object
-toy_network%v%"mean_distance" = 
+toy_network%v%"mean_distance" =
   (colSums(geodist(toy_network)$gdist))/(nrow(as.sociomatrix(toy_network)) - 1)
 
 # set all node colors in visNetwork to grey as default
