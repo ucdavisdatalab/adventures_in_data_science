@@ -20,21 +20,25 @@ After this lesson, you should be able to:
     + Groups `()`
 :::
 
+
 ## Printing Output
 
-The `cat` function prints a string in the R console. If you pass multiple
-arguments, they will be con**cat**enated:
-```{r}
-cat("Hello")
+The `message` function prints a string in the R console. If you pass multiple
+arguments, they are concatenated:
 
-cat("Hello", "Nick")
+```{r}
+message("Hello")
+
+message("Hello", "Nick")
 ```
 
-Pitfall 1: Printing a string is different from returning a string. The `cat`
-function only prints (and always returns `NULL`). For example:
+::: {.callout-warning title="Pitfall 1"}
+Printing a string is different from returning a string. The `message` function
+only prints (and always returns `NULL`). For example:
+
 ```{r}
 f = function() {
-  cat("Hello")
+  message("Hello")
 }
 
 x = f()
@@ -42,25 +46,28 @@ x
 ```
 
 If you just want to concatenate some strings (but not necessarily print them),
-use `paste` instead of `cat`. The `paste` function returns a string. The
+use `paste` instead of `message`. The `paste` function returns a string. The
 `str_c` function in stringr (a package we'll learn about later in this lesson)
 can also concatenate strings.
+:::
 
-Pitfall 2: Remember to print strings with the `cat` function, not the `print`
+::: {.callout-warning title="Pitfall 2"}
+Remember to print strings with the `message` function, not the `print`
 function. The `print` function prints _R's representation_ of an object, the
 same as if you had entered the object in the console without calling `print`.
 
-For instance, `print` prints quotes around strings, whereas `cat` does not:
+For instance, `print` prints quotes around strings, whereas `message` does not:
 ```{r}
 print("Hello")
 
-cat("Hello")
+message("Hello")
 ```
+:::
 
 
 ## Escape Sequences
 
-In a string, an _escape sequence_ or _escape code_ consists of a backslash
+In a string, an **escape sequence** or **escape code** consists of a backslash
 followed by one or more characters. Escape sequences make it possible to:
 
 1. Write quotes or backslashes within a string
@@ -68,12 +75,13 @@ followed by one or more characters. Escape sequences make it possible to:
    in a foreign language)
 
 For example, the escape sequence `\n` corresponds to the newline character.
-Notice that the `cat` function translates `\n` into a literal new line, whereas
-the `print` function doesn't:
+Notice that the `message` function translates `\n` into a literal new line,
+whereas the `print` function doesn't:
+
 ```{r}
 x = "Hello\nNick"
 
-cat(x)
+message(x)
 
 print(x)
 ```
@@ -81,33 +89,37 @@ print(x)
 As another example, suppose we want to put a literal quote in a string. We can
 either enclose the string in the other kind of quotes, or escape the quotes in
 the string:
+
 ```{r}
 x = 'She said, "Hi"'
 
-cat(x)
+message(x)
 
 y = "She said, \"Hi\""
 
-cat(y)
+message(y)
 ```
 
 Since escape sequences begin with backslash, we also need to use an escape
 sequence to write a literal backslash. The escape sequence for a literal
 backslash is two backslashes:
+
 ```{r}
 x = "\\"
 
-cat(x)
+message(x)
 ```
 
+::: {.callout-note title="See also"}
 There's a complete list of escape sequences for R in the `?Quotes` help file.
 Other programming languages also use escape sequences, and many of them are the
 same as in R.
+:::
 
 
 ### Raw Strings
 
-A _raw string_ is a string where escape sequences are turned off. Raw strings
+A **raw string** is a string where escape sequences are turned off. Raw strings
 are especially useful for writing regular expressions, which we'll do later in
 this lesson.
 
@@ -116,7 +128,7 @@ strings end with a matching closing delimiter and quote. For example:
 ```{r}
 x = r"(quotes " and backslashes \)"
 
-cat(x)
+message(x)
 ```
 
 Raw strings were added to R in version 4.0 (April 2020), and won't work
@@ -127,9 +139,9 @@ correctly in older versions.
 ## Character Encodings
 
 Computers store data as numbers. In order to store text on a computer, we have
-to agree on a _character encoding_, a system for mapping characters to numbers.
-For example, in [ASCII](https://en.wikipedia.org/wiki/ASCII), one of the most
-popular encodings in the United States, the character `a` maps to the
+to agree on a **character encoding**, a system for mapping characters to
+numbers. For example, in [ASCII](https://en.wikipedia.org/wiki/ASCII), one of
+the most popular encodings in the United States, the character `a` maps to the
 number 97.
 
 Many different character encodings exist, and sharing text used to be an
@@ -140,15 +152,16 @@ united to create the [Unicode](https://home.unicode.org/) standard. Unicode
 today, as well as emoji and many ancient languages (such as Egyptian
 hieroglyphs).
 
-Unicode maps characters to numbers, but unlike a character encoding, it
-doesn't dictate how those numbers should be mapped to bytes (sequences of ones
-and zeroes). As a result, there are several different character encodings that
+Unicode maps characters to numbers, but unlike a character encoding, it doesn't
+dictate how those numbers should be mapped to bytes (sequences of ones and
+zeroes). As a result, there are several different character encodings that
 support and are synonymous with Unicode. The most popular of these is UTF-8.
 
 In R, we can write Unicode characters with the escape sequence `\U` followed by
 the number for the character in [base 16][]. For instance, the number for `a`
-in Unicode is 97 (the same as in ASCII). In base 16, 97 is `61`. So we can write
-an `a` as:
+in Unicode is 97 (the same as in ASCII). In base 16, 97 is `61`. So we can
+write an `a` as:
+
 ```{r}
 x = "\U61" # or "\u61"
 
@@ -159,16 +172,18 @@ Unicode escape sequences are usually only used for characters that are not easy
 to type. For example, the cat emoji is number `1f408` (in base 16) in Unicode.
 So the string `"\U1f408"` is the cat emoji.
 
-Note that being able to see printed Unicode characters also depends on whether
-the font your computer is using has a glyph (image representation) for that
-character. Many fonts are limited to a small number of languages. The
-[NerdFont][] project patches fonts commonly used for programming so that they
-have better Unicode coverage. Using a font with good Unicode coverage is not
-essential, but it's convenient if you expect to work with many different
-natural languages or love using emoji.
+::: {.callout-note}
+Being able to see printed Unicode characters also depends on whether the font
+your computer is using has a glyph (image representation) for that character.
+Many fonts are limited to a small number of languages. The [NerdFont][] project
+patches fonts commonly used for programming so that they have better Unicode
+coverage. Using a font with good Unicode coverage is not essential, but it's
+convenient if you expect to work with many different natural languages or love
+using emoji.
 
 [base 16]: https://en.wikipedia.org/wiki/Hexadecimal
 [NerdFont]: https://www.nerdfonts.com/
+:::
 
 
 ### Character Encodings in Text Files
@@ -234,12 +249,14 @@ parameters, so they're easier to learn and remember.
 The first time you use stringr, you'll have to install it with
 `install.packages` (the same as any other package). Then you can load the
 package with the `library` function:
+
 ```{r}
 # install.packages("stringr")
 library(stringr)
 ```
 
 The typical syntax of a stringr function is:
+
 ```
 str_NAME(string, pattern, ...)
 ```
@@ -253,6 +270,7 @@ Where:
 
 For example, the `str_detect` function detects whether the pattern appears
 within the string:
+
 ```{r}
 str_detect("hello", "el")
 
@@ -260,6 +278,7 @@ str_detect("hello", "ol")
 ```
 
 Most of the stringr functions are vectorized:
+
 ```{r}
 str_detect(c("hello", "goodbye", "lo"), "lo")
 ```
@@ -271,11 +290,13 @@ three that are especially important, as well as some of their variants:
 * `str_replace`
 * `str_match`
 
+::: {.callout-note title="See also"}
 You can find a complete list of stringr functions with examples in the
 [documentation][stringr-docs] or [cheat sheet][stringr-cheat-sheet].
 
 [stringr-docs]: https://stringr.tidyverse.org/
 [stringr-cheat-sheet]: https://github.com/rstudio/cheatsheets/blob/master/strings.pdf
+:::
 
 
 #### Splitting Strings
@@ -285,6 +306,7 @@ pattern. The characters that match are thrown away.
 
 For example, suppose we want to split a sentence into words. Since there's a
 space between each word, we can use a space as the pattern:
+
 ```{r}
 x = "The students in this class are great!"
 
@@ -295,6 +317,7 @@ result
 The `str_split` function always returns a list with one element for each input
 string. Here the list only has one element because `x` only has one element. We
 can get the first element with:
+
 ```{r}
 result[[1]]
 ```
@@ -306,6 +329,7 @@ Notice that in the printout for `result`, R gives us a hint that we should use
 
 To see why the function returns a list, consider what happens if we try to
 split two different sentences at once:
+
 ```{r}
 x = c(x, "Are you listening?")
 
@@ -321,6 +345,7 @@ The `str_split_fixed` function is almost the same as `str_split`, but takes a
 third argument for the maximum number of splits to make. Because the number of
 splits is fixed, the function can return the result in a matrix instead of a
 list. For example:
+
 ```{r}
 str_split_fixed(x, " ", 3)
 ```
@@ -330,6 +355,7 @@ because the `n`th piece of each input string is just the `n`th column of the
 result.
 
 For example, suppose we want to get the area code from some phone numbers:
+
 ```{r}
 phones = c("717-555-3421", "629-555-8902", "903-555-6781")
 result = str_split_fixed(phones, "-", 3)
@@ -344,6 +370,7 @@ The `str_replace` function replaces the pattern the first time it appears in
 the string. The replacement goes in the third argument.
 
 For instance, suppose we want to change the word `"dog"` to `"cat"`:
+
 ```{r}
 x = c("dogs are great, dogs are fun", "dogs are fluffy")
 str_replace(x, "dog", "cat")
@@ -352,6 +379,7 @@ str_replace(x, "dog", "cat")
 
 The `str_replace_all` function replaces the pattern every time it appears in
 the string:
+
 ```{r}
 str_replace_all(x, "dog", "cat")
 ```
@@ -360,6 +388,7 @@ We can also use the `str_replace` and `str_replace_all` functions to delete
 part of a string by setting the replacement to the empty string `""`.
 
 For example, suppose we want to delete the comma:
+
 ```{r}
 str_replace(x, ",", "")
 ```
@@ -373,13 +402,13 @@ We'll learn about `str_match` at the end of the next section.
 ## Regular Expressions
 
 The `stringr` functions (including the ones we just learned) use a special
-language called _regular expressions_ or _regex_ for the pattern. The regular
-expressions language is also used in many other programming languages besides
-R.
+language called **regular expressions** or **regex** for the pattern. The
+regular expressions language is also used in many other programming languages
+besides R.
 
 A regular expression can describe a complicated pattern in just a few
-characters, because some characters, called _metacharacters_, have special
-meanings. Letters and numbers are **never** metacharacters. They're always
+characters, because some characters, called **metacharacters**, have special
+meanings. Letters and numbers are *never* metacharacters. They're always
 literal.
 
 Here are a few examples of metacharacters (we'll look at examples in the
@@ -398,6 +427,8 @@ Metacharacter | Meaning
 `+`           | previous character appears 1 or more times
 `()`          | make a group
 
+: {.striped .hover}
+
 More metacharacters are listed on the stringr cheat sheet, or in `?regex`.
 
 The `str_view` function is especially helpful for testing regular expressions.
@@ -415,12 +446,14 @@ see where they match a string.
 The regex wildcard character is `.` and matches any single character.
 
 For example:
+
 ```{r}
 x = "dog"
 str_view(x, "d.g")
 ```
 
 By default, regex searches from left to right:
+
 ```{r}
 str_view(x, ".")
 ```
@@ -436,6 +469,7 @@ character.
 For example, suppose we want to match a literal dot `.`. The regex for a
 literal dot is `\.`. Since backslashes in R strings have to be escaped, the R
 string for this regex is `"\\.`. Then the regex works:
+
 ```{r}
 str_view("this.string", "\\.")
 ```
@@ -445,18 +479,21 @@ literal backslash. We have to escape the backslash in the regex (because
 backslash is the regex escape character) and then also have to escape the
 backslashes in R (because backslash is also the R escape character). So to
 match a single literal backslash in R, the code is:
+
 ```{r}
 str_view("this\\that", "\\\\")
 ```
 
 Raw strings are helpful here, because they make the backslash literal in R
 strings (but still not in regex). We can use raw strings to write the above as:
+
 ```{r}
 str_view(r"(this\that)", r"(\\)")
 ```
 
 You can turn off regular expressions entirely in stringr with the `fixed`
 function:
+
 ```{r}
 str_view(x, fixed("."))
 ```
@@ -468,12 +505,13 @@ avoid mistakes and because they take longer to compute.
 ### Anchors
 
 By default, a regex will match anywhere in the string. If you want to force a
-match at specific place, use an anchor.
+match at specific place, use an **anchor**.
 
 The beginning of string anchor is `^`. It marks the beginning of the string,
 but doesn't count as a character in the match.
 
 For example, suppose we want to match an `a` at the beginning of the string:
+
 ```{r}
 x = c("abc", "cab")
 
@@ -491,12 +529,13 @@ doesn't count as a character in the match.
 
 ### Character Classes
 
-In regex, square brackets `[ ]` create a _character class_. A character class
+In regex, square brackets `[ ]` create a **character class**. A character class
 counts as one character, but that character can be any of the characters inside
 the square brackets. The square brackets themselves don't count as characters
 in the match.
 
 For example, suppose we want to match a `c` followed by either `a` or `t`:
+
 ```{r}
 x = c("ca", "ct", "cat", "cta")
 
@@ -505,6 +544,7 @@ str_view(x, "c[ta]")
 
 You can use a dash `-` in a character class to create a range. For example, to
 match letters `p` through `z`:
+
 ```{r}
 str_view(x, "c[p-z]")
 ```
@@ -525,7 +565,7 @@ str_view("abcdef", "[^abc]")
 
 ### Quantifiers
 
-_Quantifiers_ are metacharacters that affect how many times the preceding
+**Quantifiers** are metacharacters that affect how many times the preceding
 character must appear in a match. The quantifier itself doesn't count as a
 character in the match.
 
@@ -533,6 +573,7 @@ For example, the `?` quantifier means the preceding character can appear 0 or
 1 times. In other words, `?` makes the preceding character optional.
 
 For example:
+
 ```{r}
 x = c("abc", "ab", "ac", "abbc")
 
@@ -542,23 +583,25 @@ str_view(x, "ab?c")
 The `*` quantifier means the preceding character can appear 0 or more times.
 In other words, `*` means the preceding character can appear any number of
 times or not at all.
+
 ```{r}
 str_view(x, "ab*c")
 ```
 
 The `+` quantifier means the preceding character must appear 1 or more times.
 
-Quantifiers are _greedy_, meaning they always match as many characters as
+Quantifiers are **greedy**, meaning they always match as many characters as
 possible.
 
 
 ### Groups
 
-In regex, parentheses create a _group_. Groups can be affected by quantifiers,
-making it possible to repeat a pattern (rather than just a character). The
-parentheses themselves don't count as characters in the match.
+In regex, parentheses create a **group**. Groups can be affected by
+quantifiers, making it possible to repeat a pattern (rather than just a
+character). The parentheses themselves don't count as characters in the match.
 
 For example:
+
 ```{r}
 x = c("cats, dogs, and frogs", "cats and frogs")
 
@@ -576,6 +619,7 @@ the match to each group. So you can use `str_match` to split a string in more
 complicated ways than `str_split`, or to extract specific pieces of a string.
 
 For example, suppose we want to split an email address:
+
 ```{r}
 str_match("naulle@ucdavis.edu", "([^@]+)@(.+)[.](.+)")
 ```
