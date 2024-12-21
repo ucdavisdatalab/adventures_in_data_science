@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Version Control – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/03_r-intro.html" rel="next">
+<link href="../chapters/01_command-line.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01_command-line.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../chapters/02_version-control.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version Control</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../img/datalab-logo-full-color-rgb.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Fundamentals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01_command-line.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Command Line</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02_version-control.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version Control</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03_r-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04_programming-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Core Programming Concepts</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05_files-packages-indexing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Files, Packages, and Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06_data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07_data-forensics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08_data-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Visualization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/09_data-from-the-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/10_strings-regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Strings and Regular Expressions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Special Topics</span></span>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-version-control" id="toc-introduction-to-version-control" class="nav-link active" data-scroll-target="#introduction-to-version-control"><span class="header-section-number">2.1</span> Introduction to Version Control</a>
+  <ul class="collapse">
+  <li><a href="#what-is-version-control" id="toc-what-is-version-control" class="nav-link" data-scroll-target="#what-is-version-control"><span class="header-section-number">2.1.1</span> What is Version Control?</a></li>
+  <li><a href="#software-assisted-version-control" id="toc-software-assisted-version-control" class="nav-link" data-scroll-target="#software-assisted-version-control"><span class="header-section-number">2.1.2</span> Software Assisted Version Control</a></li>
+  <li><a href="#local-vs-server-based-version-control" id="toc-local-vs-server-based-version-control" class="nav-link" data-scroll-target="#local-vs-server-based-version-control"><span class="header-section-number">2.1.3</span> Local vs Server Based Version Control</a></li>
+  <li><a href="#central-vs-distributed-based-version-control" id="toc-central-vs-distributed-based-version-control" class="nav-link" data-scroll-target="#central-vs-distributed-based-version-control"><span class="header-section-number">2.1.4</span> Central vs Distributed Based Version Control</a></li>
+  <li><a href="#how-computers-store-and-access-information" id="toc-how-computers-store-and-access-information" class="nav-link" data-scroll-target="#how-computers-store-and-access-information"><span class="header-section-number">2.1.5</span> How Computers Store and Access Information</a></li>
+  <li><a href="#how-vcs-manage-your-files" id="toc-how-vcs-manage-your-files" class="nav-link" data-scroll-target="#how-vcs-manage-your-files"><span class="header-section-number">2.1.6</span> How VCS Manage Your Files</a></li>
+  </ul></li>
+  <li><a href="#git-local-version-control-basics" id="toc-git-local-version-control-basics" class="nav-link" data-scroll-target="#git-local-version-control-basics"><span class="header-section-number">2.2</span> Git Local Version Control Basics</a>
+  <ul class="collapse">
+  <li><a href="#creating-your-first-repo" id="toc-creating-your-first-repo" class="nav-link" data-scroll-target="#creating-your-first-repo"><span class="header-section-number">2.2.1</span> Creating Your First Repo</a></li>
+  <li><a href="#storing-versions-of-a-file" id="toc-storing-versions-of-a-file" class="nav-link" data-scroll-target="#storing-versions-of-a-file"><span class="header-section-number">2.2.2</span> Storing Versions of a File</a></li>
+  <li><a href="#view-a-history-of-your-commits" id="toc-view-a-history-of-your-commits" class="nav-link" data-scroll-target="#view-a-history-of-your-commits"><span class="header-section-number">2.2.3</span> View a History of Your Commits</a></li>
+  <li><a href="#comparing-commits-and-files" id="toc-comparing-commits-and-files" class="nav-link" data-scroll-target="#comparing-commits-and-files"><span class="header-section-number">2.2.4</span> Comparing Commits and Files</a></li>
+  <li><a href="#undoing-things" id="toc-undoing-things" class="nav-link" data-scroll-target="#undoing-things"><span class="header-section-number">2.2.5</span> Undoing Things</a></li>
+  <li><a href="#git-branching" id="toc-git-branching" class="nav-link" data-scroll-target="#git-branching"><span class="header-section-number">2.2.6</span> Git Branching</a></li>
+  </ul></li>
+  <li><a href="#git-remote-repositories" id="toc-git-remote-repositories" class="nav-link" data-scroll-target="#git-remote-repositories"><span class="header-section-number">2.3</span> Git Remote Repositories</a>
+  <ul class="collapse">
+  <li><a href="#github-basics" id="toc-github-basics" class="nav-link" data-scroll-target="#github-basics"><span class="header-section-number">2.3.1</span> GitHub Basics</a></li>
+  <li><a href="#basic-github-account-setup" id="toc-basic-github-account-setup" class="nav-link" data-scroll-target="#basic-github-account-setup"><span class="header-section-number">2.3.2</span> Basic GitHub Account Setup</a></li>
+  <li><a href="#github-desktop-or-the-command-line" id="toc-github-desktop-or-the-command-line" class="nav-link" data-scroll-target="#github-desktop-or-the-command-line"><span class="header-section-number">2.3.3</span> GitHub Desktop, or the Command Line?</a></li>
+  <li><a href="#sync-with-github" id="toc-sync-with-github" class="nav-link" data-scroll-target="#sync-with-github"><span class="header-section-number">2.3.4</span> Sync with GitHub</a></li>
+  <li><a href="#cloning-a-repository" id="toc-cloning-a-repository" class="nav-link" data-scroll-target="#cloning-a-repository"><span class="header-section-number">2.3.5</span> Cloning a Repository</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/02_version-control.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01_command-line.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../chapters/02_version-control.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version Control</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version Control</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This lesson introduces version control systems (VCS): software tools to track and record changes to files. Along the way, you’ll learn how to use Git, the VCS used by more than 90% of programmers. You’ll also learn how to use GitHub, a web site for storing, sharing, and collaborating on files tracked by Git.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Explain the purpose of using a version control system (VCS)</li>
+<li>Understand the different types of VCS: local/server and centralized/distributed</li>
+<li>Explain what a repository is</li>
+<li>Initiate a Git repository</li>
+<li>Stage and commit changes within a Git repository</li>
+<li>Utilize different Git commands such as <code>git log</code>, <code>git status</code></li>
+<li>Explain the functionality of <a href="https://github.com/">GitHub</a></li>
+<li>Set up a GitHub account that is authenticated by an SSH key</li>
+<li>Sync a local Git repository to a remote GitHub repository from the command line</li>
+<li>Clone a remote GitHub repository locally to your computer</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="introduction-to-version-control" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="introduction-to-version-control"><span class="header-section-number">2.1</span> Introduction to Version Control</h2>
+<section id="what-is-version-control" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="what-is-version-control"><span class="header-section-number">2.1.1</span> What is Version Control?</h3>
+<p><strong>Version control</strong> describes a process of storing and organizing multiple versions (or copies) of documents that you create. Approaches to version control range from simple to complex and can involve the use of various human workflows and/or software applications to accomplish the overall goal of storing and managing multiple versions of the same document(s).</p>
+<p>Most people have a folder/directory somewhere on their computer that looks something like this:</p>
+<p><img src="../images/ch02/mac_finder_1.png" class="img-fluid"></p>
+<p>Or perhaps, this:</p>
+<p><img src="../images/ch02/mac_window_2.png" class="img-fluid"></p>
+<p>This is a rudimentary form of version control that relies completely on the human workflow of saving multiple versions of a file. This system works minimally well, in that it does provide you with a history of file versions theoretically organized by their time sequence. But this <strong>filesystem method</strong> provides no information about how the file has changed from version to version, why you might have saved a particular version, or specifically how the various versions are related. This human-managed filesystem approach is more subject to error than software-assisted version control systems. It is not uncommon for users to make mistakes when naming file versions, or to go back and edit files out of sequence. Software-assisted version control systems (VCS) such as Git were designed to solve this problem.</p>
+</section>
+<section id="software-assisted-version-control" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="software-assisted-version-control"><span class="header-section-number">2.1.2</span> Software Assisted Version Control</h3>
+<p>Version control software has its roots in the software development community, where it is common for many coders to work on the same file, sometimes synchronously, amplifying the need to track and understand revisions. But nearly all types of computer files, not just code, can be tracked using modern version control systems. IBM’s OS/360 IEBUPDTE software update tool is widely regarded as the earliest and most widely adopted precursor to modern, version control systems. Its release in 1972 of the Source Code Control System (SCCS) package marked the first, fully fledged system designed specifically for software version control.</p>
+<p>Today’s marketplace offers many options when it comes to choosing a version control software system. They include systems such as Git, Visual Source Safe, Subversion, Mercurial, CVS, and Plastic SCM, to name a few. Each of these systems offers its twist on version control, differing sometimes in the area of user functionality, sometimes in how it handles things on the back-end, and sometimes both. This course focuses on the Git VCS, but in the sections that follow we offer some general information about classes of version control systems to help you better understand how Git does what it does and help you make more informed decisions about how to deploy it for you own work.</p>
+</section>
+<section id="local-vs-server-based-version-control" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="local-vs-server-based-version-control"><span class="header-section-number">2.1.3</span> Local vs Server Based Version Control</h3>
+<!-- FIXME: This distinction is confusing, see issue #13 -->
+<p>There are two general types of version control systems: <strong>Local</strong> and <strong>Server</strong> (sometimes called Cloud) based systems. When working with a <strong>Local VCS</strong>, all files, metadata, and everything associated with the version control system live on your local drive in a universe unto itself. Working locally is a perfectly reasonable option for those who work independently (not as part of a team), have no need to regularly share their files or file versions, and who have robust back-up practices for their local storage drive(s). Working locally is also sometimes the only option for projects involving protected data and/or proprietary code that cannot be shared.</p>
+<p><strong>Server based VCS</strong> utilize software running on your local computer that communicates with a remote server (or servers) that store your files and data. Depending on the system being deployed, files and data may reside exclusively on the server and are downloaded to temporary local storage only when a file is being actively edited. Or, the system may maintain continuous local and remote versions of your files. Server based systems facilitate team science because they allow multiple users to have access to the same files, and all their respective versions, via the server. They can also provide an important, non-local back-up of your files, protecting you from loss of data should your local storage fail.</p>
+</section>
+<section id="central-vs-distributed-based-version-control" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="central-vs-distributed-based-version-control"><span class="header-section-number">2.1.4</span> Central vs Distributed Based Version Control</h3>
+<p>Server based version control systems can generally be segmented into two distinct categories: 1) Centralized Version Control Systems (Centralized VCS) and 2) Distributed Version Control Systems (Distributed VCS).</p>
+<!-- FIXME: Polls in the 2020s indicate >90% of developers use Git -->
+<p><strong>Centralized VCS</strong> is the oldest and, surprisingly to many, still the dominant form of version control architecture worldwide. Centralized VCS implement a “spoke and wheel” architecture to provided server based version control.</p>
+<p><img src="../images/ch02/spoke_and_where_cloud.png" class="img-fluid"></p>
+<p>With the spoke and wheel architecture, the server maintains a centralized collection of file versions. Users utilize version control clients to “check-out” a file of interest to their local file storage, where they are free to make changes to the file. Centralized VCS typically restrict other users from checking out editable versions of a file if another user currently has the file checked out. Once the user who has checked out the file has finished making changes, they “check-in” their new version, which is then stored on the server from where it can be retrieved and “checked-out” by another user. As can be seen, Centralized VCS provide a very controlled and ordered universe that ensures file integrity and tracking of changes. However, this regulation comes at a cost. Namely, it reduces the ease with which multiple users can work simultaneously on the same file.</p>
+<p><strong>Distributed VCS</strong> are not dependent on a central repository as a means of sharing files or tracking versions. Distributed VCS implement a network architecture (as opposed to the spoke and wheel of the Centralized VCS as pictured above) to allow each user to communicate directly with every other user.</p>
+<p><img src="../images/ch02/distributed_network.png" class="img-fluid"></p>
+<p>In Distributed VCS, each user maintains their own version history of the files being tracked, and the VCS software communicates between users to keep the various local file systems in sync with each other. With this type of system, the local versions of two different users will diverge from each other if both users make changes to the file. This divergence will remain in place until the local repositories are synced, at which time the VCS stitches (or merges) the two different versions of the file into a single version that reflects the changes made by each individual, and then saves the stitched version of the file onto both systems as the current version. Various mechanisms can then be used to resolve the conflicts that may arise during this merge process. Distributed VCS offer greater flexibility and facilitate collaborative work, but a lack of understanding of the sync/merge workflow can cause problems. It is not uncommon for a user to forget to sync their local repository with the repositories of other team members and, as a result, work for extended periods of time on outdated files that don’t reflect their teammates and result in work inefficiencies and merge challenges.</p>
+<p>An important feature of Distributed VCS is that many users and organizations choose to include a central server as a node in the distributed network. This gives use <strong>the best of both worlds</strong> by creating an hybrid universe in which some users will sync directly to each other while other users will sync through a central server.</p>
+<p><img src="../images/ch02/hybrid_network.png" class="img-fluid"></p>
+<p>Syncing with a cloud-based server provides an extra level of backup for your files and also facilitates communication between users. But treating the server as just another node on the network (as opposed to a centralized point of control) puts the control and flexibility back in the hands of the individual developer. For example, in a true Centralized CVS, if the server goes down then nobody can check files in and out of the server, which means that nobody can work. But in a Distributed CVS this is not an issue. Users can continue to work on local versions and the system will sync any changes when the server becomes available.</p>
+<p><strong>Git, which we use for this course, is a Distributed VCS.</strong> You can use Git to share and sync repositories directly with other users or through a central Git server such as, for example, GitHub or GitLab.</p>
+</section>
+<section id="how-computers-store-and-access-information" class="level3" data-number="2.1.5">
+<h3 data-number="2.1.5" class="anchored" data-anchor-id="how-computers-store-and-access-information"><span class="header-section-number">2.1.5</span> How Computers Store and Access Information</h3>
+<p>When we think about version control, we typically think about managing changes to individual files. From the user perspective, the <strong>file</strong> is typically the minimum accessible unit of information. Whether working with images, tabular data, or written text, we typically use software to open a File that contains the information we want to view or edit. As such, it comes as a surprise to most users that the concept of Files, and their organizing containers (<strong>folders</strong> or <strong>directories</strong>), are not intrinsic to how computers themselves store and interact with data.</p>
+<p>For all of their computing power and seeming intelligence, computers still only know two things: 0 and 1. In computer speak, we call this a <strong>binary system</strong>, and the unit of memory on a hard-disk, flash drive, or computer chip that stores each 1 or 0 is called a <strong>bit</strong>. You can think of your computer’s storage device (regardless of what kind it is) as a presenting a large grid, where each box is a bit:</p>
+<p><img src="../images/ch02/empty_sectors.png" class="img-fluid"></p>
+<p>In the above example, as with most computer storage, the bits in our storage grid are addressable, meaning that we can designate a particular bit using a row and column number such as, for example, <code>A7</code> or <code>E12</code>. Also, remember, that each bit can only contain one of two values: 0 or 1. So, in practice, our storage grid would actually look something like this:</p>
+<p><img src="../images/ch02/filled_bits.png" class="img-fluid"></p>
+<p>All of the complex information that we store in the computer is translated to this binary language prior to storage using a system called <strong>Unicode</strong>. You can think of Unicode as a codebook that assigns a unique combination of 8, 16, 32, 64, etc. (depending on how old your computer is) ones and zeros to each letter, numeral, or symbol. For example, the 8-bit Unicode for the upper case letter <code>A</code> is <code>01000001</code>, and the 8-bit Unicode character for the digit <code>3</code> is <code>00110011</code>. The above grid actually spells out the phrase, “Call me Ishmael”, the opening line of Herman Melville’s novel <em>Moby Dick</em>.</p>
+<p>An important aspect of how computers store information in binary form is that, unlike most human readable forms of data storage, there is no right to left, up or down, or any other regularized organization of bits on a storage medium. When you save a file on your computer, the computer simply looks for any open bits and starts recording information. The net result is that the contents of single file are frequently randomly interleaved with data from other files. This mode of storage is used because it maximizes the use of open bits on the storage device. But it presents the singular problem of not making data readable in a regularized, linear fashion. To solve this problem, all computers reserve a particular part of their internal memory for a <strong>directory</strong> which stores a sector map of all chunks of data. For example, if you create a file called <code>README.txt</code> with the word <code>hello</code> in it, the computer would store the Unicode for the five characters in the word <code>hello</code> on the storage device and make a directory entry something like the following:</p>
+<p><img src="../images/ch02/directory.png" class="img-fluid"></p>
+<p>Understanding the directory concept and how computers store information is crucial to understanding how VCS mange your Files.</p>
+</section>
+<section id="how-vcs-manage-your-files" class="level3" data-number="2.1.6">
+<h3 data-number="2.1.6" class="anchored" data-anchor-id="how-vcs-manage-your-files"><span class="header-section-number">2.1.6</span> How VCS Manage Your Files</h3>
+<p>Most users think about version control as a process of managing files. For example, if I might have a directory called <code>My Project</code> that holds several files related to this project as follows:</p>
+<p><img src="../images/ch02/mac_finder_3.png" class="img-fluid"></p>
+<p>One approach to managing changes to the above project files would be to store multiple versions of each file as in the figure below for the file <code>analysis.r</code>:</p>
+<p><img src="../images/ch02/version_tree.png" class="img-fluid"></p>
+<p>In fact, many VCS do exactly this. They treat each file as the minimum unit of data and simply save various versions of each file along with some additional information about the version. This approach can work reasonably well. However, it has limitations. First, this approach can unnecessarily consume space on the local storage device, especially if you are saving many versions of a very large file. It also has difficulty dealing with changes in filenames, typically treating the same file with a new name as a completely new file, thereby breaking the chain of version history.</p>
+<p><strong>To combat these issues, good VCS don’t actually manage files at all. They manage directories.</strong> Distributed VCS like Git take this alternate approach to data storage that is directory, rather than file, based.</p>
+<p>Git (and many other Distributed VCS) manage your files as collections of data rather than collections of files. Git’s primary unit of management is the <strong>repository,</strong> or repo for short, which is aligned with your computer’s directory/folder structure. Consider, for example, the following file structure:</p>
+<p><img src="../images/ch02/TT_tree_mobile.jpg" class="img-fluid"></p>
+<p>Here we see a user, Tom’s, home directory, which contains three subdirectories (<code>Data</code>, <code>Thesis</code>, and <code>Tools</code>) and one file (<code>Notes.txt</code>). Both the <code>Data</code> and <code>Tools</code> directories contain sub files and/or directories. If Tom wanted to track changes to the two files in the <code>Data</code> directory, he would first create a Git repository by placing the <code>Data</code> directory <em>under version control.</em></p>
+<p>When a repository is created, the Git system writes a collection of <em>hidden files</em> into the <code>Data</code> directory that it uses to store information about all of the data that lives under that directory. This includes information about the addition, renaming, and deletion of both files and folders as well as information about changes to the data contained in the files themselves. Additions, deletions, and versions of files are tracked and stored not as copies of files, but rather as a set of instructions that describes changes made to the underlying data and the directory structure that describes them.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <a href="https://git-scm.com/book/en/v2">Git Book</a> is the definitive Git resource and provides an excellent reference for everything that we will cover in the interactive session. There is no need to read the book prior to the session, but it’s a good reference resource to have available as you begin to work with Git after the workshop.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="git-local-version-control-basics" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="git-local-version-control-basics"><span class="header-section-number">2.2</span> Git Local Version Control Basics</h2>
+<section id="creating-your-first-repo" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="creating-your-first-repo"><span class="header-section-number">2.2.1</span> Creating Your First Repo</h3>
+<p>We are going to introduce Git by initializing a Git repository and exploring Git’s functionality within that repository. To begin, move to your home directory (<code>~</code>):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Next, create a new directory for this course module:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> ist008</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Change to the new directory:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ist008</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Put the new directory under version control by initializing the Git VCS:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To check the status of a repository use the following command:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> status</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="storing-versions-of-a-file" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="storing-versions-of-a-file"><span class="header-section-number">2.2.2</span> Storing Versions of a File</h3>
+<p>We’ve now initialized Git in our course directory, but Git does not automatically track versions of every file. When working with Git, you should save files as you always do, but this has no impact on the versions that are tracked in the repository. To create a version of a file, you must complete two steps. First add saved files to the Git <strong>staging area</strong> and then <strong>commit</strong> your staged files to the repository. The commits that you make constitute the versions of files that are preserved in the repository.</p>
+<p>In the image below, there are various <code>.html</code> files in a directory that is tracked by Git. You might choose to only stage two of those files (<code>a.html</code> and c.html`). Then for each stage and commit there are several versions (C1-C4), one for each commit.</p>
+<p><img src="../images/ch02/save_stage_commit.png" class="img-fluid"></p>
+<p>In short, we stage and commit a file to the Git repository to save a copy of the current working version. The commands for this process are as follows.</p>
+<section id="step-1" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="step-1">Step 1</h4>
+<p>Place the file you want to version into the staging area:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add FILENAME</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this reader, words written in all-caps are generally placeholders you should replace.</p>
+<p>Replace <code>FILENAME</code> in the command above with the actual name of the file you want to version.</p>
+</div>
+</div>
+</section>
+<section id="step-2" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="step-2">Step 2</h4>
+<p>Commit the staged files:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'A detailed comment explaining the nature of the version being committed.'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="view-a-history-of-your-commits" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="view-a-history-of-your-commits"><span class="header-section-number">2.2.3</span> View a History of Your Commits</h3>
+<p>Git VCS tracks every commit you make. To get a history of commits you can use:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This log provides a summary of each commit, with a commit ID, the author, date, and commit message. Notice that these logs bring you into a Vim editor, with the colon (<code>:</code>) at the bottom of the prompt. Remember you can exit the Vim editor with the <code>q</code> command.</p>
+<p>To see commit history with patch data (insertions and deletions) for a specified number of commits:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">-p</span> <span class="at">-2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To see abbreviated stats for the commit history:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> log <span class="at">--stat</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can save a copy of your Git log to a text file with the following command:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--no-pager</span> log <span class="op">&gt;</span> log.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="comparing-commits-and-files" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="comparing-commits-and-files"><span class="header-section-number">2.2.4</span> Comparing Commits and Files</h3>
+<p>Git can compare the differences between difference saved versions of commits by naming the commit IDs we just saw in the log. In place of the <code>COMMIT</code> placeholders, insert the commit IDs.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff COMMIT1 COMMIT2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Git can also compare between commits and certain files, similar to above. Instead, use a commit ID and a file name:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff COMMIT FILE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> diff COMMIT1:FILE COMMIT2:FILE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="undoing-things" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="undoing-things"><span class="header-section-number">2.2.5</span> Undoing Things</h3>
+<p>When working locally in your Git repository, you are likely to make some mistakes. Some of the common mistakes you may want to undo include committing too early and possibly forgetting to add some files, or messing up your commit message. If you want to redo that commit, make the additional changes you forgot, stage them, and commit again using the <code>--amend</code> option:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">--amend</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you would like to unstage a file for commit, you can use the following:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset HEAD FILE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An important exception to all-caps words you should replace is <code>HEAD</code>, which is what Git calls the most recent commit. Don’t replace <code>HEAD</code> in any Git commands you see.</p>
+<p>For instance, you might enter the command above as:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset HEAD my_file.md</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>You can also throw away changes you’ve made to a file:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">--</span> FILE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also roll back to a certain commit saved in your version control history, which will delete any uncommitted changed you’ve made. To roll everything back to the last commit:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> HEAD</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Rolling everything back to the next to last commit (The commit before the <code>HEAD</code> commit):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> HEAD^</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Rolling everything back to two commits before the head:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> HEAD^2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Rolling everything back to an identified commit using commit HASH/ID from the git log:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> reset <span class="at">--hard</span> COMMIT</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="git-branching" class="level3" data-number="2.2.6">
+<h3 data-number="2.2.6" class="anchored" data-anchor-id="git-branching"><span class="header-section-number">2.2.6</span> Git Branching</h3>
+<p>Branching provides a simple way to maintain multiple, side-by-side versions of the files in a repository. Conceptually, branching a repository creates a copy of the codebase in its current state that you can work on without affecting the primary version from which it was copied. This allows you to work down multiple paths without affecting the main (or other) codebase.</p>
+<p><img src="../images/ch02/GIT-Branchand-its-Operations.png" class="img-fluid"></p>
+<p>To see a list of branches in your repository:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To create a new branch:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> NEW_BRANCH_NAME</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>New branches are created of the current working branch. To change branches use:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout BRANCH_NAME</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="merging-branches" class="level4" data-number="2.2.6.1">
+<h4 data-number="2.2.6.1" class="anchored" data-anchor-id="merging-branches"><span class="header-section-number">2.2.6.1</span> Merging Branches</h4>
+<p>When you merge a branch, Git folds any changes that you made to files in an identified branch into the current working branch. It also adds any new files. When you perform a merge, a new commit will be automatically created to track the merge. To merge branches, commit any changes to the branch you want to merge then checkout the branch into which you want to merge (for example, <code>main</code>), and then execute a merge command.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'commiting staged files in hotfix branch'</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> merge NEW_BRANCH_NAME</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="branching-workflows" class="level4" data-number="2.2.6.2">
+<h4 data-number="2.2.6.2" class="anchored" data-anchor-id="branching-workflows"><span class="header-section-number">2.2.6.2</span> Branching Workflows</h4>
+<p>There are as many different branching workflows as there are development teams and projects. However, over the years something approximating an “industry standard” has evolved as follows:</p>
+<ol type="1">
+<li>The primary branch <code>main</code> is typically reserved for the current, live and in production version of the codebase.</li>
+<li>The “development” branch <code>dev</code> holds the current, combined, working version of the code.</li>
+<li>“Topic” branches are created on-the-fly by individuals and are focused on particular coding efforts, one each for each development task.</li>
+</ol>
+<p><img src="../images/ch02/branching_workflows.png" class="img-fluid"></p>
+<p>For example, let’s consider a case where there is a team maintaining and developing a company website. In this case, the <code>main</code> branch would contain the version of the code that is currently deployed on the live webserver. The <code>dev</code> branch would contain a testable version of the code that reflects completed changes to the site made by all team members that have yet to be deployed. Finally, the repository would also contain many topic branches, each of which holds code related to a particular change that was or is being worked on. For example, a team developing a new widget for visualizing data some area of the site would create a suitably named topic branch (something like <code>viz_widget</code>) for this topic and do all their initial coding in this branch. Once they have completed and tested their code in this branch, they would merge it into the <code>dev</code> branch. The new code can then be viewed and tested by others as part of the <code>dev</code> branch. Once all topics branches for planned features for the next release of the website have been merged to <code>dev</code> and <code>dev</code> has been thoroughly tested (and fixed as necessary), <code>dev</code> is then merged into <code>main</code> and the <code>main</code> branch is then deployed to the live webserver.</p>
+</section>
+</section>
+</section>
+<section id="git-remote-repositories" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="git-remote-repositories"><span class="header-section-number">2.3</span> Git Remote Repositories</h2>
+<section id="github-basics" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="github-basics"><span class="header-section-number">2.3.1</span> GitHub Basics</h3>
+<p>In this course, we will work with the <a href="https://github.com/">GitHub</a> platform, which in its simplest form is a hosting service for Git repositories. Much like Dropbox or Google Drive, it gives you a space to remotely store your code and related files. This can be useful when working on projects that require, for example, some kind of server, whether for the purposes of running large, potentially time-consuming data analyses or for serving up public-facing content (like a website). For such projects, GitHub acts as a reference point with which you can <strong>push</strong> changes on one computer up to the server and <strong>pull</strong> them down from the server on onto another computer. The process would look something like the following, where pushing and pulling from a remote branch entails keeping a reference point for a project that you’re developing locally:</p>
+<img src="../images/ch02/github_workflow.png" class="img-fluid">
+<center>
+<a href="https://www.reddit.com/r/git/comments/99ul9f/git_workflow_diagram_showcasing_the_role_of/">Image source.</a>
+</center>
+<p><br></p>
+<p>With this diagram in mind, it’s not much of a conceptual leap to imagine how two or more people could work from the same remote repository. Each would pull that repository onto their respective local computers, make a branch, implement their changes, and push those changes back to the remote source. That way, multiple parts of a project could be under development simultaneously, and any such changes made to that project would be trackable according to the logic of version control.</p>
+<p>Simultaneously pushing and pulling on multiple computers would look something like the following:</p>
+<p><img src="../images/ch02/github_as_hub.png" class="img-fluid"></p>
+<center>
+<a href="https://gist.github.com/fentontaylor/c6110b2e20e29a656645ce03d1848964">Image source.</a>
+</center>
+<section id="communicating-through-github" class="level4" data-number="2.3.1.1">
+<h4 data-number="2.3.1.1" class="anchored" data-anchor-id="communicating-through-github"><span class="header-section-number">2.3.1.1</span> Communicating Through GitHub</h4>
+<p>What makes GitHub special is the fact that, more than being simply a place to store files, the service is above all a <em>communication channel</em>. Where GitHub extends the functionality of version control is not just where it offers various forms of cloud hosting; it is also where GitHub provides tools that let people talk about the code they’re working on. It’s a place where team members can propose and explain the changes they make, look at changes others have made, track and discuss any bugs that might come up, get feedback from others, and plan for any future changes the team intends to make.</p>
+<p>Learning how to use GitHub, then, is as much about learning how to communicate effectively through the different facets of the service as it is about acquainting yourself with new technical skills (i.e., using your computer to track code remotely).</p>
+<p>A short summary of the different facets of communication GitHub provides includes:</p>
+<ul>
+<li>Documentation, often through README files</li>
+<li>Issue tracking for bug reporting and assigning tasks</li>
+<li>Pull requests for proposing and discussing changes</li>
+<li>Wikis, which may feature additional documentation, tutorials, etc.</li>
+<li>Project boards for long-term planning</li>
+<li>Various graph visualizations for project overview</li>
+</ul>
+<p>Additionally, GitHub users can monitor and modify other projects’ code using “Watch”, “Star”, and “Fork” functionalities. The service also provides teams with the ability to specify licensing information for their projects.</p>
+</section>
+<section id="what-should-i-push-to-github" class="level4" data-number="2.3.1.2">
+<h4 data-number="2.3.1.2" class="anchored" data-anchor-id="what-should-i-push-to-github"><span class="header-section-number">2.3.1.2</span> What Should I Push to GitHub?</h4>
+<p>A quick word about what should and shouldn’t be pushed to a remote repository, especially with an eye toward what we’ve said about communication. You can, of course, host large data files on GitHub, but there are a few caveats. For one, the site does have a storage limit, and it can also become quite inefficient to have team members constantly push/pull large files to/from GitHub. Further, hosting data files might not be particularly relevant to what a team might need to discuss. Data may change often over the course of a project, but tracking individual observations might not be necessary—more meaningful would be a conversation about how code has made, or might make, such changes. The latter is likely to be something that GitHub is better suited to facilitate.</p>
+<p>It’s best, then, to host your data files separately from GitHub, either by way of a remote database or some kind of cloud service like Google Drive. Exceptions may come up, however, so the decision about what to track should ultimately be one made by the team.</p>
+<p>Examples of what should be tracked with GitHub:</p>
+<ul>
+<li>Code</li>
+<li>Documentation</li>
+<li>Make files</li>
+<li>Some supporting media (small images, for example)</li>
+</ul>
+<p>Finally, note that even though you can set a repository to either “Public” or “Private” (which controls who can see your project), it’s recommended that you refrain from uploading various access credentials (API keys, database passwords, etc.) to GitHub.</p>
+</section>
+</section>
+<section id="basic-github-account-setup" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="basic-github-account-setup"><span class="header-section-number">2.3.2</span> Basic GitHub Account Setup</h3>
+<p>To use GitHub, you need to make a (free) account. Go to <a href="https://github.com/">GitHub</a> and click “Sign Up” in the top-right corner of the page. This should take you to a form, which asks you to enter a username, email address, and password. After you’ve entered in this information (and completed a quick CAPTCHA), GitHub will make you an account. Then, the site will prompt you to complete an optional survey. Fill it out, or scroll to the bottom to skip it.</p>
+<p>Either way, you’ll need to then verify your email address. Go to your inbox and look for an email from GitHub. Click the “Verify email address” button. Doing so will take you to your homepage, where, if you’d like, you can add a few details about yourself.</p>
+<p><img src="../images/ch02/github_new_homepage.png" class="img-fluid"></p>
+<p>You now have a GitHub account!</p>
+<section id="locally-setting-up-your-git-credentials" class="level4" data-number="2.3.2.1">
+<h4 data-number="2.3.2.1" class="anchored" data-anchor-id="locally-setting-up-your-git-credentials"><span class="header-section-number">2.3.2.1</span> Locally Setting Up Your Git Credentials</h4>
+<p>Regardless of how you make your commits, you will need to use the command line to provide Git with some information about who will be making commits. You may have already done this, however (and sometimes your computer does it automatically). To check, enter the following two commands in either Terminal (Mac) or Git Bash (Windows):</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you see your name (or some kind of username) and your email after entering the above commands, you’re set. If nothing happens when you type them, you’ll need to provide this information with the following:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.name <span class="st">"YOUR_NAME"</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> user.email <span class="st">"YOUR_EMAIL"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can check whether this was successful by simply calling either, or both, of the first two commands. They should echo back the information you’ve just entered.</p>
+</section>
+<section id="ssh-keys-and-github" class="level4" data-number="2.3.2.2">
+<h4 data-number="2.3.2.2" class="anchored" data-anchor-id="ssh-keys-and-github"><span class="header-section-number">2.3.2.2</span> SSH Keys and GitHub</h4>
+<p>When you work with remote repositories on GitHub, you’ll often need to enter your username/password to identify yourself. This is for two reasons: 1) it allows GitHub to track who has made changes to what files; 2) it adds a layer of security to projects, letting teams control who can make changes to their files. Repositories can be either public or private, and this layer of security helps teams control who has access to files in the first place.</p>
+<p>It can be a pain, though, to have to enter and re-enter your credentials when making changes. More, passwords can be lost or worse, stolen. To avoid these problems, we can set up an <strong>SSH key</strong>. SSH keys (short for “Secure Shell”) are special, machine-readable credentials that allow users to safely connect and authenticate with remote servers over unsecure networks.</p>
+<p>An SSH key has two parts:</p>
+<ol type="1">
+<li>A <strong>public key</strong>, which encrypts messages intended for a particular recipient. This can be stored on remote servers, or even shared with others, to facilitate secure data transfers</li>
+<li>A <strong>private key</strong>, which deciphers messages encrypted by the public key. Your private key is the only thing capable of unlocking what is sent with your public key. It stays on your computer and should never be shared with anyone</li>
+</ol>
+<p>Beyond what security measures an SSH key brings, it also acts as your digital signature. GitHub uses this internally to verify that you are, in fact, who you say you are when you commit code to a repository.</p>
+</section>
+<section id="connecting-to-github-with-ssh" class="level4" data-number="2.3.2.3">
+<h4 data-number="2.3.2.3" class="anchored" data-anchor-id="connecting-to-github-with-ssh"><span class="header-section-number">2.3.2.3</span> Connecting to GitHub with SSH</h4>
+<p>GitHub offers thorough, straightforward documentation for setting up an SSH key with its services, which we won’t repeat here. Instead, please visit the link below and follow the step-by-step instructions there to get yourself set up with a key.</p>
+<p><a href="https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh">Connecting to GitHub with SSH</a></p>
+<p>The following steps at the link above are required:</p>
+<ul>
+<li>Checking for existing SSH keys</li>
+<li>Generating a new SSH key and adding it to the ssh-agent</li>
+<li>Adding a new SSH key to your GitHub account</li>
+<li>Testing your SSH connection</li>
+</ul>
+<p>Once you have completed these steps, be sure you can successfully run the following command:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ssh</span> <span class="at">-T</span> git@github.com</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If your connection is successful, you will see this message (a warning may first appear—see the documentation on GitHub for more information):</p>
+<pre><code>Hi YOUR_USERNAME! You've successfully authenticated, but GitHub does not
+provide shell access.</code></pre>
+</section>
+</section>
+<section id="github-desktop-or-the-command-line" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="github-desktop-or-the-command-line"><span class="header-section-number">2.3.3</span> GitHub Desktop, or the Command Line?</h3>
+<p>Remember that Git is separate from GitHub. The latter is a service that’s been built around the former. One part of the services that GitHub offers is an application called <a href="https://desktop.github.com/">GitHub Desktop</a>, which allows users to manage their local repositories with a point-and-click graphical user interface (or GUI). Ultimately, it’s a matter of preference whether you use the GUI or stick with the command line for your own projects, but it is generally a good idea to become proficient at interacting with GitHub via the command line. One of the primary reasons for this has to do with the fact that not every computer you use will have GitHub’s GUI installed—or even have a screen! Many remote servers offer command line-only access, and if you ever want to sync your files with these machines, you’ll need to do so without GitHub Desktop. Luckily, GitHub seamlessly extends Git commands, so using the service without the GUI is, as we’ll see, quite straightforward.</p>
+</section>
+<section id="sync-with-github" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="sync-with-github"><span class="header-section-number">2.3.4</span> Sync with GitHub</h3>
+<p>Now that you’re all set up with GitHub, it’s time to sync the website with a local repository on your computer. We’ll start by creating a test repository on your local Git instance.</p>
+<p>First, use the command line to make a new directory in your Home folder:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> ~/my_first_remote_directory</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Put this directory under version control with Git:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/my_first_remote_directory</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>With Vim, make a README Markdown file:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vim</span> README.md</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Write and save <code>Hello world!</code> in the file. You should see something like the following:</p>
+<p><img src="../images/ch02/hello_world.png" class="img-fluid"></p>
+<p>Exit Vim with <code>:wq</code>. Then, add <code>README.md</code> to Git and commit your changes. Don’t forget to write a short note in the commit message.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add README.md</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'Add a README file'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You should see the following:</p>
+<p><img src="../images/ch02/commit_readme.png" class="img-fluid"></p>
+<section id="preparing-to-sync-your-repository" class="level4" data-number="2.3.4.1">
+<h4 data-number="2.3.4.1" class="anchored" data-anchor-id="preparing-to-sync-your-repository"><span class="header-section-number">2.3.4.1</span> Preparing to Sync Your Repository</h4>
+<p>So far so good! All we’ve done is repeat the normal workflow for putting files under version control, explained in <a href="https://ucdavisdatalab.github.io/adventures_in_data_science/git-version-control-basics.html">Section 3</a>. But now we need to step away from the command line for a moment and prepare a space for receiving this repository on GitHub.</p>
+<p>To do so, go to <a href="https://github.com/">GitHub</a>, make sure you’re logged in, and click the “Create repository” button. You’ll be taken to this page:</p>
+<p><img src="../images/ch02/new_repository.png" class="img-fluid"></p>
+<p>There are a few things of note here:</p>
+<ul>
+<li>Repository name: your repository’s name, which should be the same as what’s on your computer</li>
+<li>Description: a short (1-2 sentence) explanation of what’s in this repository</li>
+<li>Public/private setting: repositories may be either “public” (viewable by anyone) or “private” (only viewable by you and those to whom you grant access)</li>
+<li>Initialize with details, including:
+<ul>
+<li>A README file: a form of documentation; provides information about the files in the repository</li>
+<li>A <code>.gitignore</code> file: instructs Git to ignore specific files or filetypes</li>
+<li>A license: governs the use or redistribution of your files</li>
+</ul></li>
+</ul>
+<p>Because we’re initializing this repository from an existing directory, we won’t bother with most of the extra details. But we do need a title, which should be the same as what’s on your local computer (<code>my_first_remote_directory</code>). A description is helpful but not necessary for our purposes; the same goes for a license. Finally, we will choose to make this a public repository (meaning anyone can see it).</p>
+<p><img src="../images/ch02/new_repository_details.png" class="img-fluid"></p>
+</section>
+<section id="pushing-a-local-repository" class="level4" data-number="2.3.4.2">
+<h4 data-number="2.3.4.2" class="anchored" data-anchor-id="pushing-a-local-repository"><span class="header-section-number">2.3.4.2</span> Pushing a Local Repository</h4>
+<p>Once you’ve entered the above information, click “Create repository.” GitHub will take you to a new screen, which gives you a number of options for making or uploading new files to the repository.</p>
+<p><img src="../images/ch02/new_repository_options.png" class="img-fluid"></p>
+<p>Since we already have a repository made, we need to use the “Push an existing repository from the command line.” Pushing our repository is as easy as sequentially entering into the command line the three commands GitHub provides.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> remote add origin git@github.com:YOUR_USERNAME/my_first_remote_directory.git</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> branch <span class="at">-M</span> main</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>On the command line, that looks like this:</p>
+<p><img src="../images/ch02/push_repository_command_line.png" class="img-fluid"></p>
+<p>To summarize the above, we’ve done the following:</p>
+<ol type="1">
+<li>Associated GitHub’s remote repository with our local repository (<code>git    remote</code> etc.)</li>
+<li>Made a new branch in our local repository called <code>main</code> (<code>git branch -M    main</code>)</li>
+<li>Pushed the contents of <code>main</code> (from <code>origin</code>) to a new, corresponding remote branch on GitHub</li>
+</ol>
+<p>From here on out, when you want to update the remote repository with further changes, you can simply use the shorthand <code>git push</code> after the usual save, add, commit steps. Importantly, Git will only update the branch you’re on when you enter <code>git push</code>, so before making any pushes, it’s a good idea to run a quick <code>git status</code> command to make sure you’re on the branch you want to be on.</p>
+<p>When you make your changes, the GitHub site won’t immediately refresh itself, but if you click on the “&lt; &gt; Code” tab or on the name of the directory, you’ll see that the repository has been synced and your <code>README.md</code> file is now online.</p>
+<p><img src="../images/ch02/new_repository_synced.png" class="img-fluid"></p>
+<p>Note that GitHub automatically looks for a README file in your repository. If it finds one that contains renderable <a href="https://guides.github.com/features/mastering-markdown/">Markdown</a> code, it will render the file on your repository’s main page.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>More information about writing effective README files is available through the DataLab’s <a href="https://ucdavisdatalab.github.io/workshop_how-to-data-documentation/">README, Write Me! workshop</a>.</p>
+</div>
+</div>
+</section>
+<section id="tracking-files-remotely" class="level4" data-number="2.3.4.3">
+<h4 data-number="2.3.4.3" class="anchored" data-anchor-id="tracking-files-remotely"><span class="header-section-number">2.3.4.3</span> Tracking Files Remotely</h4>
+<p>With this repository made, GitHub can start tracking changes you make to your files, such as Git does locally. The process works exactly like the one you do for Git, though it requires one more step.</p>
+<p>First, we’ll alter our <code>README.md</code>. Reopen the file with Vim, skip a line down from the line you’ve already written, and add <code>My name is YOUR_NAME.</code> Save and quit.</p>
+<p><img src="../images/ch02/hello_world_changed.png" class="img-fluid"></p>
+<p>Then, add the file and commit your changes.</p>
+<p><img src="../images/ch02/commit_readme_update.png" class="img-fluid"></p>
+<p>If you want to push these changes to your remote repository, simply enter <code>git push</code>. You’ll see a similar message appear about enumerating, counting, and writing objects to GitHub. Afterwards, if you refresh your file on GitHub, you should see your changes:</p>
+<p><img src="../images/ch02/new_repository_synced_updated.png" class="img-fluid"></p>
+<p>Note that your commit message appears here as well:</p>
+<p><img src="../images/ch02/new_repository_synced_message_highlight.png" class="img-fluid"></p>
+<p>If you click the commit tag:</p>
+<p><img src="../images/ch02/new_repository_synced_commit_tag.png" class="img-fluid"></p>
+<p>You’ll be taken to another page, which shows you the differences between your old version and the new one:</p>
+<p><img src="../images/ch02/github_vdiff.png" class="img-fluid"></p>
+</section>
+<section id="pulling-changes-from-a-remote-repository" class="level4" data-number="2.3.4.4">
+<h4 data-number="2.3.4.4" class="anchored" data-anchor-id="pulling-changes-from-a-remote-repository"><span class="header-section-number">2.3.4.4</span> Pulling Changes from a Remote Repository</h4>
+<p>Before moving on, it’s also worth noting that we can pull changes directly from GitHub. If a file has been altered on the remote version of a project, GitHub offers functionality for syncing that file with your local copy (or creating a new file altogether, if need be).</p>
+<p>For example, if you return to the main page of <code>my_first_remote_directory</code>, you can alter the README directly on GitHub. Click the pencil in the right-hand corner of the rendered file.</p>
+<p><img src="../images/ch02/new_repository_pencil_highlight.png" class="img-fluid"></p>
+<p>This will open up a text editor interface. Using it, add <code>What's yours?</code> on the fifth line of the document. The complete document should look like this:</p>
+<pre><code>Hello world!
+
+My name is YOUR_NAME.
+
+What's yours?</code></pre>
+<p>Scroll to the bottom and click the green “Commit changes” button. This is the equivalent of doing <code>git add FILE</code> and <code>git commit -m MESSAGE</code> on the command line.</p>
+<p>You’ll see something like the following:</p>
+<p><img src="../images/ch02/updated_readme.png" class="img-fluid"></p>
+<p>Back on the command line, if you type <code>git status</code>, you’ll see that your local repository is now out of sync.</p>
+<p><img src="../images/ch02/branch_behind.png" class="img-fluid"></p>
+<p>If you haven’t made any changes to your directory, syncing it with the remote version can be achieved with a straightforward pull command:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Once you enter this command, your command line should look something like this:</p>
+<p><img src="../images/ch02/git_pull.png" class="img-fluid"></p>
+<p>Your files are now synced.</p>
+</section>
+</section>
+<section id="cloning-a-repository" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="cloning-a-repository"><span class="header-section-number">2.3.5</span> Cloning a Repository</h3>
+<p>While tracking your own files remotely with GitHub is great for managing and storing your files, this doesn’t quite tap into the full use of the service. Remember, GitHub is above all a communication channel, in which people can share and discuss the code/files they’re working on. We haven’t yet taken advantage of much of what makes GitHub useful: getting files for a project, modifying them, discussing the changes with team members, and implementing those changes.</p>
+<section id="how-to-clone-a-repository" class="level4" data-number="2.3.5.1">
+<h4 data-number="2.3.5.1" class="anchored" data-anchor-id="how-to-clone-a-repository"><span class="header-section-number">2.3.5.1</span> How to Clone a Repository</h4>
+<p>To start using GitHub collaboratively, we need to retrieve, or <strong>clone</strong>, a repository. This will create a local copy of project files.</p>
+<p>First, go back to your Home directory. You’ll be putting a repository here (in command line speak, the repository will be a “child” of Home).</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then, go to the following link: <a href="https://github.com/ucdavis-datalab-training/workshop_git_for_teams_sandbox">https://github.com/ucdavis-datalab-training/workshop_git_for_teams_sandbox</a></p>
+<p>Once there, click on the green “Code” button, which should show the following:</p>
+<p><img src="../images/ch02/clone_repository_github_view.png" class="img-fluid"></p>
+<p>Since you have SSH keys, select the “SSH” option. Copy the text GitHub provides to your clipboard. Then, in the command line, type <code>git clone</code>, add a space, and paste in the line of text GitHub generated for you. The full command should look like this:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone git@github.com:ucdavis-datalab-training/workshop_git_for_teams_sandbox.git</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Hit <code>Enter</code>. If you’d like, you can use <code>ls</code> to see the newly made directory. You should see something like the following:</p>
+<p><img src="../images/ch02/clone_repository_command_line_view.png" class="img-fluid"></p>
+<p>If you <code>cd</code> into the directory and then type <code>ls -a</code>, you’ll see a <code>README.md</code> file and a .git file, which contains all the logging info for the repository.</p>
+<p><img src="../images/ch02/clone_repository_lsa.png" class="img-fluid"></p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/01_command-line.html" class="pagination-link" aria-label="Command Line">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Command Line</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/03_r-intro.html" class="pagination-link" aria-label="Introduction to R">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to R</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/02_version-control.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
