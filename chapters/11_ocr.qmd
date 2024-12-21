@@ -142,7 +142,7 @@ new_pdf <- "https://jeroen.github.io/images/ocrscan.pdf"
 ```
 
 ```{r echo=FALSE}
-new_pdf <- "img/blurry_page_image.png"
+new_pdf <- "images/ch11/blurry_page_image.png"
 ```
 
 To run OCR on this `pdf`, use the following:
@@ -173,7 +173,9 @@ new_pdf <- "https://jeroen.github.io/images/ocrscan.pdf"
 ```
 
 ```{r png_conversion, cache=TRUE}
-png <- pdf_convert(new_pdf, format="png", filenames= "img/png_example.png")
+png <- pdf_convert(
+  new_pdf, format = "png", filenames = "images/ch11/png_example.png"
+)
 ```
 
 In addition to making a `png` object in your RStudio environment, `pdf_convert()`
@@ -210,7 +212,9 @@ This doesn't have to do with the `png` file format per se but rather with the
 way we created our file. If you open it, you'll see that it's quite blurry,
 which has made it harder for `ocr()` to match the text it represents:
 
-![](./img/blurry_page_image.png)
+::: {#fig-blurry-page}
+![](/images/ch11/blurry_page_image.png)
+:::
 
 This blurriness is because `pdf_convert()` defaults its conversions to 72 dpi,
 or dots per inch. **Dpi** is a measure of image resolution (originally from
@@ -224,7 +228,10 @@ for example). A dpi of 300, however, is ideal. You can set the dpi in
 `pdf_convert()` by adding a dpi argument in the function:
 
 ```{r hi_res_png_conversion, cache=TRUE}
-hi_res_png <- pdf_convert(new_pdf, format="png", dpi=150, filenames="./img/hi_res_png_example.png")
+hi_res_png <- pdf_convert(
+  new_pdf, format="png", dpi=150,
+  filenames="images/ch11/hi_res_png_example.png"
+)
 ```
 
 Another function, `ocr_data()`outputs a data frame that contains all of the words
@@ -324,7 +331,9 @@ typefaces; texts that contained anything other than this design couldn't be read
 Now, OCR is much better at handling a variety of text styling, but systems still
 struggle with old print materials like **blackletter**.
 
-![](./img/blackletter_example.jpg)
+::: {#fig-blackletter}
+![](/images/ch11/blackletter_example.jpg)
+:::
 
 Running:
 
@@ -346,7 +355,9 @@ unconventional page layouts, as well as inset graphics. Add to that sub-par scan
 of archival documents, as in the newspaper page below, and the output will
 contain way more errors than correct matches.
 
-![](./img/chronicling_america_example.png)
+::: {#fig-chronicling-america}
+![](/images/ch11/chronicling_america_example.png)
+:::
 
 ```{r newspaper_ocr, cache=TRUE, eval=FALSE}
 newspaper <- "https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf"
@@ -354,7 +365,7 @@ newspaper_ocr <- ocr(newspaper)
 ```
 
 ```{r newspaper_ocr_hidden, cache=TRUE, echo=FALSE}
-newspaper <- "./img/chronicling_america_example.png"
+newspaper <- "images/ch11/chronicling_america_example.png"
 newspaper_ocr <- ocr(newspaper)
 ```
 
