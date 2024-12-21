@@ -1,7 +1,6 @@
 # Network Analysis
 
 ```{r setup, include=FALSE}
-library(knitr)
 library(statnet)
 library(visNetwork)
 ```
@@ -21,20 +20,22 @@ After this lesson, you should be able to:
 
 You are all most likely familiar now with tabular data; rows and columns containing information. It looks like this:
 
-| Person                                                 | Name | Age | Widgets |
-|:------------------------------------------------------:|:-----|:----|:-------:|
-| ![](./img/male-teacher_emoji.png){width="10%"}         | J    | 30  | 1       |
-| ![](./img/female-student_emoji.png){width="10%"}       | Y    | 21  | 3       |
-| ![](./img/female-health-worker_emoji.png){width="10%"} | G    | 32  | 4       |
-| ![](./img/male-scientist_emoji.png){width="10%"}       | Z    | 48  | 8       |
+| Person                                                      | Name | Age | Widgets |
+|:-----------------------------------------------------------:|:-----|:----|:-------:|
+| ![](/images/ch14/male-teacher_emoji.png){width=2em}         | J    | 30  | 1       |
+| ![](/images/ch14/female-student_emoji.png){width=2em}       | Y    | 21  | 3       |
+| ![](/images/ch14/female-health-worker_emoji.png){width=2em} | G    | 32  | 4       |
+| ![](/images/ch14/male-scientist_emoji.png){width=2em}       | Z    | 48  | 8       |
+
+: {tbl-colwidths="[25, 25, 25, 25]" .striped .hover}
 
 While this is a tidy way to store data, it artificially atomizes or separates many of the things we are interested in as researchers, social or otherwise. Network analysis is a tool to work with *relational* data, a.k.a. information about how entities are connected with each other. For example, the diagram below shows the same data as the table above, with the added benefit of showing how these individuals are connected to each other. Hover over the people to reveal the data about them.
 
 ```{r echo=FALSE, out.width='100%'}
-net_url1 = "./img/male-teacher_emoji.png"
-net_url2 = "./img/female-student_emoji.png"
-net_url3 = "./img/female-health-worker_emoji.png"
-net_url4 = "./img/male-scientist_emoji.png"
+net_url1 = "../../images/ch14/male-teacher_emoji.png"
+net_url2 = "../../images/ch14/female-student_emoji.png"
+net_url3 = "../../images/ch14/female-health-worker_emoji.png"
+net_url4 = "../../images/ch14/male-scientist_emoji.png"
 nodes = data.frame(id = 1:4,
                     shape = "image",
                     title = c("<p style='color: black;'>Name: J<br>Age: 30<br>Widgets: 1</p>", "<p style='color: black;'>Name: Y<br>Age: 21<br>Widgets: 3</p>", "<p style='color: black;'>Name: G<br>Age: 32<br>Widgets: 4</p>", "<p style='color: black;'>Name: Z<br>Age: 48<br>Widgets: 8</p>"),
@@ -55,49 +56,61 @@ Rather than looking only at attributes of specific data points, we are looking a
 
 #### Social Sciences
 
-```{r echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
-knitr::include_graphics("./img/who_shall_survive.png")
-```
+![](/images/ch14/who_shall_survive.png){
+  width=25%
+  style="float: right; padding: 10px;"
+  .lightbox
+}
 
 One of the first instances of social network analysis was originally published in 1932 as part of Jacob Moreno's *Who Shall Survive* [-@morenoWhoShallSurvive1953]. This study used the friendship networks of girls within a reform school to show that the ties between them were a stronger predictor of runaways than any attribute of the girls themselves. Since then, networks have been used widely in the social sciences, but only really picked up as the tools to understand SNA became more available.
 
 #### Neuroscience
 
-```{r echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
-knitr::include_graphics("./img/neuronet.jpg")
-```
+![](/images/ch14/neuronet.jpg){
+  width=25%
+  style="float: right; padding: 10px;"
+  .lightbox
+}
 
 Neuroscientists use networks to study the brain, given their ready application to neurons and pathways. Bassett and Sporns [-@bassettNetworkNeuroscience2017] provide an overview of how to translate neuroscience problems into network ones, and the tools available to study them.
 
 #### Chemistry
 
-```{r echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
-knitr::include_graphics("./img/chem_graph.jpg")
-```
+![](/images/ch14/chem_graph.jpg){
+  width=25%
+  style="float: right; padding: 10px;"
+  .lightbox
+}
 
 Chemistry was quick to see the applications of networks. As early at 1985 papers were published detailing the potential networks provided in terms of understanding and finding new ways to measure and understand the bonds between atoms and molecules [@balabanApplicationsGraphTheory1985].
 
 #### The Internet
 
-```{r echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
-knitr::include_graphics("./img/page_rank.jpg")
-```
+![](/images/ch14/page_rank.jpg){
+  width=25%
+  style="float: right; padding: 10px;"
+  .lightbox
+}
 
 The internet is a network! Beyond the various social network sites, servers themselves act as nodes and the information flows between them along edges. Google used this property in the first version of their search engine, which used the network metric of PageRank to determine which sites to show at the top of search results [@pageMethodNodeRanking2001].
 
 #### Infrastructure
 
-```{r echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
-knitr::include_graphics("./img/infrastructure_net.jpg")
-```
+![](/images/ch14/infrastructure_net.jpg){
+  width=25%
+  style="float: right; padding: 10px;"
+  .lightbox
+}
 
 Fand and Mostafavi [-@fanGraphbasedMethodSocial2019] showed how you can use social media network data to find where infrastructure is failing during disasters, such as hurricane Harvey in 2017. Their system promises a method to monitor physical infrastructure like roads, bridges, and barriers like more easily monitored infrastructure like the electrical grid.
 
 #### Security
 
-```{r echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
-knitr::include_graphics("./img/terror_net.png")
-```
+![](/images/ch14/terror_net.png){
+  width=25%
+  style="float: right; padding: 10px;"
+  .lightbox
+}
 
 Network analysis has also been used for offensive purposes. One of the most prominent uses is mapping crime or terror networks [@krebsMappingNetworksTerrorist2002], though it is fraught with ethical concerns. There are specific tools made for this purpose, such as the *keyplayer* package [@anKeyplayerPackageLocating2016], which helps find what nodes in a network would fragment them the most if removed.
 
@@ -114,7 +127,7 @@ An edgelist is a two-column dataframe with a *from* and *to* column. Each row re
 toy_edgelist = read.csv("./data/toy_edgelist.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # show the first 10 rows
-kable(head(toy_edgelist, n = 10))
+head(toy_edgelist, n = 10)
 ```
 
 ### Adjacency Matrix
@@ -122,9 +135,10 @@ kable(head(toy_edgelist, n = 10))
 The same data can also be displayed in a table format. The information is the same, but it is presented in a way more usable by our code to create measures we care out. In this format, every node has both a row and column. If there is an edge between two nodes, a 1 is placed in the intersection of their row and column.
 
 ```{r echo=FALSE}
-.tab = knitr::kable(as.matrix(network(head(toy_edgelist, n = 10))), format =
-  "html")
-kableExtra::scroll_box(.tab, width = "770px")
+as.matrix(network(head(toy_edgelist, n = 10)))
+#, format = "html"
+#.tab = knitr::kable()
+#kableExtra::scroll_box(.tab, width = "770px")
 ```
 
 ### Edge Weights
@@ -140,7 +154,7 @@ Each network also typically has an attributes table, which looks just like typic
 toy_attributes = read.csv("./data/toy_attributes.csv", header = TRUE, stringsAsFactors = FALSE)
 
 # show top of attributes table
-kable(head(toy_attributes, n = 10))
+head(toy_attributes, n = 10)
 ```
 
 ### Create an Example Network
@@ -273,9 +287,7 @@ There is no easy answer. If you are looking at a pre-defined group (e.g. this cl
 
 Another common method is setting an arbitrary number of "steps" or connections from a target population. If we were interested in a 2-step network from an individual, we would collect all of their relevant connections, and then ask all the people they nominated about their connections. Some sort of justification will be needed as to why you picked the number of steps that you did.
 
-```{r echo=FALSE, out.width= "100%"}
-knitr::include_graphics("./img/2_step.png")
-```
+![](/images/ch14/2_step.png)
 
 ### Projected Networks
 
@@ -283,9 +295,7 @@ Often, you will not have individual level network data, but you will have data o
 
 In this figure there are two kinds of nodes, students and classes. You can "collapse" this into a student network by assuming every student connected to a class is connected to each other. The same is true with classes, such that classes are related to each other if a single student is enrolled in both. This assumption may not always be correct, and you need to take care if you are going to make it in your research. If a class has 300 students, it is most likely not correct to assume every student knows every other student in that class.
 
-```{r echo=FALSE, out.width= "100%"}
-knitr::include_graphics("./img/2mode.png")
-```
+![](/images/ch14/2mode.png)
 
 For reference, this is what out projected class network looks like:
 
@@ -568,7 +578,7 @@ toy_attributes$evc = toy_network_total%v%"evc"
 Finally, we can then look at the network measures for our nodes. This dataframe can be used for plotting or further analyses.
 
 ```{r}
-kable(head(toy_attributes))
+head(toy_attributes)
 ```
 
 ## Network Tools
