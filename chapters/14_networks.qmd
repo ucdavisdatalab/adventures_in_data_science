@@ -1,9 +1,22 @@
-# Network Analysis
+---
+format:
+  html:
+    df-print: kable
+---
+
+```{css, echo=FALSE}
+.scrolling {
+  max-height: 30em;
+  overflow: scroll;
+}
+```
 
 ```{r setup, include=FALSE}
-library(statnet)
-library(visNetwork)
+library("statnet")
+library("visNetwork")
 ```
+
+# Network Analysis
 
 This lesson will introduce the theoretical and logistical underpinnings of network analysis. It will define what networks are, their limitations, and their use cases. It will then cover some of the most commonly used network measures, what they mean, and how to generate them.
 
@@ -135,10 +148,10 @@ head(toy_edgelist, n = 10)
 The same data can also be displayed in a table format. The information is the same, but it is presented in a way more usable by our code to create measures we care out. In this format, every node has both a row and column. If there is an edge between two nodes, a 1 is placed in the intersection of their row and column.
 
 ```{r echo=FALSE}
-as.matrix(network(head(toy_edgelist, n = 10)))
-#, format = "html"
-#.tab = knitr::kable()
-#kableExtra::scroll_box(.tab, width = "770px")
+#| class-output: scrolling
+as.data.frame(as.matrix(
+    network(head(toy_edgelist, n = 10))
+))
 ```
 
 ### Edge Weights
@@ -193,6 +206,7 @@ toy_attributes$net_id = 1:nrow(toy_attributes)
 We can inspect our new network by calling the `summary` function on it. Don't worry too much about the output yet.
 
 ```{r}
+#| class-output: scrolling
 summary(toy_network)
 ```
 
@@ -430,6 +444,8 @@ Nodes that on average have a shorter geodesic distance between all the other nod
 To find the mean geodesic distance for each node in the network we will first need to find the geodesic distance from each node to every other node, then take the mean. Not super difficult, but there isn't a single function to do it for us. First we will use the `geodist()` function to get all the geodesics.
 
 ```{r}
+#| class-output: scrolling
+
 # get all the geodesics
 # I use the $gdist so we only get geodesics not counts
 geodist(toy_network)$gdist
