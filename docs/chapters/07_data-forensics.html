@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>7&nbsp; Data Forensics – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/08_data-visualization.html" rel="next">
+<link href="../chapters/06_data-structures.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01_command-line.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../chapters/07_data-forensics.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data Forensics</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../images/datalab-logo-full-color-rgb.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Fundamentals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01_command-line.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Command Line</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02_version-control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version Control</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03_r-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04_programming-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Core Programming Concepts</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05_files-packages-indexing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Files, Packages, and Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06_data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07_data-forensics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08_data-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Visualization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/09_data-from-the-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/10_strings-regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Strings and Regular Expressions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Special Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/11_optical-character-recognition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/12_statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/13_reshaping-tabular-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Reshaping Tabular Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/14_network-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Network Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/15_natural-language-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/16_geospatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Geospatial Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#structural-summaries-cleaning" id="toc-structural-summaries-cleaning" class="nav-link active" data-scroll-target="#structural-summaries-cleaning"><span class="header-section-number">7.1</span> Structural Summaries &amp; Cleaning</a>
+  <ul class="collapse">
+  <li><a href="#dates" id="toc-dates" class="nav-link" data-scroll-target="#dates"><span class="header-section-number">7.1.1</span> Dates</a></li>
+  <li><a href="#sec-tidy-data" id="toc-sec-tidy-data" class="nav-link" data-scroll-target="#sec-tidy-data"><span class="header-section-number">7.1.2</span> Tidy Data</a></li>
+  </ul></li>
+  <li><a href="#statistical-forensics" id="toc-statistical-forensics" class="nav-link" data-scroll-target="#statistical-forensics"><span class="header-section-number">7.2</span> Statistical Forensics</a>
+  <ul class="collapse">
+  <li><a href="#missing-values" id="toc-missing-values" class="nav-link" data-scroll-target="#missing-values"><span class="header-section-number">7.2.1</span> Missing Values</a></li>
+  <li><a href="#outliers" id="toc-outliers" class="nav-link" data-scroll-target="#outliers"><span class="header-section-number">7.2.2</span> Outliers</a></li>
+  </ul></li>
+  <li><a href="#sec-apply-functions" id="toc-sec-apply-functions" class="nav-link" data-scroll-target="#sec-apply-functions"><span class="header-section-number">7.3</span> Apply Functions</a>
+  <ul class="collapse">
+  <li><a href="#the-sapply-function" id="toc-the-sapply-function" class="nav-link" data-scroll-target="#the-sapply-function"><span class="header-section-number">7.3.1</span> The <code>sapply</code> Function</a></li>
+  <li><a href="#the-split-apply-pattern" id="toc-the-split-apply-pattern" class="nav-link" data-scroll-target="#the-split-apply-pattern"><span class="header-section-number">7.3.2</span> The Split-Apply Pattern</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/07_data-forensics.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01_command-line.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../chapters/07_data-forensics.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data Forensics</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data Forensics</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This lesson covers a variety of ways to investigate and summarize tabular data in order to understand the data better and identify potential problems. The lesson also describes how to fix some of the most common data problems.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Cleaning and Forensics:
+<ul>
+<li>Explain what it means for a data set to be “tidy”</li>
+<li>Convert columns to appropriate data types</li>
+<li>Locate and count missing values in a data set</li>
+<li>Explain what it means for a value to be an “outlier”</li>
+<li>Locate and count outliers in a data set</li>
+</ul></li>
+<li>Statistical Summaries:
+<ul>
+<li>Explain the location statistics mean, median, and mode</li>
+<li>Explain the scale statistics range and standard deviation</li>
+<li>Apply Functions
+<ul>
+<li>Use apply functions to compute summaries of multiple columns</li>
+<li>Use the split-apply pattern to compute grouped summaries</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<section id="structural-summaries-cleaning" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="structural-summaries-cleaning"><span class="header-section-number">7.1</span> Structural Summaries &amp; Cleaning</h2>
+<p>Whenever you load a data set into R, your next step should be to investigate the data’s structure. This step is important because it can help you identify whether:</p>
+<ul>
+<li>The data was loaded correctly</li>
+<li>There are structural problems with the data that will make it difficult to use if they aren’t fixed</li>
+</ul>
+<p><a href="03_r-intro.html#sec-inspecting-data" class="quarto-xref"><span>Section 3.7.2</span></a> and <a href="05_files-packages-indexing.html#sec-inspecting-the-data" class="quarto-xref"><span>Section 5.1.3.2.1</span></a> demonstrated several functions for getting structural summaries of data. Some of these are:</p>
+<ul>
+<li><code>str</code> to get a detailed structural summary</li>
+<li><code>head</code>, <code>tail</code> to preview the data</li>
+<li><code>nrow</code>, <code>ncol</code>, <code>dim</code>, <code>length</code> to get dimension information</li>
+<li><code>names</code>, <code>colnames</code>, <code>rownames</code> to get element names</li>
+<li><code>class</code>, <code>typeof</code> to get classes and types</li>
+</ul>
+<p>Let’s look at some examples using a data set collected from the classified advertisements website Craigslist. The data set contains information from ads for rentals in the Sacramento area. First we need to load the data set:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"data/cl_rentals.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can use the <code>str</code> function to check the classes of the columns:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   2987 obs. of  20 variables:
+ $ title       : chr  "$1,125 / 1br - 550ft2 - 1Bedroom Prime Location -2520 S Limited Access/Gated $1125 Avail Now (2520 S St)" "$1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)" "$1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)" "$1,479 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)" ...
+ $ text        : chr  "QR Code Link to This Post\n            \n        \n* SEE MY OTHER MIDTOWN 1 bedroom apts-text for web site\n*An"| __truncated__ "QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Pric"| __truncated__ "QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Pric"| __truncated__ "QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1479+    Pric"| __truncated__ ...
+ $ latitude    : num  38.6 38.6 38.6 38.6 38.6 ...
+ $ longitude   : num  -121 -121 -121 -121 -121 ...
+ $ city        : chr  "2520 S St" "The Phoenix/Sacramento/Folsom/SF" "The Phoenix/Sacramento/Folsom/SF" "The Phoenix/Sacramento/Folsom/SF" ...
+ $ date_posted : chr  "2021-02-04 15:03:12" "2021-03-02 12:41:17" "2021-03-02 13:26:17" "2021-03-03 10:02:05" ...
+ $ date_updated: chr  "2021-03-03 08:41:39" NA NA NA ...
+ $ price       : int  1125 1449 1449 1479 1414 1441 1615 1660 1877 1611 ...
+ $ deleted     : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+ $ sqft        : int  550 680 680 680 680 680 816 816 916 916 ...
+ $ bedrooms    : int  1 1 1 1 1 1 2 2 2 2 ...
+ $ bathrooms   : num  1 1 1 1 1 1 1 1 2 2 ...
+ $ pets        : chr  NA "both" "both" "both" ...
+ $ laundry     : chr  "shared" "in-unit" "in-unit" "in-unit" ...
+ $ parking     : chr  "off-street" "covered" "covered" "covered" ...
+ $ craigslist  : chr  "sacramento" "sacramento" "sacramento" "sacramento" ...
+ $ shp_place   : chr  "Sacramento" "Sacramento" "Sacramento" "Sacramento" ...
+ $ shp_city    : chr  "Sacramento" "Sacramento" "Sacramento" "Sacramento" ...
+ $ shp_state   : chr  "CA" "CA" "CA" "CA" ...
+ $ shp_county  : chr  "Sacramento" "Sacramento" "Sacramento" "Sacramento" ...</code></pre>
+</div>
+</div>
+<p>Often when you load a new data set, some of the columns won’t have the correct data type (or class) for what you want to do. For instance, in the Craigslist data, the <code>pets</code>, <code>laundry</code>, and <code>parking</code> columns all contain categorical data, so they should be factors.</p>
+<p>You can convert these columns to factors with the <code>factor</code> function from <a href="05_files-packages-indexing.html#sec-factors" class="quarto-xref"><span>Section 5.3.1</span></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>pets <span class="ot">=</span> <span class="fu">factor</span>(cl<span class="sc">$</span>pets)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>laundry <span class="ot">=</span> <span class="fu">factor</span>(cl<span class="sc">$</span>laundry)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>parking <span class="ot">=</span> <span class="fu">factor</span>(cl<span class="sc">$</span>parking)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>There’s another way we could’ve done this that uses only two lines of code, no matter how many columns there are:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"pets"</span>, <span class="st">"laundry"</span>, <span class="st">"parking"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cl[cols] <span class="ot">=</span> <span class="fu">lapply</span>(cl[cols], factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We’ll learn more about the <code>lapply</code> function in <a href="#sec-apply-functions" class="quarto-xref"><span>Section 7.3</span></a>.</p>
+<p>You can use whichever approach is more convenient and makes more sense to you. If there were other columns to convert, we’d go through the same steps with the appropriate conversion function.</p>
+<p>R provides <code>as.</code> functions to convert to the most common data types. For instance, <code>as.character</code> converts an object to a string:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fl">3.1</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">as.character</span>(x)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "3.1"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>The <code>read.csv</code> function does a good job at identifying columns of numbers, so it’s rarely necessary to convert columns of numbers manually. However, you may have to do this for data you got some other way (rather than loading a file). For instance, it’s common to make these conversions when scraping data from the web.</p>
+<p>It’s also a good idea to convert categorical columns into factors with the <code>factor</code> function, and to convert columns of dates into dates (more about this in the next section).</p>
+<section id="dates" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="dates"><span class="header-section-number">7.1.1</span> Dates</h3>
+<p>There several built-in functions and also many packages for date processing. In particular, there are three Tidyverse packages for processing dates and times:</p>
+<ul>
+<li><a href="https://lubridate.tidyverse.org/">lubridate</a>, the primary package for working with dates and times</li>
+<li><a href="https://hms.tidyverse.org/">hms</a>, a package specifically for working with times</li>
+<li><a href="https://clock.r-lib.org/">clock</a>, a new package for working with dates and times</li>
+</ul>
+<p>We’ll focus on the lubridate package. As always, you’ll have to install the package if you haven’t already, and then load it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("lubridate")</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"lubridate"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'lubridate'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    date, intersect, setdiff, union</code></pre>
+</div>
+</div>
+<p>The most common task is to convert a string into a date or time class. For instance, when you load a data set, you might have dates that look like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Jan 10, 2021"</span>, <span class="st">"Sep 3, 2018"</span>, <span class="st">"Feb 28, 1982"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>dates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Jan 10, 2021" "Sep 3, 2018"  "Feb 28, 1982"</code></pre>
+</div>
+</div>
+<p>These are strings, so it’s relatively difficult to sort the dates, do arithmetic on them, or extract just one part (such as the year). There are several lubridate functions to automatically convert strings into dates. They are named with one letter for each part of the date. For instance, the dates in the example have the month (m), then the day (d), and then the year (y), so we can use the <code>mdy</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> <span class="fu">mdy</span>(dates)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-01-10" "2018-09-03" "1982-02-28"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Date"</code></pre>
+</div>
+</div>
+<p>Notice that the dates now have class <code>Date</code>, one of R’s built-in classes for representing dates, and that they print differently. You can find a full list of the automatic string to date conversion functions in the lubridate documentation.</p>
+<p>Occasionally, a date string may have a format that lubridate can’t convert automatically. In that case, you can use the <code>fast_strptime</code> function to describe the format in detail. At a minimum, the function requires two arguments: the vector of strings to convert and a format string.</p>
+<p>The format string describes the format of the dates, and is based on the syntax of <code>strptime</code>, a function provided by many programming languages for converting strings to dates (including R). In a format string, a percent sign <code>%</code> followed by a character is called a specification and has a special meaning. Here are a few of the most useful ones:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Specification</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">January 29, 2015</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>%Y</code></td>
+<td style="text-align: left;">4-digit year</td>
+<td style="text-align: left;">2015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>%y</code></td>
+<td style="text-align: left;">2-digit year</td>
+<td style="text-align: left;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>%m</code></td>
+<td style="text-align: left;">2-digit month</td>
+<td style="text-align: left;">01</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>%B</code></td>
+<td style="text-align: left;">full month name</td>
+<td style="text-align: left;">January</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>%b</code></td>
+<td style="text-align: left;">short month name</td>
+<td style="text-align: left;">Jan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>%d</code></td>
+<td style="text-align: left;">day of month</td>
+<td style="text-align: left;">29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>%%</code></td>
+<td style="text-align: left;">literal %</td>
+<td style="text-align: left;">%</td>
+</tr>
+</tbody>
+</table>
+<p>You can find a complete list in <code>?fast_strptime</code>. Other characters in the format string do not have any special meaning. Write the format string so that it matches the format of the dates you want to convert.</p>
+<p>For example, let’s try converting an unusual time format:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>odd_time <span class="ot">=</span> <span class="st">"6 minutes, 32 seconds after 10 o'clock"</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fast_strptime</span>(odd_time, <span class="st">"%M minutes, %S seconds after %H o'clock"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "0-01-01 10:06:32 UTC"</code></pre>
+</div>
+</div>
+<p>R usually represents dates with the class <code>Date</code>, and date-times with the classes <code>POSIXct</code> and <code>POSIXlt</code>. The difference between the two date-time classes is somewhat technical, but you can read more about it in <code>?POSIXlt</code>.</p>
+<p>There is no built-in class to represent times alone, which is why the result in the example above includes a date. Nonetheless, the hms package provides the <code>hms</code> class to represent times without dates.</p>
+<p>Once you’ve converted a string to a date, the lubridate package provides a variety of functions to get or set the parts individually. Here are a few examples:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">day</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10  3 28</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">month</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 9 2</code></pre>
+</div>
+</div>
+<p>You can find a complete list in the lubridate documentation.</p>
+<p>Now let’s convert the <code>date_updated</code> column in the Craigslist data. It’s always a good idea to test your format string before saving the results back into the data frame:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">=</span> <span class="fu">ymd_hms</span>(cl<span class="sc">$</span>date_updated)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2021-03-03 08:41:39 UTC" NA                       
+[3] NA                        NA                       
+[5] NA                        NA                       </code></pre>
+</div>
+</div>
+<p>The <code>as.Date</code> function returns <code>NA</code> if conversion failed, so in this case it looks like the dates were converted correctly. Now we can save the dates back into the data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>date_updated <span class="ot">=</span> dates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="sec-tidy-data" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="sec-tidy-data"><span class="header-section-number">7.1.2</span> Tidy Data</h3>
+<p>Many functions require data frames that are in <strong>tidy</strong> form. Before we see the requirements for a data set to be tidy, we need to define or review some terminology from statistics.</p>
+<p>A <strong>feature</strong> (also called a <strong>covariate</strong>) is measurement of something, usually across multiple subjects. For example, we might decide to measure the heights of everyone in the class. Each person in the class is a subject, and the height measurement is a feature. Features don’t have to be quantitative. If we also asked each person their favorite color, then favorite color would be another feature in our data set. Features are usually, but not always, the columns in a tabular data set.</p>
+<p>An <strong>observation</strong> is a set of features measured for a single subject or at a single time. So in the preceding example, the combined height and favorite color measurement for one student is one observation. Observations are usually, but not always, the rows in a tabular data set.</p>
+<p>Now we can define what it means to be tidy. A tabular data set is tidy if and only if:</p>
+<ol type="1">
+<li>Each observation has its own row.</li>
+<li>Each feature has its own column.</li>
+<li>Each value has its own cell.</li>
+</ol>
+<p>These rules ensure that all of the values are visually organized and are easy to access with R’s built-in indexing operations. For instance, the <code>$</code> operator gets a column, and in a tidy data set, columns are features. The rules also reflect the way statisticians traditionally arrange tabular data sets.</p>
+<p>When you first look at a data set, think about what the observations are and what the features are. If the data set comes with documentation, it may help you figure this out. Since this data set is a tidy data set, we already know each row is an observation and each column is a feature.</p>
+<p><a href="13_reshaping-tabular-data.html" class="quarto-xref"><span>Chapter 13</span></a> gives examples of tidy and untidy data, as well as explanations of how to make untidy data tidy.</p>
+</section>
+</section>
+<section id="statistical-forensics" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="statistical-forensics"><span class="header-section-number">7.2</span> Statistical Forensics</h2>
+<p>After investigating the data’s structure, it’s a good idea to check some basic statistical properties. This step is important because it can help you identify limitations of and patterns in the data.</p>
+<p>Which statistics are appropriate for a given feature often depends on the type of the feature. Recall from <a href="03_r-intro.html#sec-data-types-classes" class="quarto-xref"><span>Section 3.8</span></a> that the types statisticians typically think about are:</p>
+<ul>
+<li><strong>Categorical</strong>
+<ul>
+<li><strong>Nominal</strong> - data separated into specific categories, with no order. For example, hair color (red, brown, blonde, …) is categorical.</li>
+<li><strong>Ordinal</strong> - data separated into specific categories, with an order. For example, school level (elementary, middle, high, college) is ordinal.</li>
+</ul></li>
+<li><strong>Numerical</strong>
+<ul>
+<li><strong>Discrete</strong> - integers, or a finite set of decimal numbers with no values in between. Sometimes discrete values can also be treated as ordinal. For example, month as a number (1, 2, …, 12) is discrete.</li>
+<li><strong>Continuous</strong> - decimal numbers. There are no specific categories, but there is an order. For example, height in inches is numerical.</li>
+</ul></li>
+</ul>
+<p>The <code>table</code> function, which was introduced in <a href="03_r-intro.html#sec-inspecting-data" class="quarto-xref"><span>Section 3.7.2</span></a>, is great for summarizing categorical (and sometimes discrete) data. For example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(cl<span class="sc">$</span>pets)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+both cats dogs none 
+2511   46   31  385 </code></pre>
+</div>
+</div>
+<p>What about numerical data?</p>
+<p>Two important questions to ask about data are:</p>
+<ol type="1">
+<li><p>Where is it? This is the <strong>location</strong> of the data.</p></li>
+<li><p>How spread out is it? This is the <strong>scale</strong> of the data.</p></li>
+</ol>
+<p>Let’s use the data</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>as an example.</p>
+<p>Location is generally summarized with a number near the middle or center of the data. A few options are:</p>
+<ol type="1">
+<li><p><strong>Mode</strong> - the value that appears most frequently. The mode can be calculated for any kind of data, but doesn’t work well for continuous data.</p>
+<p>For our example, the mode of <code>x</code> is -1. You can compute the mode with <code>table</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Median</strong> - sort the data, then find the value in the middle. The median can be calculated for ordinal or numerical data.</p>
+<p>For our example, the median is -1. Compute this with <code>median</code>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Mean</strong> - the balancing point of the data, if a waiter was trying to balance the data on a tray. The mean can only be calculated for numerical data.</p>
+<p>For our example the mean is 0.4285. Compute this with <code>mean</code>:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>Adding large values to the data affects the mean more than the median:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(x, <span class="dv">100</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(y)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Because of this, we say that the median is <strong>robust</strong>.</p>
+<p>The mean is good for getting a general idea of where the center of the data is, while comparing it with the median reveals whether there are any unusually large or small values.</p>
+<p>Scale is generally summarized by a number that says how far the data is from the center (mean, median, etc…). Two options are:</p>
+<ol type="1">
+<li><p><strong>Standard Deviation</strong> - square root of the average squared distance to the mean (the distance from a point to a mean is called a <strong>deviation</strong>). You can think of this as approximately the average distance from a data point to the mean. As a rule of thumb, most of the data will be within 3 standard deviations of the mean.</p>
+<p>You can compute the standard deviation with <code>sd</code>:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+<li><p><strong>Interquartile Range</strong> (IQR) - difference between the 75th and 25th percentile. The median is the 50th <strong>percentile</strong> of the data; it’s at the middle of the sorted data. We can also consider other percentiles. For instance, the 25th percentile is the value one-quarter of the way through the sorted data.</p>
+<p><strong>Quantile</strong> is another word for percentile. <strong>Quartile</strong> specifically refers to the 25th, 50th, and 75th percentiles because they separate the data into four parts (hence “quart-”).</p>
+<p>You can compute quantiles with <code>quantile</code>, or compute the IQR directly with <code>IQR</code>:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(x)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># IQR</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">IQR</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div></li>
+</ol>
+<p>The IQR is more robust than the standard deviation.</p>
+<p>Many of the functions for computing statistical summaries have a parameter <code>na.rm</code> to ignore missing values. Setting <code>na.rm = TRUE</code> is often useful when you’re just trying to do an initial investigation of the data. However, in a more complete analysis, you should think carefully about what the missing values mean, whether they follow any patterns, and whether there are enough non-missing values for statistical summaries to be good representatives of the data.</p>
+<p>Finally, the <code>summary</code> function computes a detailed statistical summary of an R object. For data frames, the function computes a summary of each column, guessing an appropriate statistic based on the column’s data type.</p>
+<section id="missing-values" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="missing-values"><span class="header-section-number">7.2.1</span> Missing Values</h3>
+<p>If your data contains missing values, it’s important to think about why the values are missing. Statisticians use two different terms to describe why data is missing:</p>
+<ul>
+<li>missing at random (MAR)</li>
+<li>missing not at random (MNAR) - causes bias!</li>
+</ul>
+<p>When values are <strong>missing at random</strong>, the cause for missingness is not related to any of the other features. This is rare in practice. For example, if people in a food survey accidentally overlook some questions.</p>
+<p>When values are <strong>missing not at random</strong>, the cause for missingness depends on other features. These features may or may not be in the data set. Think of this as a form of censorship. For example, if people in a food survey refuse to report how much sugar they ate on days where they ate junk food, data is missing not at random. Values MNAR can bias an analysis.</p>
+<p>The default way to handle missing values in R is to ignore them. This is just a default, not necessarily the best or even an appropriate way to deal with them. You can remove missing values from a data set by indexing:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>cl_no_sqft_na <span class="ot">=</span> cl[<span class="sc">!</span><span class="fu">is.na</span>(cl<span class="sc">$</span>sqft), ]</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cl_no_sqft_na)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                                       title
+1   $1,125 / 1br - 550ft2 - 1Bedroom Prime Location -2520 S Limited Access/Gated $1125 Avail Now (2520 S St)
+2 $1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+3 $1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+4 $1,479 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+5 $1,414 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+6 $1,441 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 text
+1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     QR Code Link to This Post\n            \n        \n* SEE MY OTHER MIDTOWN 1 bedroom apts-text for web site\n*An upstairs apt @ 2520 S is coming available 3/18/21\n*I have 4 apts coming avail in midtown\n*New flooring in lower apt and redone hardwood flooring in upper unit\n*1 Bedroom  lower unit in 20 unit complex (2-10 unit buildings-courtyard in middle) with manager on site\n*Gated front and back\n*9 parking spots in back\n*Laundry on site with new washers and dryers (coin op)\n*Owner pays water/sewer/garbage\n*Wall heat and window air\n*New paint and new Pergo-type wood flooring \n*Updated lighting\n*Nicely maintained building and grounds\n*$500 deposit\n*Non-Smoking/vaping Complex\n*Long time Mgr on Site\n*No dogs\n*Pictures of a like unit\n*Text/call showing Wes  show contact info\n to get copy of video\n*You need to make 3X rent, have good rental history and credit score of 600 or greater to qualify-no dogs.
+2    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+3    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+4    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1479+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+5 QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Juliet starting at $1414+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+6    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1441+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+  latitude longitude                             city         date_posted
+1  38.5728 -121.4675                        2520 S St 2021-02-04 15:03:12
+2  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 12:41:17
+3  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 13:26:17
+4  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-03 10:02:05
+5  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 08:47:21
+6  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 10:20:09
+         date_updated price deleted sqft bedrooms bathrooms pets laundry
+1 2021-03-03 08:41:39  1125   FALSE  550        1         1 &lt;NA&gt;  shared
+2                &lt;NA&gt;  1449   FALSE  680        1         1 both in-unit
+3                &lt;NA&gt;  1449   FALSE  680        1         1 both in-unit
+4                &lt;NA&gt;  1479   FALSE  680        1         1 both in-unit
+5                &lt;NA&gt;  1414   FALSE  680        1         1 both in-unit
+6                &lt;NA&gt;  1441   FALSE  680        1         1 both in-unit
+     parking craigslist  shp_place   shp_city shp_state shp_county
+1 off-street sacramento Sacramento Sacramento        CA Sacramento
+2    covered sacramento Sacramento Sacramento        CA Sacramento
+3    covered sacramento Sacramento Sacramento        CA Sacramento
+4    covered sacramento Sacramento Sacramento        CA Sacramento
+5    covered sacramento Sacramento Sacramento        CA Sacramento
+6    covered sacramento Sacramento Sacramento        CA Sacramento</code></pre>
+</div>
+</div>
+<p>The <code>na.omit</code> function is less precise than indexing, because it removes rows that have a missing value in <em>any</em> column. This means lots of information gets lost.</p>
+<p>Another way to handle missing values is to <strong>impute</strong>, or fill in, the values with estimates based on other data in the data set. We won’t get into the details of how to impute missing values here, since it is a fairly deep subject. Generally it is safe to impute MAR values, but not MNAR values.</p>
+</section>
+<section id="outliers" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="outliers"><span class="header-section-number">7.2.2</span> Outliers</h3>
+<p>An <strong>outlier</strong> is an anomalous or extreme value in a data set. We can picture this as a value that’s far away from most of the other values. Sometimes outliers are a natural part of the data set. In other situations, outliers can indicate errors in how the data were measured, recorded, or cleaned.</p>
+<p>There’s no specific definition for “extreme” or “far away”. A good starting point for detecting outliers is to make a plot that shows how the values are distributed. Box plots and density plots work especially well for this (you’ll learn about how to make plots in a later lesson):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cl, <span class="fu">aes</span>(<span class="at">x =</span> sqft)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 347 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="07_data-forensics_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Statisticians tend to use the rule of thumb that any value more than 3 standard deviations away from the mean is an outlier. You can use the <code>scale</code> function to compute how many standard deviations the elements in a column are from their mean:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">=</span> <span class="fu">scale</span>(cl<span class="sc">$</span>sqft)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]
+[1,] -0.1910838
+[2,] -0.1161393
+[3,] -0.1161393
+[4,] -0.1161393
+[5,] -0.1161393
+[6,] -0.1161393</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(z <span class="sc">&lt;=</span> <span class="sc">-</span><span class="dv">3</span> <span class="sc">|</span> <span class="dv">3</span> <span class="sc">&lt;=</span> z)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1261 2461</code></pre>
+</div>
+</div>
+<p>Be careful to think about what your specific data set measures, as this definition isn’t appropriate in every situation.</p>
+<p>How can you handle outliers? First, try inspecting other features from the row to determine whether the outlier is a valid measurement or an error. When an outlier is valid, keep it.</p>
+<p>If the outlier interferes with a plot you want to make, you can adjust the x and y limits on plots as needed to “ignore” the outlier. Make sure to mention this in the plot’s title or caption.</p>
+<p>When an outlier is not valid, first try to correct it. For example:</p>
+<ul>
+<li>Correct with a different covariate from the <em>same observation</em>.</li>
+<li>Estimate with a mean or median of similar observations. This is another example of imputing values.</li>
+</ul>
+<p>For example, in the Craigslist data, we can use the <code>text</code> column to try to correct outliers:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(cl<span class="sc">$</span>text[<span class="dv">1261</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>QR Code Link to This Post
+            
+        
+Villages of the Galleria
+701 Gibson Drive, Roseville, CA, 95678
+Want more information? Follow this link:
+http://rcmi.aptdetails.com/49u13n
+Call Now:  show contact info
+
+Roseville's Premier Luxury Condominium Rentals
+This is a 1 Bedroom, 1 Bath, approximately 819 Sq. Ft. 
+Signature Collection
+This collection of fully renovated homes is limited to a select few. These unique homes are renting quickly. 
+The beautifully remodeled floor plan offers an entertainment style kitchen, gracious living area, formal dining room with access to your outdoor balcony, designer two tone paint with crown molding, spacious bathroom with relaxing oval bath tub, linen closet and large vanity. The bedroom offers a sliding glass door giving you additional access to the private balcony over looking the picturesque courtyard. 
+Brand New Featured Interiors:
+Entertainment Style Kitchen
+•   Beautiful warm espresso custom built cabinets with brush nickel hardware
+•   Opulent Granite Countertops with backsplash
+•   Satin finish under mount sink with disposal and upgraded Moen faucet and fixtures
+•   Stainless steel appliances, spacious built in microwave, multi-cycle dishwasher and self-cleaning oven
+•   Plant/décor cabinet ledge 
+•   Spacious pantry and personalized custom shelving in all cabinets
+•   Attractive bright recessed lighting
+•   Private in home personal laundry room with full size washer &amp; dryer
+Living and Dining
+•   Hand laid tile resembling hard wood flooring 
+•   Designer two-tone paint with white accent crown molding and baseboards
+•   Upgraded wooden style blinds
+•   Dual pane windows featuring custom framed molding
+•   Spacious coat closet
+Bath
+•   Oval Roman soaking tub with surround Opulent granite walls 
+•   Warm espresso custom built cabinets with brush nickel hardware
+•   Spacious linen closet and personal cabinet storage
+•   Hand selected Opulent Granite countertops
+•   Unique hand crafted above counter sink
+•   Contemporary waterfall faucet
+•   Custom wood-look framed mirror
+•   White glass contemporary light fixture with brush nickel base
+•   Upgraded brush nickel accents (towel bars and holders)
+•   Hand laid tile resembling hard wood flooring 
+Bedroom and Closet
+•   Rich plush carpeting
+•   Spacious walk in closets with personalized built in custom organizers and compartments
+Other Features and Amenities 
+•   Brilliant bright recessed lighting
+•   Central heat and air
+•   Private balcony or terrace
+•   Pre-wired for high-speed internet, multi-line phone and cable
+•   Brushed nickel hardware accents (door knobs, latches, deadbolts, locks, door knocker and light fixtures)
+•   Covered parking
+•   Additional patio storage
+Select Homes Offer
+•   Private detached garage
+•   Additional linen or storage space
+•   Cozy Gas Fireplace with carved stone-look mantel and molding
+Style, sophistication, beautiful landscaping and stunning architecture accent the Villages of the 
+Galleria apartment homes, located in dynamic Roseville, California. Villages of the Galleria is just minutes from the Galleria Mall and Fountains at Roseville and offers easy freeway access to downtown, Sacramento International Airport, Arco Arena and major employers such as NEC, Oracle and HP. Select from a variety of one, two or three bedroom floor plans. All apartment homes offer gracious living areas with designer two-tone paint, crown molding, large walk-in closets and in home full size washer and dryer. Enjoy the many fine conveniences offered, such as an expansive fitness center, executive business center and refreshing pool. Villages of the Galleria is the perfect place to call home. 
+Features
+- Contemporary Recessed Lighting 
+- Built-In Linen Closet in Bathroom * 
+- Entertainment Style Kitchens 
+- Private Balconies and Patios 
+- Crown Molding Accents 
+- Six-Panel Interior Doors 
+- Custom Maple-Front Cabinetry 
+- Nine-Foot Ceilings 
+- Microwave 
+- Pre-Wired for High Speed Internet 
+- Private Garages * 
+- Full Size Washer/Dryer 
+- Pantry * 
+- Oval Roman Soaking Tub * 
+- Cozy Gas Fireplace with Mantel * 
+- Covered Parking * 
+- Spacious Walk-In Closet(s) * 
+- Energy-Saving Multi-Cycle Dishwasher 
+Community Amenities
+- Community Garden 
+- Executive Business Center 
+- Sand Volleyball 
+- Close to Shopping 
+- Beautiful Landscaped Court Yards 
+- Playground 
+- Fitness Center 
+- Clubhouse 
+- Open Air Cabanas 
+- Easy Access to Freeways 
+- Pool and Spa 
+- Gated Community 
+- Professional Onsite Management w/ 24-Hour Emergency Maintenance 
+- Picnic Area with Barbecue 
+Office Hours
+Monday - Friday 9:00 AM - 6:00 PM
+Saturday 10:00 AM - 5:00 PM
+Sunday 12:00 PM - 5:00 PM 
+Pet Policy
+Maximum of 2 pets cats or dogs. No weight limit. Additional $25 rent per month and additional $500 deposit per pet. Inquire about our breed restrictions. 
+Equal Housing Opportunity 
+VJWLzl1wXG</code></pre>
+</div>
+</div>
+<p>Based on the text, this apartment is 819 square feet, not 8190 square feet. So we can reassign the value:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>sqft[<span class="dv">1261</span>] <span class="ot">=</span> <span class="dv">819</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If other features don’t help with correction, try getting information from external sources. If you can’t correct the outlier but know it’s invalid, replace it with a missing value <code>NA</code>.</p>
+</section>
+</section>
+<section id="sec-apply-functions" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="sec-apply-functions"><span class="header-section-number">7.3</span> Apply Functions</h2>
+<p><a href="03_r-intro.html#sec-vectorization" class="quarto-xref"><span>Section 3.6.2</span></a> introduced vectorization, a convenient and efficient way to compute multiple results. That section also mentioned that some of R’s functions—the ones that summarize or aggregate data—are not vectorized.</p>
+<p>The <code>class</code> function is an example of a function that’s not vectorized. If we call the <code>class</code> function on the Craigslist data set, we get just one result for the data set as a whole:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(cl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+</div>
+<p>What if we want to get the class of each column? We can get the class for a single column by selecting the column with <code>$</code>, the dollar sign operator:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(cl<span class="sc">$</span>pets)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+</div>
+<p>But what if we want the classes for all the columns? We could write a call to <code>class</code> for each column, but that would be tedious. When you’re working with a programming language, you should try to avoid tedium; there’s usually a better, more automated way.</p>
+<p><a href="03_r-intro.html#sec-lists" class="quarto-xref"><span>Section 3.8.1</span></a> pointed out that data frames are technically lists, where each column is one element. With that in mind, what we need here is a line of code that calls <code>class</code> on each element of the data frame. The idea is similar to vectorization, but since we have a list and a non-vectorized function, we have to do a bit more than just call <code>class(cl)</code>.</p>
+<p>The <code>lapply</code> function calls, or <em>applies</em>, a function on each element of a list or vector. The syntax is:</p>
+<pre><code>lapply(X, FUN, ...)</code></pre>
+<p>The function <code>FUN</code> is called once for each element of <code>X</code>, with the element as the first argument. The <code>...</code> is for additional arguments to <code>FUN</code>, which are held constant across all the elements.</p>
+<p>Let’s try this out with the Craigslist data and the <code>class</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(cl, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$title
+[1] "character"
+
+$text
+[1] "character"
+
+$latitude
+[1] "numeric"
+
+$longitude
+[1] "numeric"
+
+$city
+[1] "character"
+
+$date_posted
+[1] "character"
+
+$date_updated
+[1] "POSIXct" "POSIXt" 
+
+$price
+[1] "integer"
+
+$deleted
+[1] "logical"
+
+$sqft
+[1] "numeric"
+
+$bedrooms
+[1] "integer"
+
+$bathrooms
+[1] "numeric"
+
+$pets
+[1] "factor"
+
+$laundry
+[1] "factor"
+
+$parking
+[1] "factor"
+
+$craigslist
+[1] "character"
+
+$shp_place
+[1] "character"
+
+$shp_city
+[1] "character"
+
+$shp_state
+[1] "character"
+
+$shp_county
+[1] "character"</code></pre>
+</div>
+</div>
+<p>The result is similar to if the <code>class</code> function was vectorized. In fact, if we use a vector and a vectorized function with <code>lapply</code>, the result is nearly identical to the result from vectorization:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, pi)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.000000 1.414214 1.772454</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(x, sqrt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] 1
+
+[[2]]
+[1] 1.414214
+
+[[3]]
+[1] 1.772454</code></pre>
+</div>
+</div>
+<p>The only difference is that the result from <code>lapply</code> is a list. In fact, the <code>lapply</code> function always returns a list with one element for each element of the input data. The “l” in <code>lapply</code> stands for “list”.</p>
+<p>The <code>lapply</code> function is one member of a family of functions called <strong>apply functions</strong>. All of the apply functions provide ways to apply a function repeatedly to different parts of a data structure. We’ll meet a few more apply functions soon.</p>
+<p>When you have a choice between using vectorization or an apply function, you should always choose vectorization. Vectorization is clearer—compare the two lines of code above—and it’s also significantly more efficient. In fact, vectorization is the most efficient way to call a function repeatedly in R.</p>
+<p>As we saw with the <code>class</code> function, there are some situations where vectorization is not possible. That’s when you should think about using an apply function.</p>
+<section id="the-sapply-function" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="the-sapply-function"><span class="header-section-number">7.3.1</span> The <code>sapply</code> Function</h3>
+<p>The related <code>sapply</code> function calls a function on each element of a list or vector, and simplifies the result. That last part is the crucial difference compared to <code>lapply</code>. When results from the calls all have the same type and length, <code>sapply</code> returns a vector or matrix instead of a list. When the results have different types or lengths, the result is the same as for <code>lapply</code>. The “s” in <code>sapply</code> stands for “simplify”.</p>
+<p>For instance, if we use <code>sapply</code> to find the classes of the columns in the Craigslist data, we get a character vector:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(cl, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$title
+[1] "character"
+
+$text
+[1] "character"
+
+$latitude
+[1] "numeric"
+
+$longitude
+[1] "numeric"
+
+$city
+[1] "character"
+
+$date_posted
+[1] "character"
+
+$date_updated
+[1] "POSIXct" "POSIXt" 
+
+$price
+[1] "integer"
+
+$deleted
+[1] "logical"
+
+$sqft
+[1] "numeric"
+
+$bedrooms
+[1] "integer"
+
+$bathrooms
+[1] "numeric"
+
+$pets
+[1] "factor"
+
+$laundry
+[1] "factor"
+
+$parking
+[1] "factor"
+
+$craigslist
+[1] "character"
+
+$shp_place
+[1] "character"
+
+$shp_city
+[1] "character"
+
+$shp_state
+[1] "character"
+
+$shp_county
+[1] "character"</code></pre>
+</div>
+</div>
+<p>Likewise, if we use <code>sapply</code> to compute the <code>sqrt</code> values, we get a numeric vector, the same as from vectorization:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(x, sqrt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.000000 1.414214 1.772454</code></pre>
+</div>
+</div>
+<p>In spite of that, vectorization is still more efficient than <code>sapply</code>, so use vectorization instead when possible.</p>
+<p>Apply functions are incredibly useful for summarizing data. For example, suppose we want to compute the medians for all of the columns in the Craigslist data set that are numeric.</p>
+<p>First, we need to identify the columns. One way to do this is with the <code>is.numeric</code> function. Despite the name, this function actually tests whether its argument is a real number, not whether it its argument is a numeric vector. In other words, it also returns true for integer values. We can use <code>sapply</code> to apply this function to all of the columns in the Craigslist data set:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>is_number <span class="ot">=</span> <span class="fu">sapply</span>(cl, is.numeric)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>is_number</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       title         text     latitude    longitude         city  date_posted 
+       FALSE        FALSE         TRUE         TRUE        FALSE        FALSE 
+date_updated        price      deleted         sqft     bedrooms    bathrooms 
+       FALSE         TRUE        FALSE         TRUE         TRUE         TRUE 
+        pets      laundry      parking   craigslist    shp_place     shp_city 
+       FALSE        FALSE        FALSE        FALSE        FALSE        FALSE 
+   shp_state   shp_county 
+       FALSE        FALSE </code></pre>
+</div>
+</div>
+<p>In general, it’s a good habit to use R to do things rather than do them manually. You’ll get more practice programming, and your code will be more flexible if you want to adapt it to other data sets.</p>
+<p>Now that we know which columns are numeric, we can use the <code>median</code> function to compute medians. We only want to compute medians for those columns, so we need to subset the data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(cl[, is_number], median, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> latitude longitude     price      sqft  bedrooms bathrooms 
+  38.5878 -121.4410 1730.0000  801.0000    2.0000    1.0000 </code></pre>
+</div>
+</div>
+</section>
+<section id="the-split-apply-pattern" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="the-split-apply-pattern"><span class="header-section-number">7.3.2</span> The Split-Apply Pattern</h3>
+<p>In a data set with categorical features, it’s often useful to compute something for each category. The <code>lapply</code> and <code>sapply</code> functions can compute something for each element of a data structure, but categories are not necessarily elements.</p>
+<p>For example, the Craigslist data set has four different categories in the <code>laundry</code> column. If we want all of the rows in one category, one way to get them is by indexing:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>shared <span class="ot">=</span> cl[cl<span class="sc">$</span>laundry <span class="sc">==</span> <span class="st">"shared"</span>, ]</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(shared)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                                            title
+1        $1,125 / 1br - 550ft2 - 1Bedroom Prime Location -2520 S Limited Access/Gated $1125 Avail Now (2520 S St)
+7  $1,615 / 2br - 816ft2 - 2x1 with w/d in unit..  available NOW! APPLY TODAY! (The Phoenix/Sacramento/Folsom/SF)
+8  $1,660 / 2br - 816ft2 - 2x1 with w/d in unit..  available NOW! APPLY TODAY! (The Phoenix/Sacramento/Folsom/SF)
+9  $1,877 / 2br - 916ft2 - 2x2 with w/d in unit..  available NOW! APPLY TODAY! (The Phoenix/Sacramento/Folsom/SF)
+10 $1,611 / 2br - 916ft2 - 2x2 with w/d in unit..  available NOW! APPLY TODAY! (The Phoenix/Sacramento/Folsom/SF)
+11 $1,736 / 2br - 916ft2 - 2x2 with w/d in unit..  available NOW! APPLY TODAY! (The Phoenix/Sacramento/Folsom/SF)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  text
+1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      QR Code Link to This Post\n            \n        \n* SEE MY OTHER MIDTOWN 1 bedroom apts-text for web site\n*An upstairs apt @ 2520 S is coming available 3/18/21\n*I have 4 apts coming avail in midtown\n*New flooring in lower apt and redone hardwood flooring in upper unit\n*1 Bedroom  lower unit in 20 unit complex (2-10 unit buildings-courtyard in middle) with manager on site\n*Gated front and back\n*9 parking spots in back\n*Laundry on site with new washers and dryers (coin op)\n*Owner pays water/sewer/garbage\n*Wall heat and window air\n*New paint and new Pergo-type wood flooring \n*Updated lighting\n*Nicely maintained building and grounds\n*$500 deposit\n*Non-Smoking/vaping Complex\n*Long time Mgr on Site\n*No dogs\n*Pictures of a like unit\n*Text/call showing Wes  show contact info\n to get copy of video\n*You need to make 3X rent, have good rental history and credit score of 600 or greater to qualify-no dogs.
+7  QR Code Link to This Post\n            \n        \n Lease our 2x1 Apartment with Juliet starting at $1615+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+8  QR Code Link to This Post\n            \n        \n Lease our 2x1 Apartment with Juliet starting at $1660+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+9  QR Code Link to This Post\n            \n        \n Lease our 2x2 Apartment with Juliet starting at $1877+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+10    QR Code Link to This Post\n            \n        \n Lease our 2x2 Apartment with Che starting at $1611+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+11    QR Code Link to This Post\n            \n        \n Lease our 2x2 Apartment with Che starting at $1736+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+   latitude longitude                             city         date_posted
+1   38.5728 -121.4675                        2520 S St 2021-02-04 15:03:12
+7   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 08:36:51
+8   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 08:57:47
+9   38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 08:36:17
+10  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 13:16:29
+11  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-03 10:02:38
+          date_updated price deleted sqft bedrooms bathrooms pets laundry
+1  2021-03-03 08:41:39  1125   FALSE  550        1         1 &lt;NA&gt;  shared
+7                 &lt;NA&gt;  1615   FALSE  816        2         1 both  shared
+8                 &lt;NA&gt;  1660   FALSE  816        2         1 both  shared
+9                 &lt;NA&gt;  1877   FALSE  916        2         2 both  shared
+10                &lt;NA&gt;  1611   FALSE  916        2         2 both  shared
+11                &lt;NA&gt;  1736   FALSE  916        2         2 both  shared
+      parking craigslist  shp_place   shp_city shp_state shp_county
+1  off-street sacramento Sacramento Sacramento        CA Sacramento
+7     covered sacramento Sacramento Sacramento        CA Sacramento
+8     covered sacramento Sacramento Sacramento        CA Sacramento
+9     covered sacramento Sacramento Sacramento        CA Sacramento
+10    covered sacramento Sacramento Sacramento        CA Sacramento
+11    covered sacramento Sacramento Sacramento        CA Sacramento</code></pre>
+</div>
+</div>
+<p>To get all four categories, we’d have to do this four times. If we want to compute something for each category, say the mean of the <code>price</code> column, we also have to repeat that computation four times. Here’s what it would look like for just the <code>shared</code> category:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(shared<span class="sc">$</span>price, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1522.869</code></pre>
+</div>
+</div>
+<p>If the categories were elements, we could avoid writing code to index each category, and just use the <code>sapply</code> (or <code>lapply</code>) function to apply the <code>mean</code> function to each.</p>
+<p>The <code>split</code> function splits a vector or data frame into groups based on a vector of categories. The first argument to <code>split</code> is the data, and the second argument is a congruent vector of categories.</p>
+<p>We can use <code>split</code> to elegantly compute means of <code>price</code> broken down by <code>laundry</code>. First, we split the data by category. Since we only want to compute on the <code>price</code> column, we only split that column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>by_laundry <span class="ot">=</span> <span class="fu">split</span>(cl<span class="sc">$</span>price, cl<span class="sc">$</span>laundry)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(by_laundry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(by_laundry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "hookup"  "in-unit" "none"    "shared" </code></pre>
+</div>
+</div>
+<p>The result from <code>split</code> is a list with one element for each category. The individual elements contain pieces of the original <code>price</code> column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(by_laundry<span class="sc">$</span>hookup)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1250 3300 3328 3300 3280 3328</code></pre>
+</div>
+</div>
+<p>Since the categories are elements in the split data, now we can use <code>sapply</code> the same way we did in previous examples:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(by_laundry, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   hookup   in-unit      none    shared 
+2059.6111 1880.8592  982.2381 1522.8691 </code></pre>
+</div>
+</div>
+<p>This two-step process is a data science idiom called the <strong>split-apply pattern</strong>. First you use <code>split</code> to convert categories into list elements, then you use an apply function to compute something on each category. Any time you want to compute results by category, you should think of this pattern.</p>
+<p>The split-apply pattern is so useful that R provides the <code>tapply</code> function as a shortcut. The <code>tapply</code> function is equivalent to calling <code>split</code> and then <code>sapply</code>. Like <code>split</code>, the first argument is the data and the second argument is a congruent vector of categories. The third argument is a function to apply, like the function argument in <code>sapply</code>.</p>
+<p>We can use <code>tapply</code> to compute the <code>price</code> means by <code>laundry</code> type for the Craigslist data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(cl<span class="sc">$</span>price, cl<span class="sc">$</span>laundry, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   hookup   in-unit      none    shared 
+2059.6111 1880.8592  982.2381 1522.8691 </code></pre>
+</div>
+</div>
+<p>Notice that the result is identical to the one we computed before.</p>
+<p>The “t” in <code>tapply</code> stands for “table”, because the <code>tapply</code> function is a generalization of the <code>table</code> function. If you use <code>length</code> as the third argument to <code>tapply</code>, you get the same results as you would from using the <code>table</code> function on the category vector.</p>
+<p>The <code>aggregate</code> function is closely related to <code>tapply</code>. It computes the same results, but organizes them into a data frame with one row for each category. In some cases, this format is more convenient. The arguments are the same, except that the second argument must be a list or data frame rather than a vector.</p>
+<p>As an example, here’s the result of using <code>aggregate</code> to compute the <code>price</code> means:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(cl<span class="sc">$</span>price, <span class="fu">list</span>(cl<span class="sc">$</span>laundry), mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Group.1         x
+1  hookup 2059.6111
+2 in-unit 1880.8592
+3    none  982.2381
+4  shared 1522.8691</code></pre>
+</div>
+</div>
+<p>The <code>lapply</code>, <code>sapply</code>, and <code>tapply</code> functions are the three most important functions in the family of apply functions, but there are many more. You can learn more about all of R’s apply functions by reading <a href="https://stackoverflow.com/a/7141669">this Stack Overflow post</a>.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/06_data-structures.html" class="pagination-link" aria-label="Data Structures">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Structures</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/08_data-visualization.html" class="pagination-link" aria-label="Data Visualization">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Visualization</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/07_data-forensics.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
