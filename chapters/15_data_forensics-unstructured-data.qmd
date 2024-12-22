@@ -1,9 +1,9 @@
 Data Forensics and Cleaning: Unstructured Data
 ==============================================
 
-This lecture is designed to introduce you to the basics of preprocessing and analyze text data. 
+This lecture is designed to introduce you to the basics of preprocessing and analyze text data.
 
-## Learning Objectives 
+## Learning Objectives
 
 By the end of this lesson, you should:
 
@@ -24,9 +24,9 @@ install.packages(c("tidyverse", "tokenizers", "tm", "cluster"))
 
 ## Using a File Manifest
 
-In this lesson, we'll be preparing a collection of texts for computational 
-analysis. Before we start that work in full, we're going to load in a file 
-manifest, which will help us a) identify what's in our collection; and b) keep 
+In this lesson, we'll be preparing a collection of texts for computational
+analysis. Before we start that work in full, we're going to load in a file
+manifest, which will help us a) identify what's in our collection; and b) keep
 track of things like the order of texts.
 
 ```{r}
@@ -34,9 +34,9 @@ manifest <- read.csv("./data/C19_novels_manifest.csv", row.names = 1)
 manifest
 ```
 
-As you can see, in addition to the author and title listings, we also have a 
-genre tag. "G" is for "Gothic" literature, while "N" is "not Gothic." Let's 
-convert the datatype for the genre column into a factor, which will make life 
+As you can see, in addition to the author and title listings, we also have a
+genre tag. "G" is for "Gothic" literature, while "N" is "not Gothic." Let's
+convert the datatype for the genre column into a factor, which will make life
 easier later on.
 
 ```{r}
@@ -45,32 +45,32 @@ manifest$genre <- as.factor(manifest$genre)
 
 ## Loading a Corpus
 
-With our metadata loaded, it's time to bring in our files. We'll be using files 
-stored in an `RDS` format, though you could also load straight from a directory 
+With our metadata loaded, it's time to bring in our files. We'll be using files
+stored in an `RDS` format, though you could also load straight from a directory
 with a combination of `lapply()` and `readLines()`.
 
 ```{r}
 files <- readRDS("./data/C19_novels_raw.rds")
 ```
 
-Loading our files like this will create a giant list of vectors, where each 
-vector is a full text file. Those vectors are chunked by paragraph right now, 
-but for our purposes it would be easier if each vector was a single stream of 
-text (like the output of `ocr()`, if you'll remember). We can collapse them 
+Loading our files like this will create a giant list of vectors, where each
+vector is a full text file. Those vectors are chunked by paragraph right now,
+but for our purposes it would be easier if each vector was a single stream of
+text (like the output of `ocr()`, if you'll remember). We can collapse them
 together with `paste()`.
 
 ```{r}
 files <- lapply(files, paste, collapse = " ")
 ```
 
-From here, we can wrap these files in a special "corpus" object, which the `tm` 
-package enables (a corpus is a large collection of texts). A `tm` corpus works 
-somewhat like a database. It has a section for "content", which contains text 
-data, as well as various metadata sections, which we can populate with 
-additional information about our texts, if we wished. Taken together, these 
+From here, we can wrap these files in a special "corpus" object, which the `tm`
+package enables (a corpus is a large collection of texts). A `tm` corpus works
+somewhat like a database. It has a section for "content", which contains text
+data, as well as various metadata sections, which we can populate with
+additional information about our texts, if we wished. Taken together, these
 features make it easy to streamline workflows with text data.
 
-To make a corpus with `tm`, we call the `Corpus()` function, specifying with 
+To make a corpus with `tm`, we call the `Corpus()` function, specifying with
 `VectorSource()` (because our texts are vectors):
 
 ```{r message=FALSE}
@@ -100,23 +100,23 @@ library(stringr)
 str_sub(corpus[[6]]$content, start = 1, end = 500)
 ```
 
-In this last view, you can see that the text file is still formatted (at least 
-we didn't have to OCR it!). This formatting is unwieldy and worse, it makes it so 
-we can't really access the elements that comprise each novel. We'll need to do 
+In this last view, you can see that the text file is still formatted (at least
+we didn't have to OCR it!). This formatting is unwieldy and worse, it makes it so
+we can't really access the elements that comprise each novel. We'll need to do
 more work to **preprocess** our texts before we can analyze them.
 
 ## Preprocessing
 
-Part of preprocessing entails making decisions about the kinds of information we 
-want to know about our data. Knowing what information we want often guides the 
-way we structure data. Put another way: _research questions drive preprocessing_. 
+Part of preprocessing entails making decisions about the kinds of information we
+want to know about our data. Knowing what information we want often guides the
+way we structure data. Put another way: _research questions drive preprocessing_.
 
 ### Tokenizing and Bags of Words
 
-For example, it'd be helpful to know how many words are in each novel, which 
-might enable us to study patterns and differences between authors' styles. To 
-get word counts, we need to split the text vectors into individual words. One 
-way to do this would be to first strip out everything in each novel that isn't 
+For example, it'd be helpful to know how many words are in each novel, which
+might enable us to study patterns and differences between authors' styles. To
+get word counts, we need to split the text vectors into individual words. One
+way to do this would be to first strip out everything in each novel that isn't
 an alphabetic character or a space. Let's grab one text to experiment with.
 
 ```{r}
@@ -124,8 +124,8 @@ frankenstein <- corpus[[6]]$content
 frankenstein <- str_replace_all(frankenstein, pattern = "[^A-Za-z]", replacement = " ")
 ```
 
-From here, it would be easy enough to count the words in a novel by splitting 
-its vector on spaces, removing empty elements in the vector, and calling 
+From here, it would be easy enough to count the words in a novel by splitting
+its vector on spaces, removing empty elements in the vector, and calling
 `length()` on the vector. The end result is what we call a **bag of words**.
 
 ```{r}
@@ -142,8 +142,8 @@ frankenstein[[1]][1:9]
 
 ### Text Normalization
 
-While easy, producing our bag of words this way is a bit clunky. And further, 
-this process can't handle contractions ("I'm", "don't", "that's") or 
+While easy, producing our bag of words this way is a bit clunky. And further,
+this process can't handle contractions ("I'm", "don't", "that's") or
 differences in capitalization.
 
 ```{r}
@@ -168,49 +168,49 @@ Should be:
 "Frankenstein"
 ```
 
-Or, even better: 
+Or, even better:
 
 ```
 frankenstein
 ```
 
-Typically, when we work with text data we want all of our words to be in the 
-same case because this makes it easier to do things like counting operations. 
-Remember that, to a computer, "Word" and "word" are two separate words, and if 
-we want to count them together, we need to pick one version or the other. Making 
-all words lowercase (even proper nouns) is the standard. Doing this is part of 
-what's called text **normalization**. (Other forms of normalization might 
-entail handling orthographic differences between British and American English, 
+Typically, when we work with text data we want all of our words to be in the
+same case because this makes it easier to do things like counting operations.
+Remember that, to a computer, "Word" and "word" are two separate words, and if
+we want to count them together, we need to pick one version or the other. Making
+all words lowercase (even proper nouns) is the standard. Doing this is part of
+what's called text **normalization**. (Other forms of normalization might
+entail handling orthographic differences between British and American English,
 like "color" and "colour".)
 
-As for contractions, we have some decisions to make. On the one hand, it's 
-important to retain as much information as we can about the original text, so 
-keeping "don't" or "what's" (which would be "don t" and "what s" in our current 
-method) is important. One way corpus linguists handle these words is to 
-**lemmatize** them. Lemmatizing involves removing inflectional endings to return 
+As for contractions, we have some decisions to make. On the one hand, it's
+important to retain as much information as we can about the original text, so
+keeping "don't" or "what's" (which would be "don t" and "what s" in our current
+method) is important. One way corpus linguists handle these words is to
+**lemmatize** them. Lemmatizing involves removing inflectional endings to return
 words to their base form:
 
 * car, cars, car's, cars' => car
 * don't => do
 
 This is a helpful step if what we're primarily interested in is doing a high-
-level analysis of semantics. On the other hand, though, many words that feature 
-contractions are high-frequency function words, which don't have much meaning 
-beyond the immediate context of a sentence or two. Words like "that's" or 
-"won't" appear in huge numbers in text data, but they don't carry much 
-information in and of themselves---it may in fact be the case that we could get 
+level analysis of semantics. On the other hand, though, many words that feature
+contractions are high-frequency function words, which don't have much meaning
+beyond the immediate context of a sentence or two. Words like "that's" or
+"won't" appear in huge numbers in text data, but they don't carry much
+information in and of themselves---it may in fact be the case that we could get
 rid of them entirely...
 
 ### Stop Words
 
-...and indeed this is the case! When structuring text data to study it at scale, 
-it's common to remove, or **stop out**, words that don't have much meaning. This 
-makes it much easier to identify significant (i.e. unique) features in a text, 
-without having to swim through all the noise of "the" or "that," which would 
-almost always show up as the highest-occurring words in an analysis. But what 
-words should we remove? Ultimately, this depends on your text data. We can 
-usually assume that function words will be on our list of **stop words**, but it 
-may be that you'll have to add or subtract others depending on your data and, 
+...and indeed this is the case! When structuring text data to study it at scale,
+it's common to remove, or **stop out**, words that don't have much meaning. This
+makes it much easier to identify significant (i.e. unique) features in a text,
+without having to swim through all the noise of "the" or "that," which would
+almost always show up as the highest-occurring words in an analysis. But what
+words should we remove? Ultimately, this depends on your text data. We can
+usually assume that function words will be on our list of **stop words**, but it
+may be that you'll have to add or subtract others depending on your data and,
 of course, your research question.
 
 The `tm` package has a good starting list. Let's look at the first 100 words.
@@ -219,30 +219,30 @@ The `tm` package has a good starting list. Let's look at the first 100 words.
 head(stopwords("SMART"), 100)
 ```
 
-That looks pretty comprehensive so far, though the only way we'll know whether 
-it's a good match for our corpus is to process our corpus with it. At first 
-glance, the extra random letters in this list seem like they could be a big 
-help, on the off chance there's some noise from OCR. If you look at the first 
-novel in the corpus, for example, there are a bunch of stray _p_'s, which is 
+That looks pretty comprehensive so far, though the only way we'll know whether
+it's a good match for our corpus is to process our corpus with it. At first
+glance, the extra random letters in this list seem like they could be a big
+help, on the off chance there's some noise from OCR. If you look at the first
+novel in the corpus, for example, there are a bunch of stray _p_'s, which is
 likely from a pattern for marking pages ("p. 7"):
 
 ```{r}
 cat(str_sub(corpus[[1]]$content, start = 1, end = 1000))
 ```
 
-Our stop word list would take care of this. With it, we could return to our 
-original collection of novels, split them on spaces as before, and filter out 
-everything that's stored in our `stop_list` variable. Before we did the 
-filtering, though, we'd need to transform the novels into lowercase (which can 
+Our stop word list would take care of this. With it, we could return to our
+original collection of novels, split them on spaces as before, and filter out
+everything that's stored in our `stop_list` variable. Before we did the
+filtering, though, we'd need to transform the novels into lowercase (which can
 be done with `R`'s `tolower()` function).
 
 ### Tokenizers
 
-This whole process is ultimately straightforward so far, but it would be nice to 
-collapse all its steps. Luckily, there are packages we can use to streamline our 
-process. `tokenizers` has functions that split a text vector, turn words into 
-lowercase forms, and remove stop words, all in a few lines of code. Further, we 
-can combine these functions with a special `tm_map()` function in the `tm` 
+This whole process is ultimately straightforward so far, but it would be nice to
+collapse all its steps. Luckily, there are packages we can use to streamline our
+process. `tokenizers` has functions that split a text vector, turn words into
+lowercase forms, and remove stop words, all in a few lines of code. Further, we
+can combine these functions with a special `tm_map()` function in the `tm`
 package, which will globally apply our changes.
 
 ```{r warning=FALSE}
@@ -257,38 +257,38 @@ cleaned_corpus <- tm_map(
 )
 ```
 
-You may see a "transformation drops documents" warning after this. You can 
-disregard it. It has to do with the way `tm` references text changes against 
+You may see a "transformation drops documents" warning after this. You can
+disregard it. It has to do with the way `tm` references text changes against
 a corpus's metadata, which we've left blank.
 
-We can compare our tokenized output with the text data we had been working with 
+We can compare our tokenized output with the text data we had been working with
 earlier:
 
 ```{r}
 list(
-  untokenized = frankenstein[[1]][1:9], 
+  untokenized = frankenstein[[1]][1:9],
   tokenized = cleaned_corpus[[6]]$content[1:5]
 )
 ```
 
-From the title alone we can see how much of a difference tokenizing with stop 
-words makes. And while we lose a bit of information by doing this, what we can 
+From the title alone we can see how much of a difference tokenizing with stop
+words makes. And while we lose a bit of information by doing this, what we can
 is a much clearer picture of key words we'd want to further analyze.
 
 ### Document Chunking and N-grams
 
-Finally, it's possible to change the way we separate out our text data. Instead 
-of tokenizing on words, we could use `tokenizers` to break apart our texts on 
-paragraphs (`tokenize_paragraphs()`), sentences (`tokenize_sentences`), and 
-more. There might be valuable information to be learned about the average 
+Finally, it's possible to change the way we separate out our text data. Instead
+of tokenizing on words, we could use `tokenizers` to break apart our texts on
+paragraphs (`tokenize_paragraphs()`), sentences (`tokenize_sentences`), and
+more. There might be valuable information to be learned about the average
 sentence length of a novel, for example, so we might chunk it accordingly.
 
-We might also want to see whether a text contains repeated phrases, or if two or 
-three words often occur in the same sequence. We could investigate this by 
-adjusting the window around which we tokenize individual words. So far we've 
-used the "unigram," or a single word, as our basic unit of counting, but we 
-could break our texts into "bigrams" (two word phrases), "trigrams" (three word 
-phrases), or, well any sequence of _n_ units. Generally, you'll see these 
+We might also want to see whether a text contains repeated phrases, or if two or
+three words often occur in the same sequence. We could investigate this by
+adjusting the window around which we tokenize individual words. So far we've
+used the "unigram," or a single word, as our basic unit of counting, but we
+could break our texts into "bigrams" (two word phrases), "trigrams" (three word
+phrases), or, well any sequence of _n_ units. Generally, you'll see these
 sequences referred to as **n-grams**:
 
 ```{r}
@@ -305,15 +305,15 @@ Here, `n=2` sets the n-gram window at two:
 frankenstein_bigrams[[1]][1:20]
 ```
 
-Note though that, for this function, we'd need to do some preprocessing on our 
-own to remove numeric characters and punctuation; `tokenize_ngrams()` won't do 
+Note though that, for this function, we'd need to do some preprocessing on our
+own to remove numeric characters and punctuation; `tokenize_ngrams()` won't do
 it for us.
 
 ## Counting Terms
 
-Let's return to our single word counts. Now that we've transformed our novels 
-into bags of single words, we can start with some analysis. Simply counting the 
-number of times a word appears in some data can tell us a lot about a text. The 
+Let's return to our single word counts. Now that we've transformed our novels
+into bags of single words, we can start with some analysis. Simply counting the
+number of times a word appears in some data can tell us a lot about a text. The
 following steps should feel familiar: we did them with OCR.
 
 Let's look at _Wuthering Heights_, which is our ninth text:
@@ -331,25 +331,25 @@ wuthering_heights <- arrange(wuthering_heights, desc(count))
 head(wuthering_heights, 30)
 ```
 
-Looks good! The two main characters in this novel are named Heathcliff and 
+Looks good! The two main characters in this novel are named Heathcliff and
 Catherine, so it makes sense that these words would appear a lot. You can see,
-however, that we might want to fine tune our stop word list so that it removes 
-"mr" and "mrs" from the text. Though again, it depends on our research question. 
-If we're exploring gender roles in nineteenth-century literature, we'd probably 
+however, that we might want to fine tune our stop word list so that it removes
+"mr" and "mrs" from the text. Though again, it depends on our research question.
+If we're exploring gender roles in nineteenth-century literature, we'd probably
 keep those words in.
 
-In addition to fine tuning stop words, pausing here at these counts would be a 
-good way to check whether some other form of textual noise is present in your 
-data, which you haven't yet caught. There's nothing like that here, but you 
+In addition to fine tuning stop words, pausing here at these counts would be a
+good way to check whether some other form of textual noise is present in your
+data, which you haven't yet caught. There's nothing like that here, but you
 might imagine how consistent OCR noise could make itself known in this view.
 
 ### Term Frequency
 
-After you've done your fine tuning, it would be good to get a **term frequency** 
-number for each word in this data frame. Raw counts are nice, but expressing 
-those counts in proportion to the total words in a document will tell us more 
-information about a word's contribution to the document as a whole. We can get 
-term frequencies for our words by dividing a word's count by document length 
+After you've done your fine tuning, it would be good to get a **term frequency**
+number for each word in this data frame. Raw counts are nice, but expressing
+those counts in proportion to the total words in a document will tell us more
+information about a word's contribution to the document as a whole. We can get
+term frequencies for our words by dividing a word's count by document length
 (which is the sum of all words in the document).
 
 ```{r}
@@ -363,8 +363,8 @@ head(wuthering_heights, 30)
 
 ### Plotting Term Frequency
 
-Let's plot the top 50 words in _Wuthering Heights_. We'll call `fct_reorder()` 
-in the `aes()` field of `ggplot` to sort words in the descending order of their 
+Let's plot the top 50 words in _Wuthering Heights_. We'll call `fct_reorder()`
+in the `aes()` field of `ggplot` to sort words in the descending order of their
 term frequency.
 
 ```{r fig.width=10}
@@ -374,44 +374,44 @@ ggplot(
   data = wuthering_heights[1:50, ],
   aes(x = fct_reorder(word, -term_frequency), y = term_frequency)
   ) +
-  geom_bar(stat ="identity") + 
+  geom_bar(stat ="identity") +
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
-  ) + 
+  ) +
   labs(
-    title = "Top 50 words in Wuthering Heights", 
-    x = "Word", 
+    title = "Top 50 words in Wuthering Heights",
+    x = "Word",
     y = "Term Frequency"
   )
 ```
 
-This is a good start for creating a high-level view of the novel, but further 
-tuning might be in order. We've already mentioned "mrs" and "mr" as two words 
-that we could cut out of the text. Another option would be to collapse these 
-two words together into a **base form** by **stemming** them. Though this would 
-overweight their base form (which in this case is "mr") in terms of term 
-frequency, it would also free up space to see other terms in the document. Other 
-examples of stemming words would be transforming "fishing", "fished", and 
+This is a good start for creating a high-level view of the novel, but further
+tuning might be in order. We've already mentioned "mrs" and "mr" as two words
+that we could cut out of the text. Another option would be to collapse these
+two words together into a **base form** by **stemming** them. Though this would
+overweight their base form (which in this case is "mr") in terms of term
+frequency, it would also free up space to see other terms in the document. Other
+examples of stemming words would be transforming "fishing", "fished", and
 "fisher" all into "fish."
 
-That said, like all preprocessing, lemmatizing words is an 
-_interpretive decision_, which comes with its own consequences. Maybe it's okay 
-to transform "mr" and "mrs" into "mr" for some analyses, but it's also the case 
-that we'd be erasing potentially important gender differences in the text---and 
-would do so by overweighting the masculine form of the word. Regardless of what 
-you decide, it's important to keep track of these decisions as you make them 
+That said, like all preprocessing, lemmatizing words is an
+_interpretive decision_, which comes with its own consequences. Maybe it's okay
+to transform "mr" and "mrs" into "mr" for some analyses, but it's also the case
+that we'd be erasing potentially important gender differences in the text---and
+would do so by overweighting the masculine form of the word. Regardless of what
+you decide, it's important to keep track of these decisions as you make them
 because they will impact the kinds of claims you make about your data later on.
 
 ### Comparing Term Frequencies Across Documents
 
-Term frequency is helpful if we want to start comparing words across two texts. 
+Term frequency is helpful if we want to start comparing words across two texts.
 We can make some comparisons by transforming the above code into a function:
 
 ```{r}
 term_table <- function(text) {
   term_tab <- table(text)
   term_tab <- data.frame(
-    word = names(term_tab), 
+    word = names(term_tab),
     count = as.numeric(term_tab)
     )
   term_tab$term_frequency <- sapply(term_tab$count, function(x) (x/sum(term_tab$count)))
@@ -439,19 +439,19 @@ for (i in comparison_words) {
 }
 ```
 
-Not bad! We might be able to make a few generalizations from this, but to say 
-anything definitively, we'll need to scale our method. Doing so wouldn't be 
-easy with this setup as it stands now. While it's true that we could write some 
-functions to roll through these two data frames and systematically compare the 
-words in each, it would take a lot of work to do so. Luckily, the `tm` package 
-(which we've used to make our stop word list) features generalized functions 
+Not bad! We might be able to make a few generalizations from this, but to say
+anything definitively, we'll need to scale our method. Doing so wouldn't be
+easy with this setup as it stands now. While it's true that we could write some
+functions to roll through these two data frames and systematically compare the
+words in each, it would take a lot of work to do so. Luckily, the `tm` package
+(which we've used to make our stop word list) features generalized functions
 for just this kind of thing.
 
 ## Text Mining Pipepline
 
 Before going further, we should note that `tm` has its own functions for
-preprocessing texts. To send raw files directly through those functions, you'd 
-call `tm_map()` in conjunction with these functions. You can think of `tm_map()` 
+preprocessing texts. To send raw files directly through those functions, you'd
+call `tm_map()` in conjunction with these functions. You can think of `tm_map()`
 as a cognate to the `apply()` family.
 
 ```{r eval=FALSE}
@@ -462,21 +462,21 @@ corpus_2 <- tm_map(corpus_2, removePunctuation)
 corpus_2 <- tm_map(corpus_2, stripWhitespace)
 ```
 
-Note the order of operations here: because our stop words list takes into account 
-punctuated words, like "don't" or "i'm", we want to remove stop words _before_ 
-removing punctuation. If we didn't do this, `removeWords()` wouldn't catch the 
-un-punctuated "dont" or "im". This won't always be the case, since we can use 
-different stop word lists, which may have a different set of terms, but in this 
+Note the order of operations here: because our stop words list takes into account
+punctuated words, like "don't" or "i'm", we want to remove stop words _before_
+removing punctuation. If we didn't do this, `removeWords()` wouldn't catch the
+un-punctuated "dont" or "im". This won't always be the case, since we can use
+different stop word lists, which may have a different set of terms, but in this
 instance, the order in which we preprocess matters.
 
-Preparing your text files like this would be fine, and indeed sometimes it's 
-preferable to sequentially step through each part of the preprocessing workflow. 
-That said, `tokenizers` manages the order of operations above on its own and its 
-preprocessing functions are generally a bit faster to run (in particular, 
+Preparing your text files like this would be fine, and indeed sometimes it's
+preferable to sequentially step through each part of the preprocessing workflow.
+That said, `tokenizers` manages the order of operations above on its own and its
+preprocessing functions are generally a bit faster to run (in particular,
 `removeWords()` is quite slow in comparison to `tokenize_words()`).
 
-There is, however, one caveat to using `tokenizers`. It splits documents up to 
-do text cleaning, but other functions in `tm` require non-split documents. If 
+There is, however, one caveat to using `tokenizers`. It splits documents up to
+do text cleaning, but other functions in `tm` require non-split documents. If
 we use `tokenizers`, then, we need to do a quick workaround with `paste()`.
 
 ```{r}
@@ -489,13 +489,13 @@ And then reformat that output as a corpus object:
 cleaned_corpus <- Corpus(VectorSource(cleaned_corpus))
 ```
 
-Ultimately, it's up to you to decide what workflow makes sense. Personally, I 
-(Tyler) like to do exploratory preprocessing steps with `tokenizers`, often with 
-a sample set of all the documents. Then, once I've settled on my stop word list 
+Ultimately, it's up to you to decide what workflow makes sense. Personally, I
+(Tyler) like to do exploratory preprocessing steps with `tokenizers`, often with
+a sample set of all the documents. Then, once I've settled on my stop word list
 and so forth, I reprocess all my files with the `tm`-specific functions above.
 
-Regardless of what workflow you choose, preprocessing can take a while, so now 
-would be a good place to save your data. That way, you can retrieve your corpus 
+Regardless of what workflow you choose, preprocessing can take a while, so now
+would be a good place to save your data. That way, you can retrieve your corpus
 later on.
 
 ```{r eval=FALSE}
@@ -510,19 +510,19 @@ cleaned_corpus <- readRDS("./data/C19_novels_cleaned.rds")
 
 ## Document Term Matrix
 
-The advantage of using a `tm` corpus is that it makes comparing data easier. 
-Remember that, in our old workflow, looking at the respective term frequencies 
-in two documents entailed a fair bit of code. And further, we left off before 
-generalizing that code to the corpus as a whole. But what if we wanted to look 
+The advantage of using a `tm` corpus is that it makes comparing data easier.
+Remember that, in our old workflow, looking at the respective term frequencies
+in two documents entailed a fair bit of code. And further, we left off before
+generalizing that code to the corpus as a whole. But what if we wanted to look
 at a term across multiple documents?
 
-To do so, we need to create what's called a **document-term matrix**, or DTM. A 
-DTM describes the frequency of terms across an entire corpus (rather than just 
-one document). Rows of the matrix correspond to documents, while columns 
-correspond to the terms. For a given document, we count the number of times that 
-term appears and enter that number in the column in question. We do this _even if_ 
-the count is 0; key to the way a DTM works is that it's a _corpus-wide_ 
-representation of text data, so it matters if a text does or doesn't contain a 
+To do so, we need to create what's called a **document-term matrix**, or DTM. A
+DTM describes the frequency of terms across an entire corpus (rather than just
+one document). Rows of the matrix correspond to documents, while columns
+correspond to the terms. For a given document, we count the number of times that
+term appears and enter that number in the column in question. We do this _even if_
+the count is 0; key to the way a DTM works is that it's a _corpus-wide_
+representation of text data, so it matters if a text does or doesn't contain a
 term.
 
 Here's a simple example with three documents:
@@ -539,26 +539,26 @@ Transforming these into a document-term matrix would yield:
 |     2    | 1 |  1   |  0   |  0   |  0  |   1  |
 |     3    | 1 |  1   |  1   |  1   |  1  |   1  |
 
-Representing texts in this way is incredibly useful because it enables us to 
-easily discern similarities and differences in our corpus. For example, we can 
-see that each of the above documents contain the words "I" and "like." Given 
-that, if we wanted to know what makes documents unique, we can ignore those two 
+Representing texts in this way is incredibly useful because it enables us to
+easily discern similarities and differences in our corpus. For example, we can
+see that each of the above documents contain the words "I" and "like." Given
+that, if we wanted to know what makes documents unique, we can ignore those two
 words and focus on the rest of the values.
 
 Now, imagine doing this for thousands of words! What patterns might emerge?
 
-Let's try it on our corpus. We can transform a `tm` corpus object into a DTM 
-by calling `DocumentTermMatrix()`. (Note: this is one of the functions in `tm` 
-that requires non-split documents, so before you call it make sure you know 
+Let's try it on our corpus. We can transform a `tm` corpus object into a DTM
+by calling `DocumentTermMatrix()`. (Note: this is one of the functions in `tm`
+that requires non-split documents, so before you call it make sure you know
 how you've preprocessed your texts!)
 
 ```{r}
 dtm <- DocumentTermMatrix(cleaned_corpus)
 ```
 
-This object is quite similar to the one that results from `Corpus()`: it 
-contains a fair bit of metadata, as well as an all-important "dimnames" field, 
-which records the documents in the matrix and the entire term vocabulary. We 
+This object is quite similar to the one that results from `Corpus()`: it
+contains a fair bit of metadata, as well as an all-important "dimnames" field,
+which records the documents in the matrix and the entire term vocabulary. We
 access all of this information with the same syntax we use for data frames.
 
 Let's look around a bit and get some high-level info.
@@ -583,8 +583,8 @@ Right now, the document names are just a numbers in a vector:
 dtm$dimnames$Docs
 ```
 
-But they're ordered according to the sequence in which the corpus was originally 
-created. This means we can use our metadata from way back when to associate a 
+But they're ordered according to the sequence in which the corpus was originally
+created. This means we can use our metadata from way back when to associate a
 document with its title:
 
 ```{r}
@@ -592,28 +592,28 @@ dtm$dimnames$Docs <- manifest$title
 dtm$dimnames$Docs
 ```
 
-With this information associated, we can use `inspect()` to get a high-level 
-view of the corpus. 
+With this information associated, we can use `inspect()` to get a high-level
+view of the corpus.
 
 ```{r}
 inspect(dtm)
 ```
 
-Of special note here is **sparsity**. Sparsity measures the amount of 0s in the 
-data. This happens when a document does not contain a term that appears 
-elsewhere in the corpus. In our case, of the 628,650 entries in this matrix, 
-80% of them are 0. Such is the way of working with DTMs: they're big, expansive 
+Of special note here is **sparsity**. Sparsity measures the amount of 0s in the
+data. This happens when a document does not contain a term that appears
+elsewhere in the corpus. In our case, of the 628,650 entries in this matrix,
+80% of them are 0. Such is the way of working with DTMs: they're big, expansive
 data structures that have a lot of empty space.
 
-We can zoom in and filter on term counts with `findFreqTerms()`. Here are terms 
+We can zoom in and filter on term counts with `findFreqTerms()`. Here are terms
 that appear more than 1,000 times in the corpus:
 
 ```{r}
 findFreqTerms(dtm, 1000)
 ```
 
-Using `findAssocs()`, we can also track which words rise and fall in usage 
-alongside a given word. (The number in the third argument position of this 
+Using `findAssocs()`, we can also track which words rise and fall in usage
+alongside a given word. (The number in the third argument position of this
 function is a cutoff for the strength of a correlation.)
 
 Here's "boat":
@@ -631,7 +631,7 @@ writing[[1]][1:15]
 
 ### Corpus Term Counts
 
-From here, it would be useful to get a full count of all the terms in the corpus. 
+From here, it would be useful to get a full count of all the terms in the corpus.
 We can transform the DTM into a matrix and then a data frame.
 
 ```{r}
@@ -641,43 +641,43 @@ term_counts <- cbind(newColName = rownames(term_counts), term_counts)
 colnames(term_counts) <- c("term", "count")
 ```
 
-As before, let's plot the top 50 terms in these counts, but this time, they will 
+As before, let's plot the top 50 terms in these counts, but this time, they will
 cover the entire corpus:
 
 ```{r fig.width=10}
 ggplot(
-  data = term_counts[1:50, ], 
+  data = term_counts[1:50, ],
   aes(
-    x = fct_reorder(term, -count), 
+    x = fct_reorder(term, -count),
     y = count)
   ) +
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity") +
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
-  ) + 
+  ) +
   labs(
-    title = "Top 50 words in 18 Nineteenth-Century Novels", 
-    x = "Word", 
+    title = "Top 50 words in 18 Nineteenth-Century Novels",
+    x = "Word",
     y = "Count"
   )
 ```
 
-This looks good, though the words here are all pretty common. In fact, many of 
-them are simply the most common words in the English language. "Time" is the 
-64th-most frequent word in English; "make" is the 50th. As it stands, then, 
-this graph doesn't tell us very much about the _specificity_ of our particular 
+This looks good, though the words here are all pretty common. In fact, many of
+them are simply the most common words in the English language. "Time" is the
+64th-most frequent word in English; "make" is the 50th. As it stands, then,
+this graph doesn't tell us very much about the _specificity_ of our particular
 collection of texts; if we ran the same process on English novels from the
 twentieth century, we'd probably produce very similar output.
 
 ### tf--idf Scores
 
-Given this, if we want to know what makes our corpus special, we need a measure 
-of uniqueness for the terms it contains. One of the most common ways to do this 
-is to get what's called a **tf--idf** score (short for "term frequency---inverse 
-document frequency") for each term in our corpus. tf--idf is a weighting method. 
-It increases proportionally to the number of times a word appears in a 
-document but is importantly offset by the number of documents in the corpus that 
-contain this term. This offset adjusts for common words across a corpus, pushing 
+Given this, if we want to know what makes our corpus special, we need a measure
+of uniqueness for the terms it contains. One of the most common ways to do this
+is to get what's called a **tf--idf** score (short for "term frequency---inverse
+document frequency") for each term in our corpus. tf--idf is a weighting method.
+It increases proportionally to the number of times a word appears in a
+document but is importantly offset by the number of documents in the corpus that
+contain this term. This offset adjusts for common words across a corpus, pushing
 their scores down while boosting the scores of rarer terms in the corpus.
 
 Inverse document frequency can be expressed as:
@@ -686,7 +686,7 @@ Inverse document frequency can be expressed as:
 idf_i = log(\frac{n}{df_i})
 \end{align*}
 
-Where $idf_i$ is the idf score for term $i$, $df_i$ is the number of documents 
+Where $idf_i$ is the idf score for term $i$, $df_i$ is the number of documents
 that contain $i$, and $n$ is the total number of documents.
 
 A tf-idf score can be calculated by the following:
@@ -695,12 +695,12 @@ A tf-idf score can be calculated by the following:
 w_i,_j = tf_i,_j \times idf_i
 \end{align*}
 
-Where $w_i,_j$ is the tf--idf score of term $i$ in document $j$, $tf_i,_j$ is 
+Where $w_i,_j$ is the tf--idf score of term $i$ in document $j$, $tf_i,_j$ is
 the term frequency for $i$ in $j$, and $idf_i$ is the inverse document score.
 
-While it's good to know the underlying equations here, you won't be tested on 
-the math specifically. And as it happens, `tm` has a way to perform the above 
-math for each term in a corpus. We can implement tf--idf scores when making a 
+While it's good to know the underlying equations here, you won't be tested on
+the math specifically. And as it happens, `tm` has a way to perform the above
+math for each term in a corpus. We can implement tf--idf scores when making a
 document-term matrix:
 
 ```{r message=FALSE, warning=FALSE}
@@ -711,7 +711,7 @@ dtm_tfidf <- DocumentTermMatrix(
 dtm_tfidf$dimnames$Docs <- manifest$title
 ```
 
-To see what difference it makes, let's plot the top terms in our corpus using 
+To see what difference it makes, let's plot the top terms in our corpus using
 their tf--idf scores.
 
 ```{r message=FALSE}
@@ -723,29 +723,29 @@ colnames(tfidf_counts) <- c("term", "tfidf")
 
 ```{r fig.width=10}
 ggplot(
-  data = tfidf_counts[1:50, ], 
+  data = tfidf_counts[1:50, ],
   aes(
-    x = fct_reorder(term, -tfidf), 
+    x = fct_reorder(term, -tfidf),
     y = tfidf)
   ) +
-  geom_bar(stat = "identity") + 
+  geom_bar(stat = "identity") +
   theme(
     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)
-  ) + 
+  ) +
   labs(
-    title = "Words with the 50-highest tf--idf scores in 18 Nineteenth-Century Novels", 
-    x = "Word", 
+    title = "Words with the 50-highest tf--idf scores in 18 Nineteenth-Century Novels",
+    x = "Word",
     y = "TF-IDF"
   )
 ```
 
-Lots of names! That makes sense: heavily weighted terms in these novels are 
-going to be terms that are unique to each text. Main characters' names are used 
+Lots of names! That makes sense: heavily weighted terms in these novels are
+going to be terms that are unique to each text. Main characters' names are used
 a lot in novels, and the main character names in these novels are all unique.
 
-To see in more concrete way how tf--idf scores might make a difference in the 
-way we analyze our corpus, we'll do two last things. First, we'll look again at 
-term correlations, using the same words from above with `findAssocs()`, but 
+To see in more concrete way how tf--idf scores might make a difference in the
+way we analyze our corpus, we'll do two last things. First, we'll look again at
+term correlations, using the same words from above with `findAssocs()`, but
 this time we'll use tf--idf scores.
 
 Here's "boat":
@@ -760,19 +760,19 @@ Here's "writing":
 findAssocs(dtm_tfidf, terms = "writing", corlimit = .85)
 ```
 
-The semantics of these results have changed. For "boats", we get much more 
-terms related to sefaring. Most probably this is because only a few novels talk 
-about boats so these terms correlate highly with one another. For "writing", 
-we've interestingly lost a lot of the words associated with writing in a strict 
-sense ("copy", "message") but we've gained instead a list of terms that seem to 
-situate us in _where_ writing takes place in these novels, or what characters 
-write _about_. So far though this is speculation; we'd have to look into this 
+The semantics of these results have changed. For "boats", we get much more
+terms related to sefaring. Most probably this is because only a few novels talk
+about boats so these terms correlate highly with one another. For "writing",
+we've interestingly lost a lot of the words associated with writing in a strict
+sense ("copy", "message") but we've gained instead a list of terms that seem to
+situate us in _where_ writing takes place in these novels, or what characters
+write _about_. So far though this is speculation; we'd have to look into this
 further to see whether the hypothesis holds.
 
-Finally, we can disaggregate our giant term count graph from above to focus 
-more closely on the uniqueness of individual novels in our corpus. First, we'll 
-make a data frame from our tf--idf DTM. We'll transpose the DTM so the 
-documents are our variables (columns) and the corpus vocabulary terms are our 
+Finally, we can disaggregate our giant term count graph from above to focus
+more closely on the uniqueness of individual novels in our corpus. First, we'll
+make a data frame from our tf--idf DTM. We'll transpose the DTM so the
+documents are our variables (columns) and the corpus vocabulary terms are our
 observations (or rows). Don't forget the `t`!
 
 ```{r}
@@ -783,8 +783,8 @@ colnames(tfidf_df) <- manifest$title
 
 ### Unique Terms in a Document
 
-With this data frame made, we can order our rows by the highest value for a given 
-column. In other words, we can find out not only the top terms for a novel, but 
+With this data frame made, we can order our rows by the highest value for a given
+column. In other words, we can find out not only the top terms for a novel, but
 the top most _unique_ terms in that novel.
 
 Here's _Dracula_:
@@ -793,15 +793,15 @@ Here's _Dracula_:
 rownames(tfidf_df[order(tfidf_df$Dracula, decreasing = TRUE)[1:50], ])
 ```
 
-Note here that some contractions have slipped through. Lemmatizing would take 
-care of this, though we could also go back to the corpus object and add in 
+Note here that some contractions have slipped through. Lemmatizing would take
+care of this, though we could also go back to the corpus object and add in
 another step with `tm_map()` and then make another DTM:
 
 ```{r eval=FALSE}
 cleaned_corpus <- tm_map(cleaned_corpus, str_remove_all, pattern = "\\'s", replacement = " "))
 ```
 
-We won't bother to do this whole process now, but it's a good example of how 
+We won't bother to do this whole process now, but it's a good example of how
 iterative the preprocessing workflow is.
 
 Here's _Frankenstein_:
@@ -816,7 +816,7 @@ And here's _Sense and Sensibility_:
 rownames(tfidf_df[order(tfidf_df$SenseandSensibility, decreasing = TRUE)[1:50], ])
 ```
 
-Names still rank high, but we can see in these results other words that indeed 
-seem to be particular to each novel. With this data, we now have a sense of 
-what makes each document unique in its relationship with all other documents in 
+Names still rank high, but we can see in these results other words that indeed
+seem to be particular to each novel. With this data, we now have a sense of
+what makes each document unique in its relationship with all other documents in
 a corpus.
