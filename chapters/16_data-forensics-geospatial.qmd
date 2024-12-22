@@ -8,7 +8,7 @@ By the end of this lesson, you should:
 
  * understand the main components of geospatial data are locations, attributes, and a coordinate reference system
  * understand how geospatial data can be represented with different data models
- * understand that the data structures we were already familiar with can be modified to contain spatial data. 
+ * understand that the data structures we were already familiar with can be modified to contain spatial data.
  * learn some common processes for cleaning our geospatial data
 
 
@@ -37,7 +37,7 @@ Attributes are pieces of information about a location.  For example, if I'm mapp
 
 ### Coordinate Reference System
 
-The earth is generally round. Maps are generally flat, with a few exceptions.  If you were to try to flatten out the earth, you would create some fairly major distortions.  Next time you eat an orange or a tangerine, try taking off the peel and then try to create a flat solid sheet of peel from it. You'll end up needing to cut it or smash it to get a flat surface.  The same things happens to geospatial data when we try to translate it from a round globe to a flat map.  But, there are ways to minimize distortions.  
+The earth is generally round. Maps are generally flat, with a few exceptions.  If you were to try to flatten out the earth, you would create some fairly major distortions.  Next time you eat an orange or a tangerine, try taking off the peel and then try to create a flat solid sheet of peel from it. You'll end up needing to cut it or smash it to get a flat surface.  The same things happens to geospatial data when we try to translate it from a round globe to a flat map.  But, there are ways to minimize distortions.
 
 A **coordinate reference system** (sometimes called a **projection**) is a set of mathematical formulas that translate measurements on a round globe to a flat piece of paper.  The coordinate reference system also specifies the linear units of measure (i.e. feet, meters, decimal degrees, or something else) and a set of reference lines.
 
@@ -48,7 +48,7 @@ To work with more than one digital spatial dataset, the coordinate reference sys
 
 ### Coordinates
 
-Coordinates are given in the distance (in the linear units specified in the CRS) from the baselines (specified in the CRS). Coordinates can be plotted just like coordinates on a graph (cartesian coordinate system). Sometimes we refer to these as X and Y, just like a graph, but sometimes you'll hear people refer to the cardinal directions (north, south, east, and west). 
+Coordinates are given in the distance (in the linear units specified in the CRS) from the baselines (specified in the CRS). Coordinates can be plotted just like coordinates on a graph (cartesian coordinate system). Sometimes we refer to these as X and Y, just like a graph, but sometimes you'll hear people refer to the cardinal directions (north, south, east, and west).
 
 Let's take a moment to talk about latitude and longitude.  You're probably at least a little familiar with latitude (Y) and longitude (X), but this is a special case that's more complex than we probably initially realize.  Latitude and longitude are angular measurements (with units in degrees) from a set of baselines - usually the Equator and the Greenwhich Meridian.  We can plot latitude and longitude on a cartesian coordinate system, but this introduces major distortions increasing as you approach the poles. You never want to use straight latitude/longitude coordinates (commonly in North America, you'll see data in the geographic coordinate reference system called WGS84) for an analysis.  Always translate them into a projected coordinate system first.  In addition, because the units are degrees, they are rather hard for us to interpret when we make measurements. How many degrees is it from the UC Davis campus to your appartment? It's probably a very small fraction of a degree.  Area measurements make even less sense. (What is a square degree and what does that look like?) Latitude/longitude coordinates are a great starting place, we just need to handle them correctly.
 
@@ -70,7 +70,7 @@ Raster     | Grid     | Digital Photo
 ![A visual table of raster vs. vector data as continuous and discrete data.](./img/geometries_data_types.png)
 
 ### Vector Data
-Vector data represents discrete objects in the real world with points, lines, and polygons in the dataset. 
+Vector data represents discrete objects in the real world with points, lines, and polygons in the dataset.
 
 If you were to draw a map to your house for a friend, you would typically use vector data - roads would be lines, a shopping center included as an important landmark might be a rectangle of sorts, and your house might be a point (perhaps represented by a star or a house icon).
 
@@ -155,13 +155,13 @@ split.dms<-function(dms.column){
   variable<-do.call(rbind, args=c(strsplit(dms.column, '[°?]+'))) #makes a matrix of characters
   mode(variable)="numeric"  #assigning the data type to numeric instead of character
   dms.split<-as.data.frame(variable)
-  
+
   split.string<-strsplit(dms.column, '[°?]+')
-  
-  
+
+
   #   naming the columns
   names(dms.split)<-c("D", "M", "S")
-  
+
   return(dms.split)
 }
 
@@ -169,13 +169,13 @@ split.dms<-function(dms.column){
 # this function coverts a 3 column dataframe of DMS to DD, like the data created by split.dms()
 decimaldegrees<-function(dms.df){
   dd<-data.frame()
-  
+
   for (i in 1:dim(dms.df)[1]){
     if (dms.df[i, 1]>0){
       #Decimal Degrees = Degrees + (Minutes/60) + (Seconds/3600)
       dd.row<-dms.df[i,1]+(dms.df[i,2]/60)+(dms.df[i,3]/3600)
       dd<-rbind(dd, dd.row)
-    } 
+    }
     else{
       #-Decimal Degrees = Degrees - (Minutes/60) - (Seconds/3600)
       dd.row<-dms.df[i,1]-(dms.df[i,2]/60)-(dms.df[i,3]/3600)
@@ -218,22 +218,22 @@ Note that data preparation and cleaning is the vast majority of the work for all
 
 ### Cleaning Location Data
 
-Sometimes, the locations in your dataset are incorrect. This can happen for a number of reasons. 
+Sometimes, the locations in your dataset are incorrect. This can happen for a number of reasons.
 
-For example, it's fairly common for data to get truncated or rounded if you open a CSV in Excel.  Removing decimal places from coordinate data loses precision.  
+For example, it's fairly common for data to get truncated or rounded if you open a CSV in Excel.  Removing decimal places from coordinate data loses precision.
 
 People often swap their latitude and longitude columns as well, which make data show up in the wrong cartesian coordinate, for example, (-119, 34) is a verry different location than (34, -119)... -119 is actually out of the range of latitude data and will often break your code.
 
 Another common source of error is in the way the data was made. If data is produced by geocoding, turning an address or place name into a coordinate, the location may have been matched badly.  If the data was made by an analysis process, an unexpected aspect of the data could cause problems, like a one-to-many join when you thought you had a one-to-one join in a database.
 
-Regardless of how the errors came about, how do we find incorrect locations? Start by mapping the data and see where it lands. Is it where you expect the data to be? Sometimes you can't tell it's wrong because the data looks normal. 
+Regardless of how the errors came about, how do we find incorrect locations? Start by mapping the data and see where it lands. Is it where you expect the data to be? Sometimes you can't tell it's wrong because the data looks normal.
 
 ```{r locations}
 #   Convert the monsters dataframe into an SF (spatial) object
 #     Note: x is the dataframe, not longitude.
 #     Coordinate Reference System (CRS) - we're using lat/long here so we need WGS84 which is EPSG code 4326 - we just need to tell R what the CRS is, we don't change it this way.  If we want to change it, we need to use st_transform().
-monsters.sf<-st_as_sf(x=monsters.df, 
-                      coords=c("lon_dd", "lat_dd"), 
+monsters.sf<-st_as_sf(x=monsters.df,
+                      coords=c("lon_dd", "lat_dd"),
                       crs = 4326)
 
 #     Notice we added a geometry column!
@@ -283,7 +283,7 @@ Let's make sure the lake names match the lakes the points are in. We'll make a m
 my.label.options<-labelOptions(clickable=TRUE) #makes a popup with attribute information
 
 map.lakename<-mapview(monsters.sf, zcol="Lake", legend= FALSE)
-labels.lakename<-addStaticLabels(map.lakename, 
+labels.lakename<-addStaticLabels(map.lakename,
                                  label=monsters.sf$Lake,
                                  labelOption=my.label.options)
 labels.lakename
@@ -299,7 +299,7 @@ And for fun, let's look at the monster names:
 
 ```{r eval=FALSE}
 map.monstername<-mapview(monsters.sf, zcol="Name", legend= FALSE)
-labels.monstername<-addStaticLabels(map.monstername, 
+labels.monstername<-addStaticLabels(map.monstername,
                                  label=monsters.sf$Name,
                                  labelOption=my.label.options)
 labels.monstername
@@ -324,8 +324,8 @@ Our data came with lat/long data in another coordinate reference system - EPSG 3
 monsters.df[1:10,13:16]
 
 #   Let's make our World Mercator data spatial so we can explore its CRS
-monsters.sf.3395<-st_as_sf(x=monsters.df, 
-                      coords=c("lon_3395", "lat_3395"), 
+monsters.sf.3395<-st_as_sf(x=monsters.df,
+                      coords=c("lon_3395", "lat_3395"),
                       crs = 3395)
 
 #   st_crs tells us what the CRS is in well known text (WKT) and EPSG (if it's avaialble)
