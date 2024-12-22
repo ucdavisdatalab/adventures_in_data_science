@@ -23,11 +23,13 @@ html_cache/       Cached data for the web scraping chapter
 images/           Image files used in the reader
 img/              Old image files not currently used in the reader
 R/                R scripts, including scripts sourced by chapters
-LICENSE           License file
-references.bib    BibTeX bibliography file
-README.md         This file
-index.qmd         Front page ("Overview") of the reader
+.gitattributes    Paths Git should give special treatment
+.gitignore        Paths Git should ignore
 _quarto.yml       Quarto configuration file
+index.qmd         Front page ("Overview") of the reader
+LICENSE           License file
+README.md         This file
+references.bib    BibTeX bibliography file
 ```
 
 ([back to top](#adventures-in-data-science))
