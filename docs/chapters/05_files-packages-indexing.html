@@ -1158,145 +1158,14 @@ Levels: green red</code></pre>
 </div>
 </section>
 </section>
-<section id="logic" class="level4" data-number="5.3.3.5">
-<h4 data-number="5.3.3.5" class="anchored" data-anchor-id="logic"><span class="header-section-number">5.3.3.5</span> Logic</h4>
-<p>All of the conditions we’ve seen so far have been written in terms of a single test. If you want to use more sophisticated conditions, R provides operators to negate and combine logical vectors. These operators are useful for working with logical vectors even outside the context of indexing.</p>
-<section id="negation" class="level5 unnumbered">
-<h5 class="unnumbered anchored" data-anchor-id="negation">Negation</h5>
-<p>The <strong>NOT operator</strong> <code>!</code> converts <code>TRUE</code> to <code>FALSE</code> and <code>FALSE</code> to <code>TRUE</code>:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">NA</span>)</span>
-<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]  TRUE FALSE  TRUE  TRUE    NA</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="sc">!</span>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE  TRUE FALSE FALSE    NA</code></pre>
-</div>
-</div>
-<p>You can use <code>!</code> with a condition:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"hi"</span>, <span class="st">"hello"</span>)</span>
-<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="sc">!</span>(y <span class="sc">==</span> <span class="st">"hi"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE  TRUE</code></pre>
-</div>
-</div>
-<p>The NOT operator is vectorized.</p>
-</section>
-<section id="combinations" class="level5 unnumbered">
-<h5 class="unnumbered anchored" data-anchor-id="combinations">Combinations</h5>
-<p>R also has operators for combining logical values.</p>
-<p>The <strong>AND operator</strong> <code>&amp;</code> returns <code>TRUE</code> only when both arguments are <code>TRUE</code>. Here are some examples:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="cn">FALSE</span> <span class="sc">&amp;</span> <span class="cn">FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">&amp;</span> <span class="cn">FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="cn">FALSE</span> <span class="sc">&amp;</span> <span class="cn">TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">&amp;</span> <span class="cn">TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>) <span class="sc">&amp;</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1]  TRUE FALSE FALSE</code></pre>
-</div>
-</div>
-<p>The <strong>OR operator</strong> <code>|</code> returns <code>TRUE</code> when at least one argument is <code>TRUE</code>. Let’s see some examples:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="cn">FALSE</span> <span class="sc">|</span> <span class="cn">FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">|</span> <span class="cn">FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="cn">FALSE</span> <span class="sc">|</span> <span class="cn">TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">|</span> <span class="cn">TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>) <span class="sc">|</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE TRUE</code></pre>
-</div>
-</div>
-<p>Be careful: everyday English is less precise than logic. You might say:</p>
-<blockquote class="blockquote">
-<p>I want all subjects with age over 50 and all subjects that like cats.</p>
-</blockquote>
-<p>But in logic this means:</p>
-<p><code>(subject age over 50) OR (subject likes cats)</code></p>
-<p>So think carefully about whether you need both conditions to be true (AND) or at least one (OR).</p>
-<p>Rarely, you might want <em>exactly one</em> condition to be true. The <strong>XOR (eXclusive OR) function</strong> <code>xor()</code> returns <code>TRUE</code> when exactly one argument is <code>TRUE</code>. For example:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xor</span>(<span class="cn">FALSE</span>, <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xor</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xor</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
-</div>
-</div>
-<p>The AND, OR, and XOR operators are vectorized.</p>
-</section>
-<section id="short-circuiting" class="level5 unnumbered">
-<h5 class="unnumbered anchored" data-anchor-id="short-circuiting">Short-circuiting</h5>
-<p>The second argument is irrelevant in some conditions:</p>
-<ul>
-<li><code>FALSE &amp;</code> is always <code>FALSE</code></li>
-<li><code>TRUE |</code> is always <code>TRUE</code></li>
-</ul>
-<p>Now imagine you have <code>FALSE &amp; long_computation()</code>. You can save time by skipping <code>long_computation()</code>. A <strong>short-circuit operator</strong> does exactly that.</p>
-<p>R has two short-circuit operators:</p>
-<ul>
-<li><code>&amp;&amp;</code> is a short-circuited <code>&amp;</code></li>
-<li><code>||</code> is a short-circuited <code>|</code></li>
-</ul>
-<p>These operators only evaluate the second argument if it is necessary to determine the result. Here are some of these:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">&amp;&amp;</span> <span class="cn">FALSE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] FALSE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">&amp;&amp;</span> <span class="cn">TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb161"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb161-1"><a href="#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">||</span> <span class="cn">TRUE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-</div>
-<p>For the final expression, notice R only combines the first element of each vector. The others are ignored. In other words, the short-circuit operators are <em>not</em> vectorized! Because of this, generally you <em>should not use</em> the short-circuit operators for indexing. Their main use is in writing conditions for control structures (<a href="04_programming-foundations.html#sec-control-flow-structures" class="quarto-xref"><span>Section 4.1</span></a>) and loops (<a href="04_programming-foundations.html#sec-loops" class="quarto-xref"><span>Section 4.3</span></a>).</p>
-</section>
-</section>
-<section id="indexing-lists" class="level4" data-number="5.3.3.6">
-<h4 data-number="5.3.3.6" class="anchored" data-anchor-id="indexing-lists"><span class="header-section-number">5.3.3.6</span> Indexing Lists</h4>
+<section id="indexing-lists" class="level4" data-number="5.3.3.5">
+<h4 data-number="5.3.3.5" class="anchored" data-anchor-id="indexing-lists"><span class="header-section-number">5.3.3.5</span> Indexing Lists</h4>
 <p>Lists are a <strong>container</strong> for other types of R objects. When you select an element from a list, you can either keep the container (the list) or discard it. The indexing operator <code>[</code> almost always keeps containers.</p>
 <p>As an example, let’s get some elements from a small list:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">list</span>(<span class="at">first =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">second =</span> sin, <span class="at">third =</span> <span class="fu">c</span>(<span class="st">"hi"</span>, <span class="st">"hello"</span>))</span>
-<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> x[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)]</span>
-<span id="cb163-3"><a href="#cb163-3" aria-hidden="true" tabindex="-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">list</span>(<span class="at">first =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">second =</span> sin, <span class="at">third =</span> <span class="fu">c</span>(<span class="st">"hi"</span>, <span class="st">"hello"</span>))</span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> x[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)]</span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$first
 [1] 1 2 3
@@ -1304,14 +1173,14 @@ Levels: green red</code></pre>
 $third
 [1] "hi"    "hello"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "list"</code></pre>
 </div>
 </div>
 <p>The result is still a list. Even if we get just one element, the result of indexing a list with <code>[</code> is a list:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb167"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb167-1"><a href="#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "list"</code></pre>
 </div>
@@ -1320,11 +1189,11 @@ $third
 <p>The solution to this problem is the <em>extraction operator</em> <code>[[</code>, which is also called the <em>double square bracket operator</em>. The extraction operator is the primary way to get and set elements of lists and other containers.</p>
 <p>Unlike the indexing operator <code>[</code>, the extraction operator always discards the container:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb169"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb169-1"><a href="#cb169-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1 2 3</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb171"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb171-1"><a href="#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "numeric"</code></pre>
 </div>
@@ -1332,11 +1201,11 @@ $third
 <p>The trade off is that the extraction operator can only get or set one element at a time. Note that the element can be a vector, as above. Because it can only get or set one element at a time, the extraction operator can only index by position or name. Blank and logical indexes are not allowed.</p>
 <p>The final difference between the index operator <code>[</code> and the extraction operator <code>[[</code> has to do with how they handle invalid indexes. The index operator <code>[</code> returns <code>NA</code> for invalid vector elements, and <code>NULL</code> for invalid list elements:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb173"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb173-1"><a href="#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)[<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)[<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] NA</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb175"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb175-1"><a href="#cb175-1" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$&lt;NA&gt;
 NULL</code></pre>
@@ -1344,20 +1213,20 @@ NULL</code></pre>
 </div>
 <p>On the other hand, the extraction operator <code>[[</code> raises an error for invalid elements:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb177"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb177-1"><a href="#cb177-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">10</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">10</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in x[[10]]: subscript out of bounds</code></pre>
 </div>
 </div>
 <p>The indexing operator <code>[</code> and the extraction operator <code>[[</code> both work with any data structure that has elements. However, you’ll generally use the indexing operator <code>[</code> to index vectors, and the extraction operator <code>[[</code> to index containers (such as lists).</p>
 </section>
-<section id="indexing-data-frames" class="level4" data-number="5.3.3.7">
-<h4 data-number="5.3.3.7" class="anchored" data-anchor-id="indexing-data-frames"><span class="header-section-number">5.3.3.7</span> Indexing Data Frames</h4>
+<section id="indexing-data-frames" class="level4" data-number="5.3.3.6">
+<h4 data-number="5.3.3.6" class="anchored" data-anchor-id="indexing-data-frames"><span class="header-section-number">5.3.3.6</span> Indexing Data Frames</h4>
 <p>For two-dimensional objects, like matrices and data frames, you can pass the indexing operator <code>[</code> or the extraction operator <code>[[</code> a separate index for each dimension. The rows come first:</p>
 <pre><code>DATA[ROWS, COLUMNS]</code></pre>
 <p>For instance, let’s get the first 3 rows and all columns of the dogs data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb180"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb180-1"><a href="#cb180-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           breed    group datadog popularity_all popularity lifetime_cost
 1  Border Collie  herding    3.64             45         39         20143
@@ -1376,7 +1245,7 @@ NULL</code></pre>
 <p>As we saw in <a href="#sec-all-elements" class="quarto-xref"><span>Section 5.3.3.1</span></a>, leaving an index blank means all elements.</p>
 <p>As another example, let’s get the 3rd and 5th row, and the 2nd and 4th column:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb182"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb182-1"><a href="#cb182-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     group popularity_all
 3 sporting             30
@@ -1385,7 +1254,7 @@ NULL</code></pre>
 </div>
 <p>Mixing several different ways of indexing is allowed. So for example, we can get the same above, but use column names instead of positions:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb184"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb184-1"><a href="#cb184-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="fu">c</span>(<span class="st">"breed"</span>, <span class="st">"longevity"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="fu">c</span>(<span class="st">"breed"</span>, <span class="st">"longevity"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   breed longevity
 3               Brittany     12.92
@@ -1394,8 +1263,8 @@ NULL</code></pre>
 </div>
 <p>For data frames, it’s especially common to index the rows by condition and the columns by name. For instance, let’s get the <code>breed</code>, <code>popularity</code>, and <code>weight</code> columns for all rows with toy dogs:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb186"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb186-1"><a href="#cb186-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[dogs<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"toy"</span>, <span class="fu">c</span>(<span class="st">"breed"</span>, <span class="st">"popularity"</span>, <span class="st">"weight"</span>)]</span>
-<span id="cb186-2"><a href="#cb186-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[dogs<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"toy"</span>, <span class="fu">c</span>(<span class="st">"breed"</span>, <span class="st">"popularity"</span>, <span class="st">"weight"</span>)]</span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           breed popularity weight
 8       Papillon         33     NA
@@ -1418,16 +1287,16 @@ The Drop Parameter
 <div class="callout-body-container callout-body">
 <p>If you use two-dimensional indexing with <code>[</code> to select exactly one column, you get a vector:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb188"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb188-1"><a href="#cb188-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">2</span>]</span>
-<span id="cb188-2"><a href="#cb188-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">2</span>]</span>
+<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "factor"</code></pre>
 </div>
 </div>
 <p>The container is dropped, even though the indexing operator <code>[</code> usually keeps containers. This also occurs for matrices. You can control this behavior with the <code>drop</code> parameter:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb190"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb190-1"><a href="#cb190-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">2</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
-<span id="cb190-2"><a href="#cb190-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">2</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "data.frame"</code></pre>
 </div>
