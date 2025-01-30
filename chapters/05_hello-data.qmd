@@ -1,0 +1,1182 @@
+# Hello, Data!
+
+
+::: {.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+:::
+
+
+## Remix: File Systems {#sec-remix-file-systems}
+
+Let's start with a remix of what you learned about file systems and paths in
+@sec-command-line.
+
+File systems have a tree-like structure, with a top-level directory called the
+**root directory**. On all macOS and Linux computers, the root is called `/`.
+On Windows, the root is usually called `C:/`, but sometimes other letters, like
+`D:/`, are also used depending on the computer's hardware.
+
+A **path** is a list of directories that leads to a specific file or directory
+on a file system (imagine giving directons to someone as they walk through the
+file system). Use forward slashes `/` to separate the directories in a path.
+The root directory includes a forward slash as part of its name, and doesn't
+need an extra one.
+
+When a path leads to a directory, including a **trailing slash** is optional,
+but makes the meaning of the path clearer. Paths that lead to files never have
+a trailing slash.
+
+:::{.callout-important}
+On Windows computers, paths are usually written with backslashes ```\``` to
+separate directories instead of forward slashes. Fortunately, R uses forward
+slashes `/` for all paths, regardless of the operating system. So when you're
+working in R, use forward slashes and don't worry about the operating system.
+This is especially convenient when you want to share code with someone that
+uses a different operating system than you.
+:::
+
+A path that starts from the root directory is called an **absolute path**. The
+path is "absolute" because it unambiguously describes where a file or directory
+is located. The downside is that absolute paths usually don't work well if you
+share your code.
+
+On the other hand, a **relative path** is one that doesn't start from the root
+directory. The path is "relative" to an unspecified starting point, which
+usually depends on the context.
+
+When use you paths in R code, they should almost always be relative paths. This
+ensures that the code is portable to other computers, which is an important
+aspect of reproducibility. Another benefit is that relative paths tend to be
+shorter, making your code easier to read (and write).
+
+:::{.callout-tip}
+When you write paths, there are three shortcuts you can use. These are most
+useful in relative paths, but also work in absolute paths:
+
+* `.` means the current directory.
+* `..` means the directory above the current directory.
+* `~` means the **home directory**. Each user has their own home directory,
+  whose location depends on the operating system and their username. Home
+  directories are typically directories inside `C:/Users/` on Windows,
+  `/Users/` on macOS, and `/home/` on Linux.
+
+The `..` and `~` shortcut are frequently used and worth remembering. The `.`
+shortcut is included here in case you see it in someone else's code. Since it
+means the current directory, a path like `./cats.csv` is identical to
+`cats.csv`, and the latter is preferable for being simpler. There are a few
+specific situations where `.` is necessary, but they fall outside the scope of
+this text.
+:::
+
+
+### The Working Directory
+
+The preceeding section explained that relative paths have a starting point that
+depends on the context where the path is used. Let's make that idea more
+concrete for R. The **working directory** is the starting point R uses for
+relative paths. Think of the working directory as the directory R is currently
+"at" or watching.
+
+The function `getwd` returns the absolute path for the current working
+directory, as a string. It doesn't require any arguments:
+
+```{r}
+getwd()
+```
+
+On your computer, the output from `getwd` will likely be different. This is a
+very useful function for getting your bearings when you write relative paths.
+If you write a relative path and it doesn't work as expected, the first thing
+to do is check the working directory.
+
+The related `setwd` function changes the working directory. It takes one
+argument: a path to the new working directory. Here's an example:
+
+```{r eval=FALSE}
+setwd("..")
+
+# Now check the working directory.
+getwd()
+```
+
+```{r echo=FALSE}
+dirname(getwd())
+```
+
+Generally, you should avoid using calls to `setwd` in your R scripts and R
+Markdown files. Calling `setwd` makes your code more difficult to understand,
+and can always be avoided by using appropriate relative paths. If you call
+`setwd` with an absolute path, it also makes your code less portable to other
+computers. It's fine to use `setwd` interactively (in the R console), but avoid
+making your saved code dependent on it.
+
+Another function that's useful for dealing with the working directory and file
+system is `list.files`. The `list.files` function returns the names of all of
+the files and directories inside of a directory. It accepts a path to a
+directory as an argument, or assumes the working directory if you don't pass a
+path. For instance:
+
+```{r}
+# List files and directories in /home/.
+list.files("/home/")
+
+# List files and directories in the working directory.
+list.files()
+```
+
+As usual, since you have a different computer, you're likely to see different
+output if you run this code. If you call `list.files` with an invalid path or
+an empty directory, the output is `character(0)`:
+
+```{r}
+list.files("/this/path/is/fake/")
+```
+
+Later on, you'll learn about what `character(0)` means more generally.
+
+
+## R Scripts {#sec-r-scripts}
+
+Now that you know how file systems and paths work, you're ready to learn how to
+save your R code to a file. R code is usually saved into an **R script**
+(extension `.R`) or an **R Markdown file** (extension `.Rmd`). R scripts are
+slightly simpler, so let's focus on those.
+
+In RStudio, you can create a new R script with this menu option:
+
+```
+File -> New File -> R Script
+```
+
+This will open a new pane in RStudio, like this:
+
+![
+  How RStudio typically looks after opening a new R Script.
+](/images/ch05/rstudio_script.png)
+
+The new pane is the scripts pane, which displays all of the R scripts you're
+editing. Each script appears in a separate tab. In the screenshot, only one
+script, the new script, is open.
+
+Editing a script is similar to editing any other text document. You can write,
+delete, copy, cut, and paste text. You can also save the file to your
+computer's file system. When you do, pay attention to where you save the file,
+as you might need it later.
+
+The contents of an R script should be R code. Anything else you want to write
+in the script (notes, documentation, etc.) should be in a **comment**. In R,
+comments begin with `#` and extend to the end of the line:
+
+```{r}
+# This is a comment.
+```
+
+R will ignore comments when you run your code.
+
+When you start a new project, it's a good idea to create a specific directory
+for all of the project's files. If you're using R, you should also create one
+or more R scripts in that directory. As you work, write your code directly into
+a script. Arrange your code in the order of the steps to solve the problem,
+even if you write some parts before others. Comment out or delete any lines of
+code that you try but ultimately decide you don't need. Make sure to save the
+file periodically so that you don't lose your work. Following these guidelines
+will help you stay organized and make it easier to share your code with others
+later.
+
+While editing, you can run the current line in the R console by pressing
+`Ctrl`+`Enter` on Windows and Linux, or `Cmd`+`Enter` on macOS. This way you
+can test and correct your code as you write it.
+
+If you want, you can instead run (or **source**) the entire R script, by
+calling the `source` function with the path to the script as an argument. This
+is also what the "Source on Save" check box refers to in RStudio. The code runs
+in
+order, only stopping if an error occurs.
+
+For instance, if you save the script as `my_cool_script.R`, then you can run
+`source("my_cool_script.R")` in the console to run the entire script (pay
+attention to the path---it may be different on your computer).
+
+R Markdown files are an alternative format for storing R code. They provide a
+richer set of formatting options, and are usually a better choice than R
+scripts if you're writing a report that contains code. You can learn more
+about R Markdown files [here][rmd].
+
+[rmd]: https://rmarkdown.rstudio.com/
+
+
+## Reading Files
+
+Analyzing data sets is one of the most common things to do in R. The first step
+is to get R to read your data. Data sets come in a variety of file formats, and
+you need to identify the format in order to tell R how to read the data.
+
+Most of the time, you can guess the format of a file by looking at its
+**extension**, the characters (usually three) after the last dot `.` in the
+filename. For example, the extension `.jpg` or `.jpeg` indicates a [JPEG image
+file][jpg]. Some operating systems hide extensions by default, but you can find
+instructions to change this setting online by searching for "show file
+extensions" and your operating system's name. The extension is just part of the
+file's name, so it should be taken as a hint about the file's format rather
+than a guarantee.
+
+[jpg]: https://en.wikipedia.org/wiki/JPEG
+
+R has built-in functions for reading a variety of formats. The R community also
+provides **packages**, shareable and reusable pieces of code, to read even more
+formats. You'll learn more about packages later, in @sec-packages. For now,
+let's focus on data sets that can be read with R's built-in functions.
+
+Here are several formats that are frequently used to distribute data, along
+with the name of a built-in function or contributed package that can read the
+format:
+
+| Name                        | Extension  | Function or Package | Tabular?  | Text?
+| :-------------------------- | :--------  | :------------------ | :-------- | :----
+| Comma-separated Values      | `.csv`     | `read.csv`          | Yes       | Yes
+| Tab-separated Values        | `.tsv`     | `read.delim`        | Yes       | Yes
+| Fixed-width File            | `.fwf`     | `read.fwf`          | Yes       | Yes
+| Microsoft Excel             | `.xlsx`    | readr package       | Yes       | No
+| Microsoft Excel 1993-2007   | `.xls`     | readr package       | Yes       | No
+| [Apache Arrow][arrow]       | `.feather` | arrow package       | Yes       | No
+| R Data                      | `.rds`     | `readRDS`           | Sometimes | No
+| R Data                      | `.rda`     | `load`              | Sometimes | No
+| Plaintext                   | `.txt`     | `readLines`         | Sometimes | Yes
+| Extensible Markup Language  | `.xml`     | xml2 package        | No        | Yes
+| JavaScript Object Notation  | `.json`    | jsonlite package    | No        | Yes
+
+[arrow]: https://arrow.apache.org/
+
+A **tabular** data set is one that's structured as a table, with rows and
+columns. This reader focuses on tabular data sets, since they're common in
+practice and present the fewest programming challenges. Here's an example of a
+tabular data set:
+
+| Fruit  | Quantity | Price
+| :----  | -------: | ----:
+| apple  | 32       | 1.49
+| banana | 541      | 0.79
+| pear   | 10       | 1.99
+
+A **text file** is a file that contains human-readable lines of text. You can
+check this by opening the file with a text editor such as Microsoft Notepad or
+macOS TextEdit. Many file formats use text in order to make the format easier
+to work with.
+
+For instance, a **comma-separated values** (CSV) file records a tabular data
+using one line per row, with commas separating columns. If you store the table
+above in a CSV file and open the file in a text editor, here's what you'll see:
+
+```
+Fruit,Quantity,Price
+apple,32,1.49
+banana,541,0.79
+pear,10,1.99
+```
+
+A **binary file** is one that's not human-readable. You can't just read off the
+data if you open a binary file in a text editor, but they have a number of
+other advantages. Compared to text files, binary files are often faster to read
+and take up less storage space (bytes).
+
+As an example, R's built-in binary format is called RDS (which may stand for "R
+data serialized"). RDS files are extremely useful for backing up work, since
+they can store any kind of R object, even ones that are not tabular. You can
+learn more about how to create an RDS file on the `?saveRDS` help page, and how
+to read one on the `?readRDS` help page.
+
+
+## Remix: Data Frames {#remix-data-frames}
+
+This section is a remix of what you learned about data frames in
+@sec-data-frames. The main difference from that section is that now you'll have
+R read the data set from a file (rather than creating it with the `data.frame`
+function), which is the most common way to get data.
+
+::: {.callout-important}
+To follow along, download and unzip [this zip file][zip] in your project
+directory!
+
+[zip]: https://github.com/ucdavisdatalab/adventures_in_data_science/raw/refs/heads/main/data/best_in_show.zip
+:::
+
+The data set we'll use for this section comes from [Information is
+Beautiful][info-is-beautiful], a website dedicated to making informative and
+beautiful data visualizations. The data set is specifically from their [Best in
+Show visualization][best-in-show], a plot of the popularity of different dog
+breeds versus their "data dog" scores, which were created by aggregating
+several breed characteristics (friendliness, health, longevity, cost of care,
+intelligence, and more).
+
+[info-is-beautiful]: https://informationisbeautiful.net/
+[best-in-show]: https://informationisbeautiful.net/visualizations/best-in-show-whats-the-top-data-dog/
+
+The zip file contains copies of the dogs data set in several different formats.
+Let's use the RDS file. To read an RDS file into R, you can use the `readRDS`
+function with the path to the file:
+
+```{r read-dogs}
+dogs = readRDS("data/best_in_show/dogs.rds")
+```
+
+Now that you've loaded the data, let's take a look at it. When you're working
+with a new data set, it's usually not a good idea to print it out directly (by
+typing `dogs`, in this case) until you know how big it is. Big data sets can
+take a long time to print, and the output can be difficult to read.
+
+Instead, you can use the `head` function to print only the beginning, or head,
+of a data set. Let's take a peek:
+
+```{r}
+head(dogs)
+```
+
+This data set is tabular---it has rows and columns. R uses **data frames** to
+represent most (but not all) kinds of tabular data.
+
+:::{.callout-note}
+The `readRDS` function doesn't always return a data frame, since RDS files can
+store any type of R object. On the other hand, the `read.csv` function, which
+reads CSV files (a tabular format), always returns a data frame.
+:::
+
+For a data frame, the `head` function only prints the first six rows. If there
+are lots of columns or the columns are wide, as is the case here, R wraps the
+output across lines.
+
+When you first read an object into R, you might not know whether it's a data
+frame. One way to check is visually, by printing it (as you just did with
+`head`). A better way to check is with the `class` function, which returns
+information about what an object is. For a data frame, the result will always
+contain `data.frame`:
+
+```{r}
+class(dogs)
+```
+
+Review @sec-data-types-classes if you feel uncertain about R's classes and
+types.
+
+By counting the columns in the output from `head(dogs)`, you can see that this
+data set has `r ncol(dogs)` columns. A more convenient way to check the number
+of columns in a data set is with the `ncol` function:
+
+```{r}
+ncol(dogs)
+```
+
+The similarly-named `nrow` function returns the number of rows:
+
+```{r}
+nrow(dogs)
+```
+
+Alternatively, you can get both numbers at the same time with the `dim` (short
+for "dimensions") function.
+
+Since the columns have names, you might also want to get just these. You can do
+that with the `names` or `colnames` functions. Both return the same result:
+
+```{r}
+names(dogs)
+colnames(dogs)
+```
+
+If the rows have names, you can get those with the `rownames` function. For
+this particular data set, the rows don't have names.
+
+
+### Summarizing Data {#sec-summarizing-data}
+
+An efficient way to get a sense of what's actually in a data set is to have R
+compute summary information. This works especially well for data frames, but
+also applies to other data. R provides two different functions to get
+summaries: `str` and `summary`.
+
+The `str` function returns a **structural summary** of an object. This kind of
+summary tells us about the structure of the data---the number of rows, the
+number and names of columns, what kind of data is in each column, and some
+sample values. Here's the structural summary for the dogs data:
+
+```{r}
+str(dogs)
+```
+
+This summary lists information about each column, and includes most of what you
+found earlier by using several different functions separately. The summary uses
+`chr` to indicate columns of text ("characters") and `int` to indicate columns
+of integers.
+
+In contrast to `str`, the `summary` function returns a **statistical summary**
+of an object. This summary includes summary statistics for each column,
+choosing appropriate statistics based on the kind of data in the column. For
+numbers, this is generally the mean, median, and quantiles. For categories,
+this is the frequencies. Other kinds of statistics are shown for other kinds of
+data. Here's the statistical summary for the dogs data:
+
+```{r}
+summary(dogs)
+```
+
+### Selecting Columns
+
+You can select an individual column from a data frame by name with `$`, the
+dollar sign operator. The syntax is:
+
+```{r, eval = FALSE}
+VARIABLE$COLUMN_NAME
+```
+
+For instance, for the dogs data, `dogs$breed` selects the `breed` column, and
+`dogs$weight` selects the `weight` column. So one way to compute the mean of
+the `weight` column is:
+
+```{r}
+mean(dogs$weight, na.rm = TRUE)
+```
+
+The argument `na.rm = TRUE` tells R to ignore missing values, something you'll
+learn more about in @sec-missing-values.
+
+Similarly, to compute the range of the `height` column:
+
+```{r}
+range(dogs$height, na.rm = TRUE)
+```
+
+You can also use the dollar sign operator to assign values to columns. For
+instance, to assign `Beagle` to the entire `breed` column:
+
+```{r}
+dogs$breed = "Beagle"
+```
+
+Be careful when you do this, as there is no undo. Fortunately, you haven't
+saved any transformations to the dogs data to your computer's hard drive yet,
+so you can reset the `dogs` variable back to what it was by reloading the data
+set:
+
+```{r}
+dogs = readRDS("data/best_in_show/dogs.rds")
+```
+
+In @sec-indexing, you'll learn how to select rows and individual elements from
+a data frame, as well as other ways to select columns.
+
+
+## Special Values
+
+R has four special values to represent missing or invalid data.
+
+### Missing Values {#sec-missing-values}
+
+The value `NA`, called the **missing value**, represents missing entries in a
+data set. It's implied that the entries are missing due to how the data was
+collected, although there are exceptions. As an example, imagine the data came
+from a survey, and respondents chose not to answer some questions. In the data
+set, their answers for those questions can be recorded as `NA`.
+
+:::{.callout-important}
+Most of the time, missing values will originate from how the data were
+collected rather than your code.
+
+Of course, there are sometimes exceptions where missing values *are* the result
+of a computation. When you see missing values in a data set, you should think
+carefully about what the cause might be. Sometimes documentation or other parts
+of the data set provide clues.
+:::
+
+The missing value is a chameleon: it can be a logical, integer, numeric,
+complex, or character value. By default, the missing value is logical, and the
+other types occur through coercion (@sec-implicit-coercion):
+
+```{r}
+class(NA)
+
+class(c(1, NA))
+
+class(c("hi", NA, NA))
+```
+
+The missing value is also contagious: it represents an unknown quantity, so
+using it as an argument to a function usually produces another missing value.
+The idea is that if the inputs to a computation are unknown, generally so is
+the output:
+
+```{r}
+NA - 3
+
+mean(c(1, 2, NA))
+```
+
+As a consequence, testing whether an object is equal to the missing value with
+`==` doesn't return a meaningful result:
+
+```{r}
+5 == NA
+
+NA == NA
+```
+
+You can use the `is.na` function instead:
+
+```{r}
+is.na(5)
+
+is.na(NA)
+
+is.na(c(1, NA, 3))
+```
+
+Missing values are a feature that sets R apart from most other programming
+languages.
+
+
+### Infinity
+
+The value `Inf` represents infinity, and can be numeric or complex. You're most
+likely to encounter it as the result of certain computations:
+
+```{r}
+13 / 0
+
+class(Inf)
+```
+
+You can use the `is.infinite` function to test whether a value is infinite:
+
+```{r}
+is.infinite(3)
+
+is.infinite(c(-Inf, 0, Inf))
+```
+
+### Not a Number
+
+The value `NaN` ("not a number") represents a quantity that's undefined
+mathematically. For instance, dividing 0 by 0 is undefined:
+
+```{r}
+0 / 0
+
+class(NaN)
+```
+
+Like `Inf`, `NaN` can be numeric or complex.
+
+You can use the `is.nan` function to test whether a value is `NaN`:
+
+```{r}
+is.nan(c(10.1, log(-1), 3))
+```
+
+
+### Null
+
+The value `NULL` represents a quantity that's undefined in R. Most of the time,
+`NULL` indicates the absence of a result. For instance, vectors don't have
+dimensions, so the `dim` function returns `NULL` for vectors:
+
+```{r}
+dim(c(1, 2))
+
+class(NULL)
+
+typeof(NULL)
+```
+
+Unlike the other special values, `NULL` has its own unique type and class.
+
+You can use the `is.null` function to test whether a value is `NULL`:
+
+```{r}
+is.null("null")
+
+is.null(NULL)
+```
+
+
+## Factors {#sec-factors}
+
+A feature in a data set is **categorical** if it measures a qualitative
+category. Some examples of categories are:
+
+* Music genres `rock`, `blues`, `alternative`, `folk`, `pop`
+* Colors `red`, `green`, `blue`, `yellow`
+* Answers `yes`, `no`
+* Months `January`, `February`, and so on
+
+In some cases, a feature can be interpreted as categorical or quantitative. For
+instance, months can be interpreted as categories, but they can also be
+interpreted as numbers. There's not necessarily a "correct" interpretation;
+each can be useful for different kinds of analyses.
+
+R uses the class `factor` to represent categorical data. For instance, in the
+dogs data set, the `group` column is a factor:
+
+```{r}
+class(dogs$group)
+```
+
+Visualizations and statistical models sometimes treat factors differently than
+other data types, so it's important to think about whether you want R to
+interpret data as categorical.
+
+When you load a data set, R usually can't tell which features are categorical.
+That means identifying and converting the categorical features is up to you.
+For beginners, it can be difficult to understand whether a feature is
+categorical or not. The key is to think about whether you want to use the
+feature to divide the data into groups.
+
+For example, if we want to know how many songs are in the `rock` genre, we
+first need to divide the songs by genre, and then count the number of songs in
+each group (or at least the `rock` group).
+
+As a second example, months recorded as numbers can be categorical or not,
+depending on how you want to use them. You might want to treat them as
+categorical (for example, to compute max rainfall in each month) or you might
+want to treat them as numbers (for example, to compute the number of months
+time between two events).
+
+The bottom line is that you have to think about what you'll be doing in the
+analysis. In some cases, you might treat a feature as categorical only for part
+of the analysis.
+
+
+You can use the `factor` function to convert a vector into a factor:
+
+```{r}
+colors = c("red", "green", "red", "blue")
+colors = factor(colors)
+colors
+```
+
+Notice that factors are printed differently than strings.
+
+The categories of a factor are called **levels**. You can list the levels with
+the `levels` function:
+
+```{r}
+levels(colors)
+```
+
+Factors remember all possible levels even if you take a subset:
+
+```{r}
+colors[1:3]
+```
+
+This is another way factors are different from strings. Factors "remember" all
+possible levels even if they aren't present. This ensures that if you plot a
+factor, the missing levels will still be represented on the plot.
+
+You can make a factor forget levels that aren't present with the `droplevels`
+function:
+
+```{r}
+droplevels(colors[1:3])
+```
+
+
+## Indexing {#sec-indexing}
+
+The way to get and set elements of a data structure is by **indexing**.
+Sometimes this is also called **subsetting** or (element) **extraction**.
+Indexing is a fundamental operation in R, key to reasoning about how to solve
+problems with the language.
+
+We first saw indexing in @sec-indexing-vectors, where we used `[`, the indexing
+or square bracket operator, to get and set elements of vectors. We saw indexing
+again in @sec-data-frames, where we used `$`, the dollar sign operator, to get
+and set data frame columns.
+
+The indexing operator `[` is R's primary operator for indexing. It works in
+four different ways, depending on the type of the index you use:
+
+1. An empty index selects all elements
+2. A numeric index selects elements by position
+3. A character index selects elements by name
+4. A logical index selects elements for which the index is `TRUE`
+
+Let's explore each in more detail. We'll use this vector as an example, to keep
+things concise:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+x
+```
+
+Even though we're using a vector here, the indexing operator works with almost
+all data structures, including factors, lists, matrices, and data frames. We'll
+look at unique behavior for some of these later on.
+
+### All Elements {#sec-all-elements}
+
+The first way to use `[` to select elements is to leave the index blank. This
+selects all elements:
+
+```{r}
+x[]
+```
+
+This way of indexing is rarely used for getting elements, since it's the same
+as entering the variable name without the indexing operator. Instead, its main
+use is for setting elements. Suppose we want to set all the elements of `x` to
+`5`. You might try writing this:
+
+```{r}
+x = 5
+x
+```
+
+Rather than setting each element to `5`, this sets `x` to the scalar `5`, which
+is not what we want. Let's reset the vector and try again, this time using the
+indexing operator:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+x[] = 5
+x
+```
+
+As you can see, now all the elements are `5`. So the indexing operator is
+necessary to specify that we want to set the elements rather than the whole
+variable.
+
+Let's reset `x` one more time, so that we can use it again in the next example:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+```
+
+### By Position
+
+The second way to use `[` is to select elements by position. This happens when
+you use an integer or numeric index. We already saw the basics of this in
+@sec-indexing-vectors.
+
+The positions of the elements in a vector (or other data structure) correspond
+to numbers starting from 1 for the first element. This way of indexing is
+frequently used together with the sequence operator `:` to get ranges of
+values. For instance, let's get the 2nd through 4th elements of `x`:
+
+```{r}
+x[2:4]
+```
+
+You can also use this way of indexing to set specific elements or ranges of
+elements. For example, let's set the 3rd and 5th elements of `x` to `9` and
+`7`, respectively:
+
+```{r}
+x[c(3, 5)] = c(9, 7)
+x
+```
+
+When getting elements, you can repeat numbers in the index to get the same
+element more than once. You can also use the order of the numbers to control
+the order of the elements:
+
+```{r}
+x[c(2, 1, 2, 2)]
+```
+
+Finally, if the index contains only negative numbers, the elements at those
+positions are excluded rather than selected. For instance, let's get all
+elements except the 1st and 5th:
+
+```{r}
+x[-c(1, 5)]
+```
+
+:::{.callout-warning}
+When you index by position, the index should always be all positive or all
+negative. Using a mix of positive and negative numbers causes R to emit error
+rather than returning elements, since it's unclear what the result should be:
+
+```{r, error = TRUE}
+x[c(-1, 2)]
+```
+:::
+
+### By Name
+
+The third way to use `[` is to select elements by name. This happens when you
+use a character vector as the index, and only works with named data structures.
+
+Like indexing by position, you can use indexing by name to get or set elements.
+You can also use it to repeat elements or change the order. Let's get elements
+`a`, `c`, `d`, and `a` again from the vector `x`:
+
+```{r}
+y = x[c("a", "c", "d", "a")]
+y
+```
+
+Element names are generally unique, but if they're not, indexing by name gets
+or sets the first element whose name matches the index:
+
+```{r}
+y["a"]
+```
+
+Let's reset `x` again to prepare for learning about the final way to index:
+
+```{r}
+x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+```
+
+### By Condition
+
+The fourth and final way to use `[` is to select elements based on a condition.
+This happens when you use a logical vector as the index. The logical vector
+should have the same length as what you're indexing, and will be recycled (that
+is, repeated) if it doesn't.
+
+#### Congruent Vectors {-}
+
+To understand indexing by condition, we first need to learn about congruent
+vectors. Two vectors are **congruent** if they have the same length and they
+correspond element-by-element.
+
+For example, suppose you do a survey that records each respondent's favorite
+animal and age. These are two different vectors of information, but each person
+will have a response for both. So you'll have two vectors that are the same
+length:
+
+```{r}
+animal = c("dog", "cat", "iguana")
+age = c(31, 24, 72)
+```
+
+The 1st element of each vector corresponds to the 1st person, the 2nd to the
+2nd person, and so on. These vectors are congruent.
+
+Notice that columns in a data frame are always congruent!
+
+#### Back to Indexing {-}
+
+When you index by condition, the index should generally be congruent to the
+object you're indexing. Elements where the index is `TRUE` are kept and
+elements where the index is `FALSE` are dropped.
+
+If you create the index from a condition on the object, it's automatically
+congruent. For instance, let's make a condition based on the vector `x`:
+
+```{r}
+is_small = x < 25
+is_small
+```
+
+The 1st element in the logical vector `is_small` corresponds to the 1st element
+of `x`, the 2nd to the 2nd, and so on. The vectors `x` and `is_small` are
+congruent.
+
+It makes sense to use `is_small` as an index for `x`, and it gives us all the
+elements less than `25`:
+
+```{r}
+x[is_small]
+```
+
+Of course, you can also avoid using an intermediate variable for the condition:
+
+```{r}
+x[x > 10]
+```
+
+If you create index some other way (not using the object), make sure that it's
+still congruent to the object. Otherwise, the subset returned from indexing
+might not be meaningful.
+
+You can also use indexing by condition to set elements, just as the other ways
+of indexing can be used to set elements. For instance, let's set all the
+elements of `x` that are greater than `10` to the missing value `NA`:
+
+```{r}
+x[x > 10] = NA
+x
+```
+
+
+## Indexing Data Frames
+
+### Indexing Lists
+
+Lists are a **container** for other types of R objects. When you select an
+element from a list, you can either keep the container (the list) or discard
+it. The indexing operator `[` almost always keeps containers.
+
+As an example, let's get some elements from a small list:
+
+```{r}
+x = list(first = c(1, 2, 3), second = sin, third = c("hi", "hello"))
+y = x[c(1, 3)]
+y
+class(y)
+```
+
+The result is still a list. Even if we get just one element, the result of
+indexing a list with `[` is a list:
+
+```{r}
+class(x[1])
+```
+
+Sometimes this will be exactly what we want. But what if we want to get the
+first element of `x` so that we can use it in a vectorized function? Or in a
+function that only accepts numeric arguments? We need to somehow get the
+element and discard the container.
+
+The solution to this problem is the **extraction operator** `[[`, which is also
+called the **double square bracket operator**. The extraction operator is the
+primary way to get and set elements of lists and other containers.
+
+Unlike the indexing operator `[`, the extraction operator always discards the
+container:
+
+```{r}
+x[[1]]
+class(x[[1]])
+```
+
+The trade off is that the extraction operator can only get or set one element at
+a time. Note that the element can be a vector, as above. Because it can only
+get or set one element at a time, the extraction operator can only index by
+position or name. Blank and logical indexes are not allowed.
+
+The final difference between the index operator `[` and the extraction operator
+`[[` has to do with how they handle invalid indexes. The index operator `[`
+returns `NA` for invalid vector elements, and `NULL` for invalid list elements:
+
+```{r}
+c(1, 2)[10]
+x[10]
+```
+
+On the other hand, the extraction operator `[[` raises an error for invalid
+elements:
+
+```{r, error = TRUE}
+x[[10]]
+```
+
+The indexing operator `[` and the extraction operator `[[` both work with any
+data structure that has elements. However, you'll generally use the indexing
+operator `[` to index vectors, and the extraction operator `[[` to index
+containers (such as lists).
+
+
+### Two-dimensional Indexing
+
+For two-dimensional objects, like matrices and data frames, you can pass the
+indexing operator `[` or the extraction operator `[[` a separate index for each
+dimension. The rows come first:
+
+```
+DATA[ROWS, COLUMNS]
+```
+
+For instance, let's get the first 3 rows and all columns of the dogs data:
+
+```{r}
+dogs[1:3, ]
+```
+
+As we saw in @sec-all-elements, leaving an index blank means all elements.
+
+As another example, let's get the 3rd and 5th row, and the 2nd and 4th column:
+
+```{r}
+dogs[c(3, 5), c(2, 4)]
+```
+
+Mixing several different ways of indexing is allowed. So for example, we can
+get the same above, but use column names instead of positions:
+
+```{r}
+dogs[c(3, 5), c("breed", "longevity")]
+```
+
+For data frames, it's especially common to index the rows by condition and the
+columns by name. For instance, let's get the `breed`, `popularity`, and
+`weight` columns for all rows with toy dogs:
+
+```{r}
+result = dogs[dogs$group == "toy", c("breed", "popularity", "weight")]
+head(result)
+```
+
+::: {.callout-warning title="The Drop Parameter"}
+If you use two-dimensional indexing with `[` to select exactly one column, you
+get a vector:
+
+```{r}
+result = dogs[1:3, 2]
+class(result)
+```
+
+The container is dropped, even though the indexing operator `[` usually keeps
+containers. This also occurs for matrices. You can control this behavior with
+the `drop` parameter:
+
+```{r}
+result = dogs[1:3, 2, drop = FALSE]
+class(result)
+```
+
+The default is `drop = TRUE`.
+:::
+
+
+## Packages {#sec-packages}
+
+A **package** is a collection of functions for use in R. Packages usually
+include documentation, and can also contain examples, vignettes, and data sets.
+Most packages are developed by members of the R community, so quality varies.
+There are also a few packages that are built into R but provide extra features.
+We'll use a package in @sec-data-forensics, so we're learning about them
+now.
+
+The [Comprehensive R Archive Network][cran], or CRAN, is the main place people
+publish packages. As of writing, there were 18,619 packages posted to CRAN.
+This number has been steadily increasing as R has grown in popularity.
+
+[cran]: https://cran.r-project.org/
+
+Packages span a wide variety of topics and disciplines. There are packages
+related to statistics, social sciences, geography, genetics, physics, biology,
+pharmacology, economics, agriculture, and more. The best way to find packages
+is to search online, but the CRAN website also provides ["task
+views"][cran-task-views] if you want to browse popular packages related to a
+specific discipline.
+
+[cran-task-views]: https://cran.r-project.org/web/views/
+
+The `install.packages` function installs one or more packages from CRAN. Its
+first argument is the packages to install, as a character vector.
+
+When you run `install.packages`, R will ask you to choose which **mirror** to
+download the package from. A mirror is a web server that has the same set of
+files as some other server. Mirrors are used to make downloads faster and to
+provide redundancy so that if a server stops working, files are still available
+somewhere else. CRAN has dozens of mirrors; you should choose one that's
+geographically nearby, since that usually produces the best download speeds. If
+you aren't sure which mirror to choose, you can use the 0-Cloud mirror, which
+attempts to automatically choose a mirror near you.
+
+As an example, here's the code to install the readxl package, which provides
+functions to read Microsoft Excel files:
+
+```{r, eval=FALSE}
+install.packages("readxl")
+```
+
+If you run the code above, you'll be asked to select a mirror, and then see
+output that looks something like this:
+
+```
+--- Please select a CRAN mirror for use in this session ---
+trying URL 'https://cran.rstudio.org/src/contrib/readxl_1.4.3.tar.gz'
+Content type 'application/x-gzip' length 2093488 bytes (2.0 MB)
+==================================================
+downloaded 2.0 MB
+
+* installing *source* package ‘readxl’ ...
+** package ‘readxl’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (readxl)
+
+The downloaded source packages are in
+        '/tmp/RtmpIJwOx6/downloaded_packages'
+```
+
+R goes through a variety of steps to install a package, even installing other
+packages that the package depends on. You can tell that a package installation
+succeeded by the final line `DONE`. When a package installation fails, R prints
+an error message explaining the problem instead.
+
+:::{.callout-note collapse=FALSE}
+Once a package is installed, it stays on your computer until you remove it or
+remove R. This means you only need to install each package once. However, most
+packages are periodically updated. You can reinstall a package using
+`install.packages` the same way as above to get the latest version.
+
+Alternatively, you can update all of the R packages you have installed at once
+by calling the `update.packages` function. Beware that this may take a long
+time if you have a lot of packages installed.
+
+The function to remove packages is `remove.packages`. Like `install.packages`,
+this function's first argument is the packages to remove, as a character
+vector.
+
+If you want to see which packages are installed, you can use the
+`installed.packages` function. It does not require any arguments. It returns a
+matrix with one row for each package and columns that contain a variety of
+information. Here's an example:
+
+```{r}
+packages = installed.packages()
+# Just print the version numbers for 10 packages.
+packages[1:10, "Version"]
+```
+
+You'll see a different set of packages, since you have a different computer.
+:::
+
+Before you can use the functions (or other resources) in an installed package,
+you must load the package with the `library` function. R doesn't load packages
+automatically because each package you load uses memory and may conflict with
+other packages. Thus you should only load the packages you need for whatever
+it is that you want to do. When you restart R, the loaded packages are cleared
+and you must again load any packages you want to use.
+
+Let's load the readxl package we installed earlier:
+
+```{r}
+library("readxl")
+```
+
+:::{.callout-tip}
+The `library` function works with or without quotes around the package name, so
+you may also see people write things like `library(readxl)`. We recommend
+using quotes to make it unambiguous that you are not referring to a variable.
+:::
+
+A handful of packages print out a message when loaded, but the vast majority do
+not. Thus you can assume the call to `library` was successful if nothing is
+printed. If something goes wrong while loading a package, R will print out an
+error message explaining the problem.
+
+:::{.callout-note}
+Not all R packages are published to CRAN. [GitHub][gh] is another popular place
+to publish R packages, especially ones that are experimental or still in
+development. Unlike CRAN, GitHub is a general-purpose website for publishing
+code written in any programming language, so it contains much more than just R
+packages and is not specifically R-focused.
+
+[gh]: https://github.com/
+
+The remotes package (available on CRAN) provides functions to install packages
+from GitHub. It's generally better to install packages from CRAN when they are
+available there, since the versions on CRAN tend to be more stable and intended
+for a wide audience. However, if you want to install a package from GitHub, you
+can learn more about the remotes package by reading its [online
+documentation][remotes].
+
+[remotes]: https://remotes.r-lib.org/
+:::
