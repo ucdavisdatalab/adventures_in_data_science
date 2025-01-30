@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>5&nbsp; Hello, Data! – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/06_data-structures.html" rel="next">
+<link href="../chapters/04_programming-foundations.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01_command-line.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../chapters/05_hello-data.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hello, Data!</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../images/datalab-logo-full-color-rgb.png" alt="" class="sidebar-logo py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/required-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Required Software</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Fundamentals</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/01_command-line.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Command Line</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/02_version-control.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Version Control</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/03_r-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/04_programming-foundations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Core Programming Concepts</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/05_hello-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hello, Data!</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/06_data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/07_data-forensics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/08_data-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Data Visualization</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/09_data-from-the-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/10_strings-regex.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Strings and Regular Expressions</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Special Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/11_optical-character-recognition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/12_statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/13_reshaping-tabular-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Reshaping Tabular Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/14_network-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Network Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/15_natural-language-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/16_geospatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Geospatial Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-remix-file-systems" id="toc-sec-remix-file-systems" class="nav-link active" data-scroll-target="#sec-remix-file-systems"><span class="header-section-number">5.1</span> Remix: File Systems</a>
+  <ul class="collapse">
+  <li><a href="#the-working-directory" id="toc-the-working-directory" class="nav-link" data-scroll-target="#the-working-directory"><span class="header-section-number">5.1.1</span> The Working Directory</a></li>
+  </ul></li>
+  <li><a href="#sec-r-scripts" id="toc-sec-r-scripts" class="nav-link" data-scroll-target="#sec-r-scripts"><span class="header-section-number">5.2</span> R Scripts</a></li>
+  <li><a href="#reading-files" id="toc-reading-files" class="nav-link" data-scroll-target="#reading-files"><span class="header-section-number">5.3</span> Reading Files</a></li>
+  <li><a href="#remix-data-frames" id="toc-remix-data-frames" class="nav-link" data-scroll-target="#remix-data-frames"><span class="header-section-number">5.4</span> Remix: Data Frames</a>
+  <ul class="collapse">
+  <li><a href="#sec-summarizing-data" id="toc-sec-summarizing-data" class="nav-link" data-scroll-target="#sec-summarizing-data"><span class="header-section-number">5.4.1</span> Summarizing Data</a></li>
+  <li><a href="#selecting-columns" id="toc-selecting-columns" class="nav-link" data-scroll-target="#selecting-columns"><span class="header-section-number">5.4.2</span> Selecting Columns</a></li>
+  </ul></li>
+  <li><a href="#special-values" id="toc-special-values" class="nav-link" data-scroll-target="#special-values"><span class="header-section-number">5.5</span> Special Values</a>
+  <ul class="collapse">
+  <li><a href="#sec-missing-values" id="toc-sec-missing-values" class="nav-link" data-scroll-target="#sec-missing-values"><span class="header-section-number">5.5.1</span> Missing Values</a></li>
+  <li><a href="#infinity" id="toc-infinity" class="nav-link" data-scroll-target="#infinity"><span class="header-section-number">5.5.2</span> Infinity</a></li>
+  <li><a href="#not-a-number" id="toc-not-a-number" class="nav-link" data-scroll-target="#not-a-number"><span class="header-section-number">5.5.3</span> Not a Number</a></li>
+  <li><a href="#null" id="toc-null" class="nav-link" data-scroll-target="#null"><span class="header-section-number">5.5.4</span> Null</a></li>
+  </ul></li>
+  <li><a href="#sec-factors" id="toc-sec-factors" class="nav-link" data-scroll-target="#sec-factors"><span class="header-section-number">5.6</span> Factors</a></li>
+  <li><a href="#sec-indexing" id="toc-sec-indexing" class="nav-link" data-scroll-target="#sec-indexing"><span class="header-section-number">5.7</span> Indexing</a>
+  <ul class="collapse">
+  <li><a href="#sec-all-elements" id="toc-sec-all-elements" class="nav-link" data-scroll-target="#sec-all-elements"><span class="header-section-number">5.7.1</span> All Elements</a></li>
+  <li><a href="#by-position" id="toc-by-position" class="nav-link" data-scroll-target="#by-position"><span class="header-section-number">5.7.2</span> By Position</a></li>
+  <li><a href="#by-name" id="toc-by-name" class="nav-link" data-scroll-target="#by-name"><span class="header-section-number">5.7.3</span> By Name</a></li>
+  <li><a href="#by-condition" id="toc-by-condition" class="nav-link" data-scroll-target="#by-condition"><span class="header-section-number">5.7.4</span> By Condition</a></li>
+  </ul></li>
+  <li><a href="#indexing-data-frames" id="toc-indexing-data-frames" class="nav-link" data-scroll-target="#indexing-data-frames"><span class="header-section-number">5.8</span> Indexing Data Frames</a>
+  <ul class="collapse">
+  <li><a href="#indexing-lists" id="toc-indexing-lists" class="nav-link" data-scroll-target="#indexing-lists"><span class="header-section-number">5.8.1</span> Indexing Lists</a></li>
+  <li><a href="#two-dimensional-indexing" id="toc-two-dimensional-indexing" class="nav-link" data-scroll-target="#two-dimensional-indexing"><span class="header-section-number">5.8.2</span> Two-dimensional Indexing</a></li>
+  </ul></li>
+  <li><a href="#sec-packages" id="toc-sec-packages" class="nav-link" data-scroll-target="#sec-packages"><span class="header-section-number">5.9</span> Packages</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/05_hello-data.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/01_command-line.html">Fundamentals</a></li><li class="breadcrumb-item"><a href="../chapters/05_hello-data.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hello, Data!</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Hello, Data!</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+</div>
+</div>
+</div>
+<section id="sec-remix-file-systems" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="sec-remix-file-systems"><span class="header-section-number">5.1</span> Remix: File Systems</h2>
+<p>Let’s start with a remix of what you learned about file systems and paths in <a href="01_command-line.html" class="quarto-xref"><span>Chapter 1</span></a>.</p>
+<p>File systems have a tree-like structure, with a top-level directory called the <strong>root directory</strong>. On all macOS and Linux computers, the root is called <code>/</code>. On Windows, the root is usually called <code>C:/</code>, but sometimes other letters, like <code>D:/</code>, are also used depending on the computer’s hardware.</p>
+<p>A <strong>path</strong> is a list of directories that leads to a specific file or directory on a file system (imagine giving directons to someone as they walk through the file system). Use forward slashes <code>/</code> to separate the directories in a path. The root directory includes a forward slash as part of its name, and doesn’t need an extra one.</p>
+<p>When a path leads to a directory, including a <strong>trailing slash</strong> is optional, but makes the meaning of the path clearer. Paths that lead to files never have a trailing slash.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On Windows computers, paths are usually written with backslashes <code>\</code> to separate directories instead of forward slashes. Fortunately, R uses forward slashes <code>/</code> for all paths, regardless of the operating system. So when you’re working in R, use forward slashes and don’t worry about the operating system. This is especially convenient when you want to share code with someone that uses a different operating system than you.</p>
+</div>
+</div>
+<p>A path that starts from the root directory is called an <strong>absolute path</strong>. The path is “absolute” because it unambiguously describes where a file or directory is located. The downside is that absolute paths usually don’t work well if you share your code.</p>
+<p>On the other hand, a <strong>relative path</strong> is one that doesn’t start from the root directory. The path is “relative” to an unspecified starting point, which usually depends on the context.</p>
+<p>When use you paths in R code, they should almost always be relative paths. This ensures that the code is portable to other computers, which is an important aspect of reproducibility. Another benefit is that relative paths tend to be shorter, making your code easier to read (and write).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When you write paths, there are three shortcuts you can use. These are most useful in relative paths, but also work in absolute paths:</p>
+<ul>
+<li><code>.</code> means the current directory.</li>
+<li><code>..</code> means the directory above the current directory.</li>
+<li><code>~</code> means the <strong>home directory</strong>. Each user has their own home directory, whose location depends on the operating system and their username. Home directories are typically directories inside <code>C:/Users/</code> on Windows, <code>/Users/</code> on macOS, and <code>/home/</code> on Linux.</li>
+</ul>
+<p>The <code>..</code> and <code>~</code> shortcut are frequently used and worth remembering. The <code>.</code> shortcut is included here in case you see it in someone else’s code. Since it means the current directory, a path like <code>./cats.csv</code> is identical to <code>cats.csv</code>, and the latter is preferable for being simpler. There are a few specific situations where <code>.</code> is necessary, but they fall outside the scope of this text.</p>
+</div>
+</div>
+<section id="the-working-directory" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="the-working-directory"><span class="header-section-number">5.1.1</span> The Working Directory</h3>
+<p>The preceeding section explained that relative paths have a starting point that depends on the context where the path is used. Let’s make that idea more concrete for R. The <strong>working directory</strong> is the starting point R uses for relative paths. Think of the working directory as the directory R is currently “at” or watching.</p>
+<p>The function <code>getwd</code> returns the absolute path for the current working directory, as a string. It doesn’t require any arguments:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/home/nick/mill/datalab/teaching/adventures_in_data_science"</code></pre>
+</div>
+</div>
+<p>On your computer, the output from <code>getwd</code> will likely be different. This is a very useful function for getting your bearings when you write relative paths. If you write a relative path and it doesn’t work as expected, the first thing to do is check the working directory.</p>
+<p>The related <code>setwd</code> function changes the working directory. It takes one argument: a path to the new working directory. Here’s an example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">".."</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now check the working directory.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "/home/nick/mill/datalab/teaching"</code></pre>
+</div>
+</div>
+<p>Generally, you should avoid using calls to <code>setwd</code> in your R scripts and R Markdown files. Calling <code>setwd</code> makes your code more difficult to understand, and can always be avoided by using appropriate relative paths. If you call <code>setwd</code> with an absolute path, it also makes your code less portable to other computers. It’s fine to use <code>setwd</code> interactively (in the R console), but avoid making your saved code dependent on it.</p>
+<p>Another function that’s useful for dealing with the working directory and file system is <code>list.files</code>. The <code>list.files</code> function returns the names of all of the files and directories inside of a directory. It accepts a path to a directory as an argument, or assumes the working directory if you don’t pass a path. For instance:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List files and directories in /home/.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">"/home/"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "lost+found" "nick"      </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List files and directories in the working directory.</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "_freeze"                        "_quarto.yml"                   
+ [3] "05_files-packages-indexing.qmd" "chapters"                      
+ [5] "data"                           "docs"                          
+ [7] "html_cache"                     "images"                        
+ [9] "img"                            "index.html"                    
+[11] "index.qmd"                      "LICENSE"                       
+[13] "old_docs"                       "R"                             
+[15] "README.md"                      "references.bib"                
+[17] "site_libs"                     </code></pre>
+</div>
+</div>
+<p>As usual, since you have a different computer, you’re likely to see different output if you run this code. If you call <code>list.files</code> with an invalid path or an empty directory, the output is <code>character(0)</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="st">"/this/path/is/fake/"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>character(0)</code></pre>
+</div>
+</div>
+<p>Later on, you’ll learn about what <code>character(0)</code> means more generally.</p>
+</section>
+</section>
+<section id="sec-r-scripts" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-r-scripts"><span class="header-section-number">5.2</span> R Scripts</h2>
+<p>Now that you know how file systems and paths work, you’re ready to learn how to save your R code to a file. R code is usually saved into an <strong>R script</strong> (extension <code>.R</code>) or an <strong>R Markdown file</strong> (extension <code>.Rmd</code>). R scripts are slightly simpler, so let’s focus on those.</p>
+<p>In RStudio, you can create a new R script with this menu option:</p>
+<pre><code>File -&gt; New File -&gt; R Script</code></pre>
+<p>This will open a new pane in RStudio, like this:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/ch05/rstudio_script.png" class="img-fluid figure-img"></p>
+<figcaption>How RStudio typically looks after opening a new R Script.</figcaption>
+</figure>
+</div>
+<p>The new pane is the scripts pane, which displays all of the R scripts you’re editing. Each script appears in a separate tab. In the screenshot, only one script, the new script, is open.</p>
+<p>Editing a script is similar to editing any other text document. You can write, delete, copy, cut, and paste text. You can also save the file to your computer’s file system. When you do, pay attention to where you save the file, as you might need it later.</p>
+<p>The contents of an R script should be R code. Anything else you want to write in the script (notes, documentation, etc.) should be in a <strong>comment</strong>. In R, comments begin with <code>#</code> and extend to the end of the line:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a comment.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>R will ignore comments when you run your code.</p>
+<p>When you start a new project, it’s a good idea to create a specific directory for all of the project’s files. If you’re using R, you should also create one or more R scripts in that directory. As you work, write your code directly into a script. Arrange your code in the order of the steps to solve the problem, even if you write some parts before others. Comment out or delete any lines of code that you try but ultimately decide you don’t need. Make sure to save the file periodically so that you don’t lose your work. Following these guidelines will help you stay organized and make it easier to share your code with others later.</p>
+<p>While editing, you can run the current line in the R console by pressing <code>Ctrl</code>+<code>Enter</code> on Windows and Linux, or <code>Cmd</code>+<code>Enter</code> on macOS. This way you can test and correct your code as you write it.</p>
+<p>If you want, you can instead run (or <strong>source</strong>) the entire R script, by calling the <code>source</code> function with the path to the script as an argument. This is also what the “Source on Save” check box refers to in RStudio. The code runs in order, only stopping if an error occurs.</p>
+<p>For instance, if you save the script as <code>my_cool_script.R</code>, then you can run <code>source("my_cool_script.R")</code> in the console to run the entire script (pay attention to the path—it may be different on your computer).</p>
+<p>R Markdown files are an alternative format for storing R code. They provide a richer set of formatting options, and are usually a better choice than R scripts if you’re writing a report that contains code. You can learn more about R Markdown files <a href="https://rmarkdown.rstudio.com/">here</a>.</p>
+</section>
+<section id="reading-files" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="reading-files"><span class="header-section-number">5.3</span> Reading Files</h2>
+<p>Analyzing data sets is one of the most common things to do in R. The first step is to get R to read your data. Data sets come in a variety of file formats, and you need to identify the format in order to tell R how to read the data.</p>
+<p>Most of the time, you can guess the format of a file by looking at its <strong>extension</strong>, the characters (usually three) after the last dot <code>.</code> in the filename. For example, the extension <code>.jpg</code> or <code>.jpeg</code> indicates a <a href="https://en.wikipedia.org/wiki/JPEG">JPEG image file</a>. Some operating systems hide extensions by default, but you can find instructions to change this setting online by searching for “show file extensions” and your operating system’s name. The extension is just part of the file’s name, so it should be taken as a hint about the file’s format rather than a guarantee.</p>
+<p>R has built-in functions for reading a variety of formats. The R community also provides <strong>packages</strong>, shareable and reusable pieces of code, to read even more formats. You’ll learn more about packages later, in <a href="#sec-packages" class="quarto-xref"><span>Section 5.9</span></a>. For now, let’s focus on data sets that can be read with R’s built-in functions.</p>
+<p>Here are several formats that are frequently used to distribute data, along with the name of a built-in function or contributed package that can read the format:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Extension</th>
+<th style="text-align: left;">Function or Package</th>
+<th style="text-align: left;">Tabular?</th>
+<th style="text-align: left;">Text?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Comma-separated Values</td>
+<td style="text-align: left;"><code>.csv</code></td>
+<td style="text-align: left;"><code>read.csv</code></td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tab-separated Values</td>
+<td style="text-align: left;"><code>.tsv</code></td>
+<td style="text-align: left;"><code>read.delim</code></td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Fixed-width File</td>
+<td style="text-align: left;"><code>.fwf</code></td>
+<td style="text-align: left;"><code>read.fwf</code></td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Microsoft Excel</td>
+<td style="text-align: left;"><code>.xlsx</code></td>
+<td style="text-align: left;">readr package</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Microsoft Excel 1993-2007</td>
+<td style="text-align: left;"><code>.xls</code></td>
+<td style="text-align: left;">readr package</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><a href="https://arrow.apache.org/">Apache Arrow</a></td>
+<td style="text-align: left;"><code>.feather</code></td>
+<td style="text-align: left;">arrow package</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R Data</td>
+<td style="text-align: left;"><code>.rds</code></td>
+<td style="text-align: left;"><code>readRDS</code></td>
+<td style="text-align: left;">Sometimes</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R Data</td>
+<td style="text-align: left;"><code>.rda</code></td>
+<td style="text-align: left;"><code>load</code></td>
+<td style="text-align: left;">Sometimes</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Plaintext</td>
+<td style="text-align: left;"><code>.txt</code></td>
+<td style="text-align: left;"><code>readLines</code></td>
+<td style="text-align: left;">Sometimes</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Extensible Markup Language</td>
+<td style="text-align: left;"><code>.xml</code></td>
+<td style="text-align: left;">xml2 package</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">JavaScript Object Notation</td>
+<td style="text-align: left;"><code>.json</code></td>
+<td style="text-align: left;">jsonlite package</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+</tbody>
+</table>
+<p>A <strong>tabular</strong> data set is one that’s structured as a table, with rows and columns. This reader focuses on tabular data sets, since they’re common in practice and present the fewest programming challenges. Here’s an example of a tabular data set:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Fruit</th>
+<th style="text-align: right;">Quantity</th>
+<th style="text-align: right;">Price</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">apple</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">1.49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">banana</td>
+<td style="text-align: right;">541</td>
+<td style="text-align: right;">0.79</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pear</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">1.99</td>
+</tr>
+</tbody>
+</table>
+<p>A <strong>text file</strong> is a file that contains human-readable lines of text. You can check this by opening the file with a text editor such as Microsoft Notepad or macOS TextEdit. Many file formats use text in order to make the format easier to work with.</p>
+<p>For instance, a <strong>comma-separated values</strong> (CSV) file records a tabular data using one line per row, with commas separating columns. If you store the table above in a CSV file and open the file in a text editor, here’s what you’ll see:</p>
+<pre><code>Fruit,Quantity,Price
+apple,32,1.49
+banana,541,0.79
+pear,10,1.99</code></pre>
+<p>A <strong>binary file</strong> is one that’s not human-readable. You can’t just read off the data if you open a binary file in a text editor, but they have a number of other advantages. Compared to text files, binary files are often faster to read and take up less storage space (bytes).</p>
+<p>As an example, R’s built-in binary format is called RDS (which may stand for “R data serialized”). RDS files are extremely useful for backing up work, since they can store any kind of R object, even ones that are not tabular. You can learn more about how to create an RDS file on the <code>?saveRDS</code> help page, and how to read one on the <code>?readRDS</code> help page.</p>
+</section>
+<section id="remix-data-frames" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="remix-data-frames"><span class="header-section-number">5.4</span> Remix: Data Frames</h2>
+<p>This section is a remix of what you learned about data frames in <a href="03_r-intro.html#sec-data-frames" class="quarto-xref"><span>Section 3.7</span></a>. The main difference from that section is that now you’ll have R read the data set from a file (rather than creating it with the <code>data.frame</code> function), which is the most common way to get data.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To follow along, download and unzip <a href="https://github.com/ucdavisdatalab/adventures_in_data_science/raw/refs/heads/main/data/best_in_show.zip">this zip file</a> in your project directory!</p>
+</div>
+</div>
+<p>The data set we’ll use for this section comes from <a href="https://informationisbeautiful.net/">Information is Beautiful</a>, a website dedicated to making informative and beautiful data visualizations. The data set is specifically from their <a href="https://informationisbeautiful.net/visualizations/best-in-show-whats-the-top-data-dog/">Best in Show visualization</a>, a plot of the popularity of different dog breeds versus their “data dog” scores, which were created by aggregating several breed characteristics (friendliness, health, longevity, cost of care, intelligence, and more).</p>
+<p>The zip file contains copies of the dogs data set in several different formats. Let’s use the RDS file. To read an RDS file into R, you can use the <code>readRDS</code> function with the path to the file:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dogs <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"data/best_in_show/dogs.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that you’ve loaded the data, let’s take a look at it. When you’re working with a new data set, it’s usually not a good idea to print it out directly (by typing <code>dogs</code>, in this case) until you know how big it is. Big data sets can take a long time to print, and the output can be difficult to read.</p>
+<p>Instead, you can use the <code>head</code> function to print only the beginning, or head, of a data set. Let’s take a peek:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   breed    group datadog popularity_all popularity
+1          Border Collie  herding    3.64             45         39
+2         Border Terrier  terrier    3.61             80         61
+3               Brittany sporting    3.54             30         30
+4          Cairn Terrier  terrier    3.53             59         48
+5 Welsh Springer Spaniel sporting    3.34            130         81
+6 English Cocker Spaniel sporting    3.33             63         51
+  lifetime_cost intelligence_rank longevity ailments price food_cost grooming
+1         20143                 1     12.52        2   623       324   weekly
+2         22638                30     14.00        0   833       324   weekly
+3         22589                19     12.92        0   618       466   weekly
+4         21992                35     13.84        2   435       324   weekly
+5         20224                31     12.49        1   750       324   weekly
+6         18993                18     11.66        0   800       324   weekly
+    kids megarank_kids megarank   size weight height
+1    low             1       29 medium     NA     20
+2   high             2        1  small   13.5     NA
+3 medium             3       11 medium   35.0     19
+4   high             4        2  small   14.0     10
+5   high             5        4 medium     NA     18
+6   high             6        5 medium   30.0     16</code></pre>
+</div>
+</div>
+<p>This data set is tabular—it has rows and columns. R uses <strong>data frames</strong> to represent most (but not all) kinds of tabular data.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>readRDS</code> function doesn’t always return a data frame, since RDS files can store any type of R object. On the other hand, the <code>read.csv</code> function, which reads CSV files (a tabular format), always returns a data frame.</p>
+</div>
+</div>
+<p>For a data frame, the <code>head</code> function only prints the first six rows. If there are lots of columns or the columns are wide, as is the case here, R wraps the output across lines.</p>
+<p>When you first read an object into R, you might not know whether it’s a data frame. One way to check is visually, by printing it (as you just did with <code>head</code>). A better way to check is with the <code>class</code> function, which returns information about what an object is. For a data frame, the result will always contain <code>data.frame</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+</div>
+<p>Review <a href="03_r-intro.html#sec-data-types-classes" class="quarto-xref"><span>Section 3.8</span></a> if you feel uncertain about R’s classes and types.</p>
+<p>By counting the columns in the output from <code>head(dogs)</code>, you can see that this data set has 18 columns. A more convenient way to check the number of columns in a data set is with the <code>ncol</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 18</code></pre>
+</div>
+</div>
+<p>The similarly-named <code>nrow</code> function returns the number of rows:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 172</code></pre>
+</div>
+</div>
+<p>Alternatively, you can get both numbers at the same time with the <code>dim</code> (short for “dimensions”) function.</p>
+<p>Since the columns have names, you might also want to get just these. You can do that with the <code>names</code> or <code>colnames</code> functions. Both return the same result:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "breed"             "group"             "datadog"          
+ [4] "popularity_all"    "popularity"        "lifetime_cost"    
+ [7] "intelligence_rank" "longevity"         "ailments"         
+[10] "price"             "food_cost"         "grooming"         
+[13] "kids"              "megarank_kids"     "megarank"         
+[16] "size"              "weight"            "height"           </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "breed"             "group"             "datadog"          
+ [4] "popularity_all"    "popularity"        "lifetime_cost"    
+ [7] "intelligence_rank" "longevity"         "ailments"         
+[10] "price"             "food_cost"         "grooming"         
+[13] "kids"              "megarank_kids"     "megarank"         
+[16] "size"              "weight"            "height"           </code></pre>
+</div>
+</div>
+<p>If the rows have names, you can get those with the <code>rownames</code> function. For this particular data set, the rows don’t have names.</p>
+<section id="sec-summarizing-data" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="sec-summarizing-data"><span class="header-section-number">5.4.1</span> Summarizing Data</h3>
+<p>An efficient way to get a sense of what’s actually in a data set is to have R compute summary information. This works especially well for data frames, but also applies to other data. R provides two different functions to get summaries: <code>str</code> and <code>summary</code>.</p>
+<p>The <code>str</code> function returns a <strong>structural summary</strong> of an object. This kind of summary tells us about the structure of the data—the number of rows, the number and names of columns, what kind of data is in each column, and some sample values. Here’s the structural summary for the dogs data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   172 obs. of  18 variables:
+ $ breed            : chr  "Border Collie" "Border Terrier" "Brittany" "Cairn Terrier" ...
+ $ group            : Factor w/ 7 levels "herding","hound",..: 1 5 4 5 4 4 4 6 1 1 ...
+ $ datadog          : num  3.64 3.61 3.54 3.53 3.34 3.33 3.3 3.26 3.25 3.22 ...
+ $ popularity_all   : int  45 80 30 59 130 63 27 38 60 20 ...
+ $ popularity       : int  39 61 30 48 81 51 27 33 49 20 ...
+ $ lifetime_cost    : num  20143 22638 22589 21992 20224 ...
+ $ intelligence_rank: int  1 30 19 35 31 18 20 8 10 6 ...
+ $ longevity        : num  12.5 14 12.9 13.8 12.5 ...
+ $ ailments         : int  2 0 0 2 1 0 2 5 1 5 ...
+ $ price            : num  623 833 618 435 750 800 465 740 530 465 ...
+ $ food_cost        : num  324 324 466 324 324 324 674 324 466 405 ...
+ $ grooming         : Factor w/ 3 levels "daily","weekly",..: 2 2 2 2 2 2 2 2 2 1 ...
+ $ kids             : Factor w/ 3 levels "high","medium",..: 3 1 2 1 1 1 1 2 3 1 ...
+ $ megarank_kids    : int  1 2 3 4 5 6 7 8 9 11 ...
+ $ megarank         : int  29 1 11 2 4 5 6 22 52 8 ...
+ $ size             : Factor w/ 3 levels "large","medium",..: 2 3 2 3 2 2 3 3 2 3 ...
+ $ weight           : num  NA 13.5 35 14 NA 30 25 NA NA 22 ...
+ $ height           : num  20 NA 19 10 18 16 14.5 9.5 18.5 14.5 ...</code></pre>
+</div>
+</div>
+<p>This summary lists information about each column, and includes most of what you found earlier by using several different functions separately. The summary uses <code>chr</code> to indicate columns of text (“characters”) and <code>int</code> to indicate columns of integers.</p>
+<p>In contrast to <code>str</code>, the <code>summary</code> function returns a <strong>statistical summary</strong> of an object. This summary includes summary statistics for each column, choosing appropriate statistics based on the kind of data in the column. For numbers, this is generally the mean, median, and quantiles. For categories, this is the frequencies. Other kinds of statistics are shown for other kinds of data. Here’s the statistical summary for the dogs data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dogs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    breed                    group       datadog      popularity_all  
+ Length:172         herding     :25   Min.   :0.990   Min.   :  1.00  
+ Class :character   hound       :26   1st Qu.:2.185   1st Qu.: 43.75  
+ Mode  :character   non-sporting:19   Median :2.710   Median : 87.50  
+                    sporting    :28   Mean   :2.604   Mean   : 87.12  
+                    terrier     :28   3rd Qu.:3.035   3rd Qu.:130.25  
+                    toy         :19   Max.   :3.640   Max.   :173.00  
+                    working     :27   NA's   :85                      
+   popularity   lifetime_cost   intelligence_rank   longevity    
+ Min.   : 1.0   Min.   :12653   Min.   : 1.00     Min.   : 6.29  
+ 1st Qu.:22.5   1st Qu.:17816   1st Qu.:27.00     1st Qu.: 9.70  
+ Median :44.0   Median :20087   Median :42.00     Median :11.29  
+ Mean   :44.0   Mean   :19820   Mean   :40.92     Mean   :10.96  
+ 3rd Qu.:65.5   3rd Qu.:21798   3rd Qu.:54.25     3rd Qu.:12.37  
+ Max.   :87.0   Max.   :26686   Max.   :80.00     Max.   :16.50  
+ NA's   :85     NA's   :81      NA's   :40        NA's   :37     
+    ailments         price          food_cost         grooming      kids   
+ Min.   :0.000   Min.   : 283.0   Min.   : 270.0   daily  :23   high  :67  
+ 1st Qu.:0.000   1st Qu.: 587.2   1st Qu.: 324.0   weekly :88   medium:35  
+ Median :1.000   Median : 795.0   Median : 466.0   monthly: 1   low   :10  
+ Mean   :1.216   Mean   : 876.8   Mean   : 489.6   NA's   :60   NA's  :60  
+ 3rd Qu.:2.000   3rd Qu.:1042.2   3rd Qu.: 466.0                           
+ Max.   :9.000   Max.   :3460.0   Max.   :1349.0                           
+ NA's   :24      NA's   :26       NA's   :85                               
+ megarank_kids      megarank         size        weight           height     
+ Min.   : 1.00   Min.   : 1.00   large :54   Min.   :  5.00   Min.   : 5.00  
+ 1st Qu.:22.50   1st Qu.:22.50   medium:60   1st Qu.: 17.50   1st Qu.:14.00  
+ Median :44.00   Median :44.00   small :58   Median : 35.00   Median :19.00  
+ Mean   :43.95   Mean   :43.94               Mean   : 44.97   Mean   :19.09  
+ 3rd Qu.:65.50   3rd Qu.:65.50               3rd Qu.: 62.50   3rd Qu.:24.12  
+ Max.   :87.00   Max.   :87.00               Max.   :175.00   Max.   :32.00  
+ NA's   :85      NA's   :85                  NA's   :86       NA's   :13     </code></pre>
+</div>
+</div>
+</section>
+<section id="selecting-columns" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="selecting-columns"><span class="header-section-number">5.4.2</span> Selecting Columns</h3>
+<p>You can select an individual column from a data frame by name with <code>$</code>, the dollar sign operator. The syntax is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>VARIABLE<span class="sc">$</span>COLUMN_NAME</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For instance, for the dogs data, <code>dogs$breed</code> selects the <code>breed</code> column, and <code>dogs$weight</code> selects the <code>weight</code> column. So one way to compute the mean of the <code>weight</code> column is:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(dogs<span class="sc">$</span>weight, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 44.97093</code></pre>
+</div>
+</div>
+<p>The argument <code>na.rm = TRUE</code> tells R to ignore missing values, something you’ll learn more about in <a href="#sec-missing-values" class="quarto-xref"><span>Section 5.5.1</span></a>.</p>
+<p>Similarly, to compute the range of the <code>height</code> column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range</span>(dogs<span class="sc">$</span>height, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  5 32</code></pre>
+</div>
+</div>
+<p>You can also use the dollar sign operator to assign values to columns. For instance, to assign <code>Beagle</code> to the entire <code>breed</code> column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dogs<span class="sc">$</span>breed <span class="ot">=</span> <span class="st">"Beagle"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Be careful when you do this, as there is no undo. Fortunately, you haven’t saved any transformations to the dogs data to your computer’s hard drive yet, so you can reset the <code>dogs</code> variable back to what it was by reloading the data set:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>dogs <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">"data/best_in_show/dogs.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In <a href="#sec-indexing" class="quarto-xref"><span>Section 5.7</span></a>, you’ll learn how to select rows and individual elements from a data frame, as well as other ways to select columns.</p>
+</section>
+</section>
+<section id="special-values" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="special-values"><span class="header-section-number">5.5</span> Special Values</h2>
+<p>R has four special values to represent missing or invalid data.</p>
+<section id="sec-missing-values" class="level3" data-number="5.5.1">
+<h3 data-number="5.5.1" class="anchored" data-anchor-id="sec-missing-values"><span class="header-section-number">5.5.1</span> Missing Values</h3>
+<p>The value <code>NA</code>, called the <strong>missing value</strong>, represents missing entries in a data set. It’s implied that the entries are missing due to how the data was collected, although there are exceptions. As an example, imagine the data came from a survey, and respondents chose not to answer some questions. In the data set, their answers for those questions can be recorded as <code>NA</code>.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Most of the time, missing values will originate from how the data were collected rather than your code.</p>
+<p>Of course, there are sometimes exceptions where missing values <em>are</em> the result of a computation. When you see missing values in a data set, you should think carefully about what the cause might be. Sometimes documentation or other parts of the data set provide clues.</p>
+</div>
+</div>
+<p>The missing value is a chameleon: it can be a logical, integer, numeric, complex, or character value. By default, the missing value is logical, and the other types occur through coercion (<a href="03_r-intro.html#sec-implicit-coercion" class="quarto-xref"><span>Section 3.8.2</span></a>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "logical"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="fu">c</span>(<span class="st">"hi"</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>The missing value is also contagious: it represents an unknown quantity, so using it as an argument to a function usually produces another missing value. The idea is that if the inputs to a computation are unknown, generally so is the output:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="cn">NA</span> <span class="sc">-</span> <span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>As a consequence, testing whether an object is equal to the missing value with <code>==</code> doesn’t return a meaningful result:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">==</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cn">NA</span> <span class="sc">==</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>You can use the <code>is.na</code> function instead:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE  TRUE FALSE</code></pre>
+</div>
+</div>
+<p>Missing values are a feature that sets R apart from most other programming languages.</p>
+</section>
+<section id="infinity" class="level3" data-number="5.5.2">
+<h3 data-number="5.5.2" class="anchored" data-anchor-id="infinity"><span class="header-section-number">5.5.2</span> Infinity</h3>
+<p>The value <code>Inf</code> represents infinity, and can be numeric or complex. You’re most likely to encounter it as the result of certain computations:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dv">13</span> <span class="sc">/</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] Inf</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<p>You can use the <code>is.infinite</code> function to test whether a value is infinite:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.infinite</span>(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.infinite</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>, <span class="cn">Inf</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  TRUE FALSE  TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="not-a-number" class="level3" data-number="5.5.3">
+<h3 data-number="5.5.3" class="anchored" data-anchor-id="not-a-number"><span class="header-section-number">5.5.3</span> Not a Number</h3>
+<p>The value <code>NaN</code> (“not a number”) represents a quantity that’s undefined mathematically. For instance, dividing 0 by 0 is undefined:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span> <span class="sc">/</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NaN</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">NaN</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<p>Like <code>Inf</code>, <code>NaN</code> can be numeric or complex.</p>
+<p>You can use the <code>is.nan</code> function to test whether a value is <code>NaN</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.nan</span>(<span class="fu">c</span>(<span class="fl">10.1</span>, <span class="fu">log</span>(<span class="sc">-</span><span class="dv">1</span>), <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in log(-1): NaNs produced</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE  TRUE FALSE</code></pre>
+</div>
+</div>
+</section>
+<section id="null" class="level3" data-number="5.5.4">
+<h3 data-number="5.5.4" class="anchored" data-anchor-id="null"><span class="header-section-number">5.5.4</span> Null</h3>
+<p>The value <code>NULL</code> represents a quantity that’s undefined in R. Most of the time, <code>NULL</code> indicates the absence of a result. For instance, vectors don’t have dimensions, so the <code>dim</code> function returns <code>NULL</code> for vectors:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NULL"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(<span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NULL"</code></pre>
+</div>
+</div>
+<p>Unlike the other special values, <code>NULL</code> has its own unique type and class.</p>
+<p>You can use the <code>is.null</code> function to test whether a value is <code>NULL</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.null</span>(<span class="st">"null"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.null</span>(<span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-factors" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="sec-factors"><span class="header-section-number">5.6</span> Factors</h2>
+<p>A feature in a data set is <strong>categorical</strong> if it measures a qualitative category. Some examples of categories are:</p>
+<ul>
+<li>Music genres <code>rock</code>, <code>blues</code>, <code>alternative</code>, <code>folk</code>, <code>pop</code></li>
+<li>Colors <code>red</code>, <code>green</code>, <code>blue</code>, <code>yellow</code></li>
+<li>Answers <code>yes</code>, <code>no</code></li>
+<li>Months <code>January</code>, <code>February</code>, and so on</li>
+</ul>
+<p>In some cases, a feature can be interpreted as categorical or quantitative. For instance, months can be interpreted as categories, but they can also be interpreted as numbers. There’s not necessarily a “correct” interpretation; each can be useful for different kinds of analyses.</p>
+<p>R uses the class <code>factor</code> to represent categorical data. For instance, in the dogs data set, the <code>group</code> column is a factor:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dogs<span class="sc">$</span>group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+</div>
+<p>Visualizations and statistical models sometimes treat factors differently than other data types, so it’s important to think about whether you want R to interpret data as categorical.</p>
+<p>When you load a data set, R usually can’t tell which features are categorical. That means identifying and converting the categorical features is up to you. For beginners, it can be difficult to understand whether a feature is categorical or not. The key is to think about whether you want to use the feature to divide the data into groups.</p>
+<p>For example, if we want to know how many songs are in the <code>rock</code> genre, we first need to divide the songs by genre, and then count the number of songs in each group (or at least the <code>rock</code> group).</p>
+<p>As a second example, months recorded as numbers can be categorical or not, depending on how you want to use them. You might want to treat them as categorical (for example, to compute max rainfall in each month) or you might want to treat them as numbers (for example, to compute the number of months time between two events).</p>
+<p>The bottom line is that you have to think about what you’ll be doing in the analysis. In some cases, you might treat a feature as categorical only for part of the analysis.</p>
+<p>You can use the <code>factor</code> function to convert a vector into a factor:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"green"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">=</span> <span class="fu">factor</span>(colors)</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>colors</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] red   green red   blue 
+Levels: blue green red</code></pre>
+</div>
+</div>
+<p>Notice that factors are printed differently than strings.</p>
+<p>The categories of a factor are called <strong>levels</strong>. You can list the levels with the <code>levels</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(colors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "blue"  "green" "red"  </code></pre>
+</div>
+</div>
+<p>Factors remember all possible levels even if you take a subset:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>colors[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] red   green red  
+Levels: blue green red</code></pre>
+</div>
+</div>
+<p>This is another way factors are different from strings. Factors “remember” all possible levels even if they aren’t present. This ensures that if you plot a factor, the missing levels will still be represented on the plot.</p>
+<p>You can make a factor forget levels that aren’t present with the <code>droplevels</code> function:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">droplevels</span>(colors[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] red   green red  
+Levels: green red</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-indexing" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="sec-indexing"><span class="header-section-number">5.7</span> Indexing</h2>
+<p>The way to get and set elements of a data structure is by <strong>indexing</strong>. Sometimes this is also called <strong>subsetting</strong> or (element) <strong>extraction</strong>. Indexing is a fundamental operation in R, key to reasoning about how to solve problems with the language.</p>
+<p>We first saw indexing in <a href="03_r-intro.html#sec-indexing-vectors" class="quarto-xref"><span>Section 3.6.1</span></a>, where we used <code>[</code>, the indexing or square bracket operator, to get and set elements of vectors. We saw indexing again in <a href="03_r-intro.html#sec-data-frames" class="quarto-xref"><span>Section 3.7</span></a>, where we used <code>$</code>, the dollar sign operator, to get and set data frame columns.</p>
+<p>The indexing operator <code>[</code> is R’s primary operator for indexing. It works in four different ways, depending on the type of the index you use:</p>
+<ol type="1">
+<li>An empty index selects all elements</li>
+<li>A numeric index selects elements by position</li>
+<li>A character index selects elements by name</li>
+<li>A logical index selects elements for which the index is <code>TRUE</code></li>
+</ol>
+<p>Let’s explore each in more detail. We’ll use this vector as an example, to keep things concise:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">c =</span> <span class="dv">30</span>, <span class="at">d =</span> <span class="dv">40</span>, <span class="at">e =</span> <span class="dv">50</span>)</span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> a  b  c  d  e 
+10 20 30 40 50 </code></pre>
+</div>
+</div>
+<p>Even though we’re using a vector here, the indexing operator works with almost all data structures, including factors, lists, matrices, and data frames. We’ll look at unique behavior for some of these later on.</p>
+<section id="sec-all-elements" class="level3" data-number="5.7.1">
+<h3 data-number="5.7.1" class="anchored" data-anchor-id="sec-all-elements"><span class="header-section-number">5.7.1</span> All Elements</h3>
+<p>The first way to use <code>[</code> to select elements is to leave the index blank. This selects all elements:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>x[]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> a  b  c  d  e 
+10 20 30 40 50 </code></pre>
+</div>
+</div>
+<p>This way of indexing is rarely used for getting elements, since it’s the same as entering the variable name without the indexing operator. Instead, its main use is for setting elements. Suppose we want to set all the elements of <code>x</code> to <code>5</code>. You might try writing this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="dv">5</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5</code></pre>
+</div>
+</div>
+<p>Rather than setting each element to <code>5</code>, this sets <code>x</code> to the scalar <code>5</code>, which is not what we want. Let’s reset the vector and try again, this time using the indexing operator:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">c =</span> <span class="dv">30</span>, <span class="at">d =</span> <span class="dv">40</span>, <span class="at">e =</span> <span class="dv">50</span>)</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>x[] <span class="ot">=</span> <span class="dv">5</span></span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>a b c d e 
+5 5 5 5 5 </code></pre>
+</div>
+</div>
+<p>As you can see, now all the elements are <code>5</code>. So the indexing operator is necessary to specify that we want to set the elements rather than the whole variable.</p>
+<p>Let’s reset <code>x</code> one more time, so that we can use it again in the next example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">c =</span> <span class="dv">30</span>, <span class="at">d =</span> <span class="dv">40</span>, <span class="at">e =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="by-position" class="level3" data-number="5.7.2">
+<h3 data-number="5.7.2" class="anchored" data-anchor-id="by-position"><span class="header-section-number">5.7.2</span> By Position</h3>
+<p>The second way to use <code>[</code> is to select elements by position. This happens when you use an integer or numeric index. We already saw the basics of this in <a href="03_r-intro.html#sec-indexing-vectors" class="quarto-xref"><span>Section 3.6.1</span></a>.</p>
+<p>The positions of the elements in a vector (or other data structure) correspond to numbers starting from 1 for the first element. This way of indexing is frequently used together with the sequence operator <code>:</code> to get ranges of values. For instance, let’s get the 2nd through 4th elements of <code>x</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> b  c  d 
+20 30 40 </code></pre>
+</div>
+</div>
+<p>You can also use this way of indexing to set specific elements or ranges of elements. For example, let’s set the 3rd and 5th elements of <code>x</code> to <code>9</code> and <code>7</code>, respectively:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>x[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>)] <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">9</span>, <span class="dv">7</span>)</span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> a  b  c  d  e 
+10 20  9 40  7 </code></pre>
+</div>
+</div>
+<p>When getting elements, you can repeat numbers in the index to get the same element more than once. You can also use the order of the numbers to control the order of the elements:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>x[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> b  a  b  b 
+20 10 20 20 </code></pre>
+</div>
+</div>
+<p>Finally, if the index contains only negative numbers, the elements at those positions are excluded rather than selected. For instance, let’s get all elements except the 1st and 5th:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>x[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> b  c  d 
+20  9 40 </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When you index by position, the index should always be all positive or all negative. Using a mix of positive and negative numbers causes R to emit error rather than returning elements, since it’s unclear what the result should be:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>x[<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">2</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in x[c(-1, 2)]: only 0's may be mixed with negative subscripts</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="by-name" class="level3" data-number="5.7.3">
+<h3 data-number="5.7.3" class="anchored" data-anchor-id="by-name"><span class="header-section-number">5.7.3</span> By Name</h3>
+<p>The third way to use <code>[</code> is to select elements by name. This happens when you use a character vector as the index, and only works with named data structures.</p>
+<p>Like indexing by position, you can use indexing by name to get or set elements. You can also use it to repeat elements or change the order. Let’s get elements <code>a</code>, <code>c</code>, <code>d</code>, and <code>a</code> again from the vector <code>x</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> x[<span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>, <span class="st">"a"</span>)]</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> a  c  d  a 
+10  9 40 10 </code></pre>
+</div>
+</div>
+<p>Element names are generally unique, but if they’re not, indexing by name gets or sets the first element whose name matches the index:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>y[<span class="st">"a"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> a 
+10 </code></pre>
+</div>
+</div>
+<p>Let’s reset <code>x</code> again to prepare for learning about the final way to index:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">20</span>, <span class="at">c =</span> <span class="dv">30</span>, <span class="at">d =</span> <span class="dv">40</span>, <span class="at">e =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="by-condition" class="level3" data-number="5.7.4">
+<h3 data-number="5.7.4" class="anchored" data-anchor-id="by-condition"><span class="header-section-number">5.7.4</span> By Condition</h3>
+<p>The fourth and final way to use <code>[</code> is to select elements based on a condition. This happens when you use a logical vector as the index. The logical vector should have the same length as what you’re indexing, and will be recycled (that is, repeated) if it doesn’t.</p>
+<section id="congruent-vectors" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="congruent-vectors">Congruent Vectors</h4>
+<p>To understand indexing by condition, we first need to learn about congruent vectors. Two vectors are <strong>congruent</strong> if they have the same length and they correspond element-by-element.</p>
+<p>For example, suppose you do a survey that records each respondent’s favorite animal and age. These are two different vectors of information, but each person will have a response for both. So you’ll have two vectors that are the same length:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>animal <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"dog"</span>, <span class="st">"cat"</span>, <span class="st">"iguana"</span>)</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>age <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">31</span>, <span class="dv">24</span>, <span class="dv">72</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The 1st element of each vector corresponds to the 1st person, the 2nd to the 2nd person, and so on. These vectors are congruent.</p>
+<p>Notice that columns in a data frame are always congruent!</p>
+</section>
+<section id="back-to-indexing" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="back-to-indexing">Back to Indexing</h4>
+<p>When you index by condition, the index should generally be congruent to the object you’re indexing. Elements where the index is <code>TRUE</code> are kept and elements where the index is <code>FALSE</code> are dropped.</p>
+<p>If you create the index from a condition on the object, it’s automatically congruent. For instance, let’s make a condition based on the vector <code>x</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>is_small <span class="ot">=</span> x <span class="sc">&lt;</span> <span class="dv">25</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>is_small</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    a     b     c     d     e 
+ TRUE  TRUE FALSE FALSE FALSE </code></pre>
+</div>
+</div>
+<p>The 1st element in the logical vector <code>is_small</code> corresponds to the 1st element of <code>x</code>, the 2nd to the 2nd, and so on. The vectors <code>x</code> and <code>is_small</code> are congruent.</p>
+<p>It makes sense to use <code>is_small</code> as an index for <code>x</code>, and it gives us all the elements less than <code>25</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>x[is_small]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> a  b 
+10 20 </code></pre>
+</div>
+</div>
+<p>Of course, you can also avoid using an intermediate variable for the condition:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>x[x <span class="sc">&gt;</span> <span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> b  c  d  e 
+20 30 40 50 </code></pre>
+</div>
+</div>
+<p>If you create index some other way (not using the object), make sure that it’s still congruent to the object. Otherwise, the subset returned from indexing might not be meaningful.</p>
+<p>You can also use indexing by condition to set elements, just as the other ways of indexing can be used to set elements. For instance, let’s set all the elements of <code>x</code> that are greater than <code>10</code> to the missing value <code>NA</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>x[x <span class="sc">&gt;</span> <span class="dv">10</span>] <span class="ot">=</span> <span class="cn">NA</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> a  b  c  d  e 
+10 NA NA NA NA </code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="indexing-data-frames" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="indexing-data-frames"><span class="header-section-number">5.8</span> Indexing Data Frames</h2>
+<section id="indexing-lists" class="level3" data-number="5.8.1">
+<h3 data-number="5.8.1" class="anchored" data-anchor-id="indexing-lists"><span class="header-section-number">5.8.1</span> Indexing Lists</h3>
+<p>Lists are a <strong>container</strong> for other types of R objects. When you select an element from a list, you can either keep the container (the list) or discard it. The indexing operator <code>[</code> almost always keeps containers.</p>
+<p>As an example, let’s get some elements from a small list:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">list</span>(<span class="at">first =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">second =</span> sin, <span class="at">third =</span> <span class="fu">c</span>(<span class="st">"hi"</span>, <span class="st">"hello"</span>))</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> x[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)]</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a>y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$first
+[1] 1 2 3
+
+$third
+[1] "hi"    "hello"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+</div>
+<p>The result is still a list. Even if we get just one element, the result of indexing a list with <code>[</code> is a list:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+</div>
+<p>Sometimes this will be exactly what we want. But what if we want to get the first element of <code>x</code> so that we can use it in a vectorized function? Or in a function that only accepts numeric arguments? We need to somehow get the element and discard the container.</p>
+<p>The solution to this problem is the <strong>extraction operator</strong> <code>[[</code>, which is also called the <strong>double square bracket operator</strong>. The extraction operator is the primary way to get and set elements of lists and other containers.</p>
+<p>Unlike the indexing operator <code>[</code>, the extraction operator always discards the container:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 2 3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<p>The trade off is that the extraction operator can only get or set one element at a time. Note that the element can be a vector, as above. Because it can only get or set one element at a time, the extraction operator can only index by position or name. Blank and logical indexes are not allowed.</p>
+<p>The final difference between the index operator <code>[</code> and the extraction operator <code>[[</code> has to do with how they handle invalid indexes. The index operator <code>[</code> returns <code>NA</code> for invalid vector elements, and <code>NULL</code> for invalid list elements:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)[<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$&lt;NA&gt;
+NULL</code></pre>
+</div>
+</div>
+<p>On the other hand, the extraction operator <code>[[</code> raises an error for invalid elements:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">10</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in x[[10]]: subscript out of bounds</code></pre>
+</div>
+</div>
+<p>The indexing operator <code>[</code> and the extraction operator <code>[[</code> both work with any data structure that has elements. However, you’ll generally use the indexing operator <code>[</code> to index vectors, and the extraction operator <code>[[</code> to index containers (such as lists).</p>
+</section>
+<section id="two-dimensional-indexing" class="level3" data-number="5.8.2">
+<h3 data-number="5.8.2" class="anchored" data-anchor-id="two-dimensional-indexing"><span class="header-section-number">5.8.2</span> Two-dimensional Indexing</h3>
+<p>For two-dimensional objects, like matrices and data frames, you can pass the indexing operator <code>[</code> or the extraction operator <code>[[</code> a separate index for each dimension. The rows come first:</p>
+<pre><code>DATA[ROWS, COLUMNS]</code></pre>
+<p>For instance, let’s get the first 3 rows and all columns of the dogs data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           breed    group datadog popularity_all popularity lifetime_cost
+1  Border Collie  herding    3.64             45         39         20143
+2 Border Terrier  terrier    3.61             80         61         22638
+3       Brittany sporting    3.54             30         30         22589
+  intelligence_rank longevity ailments price food_cost grooming   kids
+1                 1     12.52        2   623       324   weekly    low
+2                30     14.00        0   833       324   weekly   high
+3                19     12.92        0   618       466   weekly medium
+  megarank_kids megarank   size weight height
+1             1       29 medium     NA     20
+2             2        1  small   13.5     NA
+3             3       11 medium   35.0     19</code></pre>
+</div>
+</div>
+<p>As we saw in <a href="#sec-all-elements" class="quarto-xref"><span>Section 5.7.1</span></a>, leaving an index blank means all elements.</p>
+<p>As another example, let’s get the 3rd and 5th row, and the 2nd and 4th column:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     group popularity_all
+3 sporting             30
+5 sporting            130</code></pre>
+</div>
+</div>
+<p>Mixing several different ways of indexing is allowed. So for example, we can get the same above, but use column names instead of positions:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>dogs[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>), <span class="fu">c</span>(<span class="st">"breed"</span>, <span class="st">"longevity"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   breed longevity
+3               Brittany     12.92
+5 Welsh Springer Spaniel     12.49</code></pre>
+</div>
+</div>
+<p>For data frames, it’s especially common to index the rows by condition and the columns by name. For instance, let’s get the <code>breed</code>, <code>popularity</code>, and <code>weight</code> columns for all rows with toy dogs:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[dogs<span class="sc">$</span>group <span class="sc">==</span> <span class="st">"toy"</span>, <span class="fu">c</span>(<span class="st">"breed"</span>, <span class="st">"popularity"</span>, <span class="st">"weight"</span>)]</span>
+<span id="cb149-2"><a href="#cb149-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           breed popularity weight
+8       Papillon         33     NA
+13 Affenpinscher         84     NA
+16     Chihuahua         14    5.5
+28       Maltese         23    5.0
+29    Pomeranian         17    5.0
+30      Shih Tzu         11   12.5</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="The Drop Parameter">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The Drop Parameter
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you use two-dimensional indexing with <code>[</code> to select exactly one column, you get a vector:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">2</span>]</span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+</div>
+<p>The container is dropped, even though the indexing operator <code>[</code> usually keeps containers. This also occurs for matrices. You can control this behavior with the <code>drop</code> parameter:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">=</span> dogs[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">2</span>, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(result)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+</div>
+<p>The default is <code>drop = TRUE</code>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-packages" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="sec-packages"><span class="header-section-number">5.9</span> Packages</h2>
+<p>A <strong>package</strong> is a collection of functions for use in R. Packages usually include documentation, and can also contain examples, vignettes, and data sets. Most packages are developed by members of the R community, so quality varies. There are also a few packages that are built into R but provide extra features. We’ll use a package in <a href="07_data-forensics.html" class="quarto-xref"><span>Chapter 7</span></a>, so we’re learning about them now.</p>
+<p>The <a href="https://cran.r-project.org/">Comprehensive R Archive Network</a>, or CRAN, is the main place people publish packages. As of writing, there were 18,619 packages posted to CRAN. This number has been steadily increasing as R has grown in popularity.</p>
+<p>Packages span a wide variety of topics and disciplines. There are packages related to statistics, social sciences, geography, genetics, physics, biology, pharmacology, economics, agriculture, and more. The best way to find packages is to search online, but the CRAN website also provides <a href="https://cran.r-project.org/web/views/">“task views”</a> if you want to browse popular packages related to a specific discipline.</p>
+<p>The <code>install.packages</code> function installs one or more packages from CRAN. Its first argument is the packages to install, as a character vector.</p>
+<p>When you run <code>install.packages</code>, R will ask you to choose which <strong>mirror</strong> to download the package from. A mirror is a web server that has the same set of files as some other server. Mirrors are used to make downloads faster and to provide redundancy so that if a server stops working, files are still available somewhere else. CRAN has dozens of mirrors; you should choose one that’s geographically nearby, since that usually produces the best download speeds. If you aren’t sure which mirror to choose, you can use the 0-Cloud mirror, which attempts to automatically choose a mirror near you.</p>
+<p>As an example, here’s the code to install the readxl package, which provides functions to read Microsoft Excel files:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"readxl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you run the code above, you’ll be asked to select a mirror, and then see output that looks something like this:</p>
+<pre><code>--- Please select a CRAN mirror for use in this session ---
+trying URL 'https://cran.rstudio.org/src/contrib/readxl_1.4.3.tar.gz'
+Content type 'application/x-gzip' length 2093488 bytes (2.0 MB)
+==================================================
+downloaded 2.0 MB
+
+* installing *source* package ‘readxl’ ...
+** package ‘readxl’ successfully unpacked and MD5 sums checked
+** using staged installation
+** libs
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+*** copying figures
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** checking absolute paths in shared objects and dynamic libraries
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (readxl)
+
+The downloaded source packages are in
+        '/tmp/RtmpIJwOx6/downloaded_packages'</code></pre>
+<p>R goes through a variety of steps to install a package, even installing other packages that the package depends on. You can tell that a package installation succeeded by the final line <code>DONE</code>. When a package installation fails, R prints an error message explaining the problem instead.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Once a package is installed, it stays on your computer until you remove it or remove R. This means you only need to install each package once. However, most packages are periodically updated. You can reinstall a package using <code>install.packages</code> the same way as above to get the latest version.</p>
+<p>Alternatively, you can update all of the R packages you have installed at once by calling the <code>update.packages</code> function. Beware that this may take a long time if you have a lot of packages installed.</p>
+<p>The function to remove packages is <code>remove.packages</code>. Like <code>install.packages</code>, this function’s first argument is the packages to remove, as a character vector.</p>
+<p>If you want to see which packages are installed, you can use the <code>installed.packages</code> function. It does not require any arguments. It returns a matrix with one row for each package and columns that contain a variety of information. Here’s an example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb157"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb157-1"><a href="#cb157-1" aria-hidden="true" tabindex="-1"></a>packages <span class="ot">=</span> <span class="fu">installed.packages</span>()</span>
+<span id="cb157-2"><a href="#cb157-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Just print the version numbers for 10 packages.</span></span>
+<span id="cb157-3"><a href="#cb157-3" aria-hidden="true" tabindex="-1"></a>packages[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="st">"Version"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     abind        ape    askpass assertthat  backports  base64enc         BH 
+   "1.4-8"    "5.8-1"    "1.2.1"    "0.2.1"    "1.5.0"    "0.1-3" "1.87.0-1" 
+       bit      bit64     bitops 
+ "4.5.0.1"    "4.5.2"    "1.0-9" </code></pre>
+</div>
+</div>
+<p>You’ll see a different set of packages, since you have a different computer.</p>
+</div>
+</div>
+</div>
+<p>Before you can use the functions (or other resources) in an installed package, you must load the package with the <code>library</code> function. R doesn’t load packages automatically because each package you load uses memory and may conflict with other packages. Thus you should only load the packages you need for whatever it is that you want to do. When you restart R, the loaded packages are cleared and you must again load any packages you want to use.</p>
+<p>Let’s load the readxl package we installed earlier:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"readxl"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>library</code> function works with or without quotes around the package name, so you may also see people write things like <code>library(readxl)</code>. We recommend using quotes to make it unambiguous that you are not referring to a variable.</p>
+</div>
+</div>
+<p>A handful of packages print out a message when loaded, but the vast majority do not. Thus you can assume the call to <code>library</code> was successful if nothing is printed. If something goes wrong while loading a package, R will print out an error message explaining the problem.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Not all R packages are published to CRAN. <a href="https://github.com/">GitHub</a> is another popular place to publish R packages, especially ones that are experimental or still in development. Unlike CRAN, GitHub is a general-purpose website for publishing code written in any programming language, so it contains much more than just R packages and is not specifically R-focused.</p>
+<p>The remotes package (available on CRAN) provides functions to install packages from GitHub. It’s generally better to install packages from CRAN when they are available there, since the versions on CRAN tend to be more stable and intended for a wide audience. However, if you want to install a package from GitHub, you can learn more about the remotes package by reading its <a href="https://remotes.r-lib.org/">online documentation</a>.</p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/04_programming-foundations.html" class="pagination-link" aria-label="Core Programming Concepts">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Core Programming Concepts</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/06_data-structures.html" class="pagination-link" aria-label="Data Structures">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Structures</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/05_hello-data.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
