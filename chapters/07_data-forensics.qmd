@@ -414,15 +414,25 @@ is missing:
 * missing at random (MAR)
 * missing not at random (MNAR) - causes bias!
 
-When values are **missing at random**, the cause for missingness is not related
-to any of the other features. This is rare in practice. For example, if people
-in a food survey accidentally overlook some questions.
+When values are **missing at random**, the cause for missingness is one or more
+features in the data set. For example, if a soil moisture sensor overheats and
+doesn't work on hot days, but air temperature is recorded in the data set,
+values are missing at random.
 
-When values are **missing not at random**, the cause for missingness depends on
-other features. These features may or may not be in the data set. Think of this
-as a form of censorship. For example, if people in a food survey refuse to
-report how much sugar they ate on days where they ate junk food, data is
-missing not at random. Values MNAR can bias an analysis.
+When values are **missing not at random**, the cause for missingness is one or
+more features *not* in the data set. Think of this as a form of censorship. For
+example, if people in a food survey refuse to report how much sugar they ate on
+days where they ate junk food, values are missing not at random. Values MNAR
+can bias an analysis.
+
+:::{.callout-note}
+Technically, there's a third kind of missing data: **missing completely at
+random** (MCAR). When values are missing completely at random, the cause for
+missingness is completely unrelated to the research question and features of
+interest. This kind of missing data is rare in practice and impossible to
+identify from the data alone. Values MCAR can be ignored without causing any
+bias.
+:::
 
 The default way to handle missing values in R is to ignore them. This is just a
 default, not necessarily the best or even an appropriate way to deal with them.
