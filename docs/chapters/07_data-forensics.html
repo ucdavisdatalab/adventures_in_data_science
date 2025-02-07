@@ -665,8 +665,21 @@ both cats dogs none
 <li>missing at random (MAR)</li>
 <li>missing not at random (MNAR) - causes bias!</li>
 </ul>
-<p>When values are <strong>missing at random</strong>, the cause for missingness is not related to any of the other features. This is rare in practice. For example, if people in a food survey accidentally overlook some questions.</p>
-<p>When values are <strong>missing not at random</strong>, the cause for missingness depends on other features. These features may or may not be in the data set. Think of this as a form of censorship. For example, if people in a food survey refuse to report how much sugar they ate on days where they ate junk food, data is missing not at random. Values MNAR can bias an analysis.</p>
+<p>When values are <strong>missing at random</strong>, the cause for missingness is one or more features in the data set. For example, if a soil moisture sensor overheats and doesn’t work on hot days, but air temperature is recorded in the data set, values are missing at random.</p>
+<p>When values are <strong>missing not at random</strong>, the cause for missingness is one or more features <em>not</em> in the data set. Think of this as a form of censorship. For example, if people in a food survey refuse to report how much sugar they ate on days where they ate junk food, values are missing not at random. Values MNAR can bias an analysis.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Technically, there’s a third kind of missing data: <strong>missing completely at random</strong> (MCAR). When values are missing completely at random, the cause for missingness is completely unrelated to the research question and features of interest. This kind of missing data is rare in practice and impossible to identify from the data alone. Values MCAR can be ignored without causing any bias.</p>
+</div>
+</div>
 <p>The default way to handle missing values in R is to ignore them. This is just a default, not necessarily the best or even an appropriate way to deal with them. You can remove missing values from a data set by indexing:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>cl_no_sqft_na <span class="ot">=</span> cl[<span class="sc">!</span><span class="fu">is.na</span>(cl<span class="sc">$</span>sqft), ]</span>
