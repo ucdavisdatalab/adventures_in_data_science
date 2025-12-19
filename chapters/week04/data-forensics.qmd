@@ -7,20 +7,17 @@ lesson also describes how to fix some of the most common data problems.
 ::: {.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
-* Cleaning and Forensics:
-  + Explain what it means for a data set to be "tidy"
-  + Convert columns to appropriate data types
-  + Locate and count missing values in a data set
-  + Explain what it means for a value to be an "outlier"
-  + Locate and count outliers in a data set
-
-* Statistical Summaries:
-  * Explain the location statistics mean, median, and mode
-  * Explain the scale statistics range and standard deviation
+* Explain what it means for a data set to be "tidy"
+* Convert columns to appropriate data types
+* Locate and count missing values in a data set
+* Explain what it means for a value to be an "outlier"
+* Locate and count outliers in a data set
+* Explain the location statistics mean, median, and mode
+* Explain the scale statistics range and standard deviation
 :::
 
 
-## Structural Summaries & Cleaning
+## Structural Summaries
 
 Whenever you load a data set into R, your next step should be to investigate
 the data's structure. This step is important because it can help you identify
@@ -102,126 +99,10 @@ web.
 
 It's also a good idea to convert categorical columns into factors with the
 `factor` function, and to convert columns of dates into dates (more about this
-in the next section).
+in @sec-date-processing).
 
 
-### Dates
-
-There several built-in functions and also many packages for date processing.
-In particular, there are three Tidyverse packages for processing dates and
-times:
-
-* [lubridate][], the primary package for working with dates and times
-* [hms][], a package specifically for working with times
-* [clock][], a new package for working with dates and times
-
-[lubridate]: https://lubridate.tidyverse.org/
-[hms]: https://hms.tidyverse.org/
-[clock]: https://clock.r-lib.org/
-
-We'll focus on the lubridate package. As always, you'll have to install the
-package if you haven't already, and then load it:
-
-```{r}
-# install.packages("lubridate")
-library("lubridate")
-```
-
-The most common task is to convert a string into a date or time class. For
-instance, when you load a data set, you might have dates that look like this:
-
-```{r}
-dates = c("Jan 10, 2021", "Sep 3, 2018", "Feb 28, 1982")
-dates
-```
-
-These are strings, so it's relatively difficult to sort the dates, do
-arithmetic on them, or extract just one part (such as the year). There are
-several lubridate functions to automatically convert strings into dates. They
-are named with one letter for each part of the date. For instance, the dates in
-the example have the month (m), then the day (d), and then the year (y), so we
-can use the `mdy` function:
-
-```{r}
-result = mdy(dates)
-result
-class(result)
-```
-
-Notice that the dates now have class `Date`, one of R's built-in classes for
-representing dates, and that they print differently. You can find a full list
-of the automatic string to date conversion functions in the lubridate
-documentation.
-
-Occasionally, a date string may have a format that lubridate can't convert
-automatically. In that case, you can use the `fast_strptime` function to
-describe the format in detail. At a minimum, the function requires two
-arguments: the vector of strings to convert and a format string.
-
-The format string describes the format of the dates, and is based on the syntax
-of `strptime`, a function provided by many programming languages for converting
-strings to dates (including R). In a format string, a percent sign `%` followed
-by a character is called a specification and has a special meaning. Here are a
-few of the most useful ones:
-
-| Specification | Description      | January 29, 2015
-|:------------- |:---------------- |:----------------
-| `%Y`          | 4-digit year     | 2015
-| `%y`          | 2-digit year     | 15
-| `%m`          | 2-digit month    | 01
-| `%B`          | full month name  | January
-| `%b`          | short month name | Jan
-| `%d`          | day of month     | 29
-| `%%`          | literal %        | %
-
-You can find a complete list in `?fast_strptime`. Other characters in the
-format string do not have any special meaning. Write the format string so that
-it matches the format of the dates you want to convert.
-
-For example, let's try converting an unusual time format:
-```{r}
-odd_time = "6 minutes, 32 seconds after 10 o'clock"
-fast_strptime(odd_time, "%M minutes, %S seconds after %H o'clock")
-```
-
-R usually represents dates with the class `Date`, and date-times with the
-classes `POSIXct` and `POSIXlt`. The difference between the two date-time
-classes is somewhat technical, but you can read more about it in `?POSIXlt`.
-
-There is no built-in class to represent times alone, which is why the result in
-the example above includes a date. Nonetheless, the hms package provides the
-`hms` class to represent times without dates.
-
-Once you've converted a string to a date, the lubridate package provides a
-variety of functions to get or set the parts individually. Here are a few
-examples:
-
-```{r}
-day(result)
-month(result)
-```
-
-You can find a complete list in the lubridate documentation.
-
-Now let's convert the `date_updated` column in the Craigslist data. It's always
-a good idea to test your format string before saving the results back into the
-data frame:
-
-```{r}
-dates = ymd_hms(cl$date_updated)
-head(dates)
-```
-
-The `as.Date` function returns `NA` if conversion failed, so in this case it
-looks like the dates were converted correctly. Now we can save the dates back
-into the data frame.
-
-```{r}
-cl$date_updated = dates
-```
-
-
-### Tidy Data {#sec-tidy-data}
+## Tidy Data {#sec-tidy-data}
 
 Many functions require data frames that are in **tidy** form. Before we see the
 requirements for a data set to be tidy, we need to define or review some
