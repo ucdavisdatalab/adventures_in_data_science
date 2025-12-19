@@ -1,0 +1,49 @@
+[workspace]
+authors = [
+  "Carl Stahmer <cstahmer@ucdavis.edu>",
+  "Pamela L. Reynolds <plreynolds@ucdavis.edu>",
+  "Nick Ulle <nick.ulle@gmail.com>",
+  "Tyler Shoemaker",
+  "Michele Tobias",
+  "Wesley Brooks",
+  "Arthur Koehl",
+  "Carrie Alexander",
+  "Jared Joseph",
+  "Liza Wood"
+]
+channels = ["conda-forge"]
+name = "adventures_in_data_science"
+description = "Course reader for Adventures in Data Science (STS 115)"
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+version = "2026.winter.1"  # <year>.<quarter>.<revision #>
+
+[tasks]
+build = { cmd = "quarto render", description = "Build the reader." }
+publish = { cmd = "ghp-import --no-jekyll --no-history --push _build", description = "Publish the reader to the `gh-pages` branch on GitHub." }
+clean = { cmd = "rm -rf _build/", description = "Remove the build directory." }
+rebuild = { depends-on = ["clean", "build"], description = "Remove the build directory and build the reader." }
+
+[dependencies]
+# This doesn't include dependencies for the Special Topics chapters.
+ghp-import = ">=2.1.0,<3"
+r = ">=4.5,<4.6"
+quarto = ">=1.8.26,<2"
+r-rmarkdown = ">=2.30,<3"
+r-remotes = ">=2.5.0,<3"
+r-ggplot2 = ">=4.0.1,<5"
+r-knitr = ">=1.50,<2"
+r-readxl = ">=1.4.5,<2"
+r-stringr = ">=1.6.0,<2"
+r-tidyr = ">=1.3.1,<2"
+r-lubridate = ">=1.9.4,<2"
+r-httr = ">=1.4.7,<2"
+r-jsonlite = ">=2.0.0,<3"
+r-xml2 = ">=1.5.0,<2"
+r-rvest = ">=1.0.5,<2"
+r-readr = ">=2.1.6,<3"
+
+[activation.env]
+# Make sure R only searches for packages within the Pixi environment.
+PIXI_R_LIBS = "$CONDA_PREFIX/lib/R/library"
+R_LIBS = "$PIXI_R_LIBS"
+R_LIBS_USER = "$PIXI_R_LIBS"
