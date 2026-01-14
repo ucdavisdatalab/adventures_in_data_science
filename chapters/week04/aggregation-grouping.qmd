@@ -1,5 +1,256 @@
 # Aggregation & Grouping
 
-:::{.callout-caution title="Work in Progress"}
-We're still developing this section and will post it soon.
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Call a function repeatedly with `sapply` or `lapply`
+* Split data into groups and apply a function to each
 :::
+
+
+## Apply Functions {#sec-apply-functions}
+
+@sec-vectorization introduced vectorization, a convenient and efficient way to
+compute multiple results. That section also mentioned that some of R's
+functions---the ones that summarize or aggregate data---are not vectorized.
+
+The `class` function is an example of a function that's not vectorized. If we
+call the `class` function on the least terns data set, we get just one result
+for the data set as a whole:
+
+```{r}
+class(terns)
+```
+
+What if we want to get the class of each column? We can get the class for a
+single column by selecting the column with `$`, the dollar sign operator:
+
+```{r}
+class(terns$year)
+```
+
+But what if we want the classes for all the columns? We could write a call to
+`class` for each column, but that would be tedious. When you're working with a
+programming language, you should try to avoid tedium; there's usually a better,
+more automated way.
+
+@sec-lists pointed out that data frames are technically lists, where each
+column is one element. With that in mind, what we need here is a line of code
+that calls `class` on each element of the data frame. The idea is similar to
+vectorization, but since we have a list and a non-vectorized function, we have
+to do a bit more than just call `class(terns)`.
+
+The `lapply` function calls, or _applies_, a function on each element of a list
+or vector. The syntax is:
+
+```
+lapply(X, FUN, ...)
+```
+
+The function `FUN` is called once for each element of `X`, with the element as
+the first argument. The `...` is for additional arguments to `FUN`, which are
+held constant across all the elements.
+
+Let's try this out with the least terns data and the `class` function:
+
+```{r}
+lapply(terns, class)
+```
+
+The result is similar to if the `class` function was vectorized. In fact, if we
+use a vector and a vectorized function with `lapply`, the result is nearly
+identical to the result from vectorization:
+
+```{r}
+x = c(1, 2, pi)
+
+sin(x)
+
+lapply(x, sin)
+```
+
+The only difference is that the result from `lapply` is a list. In fact, the
+`lapply` function always returns a list with one element for each element of
+the input data. The "l" in `lapply` stands for "list".
+
+The `lapply` function is one member of a family of functions called **apply
+functions**. All of the apply functions provide ways to apply a function
+repeatedly to different parts of a data structure. We'll meet a few more apply
+functions soon.
+
+When you have a choice between using vectorization or an apply function, you
+should always choose vectorization. Vectorization is clearer---compare the two
+lines of code above---and it's also significantly more efficient. In fact,
+vectorization is the most efficient way to call a function repeatedly in R.
+
+As we saw with the `class` function, there are some situations where
+vectorization is not possible. That's when you should think about using an
+apply function.
+
+
+### The `sapply` Function
+
+The related `sapply` function calls a function on each element of a list or
+vector, and simplifies the result. That last part is the crucial difference
+compared to `lapply`. When results from the calls all have the same type and
+length, `sapply` returns a vector or matrix instead of a list. When the results
+have different types or lengths, the result is the same as for `lapply`. The
+"s" in `sapply` stands for "simplify".
+
+For instance, if we use `sapply` to find the classes of the columns in the
+least terns data, we get a character vector:
+
+```{r}
+sapply(terns, class)
+```
+
+Likewise, if we use `sapply` to compute the `sin` values, we get a numeric
+vector, the same as from vectorization:
+
+```{r}
+sapply(x, sin)
+```
+
+In spite of that, vectorization is still more efficient than `sapply`, so use
+vectorization instead when possible.
+
+Apply functions are incredibly useful for summarizing data. For example,
+suppose we want to compute the frequencies for all of the columns in the
+least terns data set that aren't numeric.
+
+First, we need to identify the columns. One way to do this is with the
+`is.numeric` function. Despite the name, this function actually tests whether
+its argument is a real number, not whether it its argument is a numeric vector.
+In other words, it also returns true for integer values. We can use `sapply` to
+apply this function to all of the columns in the least terns data set:
+
+```{r}
+is_not_number = !sapply(terns, is.numeric)
+is_not_number
+```
+
+Is it worth using R code to identify the non-numeric columns? Since there are
+only `r ncol(terns)` columns in the least terns data set, maybe not. But if the
+data set was larger, with say 100 columns, it definitely would be.
+
+In general, it's a good habit to use R to do things rather than do them
+manually. You'll get more practice programming, and your code will be more
+flexible if you want to adapt it to other data sets.
+
+Now that we know which columns are non-numeric, we can use the `table` function
+to compute frequencies. We only want to compute frequencies for those columns,
+so we need to subset the data:
+
+```{r}
+lapply(terns[, is_not_number], table)
+```
+
+We use `lapply` rather than `sapply` for this step because the table for each
+column will have a different length (but try `sapply` and see what happens!).
+
+
+### The Split-Apply Pattern
+
+In a data set with categorical features, it's often useful to compute something
+for each category. The `lapply` and `sapply` functions can compute something
+for each element of a data structure, but categories are not necessarily
+elements.
+
+```{r, echo = FALSE}
+n_regions = length(unique(terns$region_3))
+```
+
+For example, the least terns data set has `r n_regions` different categories in
+the `region_3` column. If we want all of the rows for one region, one way to
+get them is by indexing:
+
+```{r}
+southern = terns[terns$region_3 == "SOUTHERN", ]
+head(southern)
+```
+
+To get all `r n_regions` regions separately, we'd have to do this `r n_regions`
+times. If we want to compute something for each region, say the median of the
+`total_nests` column, we also have to repeat that computation `r n_regions`
+times. Here's what it would look like for just the `SOUTHERN` region:
+
+```{r}
+median(southern$total_nests, na.rm = TRUE)
+```
+
+If the categories were elements, we could avoid writing code to index each
+category, and just use the `sapply` (or `lapply`) function to apply the
+`median` function to each.
+
+The `split` function splits a vector or data frame into groups based on a
+vector of categories. The first argument to `split` is the data, and the
+second argument is a congruent vector of categories.
+
+We can use `split` to elegantly compute medians of `total_nests` broken down by
+country. First, we split the data by region Since we only want to compute on
+the `total_nests` column, we only split that column:
+
+```{r}
+by_region = split(terns$total_nests, terns$region_3)
+class(by_region)
+names(by_region)
+```
+
+The result from `split` is a list with one element for each category. The
+individual elements contain pieces of the original `total_nests` column:
+
+```{r}
+head(by_region$SOUTHERN)
+```
+
+Since the categories are elements in the split data, now we can use `sapply`
+the same way we did in previous examples:
+
+```{r}
+sapply(by_region, median, na.rm = TRUE)
+```
+
+This two-step process is an R idiom called the **split-apply pattern**. First
+you use `split` to convert categories into list elements, then you use an apply
+function to compute something on each category. Any time you want to compute
+results by category, you should think of this pattern.
+
+The split-apply pattern is so useful that R provides the `tapply` function as a
+shortcut. The `tapply` function is equivalent to calling `split` and then
+`sapply`. Like `split`, the first argument is the data and the second argument
+is a congruent vector of categories. The third argument is a function to apply,
+like the function argument in `sapply`.
+
+We can use `tapply` to compute the `total_nests` medians by `region_3` for the
+least terns data set:
+
+```{r}
+tapply(terns$total_nests, terns$region_3, median, na.rm = TRUE)
+```
+
+Notice that the result is identical to the one we computed before.
+
+The "t" in `tapply` stands for "table", because the `tapply` function is a
+generalization of the `table` function. If you use `length` as the third
+argument to `tapply`, you get the same results as you would from using the
+`table` function on the category vector.
+
+The `aggregate` function is closely related to `tapply`. It computes the same
+results, but organizes them into a data frame with one row for each category.
+In some cases, this format is more convenient. The arguments are the same,
+except that the second argument must be a list or data frame rather than a
+vector.
+
+As an example, here's the result of using `aggregate` to compute the
+`total_nests` medians:
+
+```{r}
+aggregate(terns$total_nests, list(terns$region_3), mean)
+```
+
+The `lapply`, `sapply`, and `tapply` functions are the three most important
+functions in the family of apply functions, but there are many more. You can
+learn more about all of R's apply functions by reading [this StackOverflow
+post][apply].
+
+[apply]: https://stackoverflow.com/a/7141669
