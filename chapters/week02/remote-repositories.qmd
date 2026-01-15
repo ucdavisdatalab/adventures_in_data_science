@@ -1,7 +1,6 @@
 # Remote Repositories
 
-:::{admonition} Learning Goals
-:class: note
+:::{.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
 * Explain what [GitHub][] is and how it relates to Git
@@ -14,18 +13,16 @@ After this lesson, you should be able to:
 
 [GitHub]: https://github.com/
 
-As a distributed version control system
-({numref}`sec-version-control-systems`), one of Git's major features is that
-you can share commits between repositories. From the perspective of a
-repository, the repository is **local** and all other repositories are
-**remote**. Remote repositories, or remotes, are typically stored on some other
-computer connected to yours by a network (such as the Internet). In this
-chapter, you'll learn how to use Git to send and receive commits from remote
-repositories.
+As a distributed version control system (@sec-version-control-systems), one of
+Git's major features is that you can share commits between repositories. From
+the perspective of a repository, the repository is **local** and all other
+repositories are **remote**. Remote repositories, or remotes, are typically
+stored on some other computer connected to yours by a network (such as the
+Internet). In this chapter, you'll learn how to use Git to send and receive
+commits from remote repositories.
 
 
-(sec-github)=
-## GitHub
+## GitHub {#sec-github}
 
 <!--
 TODO: this section could provide more details about popular hosting services
@@ -41,7 +38,7 @@ repositories.
 [GitLab]: https://about.gitlab.com/
 [BitBucket]: https://bitbucket.org/
 
-:::{important}
+:::{.callout-important}
 Keep in mind that Git and GitHub are different things. Git is a version control
 system, while GitHub is a hosting service built to support Git.
 
@@ -50,8 +47,7 @@ commits, but all of the Git commands described will work with any remote
 repository.
 :::
 
-:::{admonition} Note: GitHub Desktop
-:class: note, dropdown
+:::{.callout-note title="Note: GitHub Desktop" collapse="true"}
 GitHub also offers an application called [GitHub Desktop][gh-desktop], which
 allows users to manage their local repositories with a point-and-click
 graphical user interface (GUI).
@@ -82,7 +78,7 @@ look for an email from GitHub. Click the "Verify email address" button. Doing
 so will take you to your profile, where, if you'd like, you can add a few
 details about yourself.
 
-![](/images/version-control/gh_new_account.png)
+![](/images/week02/gh_new_account.png)
 
 You now have a GitHub account!
 
@@ -111,7 +107,7 @@ about how to create an SSH key and add the public key to your GitHub account.
 
 [gh-ssh]: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
 
-:::{important}
+:::{.callout-important}
 Work through the following sections of the documentation to set up SSH key
 authentication with GitHub:
 
@@ -129,8 +125,7 @@ Don't skip this part---it's necessary if you want to use GitHub and follow
 along with the subsequent examples.
 :::
 
-:::{admonition} Note: What is SSH?
-:class: note, dropdown
+:::{.callout-note title="Note: What is SSH?" collapse="true"}
 SSH stands for **secure shell protocol**, a protocol for communication between
 two computers. The "secure" in secure shell means that all messages sent
 between the computers are encrypted. This makes it practically impossible for a
@@ -141,8 +136,7 @@ servers hosting repositories.
 :::
 
 
-(sec-sharing-a-repository)=
-## Sharing a Repository
+## Sharing a Repository {#sec-sharing-a-repository}
 
 With a GitHub account and SSH key set up, you're ready to upload your first
 repository to GitHub. Some reasons to put a repository on GitHub include:
@@ -152,8 +146,8 @@ repository to GitHub. Some reasons to put a repository on GitHub include:
 * To make your work available for other people to use and evaluate
 
 Let's go through the steps to upload a repository, which we'll share with other
-people in {numref}`sec-collaborating`. To get started, open a terminal and
-navigate to your projects directory:
+people in @sec-collaborating. To get started, open a terminal and navigate to
+your projects directory:
 
 ```none
 cd ~/projects/
@@ -189,20 +183,16 @@ git commit
 
 Make sure to write a descriptive commit message like `Add a README.`
 
-So far so good! These steps should be familiar from
-{numref}`sec-creating-a-repository` and
-{numref}`sec-adding-committing-changes`. But now it's time to do something new:
-we need to set up a repository on GitHub where we can **push**, or send,
-commits from the local repository.
+So far so good! These steps should be familiar from @sec-creating-a-repository
+and @sec-adding-committing-changes. But now it's time to do something new: we
+need to set up a repository on GitHub where we can **push**, or send, commits
+from the local repository.
 
 Open a web browser and go to [GitHub][]. Make sure you're logged in, then click
 the "+" button in the upper-right corner and select the "New repository"
 option. You'll be taken to a page like this:
 
-:::{figure} /images/version-control/gh_new_repository.png
-:align: center
-:height: 40em
-:::
+![](/images/week02/gh_new_repository.png){height=40em}
 
 The page asks for several details about the new repository:
 
@@ -221,10 +211,7 @@ GitHub username). Leave the description blank and make sure the repository is
 public. Because you already initialized the repository locally, leave all of
 the initialization options unchecked. It should look something like this:
 
-:::{figure} /images/version-control/gh_new_repository_filled.png
-:align: center
-:height: 40em
-:::
+![](/images/week02/gh_new_repository_filled.png){height=40em}
 
 Once you've filled in the details, click the green "Create repository" button
 at the bottom of the page.
@@ -233,10 +220,7 @@ GitHub will take you to a new page with "Quick setup" and instructions to
 "create a new repository on the command line" or "push an existing repository
 from the command line." The page should look something like this:
 
-:::{figure} /images/version-control/gh_new_repository_created.png
-:align: center
-:height: 40em
-:::
+![](/images/week02/gh_new_repository_created.png){height=40em}
 
 Under "Quick setup," click on the "SSH" button, so that the instructions show
 how to connect to GitHub with SSH. Since we already created a repository
@@ -284,10 +268,7 @@ You should see the message in your `README.md` file:
 
 <!-- FIXME: update this image -->
 
-:::{figure} /images/version-control/gh_new_repository_pushed.png
-:align: center
-:height: 40em
-:::
+![](/images/week02/gh_new_repository_pushed.png){height=40em}
 
 Congratulations, your repository is online! 🎉 GitHub automatically checks for
 a README file in your repository and if it finds one, displays it on the
@@ -296,7 +277,7 @@ will even render the formatting.
 
 [Markdown]: https://guides.github.com/features/mastering-markdown/
 
-:::{seealso}
+:::{.callout-note title="See Also"}
 You can find information about how to write effective README files in DataLab's
 [README, Write Me! workshop reader][dl-readme].
 
@@ -306,16 +287,15 @@ You can find information about how to write effective README files in DataLab's
 <!-- TODO: another example of pushing a commit -->
 
 
-(sec-collaborating)=
-## Collaborating
+## Collaborating {#sec-collaborating}
 
 Uploading a repository to GitHub so that it's available to others, as in
-{numref}`sec-sharing-a-repository`, is the first step towards collaboration. In
-this section, you'll learn the next steps: how to download someone else's
+@sec-sharing-a-repository, is the first step towards collaboration. In this
+section, you'll learn the next steps: how to download someone else's
 repository, how to add someone as a collaborator to your repository, and how to
 send commits to and receive commits from a collaborator.
 
-:::{important}
+:::{.callout-important}
 For this part, you'll need to work with a partner. Take a moment to find a
 partner and exchange GitHub usernames. Pay careful attention to their
 username's spelling and capitalization.
@@ -387,19 +367,13 @@ add a reply to the question in the README.
 Open a web browser to *your repository's* main page on GitHub. Click on the
 "Settings" button. You'll be taken to a page that looks like this:
 
-:::{figure} /images/version-control/gh_repository_settings.png
-:align: center
-:height: 40em
-:::
+![](/images/week02/gh_repository_settings.png){height=40em}
 
 On the left side, click on "Collaborators". GitHub might ask you to enter your
 password or complete two-factor authentication. Once you've done that, you'll
 end up at a page like this:
 
-:::{figure} /images/version-control/gh_repository_collaborators.png
-:align: center
-:height: 40em
-:::
+![](/images/week02/gh_repository_collaborators.png){height=40em}
 
 Click on the green "Add people" button near the bottom of the page, then enter
 your partner's GitHub username in the popup that appears. Then tell your
@@ -409,8 +383,7 @@ invitation to collaborate on your repository.
 Both you and your partner need to accept the invitations before proceeding.
 
 
-(sec-pushing-commits)=
-### Pushing Commits
+### Pushing Commits {#sec-pushing-commits}
 
 It's time to answer the question your partner put in their repository's README.
 Go back to the terminal, and navigate to cloned copy of *your partner's
@@ -439,8 +412,8 @@ git add README.md
 git commit
 ```
 
-Go back to {numref}`sec-adding-committing-changes` if you need to refresh your
-memory of these commands.
+Go back to @sec-adding-committing-changes if you need to refresh your memory of
+these commands.
 
 You can send the commit to your partner by pushing it to their repository on
 GitHub. To do this, run:
@@ -467,17 +440,16 @@ see the commit they made on your repository's GitHub page. If anything doesn't
 seem right, try working through the steps again.
 
 
-### Pulling Commits 
+### Pulling Commits
 
-{numref}`sec-pushing-commits` explained how to push commits from a local
-repository to a remote repository. The counterpart is **pulling** commits from
-a remote repository to a local one. When you're working collaboratively, you
-can get commits your collaborators have pushed to GitHub (or any other remote)
-by pulling them to your local repository.
+@sec-pushing-commits explained how to push commits from a local repository to a
+remote repository. The counterpart is **pulling** commits from a remote
+repository to a local one. When you're working collaboratively, you can get
+commits your collaborators have pushed to GitHub (or any other remote) by
+pulling them to your local repository.
 
-It's time to pull the commit your partner made in
-{numref}`sec-pushing-commits`. Open a terminal again and navigate to *your
-repository*. Then run `git pull`:
+It's time to pull the commit your partner made in @sec-pushing-commits. Open a
+terminal again and navigate to *your repository*. Then run `git pull`:
 
 ```none
 git pull

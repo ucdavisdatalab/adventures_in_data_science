@@ -1,8 +1,6 @@
-(sec-git-basics)=
-# Git Basics
+# Git Basics {#sec-git-basics}
 
-:::{admonition} Learning Goals
-:class: note
+:::{.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
 * Initialize a Git repository
@@ -15,8 +13,7 @@ After this lesson, you should be able to:
 :::
 
 
-(sec-configuring-git)=
-## Configuring Git
+## Configuring Git {#sec-configuring-git}
 
 <!-- TODO: better intro? -->
 
@@ -32,10 +29,10 @@ people a way to contact you about it. Git is open-source, community-developed
 software, so it won't share your name and email address with spammers, but the
 information *will* be visible on any changes you make to public repositories.
 
-:::{note}
+:::{.callout-note}
 If you're not comfortable attaching your real name to work you do with Git, a
 reasonable alternative is to use an alias you control, such as your GitHub
-username. {numref}`sec-github` explains more about GitHub.
+username. @sec-github explains more about GitHub.
 
 Likewise, if you don't want to attach your primary email address to work you do
 with Git, set up a new email address and use that. Don't make up a fake email
@@ -68,7 +65,7 @@ your name is:
 git config get user.name
 ```
 
-:::{tip}
+:::{.callout-tip}
 You can view the documentation for any subcommand by adding `--help` to the
 end. For instance, to get help with the `git config` subcommand, run `git
 config --help`.
@@ -99,7 +96,7 @@ To change the default branch name to `main`, run:
 git config set --global init.defaultBranch main
 ```
 
-:::{seealso}
+:::{.callout-note title="See Also"}
 This section is based on the section [First-Time Git Setup][pg-first] of the
 book _Pro Git_.
 
@@ -107,8 +104,7 @@ book _Pro Git_.
 :::
 
 
-(sec-creating-a-repository)=
-## Creating a Repository
+## Creating a Repository {#sec-creating-a-repository}
 
 Now that we've established what version control systems are, and you've
 configured Git, it's time to create a repository.
@@ -136,7 +132,7 @@ directory (`my_first_repository/`) exists, and creates it if it doesn't. Then
 Git makes the directory a repository by creating a hidden `.git/` subdirectory.
 This subdirectory is where Git will store the history of the repository.
 
-:::{caution}
+:::{.callout-warning}
 The `.git/` subdirectory is hidden for a reason. Let Git manage its contents.
 Avoid creating or modifying files and directories inside `.git/`, as this might
 break your repository. If you delete `.git/`, your repository will no longer be
@@ -175,7 +171,7 @@ just created the repository. Finally, in the third part of the message, Git
 says that there is nothing to commit. This also makes sense, since we haven't
 created any files in the repository yet.
 
-:::{note}
+:::{.callout-note}
 When Git doesn't recognize a directory as a repository, the output from `git
 status` (and most other `git` subcommands) instead looks like:
 
@@ -188,8 +184,7 @@ likely you meant to run the command in a different directory.
 :::
 
 
-(sec-adding-committing-changes)=
-## Adding & Committing Changes
+## Adding & Committing Changes {#sec-adding-committing-changes}
 
 Once you've created a repository, you'll want to copy some files into it, or
 create new files, so that you can use Git to track their versions.
@@ -197,8 +192,7 @@ create new files, so that you can use Git to track their versions.
 In `my_first_repository/`, let's create a file with a short self-introduction.
 Start by opening a text editor.
 
-:::{admonition} Choosing a Text Editor
-:class: note, dropdown
+:::{.callout-note title="Choosing a Text Editor" collapse="true"}
 Even if you primarily use software with graphical user interfaces, it's good to
 be familiar with a command-line text editor. You can use the editor for quick
 edits while at the command-line and on computers that don't provide a graphical
@@ -296,14 +290,13 @@ Git reports that the changes to `hello.txt` are in the staging area and ready
 to be committed. It also lists the command to remove the changes from the
 staging area.
 
-:::{tip}
+:::{.callout-tip}
 Take advantage of the staging area to curate the contents of your commits.
 Putting distinct work in distinct commits makes it easier to inspect (and
 occasionally undo) the work.
 :::
 
-:::{admonition} Tip: Unstaging Changes
-:class: tip, dropdown
+:::{.callout-tip title="Tip: Unstaging Changes" collapse="true"}
 In a new repository without any commits, the command to unstage changes is `git
 rm --cached`.
 
@@ -356,7 +349,7 @@ message must be a summary of the commit in 72 characters or less. You can
 optionally follow this with a blank second line and then a detailed description
 of the commit beginning on the third line.
 
-:::{important}
+:::{.callout-important}
 Strive for clear and meaningful commit messages. If you feel like the changes
 in a commit are too numerous or complicated to summarize in one line, use the
 optional detailed description.
@@ -367,8 +360,7 @@ project's evolution much more difficult and time-consuming for future you and
 your collaborators.
 :::
 
-:::{admonition} Tip: The 50/72 Rule
-:class: tip, dropdown
+:::{.callout-tip title="Tip: The 50/72 Rule" collapse="true"}
 Many programmers follow [the 50/72 rule][50-72], which says that the first line
 of a commit message should be 50 characters or less and written in the
 imperative mood. For example:
@@ -408,7 +400,7 @@ Add a friendly greeting.
 Finally, to let Git know that you're done, save the commit message and exit the
 text editor.
 
-:::{note}
+:::{.callout-note}
 If you exit the text editor without saving, Git will cancel the commit. This is
 helpful if you change your mind about making a commit or forget to add
 something to the staging area.
@@ -460,7 +452,7 @@ clean. The **working tree** consists of the files and directories you actually
 have in your repository. The working tree is **clean** if it's identical to the
 most recent commit, meaning you haven't changed anything since that commit.
 
-:::{important}
+:::{.callout-important}
 Remember, saving your work in Git is a two step process:
 
 1. `git add` (for each file or directory with changes you want to save)
@@ -522,7 +514,7 @@ It might seem counterintuitive to add `hello.txt`, since it no longer exists.
 What you should keep in mind is that `git add` adds *changes* to the staging
 area, *not files,* and moving (or removing) a file is a change to that file.
 
-:::{important}
+:::{.callout-important}
 Removing/deleting a file is a change to that file, just like creating, editing,
 or moving the file.
 
@@ -564,7 +556,7 @@ git commit
 If you check the status now, you'll see that the working tree is once again
 clean.
 
-:::{tip}
+:::{.callout-tip}
 You can also make commits without opening a text editor. Use this command:
 
 ```none
@@ -577,8 +569,7 @@ simple commits.
 :::
 
 
-(sec-exploring-history)=
-## Exploring History
+## Exploring History {#sec-exploring-history}
 
 <!-- TODO: incorporate this?
 Git can keep track of different versions of any kind of file, but text files
@@ -617,7 +608,7 @@ Date:   Wed Jan 8 13:59:08 2025 -0800
 For each commit, the log lists the hash, name and email of the author,
 timestamp, and commit message.
 
-:::{note}
+:::{.callout-note}
 When a repository has a long history, `git log` will display the commits in a
 scrolling window. You can use the up and down arrow keys to scroll, and type
 `q` (for quit) to return to the terminal.
@@ -675,7 +666,7 @@ usually also includes a few lines that didn't change (no prefix). It's a good
 idea to check `git diff` before adding files to the staging area, so that you
 know what you're adding.
 
-:::{tip}
+:::{.callout-tip}
 If you've changed a lot of files, the output from `git diff` can be
 overwhelming. You can use the command `git diff PATH` to view only the changes
 to the file or directory at `PATH`.
@@ -709,10 +700,10 @@ changes).
 -->
 
 Suppose you decide you don't like the title you added to `README.md` in
-{numref}`sec-exploring-history`. If you want to change the title to something
-different, the best approach is to edit the file and make a new commit. On the
-other hand, if you want to restore an older version of the file, manual editing
-is tedious and error-prone.
+@sec-exploring-history. If you want to change the title to something different,
+the best approach is to edit the file and make a new commit. On the other hand,
+if you want to restore an older version of the file, manual editing is tedious
+and error-prone.
 
 Instead, use the `git restore --source` command to restore a file to how it was
 in a particular commit.
@@ -755,7 +746,7 @@ git restore --source 4f5702 README.md
 
 Make sure to replace `4f5702` with the actual hash for your commit.
 
-:::{danger}
+:::{.callout-warning}
 Be careful with `git restore`: when you restore a file, any *uncommitted*
 changes you've made to the file will be erased, and there's no undo.
 
@@ -785,8 +776,7 @@ no changes added to commit (use "git add" and/or "git commit -a")
 As with any other change, you can add and commit this change if you want to
 save it in the repository's history.
 
-:::{admonition} Tip: Undoing Commits
-:class: tip, dropdown
+:::{.callout-tip title="Tip: Undoing Commits" collapse="true"}
 If you want to undo an entire commit, use `git revert` rather than `git
 restore`. Specifically, run:
 
