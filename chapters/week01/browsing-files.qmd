@@ -1,8 +1,6 @@
-(sec-browsing-files)=
-# Browsing Files
+# Browsing Files {#sec-browsing-files}
 
-:::{admonition} Learning Goals
-:class: note
+:::{.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
 * Define file system, directory, and path
@@ -23,8 +21,7 @@ then gives a hands-on introduction to working with files and directories in the
 CLI.
 
 
-(sec-file-systems)=
-## File Systems
+## File Systems {#sec-file-systems}
 
 Your computer's **file system** consists of **files** (chunks of data) and
 **directories** (or "folders") to organize those files. For instance, the file
@@ -34,11 +31,15 @@ computing, might look like this:
 [ada]: https://en.wikipedia.org/wiki/Ada_Lovelace
 [chuck]: https://en.wikipedia.org/wiki/Charles_Babbage
 
-:::{figure} /images/command-line/filesystem.png
-:alt: Directories and files laid out in a hierarchical structure. At the top, the root directory, denoted by a forward slash, contains all other directories. Some of the directories below the root directory contain other directories or files.
-:height: 24em
+![
 An example of a file system.
-:::
+](/images/week01/filesystem.png){
+  height=24em
+  fig-alt="Directories and files laid out in a hierarchical structure. At the
+  top, the root directory, denoted by a forward slash, contains all other
+  directories. Some of the directories below the root directory contain other
+  directories or files."
+}
 
 Don't worry if your file system looks a bit different from the picture.
 
@@ -87,7 +88,7 @@ In other words, when a path leads to a directory, including a **trailing
 slash** is optional, but makes the meaning of the path clearer. Paths that lead
 to files never have a trailing slash.
 
-:::{warning}
+:::{.callout-warning}
 On Windows computers, the components of a path are usually separated with
 backslashes ```\``` instead of forward slashes `/`.
 
@@ -98,8 +99,7 @@ different set of commands).
 :::
 
 
-(sec-absolute-relative-paths)=
-## Absolute & Relative Paths
+## Absolute & Relative Paths {#sec-absolute-relative-paths}
 
 A path that starts from the root directory, like all of the ones we've seen so
 far, is called an **absolute path**. The path is "absolute" because it
@@ -154,7 +154,7 @@ directory, and from there go to the `cool_hair_selfie.jpg` file." In other
 words, the relative path depends on the context of the code or program that
 uses it.
 
-:::{tip}
+:::{.callout-tip}
 When you use paths in code, they should almost always be relative paths. This
 ensures that the code is portable to other computers, which is an important
 aspect of reproducibility. Another benefit is that relative paths tend to be
@@ -207,9 +207,9 @@ CLI, or more specifically, the shell, works the same way. The shell always has
 a directory open. This is called the **working directory**. Think of the
 working directory as the directory the shell is currently "at" or watching.
 
-{ref}`sec-absolute-relative-paths` explained that relative paths have a
-starting point that depends on the context where the path is used. The shell
-uses the working directory as the starting point for relative paths. 
+@sec-absolute-relative-paths explained that relative paths have a starting
+point that depends on the context where the path is used. The shell uses the
+working directory as the starting point for relative paths.
 
 The shell provides commands to manipulate the working directory. The command
 `pwd` prints the absolute path for the working directory. It doesn't require
@@ -225,7 +225,7 @@ pwd
 
 On your computer, the output from `pwd` will likely be different.
 
-:::{tip}
+:::{.callout-tip}
 The `pwd` command is very useful for getting your bearings. Run it any time
 you're uncertain about what the working directory is.
 
@@ -275,7 +275,7 @@ portable to other computers. It's fine to use `os.chdir` interactively (in the
 Python console), but avoid making your saved code dependent on it.
 :::
 -->
- 
+
 Another command that's useful for dealing with the working directory and file
 system is `ls`. The `ls` command lists the names of all of the files and
 directories inside of a directory. It accepts a path to a directory as an
@@ -311,15 +311,14 @@ ls /this/path/is/fake/
 "/this/path/is/fake/": No such file or directory (os error 2)
 ```
 
-(sec-making-removing-directories)=
-## Making & Removing Directories
+## Making & Removing Directories {#sec-making-removing-directories}
 
 When you start working on a project (whether it's academic, personal, or
 something else), it's a good habit to make a new directory, called a **project
 directory** or **repository**, where you'll keep all of the project's files.
 This way you can easily find, back up, and share the files.
 
-:::{tip}
+:::{.callout-tip}
 Give each project directory a descriptive name. This will make it easier for
 you to find the project in the future. At DataLab, we typically use names that
 include the year (or date) and title of the project. Use underscores (`_`) or
@@ -383,28 +382,13 @@ files (and directories that contain files).
 This chapter introduced five different commands you can use to browse files at
 the command line:
 
-:::{list-table}
-:header-rows: 1
-
-* - Command
-  - Description 
-  - Examples
-* - `pwd`
-  - Prints the working directory
-  - `pwd`
-* - `cd`
-  - Changes the working directory
-  - `cd`; `cd my_directory`
-* - `ls`
-  - Lists the contents of a directory
-  - `ls`; `ls my_directory`
-* - `mkdir`
-  - Makes a new directory
-  - `mkdir my_directory`
-* - `rmdir`
-  - Removes an empty directory
-  - `rmdir my_directory`
-:::
+Command | Description                       | Examples
+------- | -----------                       | --------
+`pwd`   | Prints the working directory      | `pwd`
+`cd`    | Changes the working directory     | `cd`; `cd my_directory`
+`ls`    | Lists the contents of a directory | `ls`; `ls my_directory`
+`mkdir` | Makes a new directory             | `mkdir my_directory`
+`rmdir` | Removes an empty directory        | `rmdir my_directory`
 
 Make sure you understand these commands before moving on, since it's likely
 you'll use them more frequently than any others.
