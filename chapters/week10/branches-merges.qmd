@@ -1,8 +1,6 @@
-(sec-branches-merges)=
-# Branches & Merges
+# Branches & Merges {#sec-branches-merges}
 
-:::{admonition} Learning Goals
-:class: note
+:::{.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
 * Explain what a branch is
@@ -67,22 +65,20 @@ Example flow:
 
 As you make commits to a Git repository, the commits become that repository's
 history. You can explore the history with commands like `git log` and `git
-restore` (see {ref}`sec-exploring-history`). For many repositories, the history
-is linear---each commit has one commit before it and possibly one after it, as
-in {numref}`fig-history-linear`.
+restore` (see @sec-exploring-history). For many repositories, the history is
+linear---each commit has one commit before it and possibly one after it, as in
+@fig-history-linear.
 
-:::{figure} /images/git-for-teams/history_linear.svg
-:name: fig-history-linear
-
+![
 Visualization of a Git repository with a linear history. There is exactly one
 branch, named `a`. Solid arrows show the order of commits. Dashed arrows show
 where the next commit will be on each branch. Each circle represents a commit.
-:::
+](/images/week10/history_linear.svg){#fig-history-linear}
 
 A **branch** is a distinct path through a repository's history, usually formed
 by branching off of or splitting the history at a particular commit, as in
-{numref}`fig-history-branched`. When a repository's history is completely
-linear, the repository has just one branch.
+@fig-history-branched. When a repository's history is completely linear, the
+repository has just one branch.
 
 <style type="text/css">
     .blue, .yellow, .green, .gray, .white {
@@ -99,16 +95,14 @@ linear, the repository has just one branch.
     .white  { background-color: #fff }
 </style>
 
-:::{figure} /images/git-for-teams/history_branch.svg
-:name: fig-history-branched
-
+![
 Visualization of a Git repository with two branches, `a` and `b`. Solid arrows
 show the order of commits. Dashed arrows show where the next commit will be on
 each branch. Each circle represents a commit. Commits only on branch `a` are
 blue <span class="blue"></span>, and commits only on branch `b` are yellow
 <span class="yellow"></span>. Commits on both branches before the merge are
 gray <span class="gray"></span>.
-:::
+](/images/week10/history_branch.svg){#fig-history-branched}
 
 Branches are really useful! With branches, you can:
 
@@ -149,7 +143,7 @@ quick and easy.
 
 Let's explore Git's commands for working with branches. Along the way, we'll
 also review some of the fundamental Git commands we explained in
-{ref}`sec-git-basics`. As an example, we'll use DataLab's [Git sandbox
+@sec-git-basics. As an example, we'll use DataLab's [Git sandbox
 repository][dl-git-sandbox].
 
 [dl-git-sandbox]: https://github.com/ucdavisdatalab/sandbox_git
@@ -234,7 +228,7 @@ In the output, remote branches are prefixed with `remotes/` and the name of the
 remote (in this case, `origin`). You should see one local branch, `main`, and
 three remote branches.
 
-:::{tip}
+:::{.callout-tip}
 You can use the `-v` flag (short for `--verbose`) to make the `git branch`
 command show more information about each branch.
 :::
@@ -351,7 +345,7 @@ nothing to commit, working tree clean
 
 Since we didn't commit the changes, Git has no record of them.
 
-:::{danger}
+:::{.callout-warning}
 Only use `git switch` with `-f` when you're absolutely sure you want to discard
 your changes. There's no undo.
 :::
@@ -363,8 +357,8 @@ When you start working on something new in a repository, like a new feature or
 a bug fix, it's usually a good idea to create a new branch and do the work
 there. Then you can switch back to the original branch any time you need to use
 the repository in the state it was in before you started working. Working on a
-branch also makes collaboration easier (see {ref}`sec-making-a-pull-request`)
-and can make a repository's history easier to understand.
+branch also makes collaboration easier (see @sec-making-a-pull-request) and can
+make a repository's history easier to understand.
 
 Branch names should be short but descriptive enough to serve as a reminder
 about the purpose of the branch. Git allows a wide variety of characters in
@@ -375,7 +369,7 @@ easy to type. Branch names cannot contain spaces or begin with a dash. See
 
 [git-branch-names]: https://stackoverflow.com/a/3651867
 
-:::{tip}
+:::{.callout-tip}
 For branches where you'll work mostly or entirely alone, we recommend names of
 the form `XX-DESCRIPTION`, where `XX` are your initials and `DESCRIPTION` is a
 short description of the branch. For instance, `nu-fix-indexing` is a good
@@ -441,7 +435,7 @@ version of the repository.
 
 After working on a branch for a while, you might reach a point where you feel
 like your work is ready to copy back to the original branch. You can do this
-with a **merge**, which applies commits from one branch onto another. 
+with a **merge**, which applies commits from one branch onto another.
 
 To practice merging, let's merge the `my-first-branch` branch into the `demo`
 branch. You can use `git merge BRANCH` to merge the branch `BRANCH` into the
@@ -460,7 +454,7 @@ Fast-forward
 When you run `git merge`, Git will try to merge the commits automatically. An
 automatic merge is possible as long as there are not changes to a file on one
 branch that conflict with changes to that file on the other. There are two
-kinds of automatic merges (also see {numref}`fig-merge-vs-ff`):
+kinds of automatic merges (also see @fig-merge-vs-ff):
 
 * A regular merge, for which Git creates a **merge commit** that combines the
   changes from each branch.
@@ -472,9 +466,7 @@ since we didn't make any commits to `demo` after creating `my-first-branch`.
 Git notes this in the output. This means that Git did not need to create a
 merge commit.
 
-:::{figure} /images/git-for-teams/merge-vs-fast-forward.svg
-:name: fig-merge-vs-ff
-
+![
 Visualization of merging and fast-forward merging branch `b` into `a`. Solid
 arrows show the order of commits. Dashed arrows show where the next commit will
 be on each branch. Each circle represents a commit. Commits only on branch `b`
@@ -482,15 +474,14 @@ are yellow <span class="yellow"></span>. Commits on both branches before the
 merge are gray <span class="gray"></span>. Commits on both branches after the
 merge are green <span class="green"></span>. The merge commit is white <span
 class="white"></span>.
-:::
+](/images/week10/merge-vs-fast-forward.svg){#fig-merge-vs-ff}
 
 In a regular merge, Git will create a new commit and give you a chance to enter
 a commit message (similar to when you run `git commit`). Git will automatically
 fill in a commit message describing the merge, and in most cases it's best to
 accept the default message.
 
-::::{admonition} Merge versus Rebase
-:class: note
+:::{.callout-note title="Merge versus Rebase"}
 
 There's another way to apply commits from one branch onto another: a **rebase**
 updates a collection of commits so that they appear as if they were made after
@@ -501,9 +492,7 @@ harder to fathom, since commits are not necessarily in chronological order and
 information about branches is discarded. You can rebase one branch onto another
 with the `git rebase` command.
 
-:::{figure} /images/git-for-teams/merge-vs-rebase.svg
-:name: fig-merge-vs-rebase
-
+![
 Visualization of merging branch `b` into `a` and rebasing branch `a` onto `b`.
 Solid arrows show the order of commits. Dashed arrows show where the next
 commit will be on each branch. Each circle represents a commit. Commits only on
@@ -511,14 +500,14 @@ branch `a` are blue <span class="blue"></span>, and commits only on branch `b`
 are yellow <span class="yellow"></span>. Commits on both branches before the
 rebase are gray <span class="gray"></span>. Commits on both branches after the
 rebase are green <span class="green"></span>.
-:::
+](/images/week10/merge-vs-rebase.svg){#fig-merge-vs-rebase}
 
 We recommend merging over rebasing when you're dealing with multiple branches.
 That said, learning to use `git rebase` can be beneficial for managing commits
 within a single branch---you can use the command to reorganize or combine
 commits *before* you share them with anyone else, so that the history of your
 work is well-organized even if your development process is messy.
-::::
+:::
 
 
 ## Merge Conflicts
