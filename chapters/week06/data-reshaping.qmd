@@ -1,5 +1,474 @@
-# Data Reshaping
+# Reshaping Data
 
-:::{.callout-caution title="Work in Progress"}
-We're still developing this section and will post it soon.
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Explain what it means for data to be tidy
+* Use the tidyr package to reshape data
 :::
+
+The structure of a dataset---its shape and organization---has enormous
+influence on how difficult it will be to analyze, so making structural changes
+is an important part of the cleaning process. Researchers conventionally
+arrange tabular datasets so that each row contains a single **observation** or
+case, and each column contains a single kind of measurement or identifier,
+called a **feature**.
+
+In 2014, [Hadley Wickham][hadley] refined and formalized the conventions for
+tabular datasets by [introducing the concept of **tidy datasets**][tidy], which
+have a specific structure. Paraphrasing Wickham, the rules for a tidy dataset
+are:
+
+[hadley]: https://hadley.nz/
+[tidy]: https://vita.had.co.nz/papers/tidy-data.html
+
+> 1. Every column is a single feature.
+> 2. Every row is a single observation.
+> 3. Every cell is a single value.
+
+These rules ensure that all of the values in a dataset are visually organized
+and are easy to access with indexing operations. They're also specific enough
+to make tidiness a convenient standard for functions that operate on tabular
+datasets. In fact, the [Tidyverse][tidyverse] packages (see Section
+\@ref(the-tidyverse)) are designed from the ground up for working with tidy
+datasets. Tidy datesets have also been adopted as a standard in other software,
+including various packages for Python and Julia.
+
+[tidyverse]: https://www.tidyverse.org/
+
+This section explains how to **reshape** tabular datasets into tidy datasets.
+While reshaping can seem tricky at first, making sure your dataset has the
+right structure before you begin analysis saves time and frustration in the
+long run.
+
+<!--
+The Tidyverse is so named because many functions in Tidyverse packages require
+data frames that are in **tidy** form. Before we see the requirements for a
+data set to be tidy, we need to define or review some terminology from
+statistics.
+
+A **feature** (also called a **covariate** or a **variable**) is a measurement
+of something, usually across multiple subjects. For example, we might decide to
+measure the heights of everyone in the class. Each person in the class is a
+subject, and the height measurement is a feature. Features don't have to be
+quantitative. If we also asked each person their favorite color, then favorite
+color would be another feature in our data set. Features are usually, but not
+always, the columns in a tabular data set.
+
+An **observation** is a set of features measured for a single subject or at a
+single time. So in the preceding example, the combined height and favorite
+color measurement for one student is one observation. Observations are usually,
+but not always, the rows in a tabular data set.
+-->
+
+
+## The tidyr Package
+
+The [tidyr][] package provides functions to reshape tabular datasets. It also
+provides examples of tidy and untidy datasets. Like most Tidyverse packages, it
+comes with detailed [documentation][tidyr] and a [cheatsheet][tidyr-cheat].
+
+[tidyr]: https://tidyr.tidyverse.org/
+[tidyr-cheat]: https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf
+
+As usual, install the package if you haven't already, and then load it:
+
+```{r}
+# install.packages("tidyr")
+library(tidyr)
+```
+
+Let's start with an example of a tidy dataset. The `table1` dataset in the
+package records the number of tuberculosis cases across several different
+countries and years:
+
+```{r}
+table1
+```
+
+Each of the four columns contains a single kind of measurement or identifier,
+so the dataset satifies tidy rule 1. The measurements were taken at the
+country-year level, and each row contains data for one country-year pair, so
+the dataset also satisfies tidy rule 2. Each cell in the data frame only
+contains one value, so the dataset also satisfies tidy rule 3.
+
+The same data are recorded in `table2`, `table3`, and the pair `table4a` with
+`table4b`, but these are all *untidy* datasets. For example, `table2` breaks
+rule 1 because the column `count` contains two different kinds of
+measurements---case counts and population counts:
+
+```{r}
+table2
+```
+
+When considering whether you should reshape a dataset, think about what the
+features are and what the observations are. These depend on the dataset itself,
+but also on what kinds of analyses you want to do. Datasets sometimes have
+closely related features or multiple (nested) levels of observation. The tidyr
+documentation includes a [detailed article on how to reason about reshaping
+datasets][tidyr-tidy].
+
+[tidyr-tidy]: https://tidyr.tidyverse.org/articles/tidy-data.html
+
+If you do decide to reshape a dataset, then you should also think about what
+role each feature serves:
+
+* **Identifiers** are labels that distinguish observations from one another.
+  They are often but not always categorical. Examples include names or
+  identification numbers, treatment groups, and dates or times. In the
+  tuberculosis data set, the `country` and `year` columns are identifiers.
+
+* **Measurements** are the values collected for each observation and typically
+  the values of research interest. For the tuberculosis data set, the `cases`
+  and `population` columns are measurements.
+
+Having a clear understanding of which features are identifiers and which are
+measurements makes it easier to use the tidyr functions.
+
+
+## Rows into Columns
+
+Tidy data rule 1 is that each column must be a single feature. The `table2`
+dataset breaks this rule:
+
+```{r}
+table2
+```
+
+To make the dataset tidy, the measurements in the `count` column need to be
+separated into two separate columns, `cases` and `population`, based on the
+categories in the `type` column.
+
+You can use the `pivot_wider` function to **pivot** the single `count` column
+into two columns according to the `type` column. This makes the dataset wider,
+hence the name `pivot_wider`.
+
+The function's first parameter is the dataset to pivot. Other important
+parameters are:
+
+* `values_from` -- The column(s) to pivot.
+* `names_from` -- The column that contains names for the new columns.
+* `id_cols` -- The identifier columns, which are not pivoted. This defaults to
+  all columns except those in `values_from` and `names_from`.
+
+Here's how to use the function to make `table2` tidy:
+
+```{r}
+pivot_wider(table2, values_from = count, names_from = type)
+```
+
+The function automatically removes values from the `country` and `year` columns
+as needed to maintain their original correspondence with the pivoted values.
+
+
+## Columns into Rows
+
+Tidy data rule 2 is that every row must be a single observation. The `table4a`
+and `table4b` datasets break this rule because each row in each dataset
+contains measurements for two different years:
+
+```{r}
+table4a
+table4b
+```
+
+The tuberculosis case counts are in `table4a`. The population counts are in
+`table4b`. Neither is tidy.
+
+To make the `table4a` dataset tidy, the `1999` and `2000` columns need to be
+pivoted into two new columns: one for the measurements (the counts) and one for
+the identifiers (the years). It might help to visualize this as stacking the
+two separate columns `1999` and `2000` together, one on top of the other, and
+then adding a second column with the appropriate years. The same process makes
+`table4b` tidy.
+
+You can use the `pivot_longer` function to pivot the two columns `1999` and
+`2000` into a column of counts and a column of years. This makes the dataset
+longer, hence the name `pivot_longer`.
+
+Again the function's first parameter is the dataset to pivot. Other important
+parameters are:
+
+* `cols` -- The columns to pivot.
+* `values_to` -- Name(s) for the new measurement column(s)
+* `names_to` -- Name(s) for the new identifier column(s)
+
+Here's how to use the function to make `table4a` tidy:
+
+```{r}
+tidy4a = pivot_longer(table4a, -country, values_to = "cases",
+  names_to = "year")
+tidy4a
+```
+
+In this case, the `cols` parameter is set to all columns *except* the `country`
+column, because the `country` column does not need to be pivoted. The function
+automatically repeats values in the `country` column as needed to maintain its
+original correspondence with the pivoted values.
+
+Here's the same for `table4b`:
+
+```{r}
+tidy4b = pivot_longer(table4b, -country, values_to = "population",
+  names_to = "year")
+tidy4b
+```
+
+Once the two datasets are tidy, you can join them with the `merge` function to
+reproduce `table1`:
+
+```{r}
+merge(tidy4a, tidy4b)
+```
+
+
+## Separating Values
+
+Tidy data rule 3 says each value must have its own cell. The `table3` dataset
+breaks this rule because the `rate` column contains two values per cell:
+
+```{r}
+table3
+```
+
+The two values separated by `/` in the `rate` column are the tuberculosis case
+count and the population count.
+
+To make this dataset tidy, the `rate` column needs to be split into two
+columns, `cases` and `population`. The values in the `rate` column are strings,
+so one way to do this is with the stringr package's `str_split_fixed` function,
+described in Section \@ref(splitting-strings):
+
+```{r}
+library(stringr)
+
+# Split the rate column into 2 columns.
+cols = str_split_fixed(table3$rate, fixed("/"), 2)
+
+# Remove the rate column and append the 2 new columns.
+tidy3 = table3[-3]
+tidy3$cases = as.numeric(cols[, 1])
+tidy3$population = as.numeric(cols[, 2])
+tidy3
+```
+
+Extracting values, converting to appropriate data types, and then combining
+everything back into a single data frame is an extremely common pattern in data
+science.
+
+The tidyr package provides the `separate` function to streamline the steps
+taken above. The first parameter is the dataset, the second is the column to
+split, the third is the names of the new columns, and the fourth is the
+delimiter. The `convert` parameter controls whether the new columns are
+automatically converted to appropriate data types:
+
+```{r}
+separate(table3, rate, c("cases", "population"), "/", convert = TRUE)
+```
+
+As of writing, the tidyr developers have deprecated the `separate` function in
+favor of several more specific functions (`separate_wider_delim`,
+`separate_wider_position`, and `separate_wider_regex`). These functions are
+still experimental, so we still recommend using the `separate` function in the
+short term.
+
+
+## Case Study: SMART Ridership
+
+[Sonoma-Marin Area Rail Transit (SMART)][smart] is a single-line passenger rail
+service between the San Francisco Bay and Santa Rosa. They publish [data about
+monthly ridership][smart-riders] in PDF and Excel format. In this case study,
+you'll reshape and clean the dataset to prepare it for analysis.
+
+[smart]: http://sonomamarintrain.org/
+[smart-riders]: https://www.sonomamarintrain.org/RidershipReports
+
+To get started, download the [February 2024 report in Excel
+format][smart-jan24]. Pay attention to where you save the file---or move it to
+a directory just for files related to this case study---so that you can load it
+into R. If you want, you can use R's `download.file` function to download the
+file rather than your browser.
+
+The [readxl][] package provides functions to read data from Excel files.
+Install the package if you don't already have it installed, and then load it:
+
+[smart-feb24]: https://sonomamarintrain.org/sites/default/files/Documents/SMART%20Ridership%20Web%20Posting_1.24.xlsx
+[readxl]: https://readxl.tidyverse.org/
+
+```{r load-readxl}
+# install.packages("readxl")
+library("readxl")
+```
+
+You can use the `read_excel` function to read a sheet from an Excel
+spreadsheet. Before doing so, it's a good idea to manually inspect the
+spreadsheet in a spreadsheet program. The SMART dataset contains two tables in
+the first sheet, one for total monthly ridership and another for average
+weekday ridership (by month).
+
+Let's focus on the total monthly ridership table, which occupies cells B4 to
+H16. You can specify a range of cells when you call `read_excel` by setting the
+`range` parameter:
+
+```{r read-smart-data}
+smart_path = "./data/SMART Ridership Web Posting_1.24.xlsx"
+smart = read_excel(smart_path, range = "B4:I16")
+smart
+```
+
+The loaded dataset needs to be cleaned. The `FY18` column uses a hyphen to
+indicate missing data and has the wrong data type. The identifiers---months and
+years---are split between the row and column names and each row contains data from seven different years, so the dataset is also not tidy. In addition, the years are indicated in fiscal years (FY), which begin in July rather than January, so some of the years need to be adjusted.
+
+You can correct the missing value in the `FY18` column with indexing, and the
+type with the `as.numeric` function:
+
+```{r}
+smart$FY18[smart$FY18 == "-"] = NA
+smart$FY18 = as.numeric(smart$FY18)
+head(smart)
+```
+
+To make the dataset tidy, it needs to be reshaped so that the values in the
+various fiscal year columns are all in one column. In other words, the dataset
+needs to be pivoted longer (Section \@ref(columns-into-rows)). The result of
+the pivot will be easier to understand if you rename the columns as their years
+first. Here's one way to do that:
+
+```{r}
+names(smart)[-1] = 2018:2024
+head(smart)
+```
+
+Next, use `pivot_longer` to pivot the dataset:
+
+```{r pivot-smart-data}
+smart_long = pivot_longer(smart, cols = -Month, values_to = "riders",
+  names_to = "fiscal_year")
+head(smart_long)
+```
+
+Now the dataset is tidy, but it's still not completely clean. Our next step is to convert the fiscal years to calendar years. Pivoting the column names into `fiscal_year` has resulted in the years being strings that look like numbers, so we also need to convert `fiscal_year` to numeric.
+
+Our work toward tidying the data is proceeding in several small steps that each improve the data in some small way. This next block of code introduces two tricks that make such a chain of operations easier to write and to read: the `with` function and R's pipe operator `|>`.
+
+The `with` function allows you to be less redundant when you need to refer to the same data.frame several times. The first argument is your data.frame, and the second is a block of R code. Any variable names you use in the code block will be sought in the columns of the data.frame.
+
+The other trick is the pipe operator. It connects two functions, with the output of the one written first becoming the input of the one written second. The built in pipe `|>` was introduced due to the popularity of the older `%>%` pipe provided by the `magrittr` package.
+
+The SMART fiscal year extends from July to the following June and equals the
+calendar year at the end of the period. So for observations from July to
+December, the calendar year is the fiscal year minus 1. There are many ways to calculate a new column from the existing columns — we will use the `ifelse` function to set a column's values conditional on some other columns.
+
+Our calculation is to subtract one from the fiscal year if the month is seven or less so we have to convert the months to numbers from text abbreviations. Let's use our old friend the `fast_strptime` function from the `lubridate` package (Section \@ref(the-lubridate-package)).
+
+```{r}
+library(lubridate)
+
+#convert the fiscal_year column to numeric
+smart_long$fiscal_year = as.numeric(smart_long$fiscal_year)
+
+# create a month_number column from the abbreviated month names
+smart_long$month_number = 
+  fast_strptime(smart_long$Month, "%m") |>
+  month()
+
+# convert fiscal_year to calendar year
+smart_long$cal_year =
+  with(smart_long,
+    ifelse(month_number >= 7, fiscal_year - 1, fiscal_year)
+  )
+
+head(smart_long)
+```
+
+We want to make a plot of ridership over time. To do so, time needs to be a single column that can be mapped to the horizontal axis of our plot, but right now time is split between `cal_year` and `month_number`. Let's combine and convert the `month` and `cal_year`
+columns into a calendar date with the `make_date` function from `lubridate`. Then we'll arrange the rows by date, which is more sensible than the current arrangement where all the rows for Julys are followed by all the rows for Augusts, and so on.
+
+```{r}
+smart_long$date =
+  with(smart_long, make_date(year=cal_year, month=month_number))
+
+smart_long = smart_long[order(smart_long$date),]
+
+head(smart_long, n=14)
+```
+
+As a final adjustment, you can use the `tolower` function to convert the column
+names to lowercase, so that they're easier to use during analysis:
+
+```{r}
+names(smart_long) = tolower(names(smart_long))
+head(smart_long)
+```
+
+Now that the dataset is tidied and cleaned, it's straightforward to do things
+like plot it as a time series:
+
+```{r smart-plot}
+library("ggplot2")
+
+ggplot(smart_long) + aes(x = date, y = riders) + geom_line() +
+  expand_limits(y = 0)
+```
+
+Notice the huge drop (more than 90%) in April of 2020 due to the COVID-19
+pandemic!
+
+
+## Without `tidyr`
+
+This section shows how to pivot datasets without the help of the tidyr package.
+In practice, we recommend that you use the package, but the examples here may
+make it easier to understand what's actually happening when you pivot a
+dataset.
+
+### Rows into Columns
+
+The steps for pivoting `table2` wider are:
+
+1. Subset rows to separate `cases` and `population` values.
+2. Remove the `type` column from each.
+3. Rename the `count` column to `cases` and `population`.
+4. Merge the two subsets by matching `country` and `year`.
+
+And the code is:
+
+```{r}
+# Step 1
+cases = table2[table2$type == "cases", ]
+pop = table2[table2$type == "population", ]
+# Step 2
+cases = cases[-3]
+pop = pop[-3]
+# Step 3
+names(cases)[3] = "cases"
+names(pop)[3] = "population"
+# Step 4
+merge(cases, pop)
+```
+
+### Columns into Rows
+
+The steps for pivoting `table4a` longer are:
+
+1. Subset columns to separate `1999` and `2000` into two data frames.
+2. Add a `year` column to each.
+3. Rename the `1999` and `2000` columns to `cases`.
+4. Stack the two data frames with `rbind`.
+
+And the code is:
+
+```{r}
+# Step 1
+df99 = table4a[-3]
+df00 = table4a[-2]
+# Step 2
+df99$year = "1999"
+df00$year = "2000"
+# Step 3
+names(df99)[2] = "cases"
+names(df00)[2] = "cases"
+# Step 4
+rbind(df99, df00)
+```
