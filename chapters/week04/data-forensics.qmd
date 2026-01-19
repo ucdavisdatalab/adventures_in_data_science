@@ -1,0 +1,398 @@
+# Data Forensics {#sec-data-forensics}
+
+This lesson covers a variety of ways to investigate and summarize tabular data
+in order to understand the data better and identify potential problems. The
+lesson also describes how to fix some of the most common data problems.
+
+::: {.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Explain what it means for a data set to be "tidy"
+* Convert columns to appropriate data types
+* Locate and count missing values in a data set
+* Explain what it means for a value to be an "outlier"
+* Locate and count outliers in a data set
+* Explain the location statistics mean, median, and mode
+* Explain the scale statistics range and standard deviation
+:::
+
+
+## Structural Summaries
+
+Whenever you load a data set into R, your next step should be to investigate
+the data's structure. This step is important because it can help you identify
+whether:
+
+* The data was loaded correctly
+* There are structural problems with the data that will make it difficult to
+  use if they aren't fixed
+
+@sec-inspecting-a-data-frame demonstrated several functions for getting
+structural summaries of data. Some of these are:
+
+* `str` to get a detailed structural summary
+* `head`, `tail` to preview the data
+* `nrow`, `ncol`, `dim`, `length` to get dimension information
+* `names`, `colnames`, `rownames` to get element names
+* `class`, `typeof` to get classes and types
+
+
+Let's look at some examples using a data set collected from the classified
+advertisements website Craigslist. The data set contains information from ads
+for rentals in the Sacramento area. First we need to load the data set:
+
+```{r}
+cl = read.csv("data/cl_rentals.csv")
+```
+
+Now we can use the `str` function to check the classes of the columns:
+
+```{r}
+str(cl)
+```
+
+Often when you load a new data set, some of the columns won't have the correct
+data type (or class) for what you want to do. For instance, in the Craigslist
+data, the `pets`, `laundry`, and `parking` columns all contain categorical
+data, so they should be factors.
+
+You can convert these columns to factors with the `factor` function from
+@sec-factors:
+
+```{r}
+cl$pets = factor(cl$pets)
+cl$laundry = factor(cl$laundry)
+cl$parking = factor(cl$parking)
+```
+
+There's another way we could've done this that uses only two lines of code, no
+matter how many columns there are:
+
+```{r, eval = FALSE}
+cols = c("pets", "laundry", "parking")
+cl[cols] = lapply(cl[cols], factor)
+```
+
+We'll learn more about the `lapply` function in @sec-apply-functions.
+
+You can use whichever approach is more convenient and makes more sense to you.
+If there were other columns to convert, we'd go through the same steps with the
+appropriate conversion function.
+
+R provides `as.` functions to convert to the most common data types. For
+instance, `as.character` converts an object to a string:
+
+```{r}
+x = 3.1
+class(x)
+
+y = as.character(x)
+y
+class(y)
+```
+
+The `read.csv` function does a good job at identifying columns of numbers, so
+it's rarely necessary to convert columns of numbers manually. However, you may
+have to do this for data you got some other way (rather than loading a file).
+For instance, it's common to make these conversions when scraping data from the
+web.
+
+It's also a good idea to convert categorical columns into factors with the
+`factor` function, and to convert columns of dates into dates (more about this
+in @sec-date-processing).
+
+
+## Tidy Data {#sec-tidy-data}
+
+Many functions require data frames that are in **tidy** form. Before we see the
+requirements for a data set to be tidy, we need to define or review some
+terminology from statistics.
+
+A **feature** (also called a **covariate**) is measurement of something,
+usually across multiple subjects. For example, we might decide to measure the
+heights of everyone in the class. Each person in the class is a subject, and
+the height measurement is a feature. Features don't have to be quantitative. If
+we also asked each person their favorite color, then favorite
+color would be another feature in our data set. Features are usually, but not
+always, the columns in a tabular data set.
+
+An **observation** is a set of features measured for a single subject or at a
+single time. So in the preceding example, the combined height and favorite
+color measurement for one student is one observation. Observations are usually,
+but not always, the rows in a tabular data set.
+
+Now we can define what it means to be tidy. A tabular data set is tidy if and
+only if:
+
+1. Each observation has its own row.
+2. Each feature has its own column.
+3. Each value has its own cell.
+
+These rules ensure that all of the values are visually organized and are easy
+to access with R's built-in indexing operations. For instance, the `$` operator
+gets a column, and in a tidy data set, columns are features. The rules also
+reflect the way statisticians traditionally arrange tabular data sets.
+
+When you first look at a data set, think about what the observations are and
+what the features are. If the data set comes with documentation, it may help
+you figure this out. Since this data set is a tidy data set, we already know
+each row is an observation and each column is a feature.
+
+@sec-reshaping-tabular-data gives examples of tidy and untidy data, as well as
+explanations of how to make untidy data tidy.
+
+
+## Statistical Forensics
+
+After investigating the data's structure, it's a good idea to check some basic
+statistical properties. This step is important because it can help you identify
+limitations of and patterns in the data.
+
+Which statistics are appropriate for a given feature often depends on the type
+of the feature. Recall from @sec-data-types-classes that the types
+statisticians typically think about are:
+
+* **Categorical**
+    + **Nominal** - data separated into specific categories, with no order. For
+      example, hair color (red, brown, blonde, ...) is categorical.
+    + **Ordinal** - data separated into specific categories, with an order. For
+      example, school level (elementary, middle, high, college) is ordinal.
+* **Numerical**
+    + **Discrete** - integers, or a finite set of decimal numbers with no
+      values in between. Sometimes discrete values can also be treated as
+      ordinal. For example, month as a number (1, 2, ..., 12) is discrete.
+    + **Continuous** - decimal numbers. There are no specific categories, but
+      there is an order. For example, height in inches is numerical.
+
+The `table` function, which was introduced in @sec-inspecting-a-data-frame, is
+great for summarizing categorical (and sometimes discrete) data. For example:
+
+```{r}
+table(cl$pets)
+```
+
+What about numerical data?
+
+Two important questions to ask about data are:
+
+1. Where is it? This is the **location** of the data.
+
+2. How spread out is it? This is the **scale** of the data.
+
+Let's use the data
+
+```r
+x = c(-2, -1, -1, -1, 0, 2, 6)
+```
+
+as an example.
+
+Location is generally summarized with a number near the middle or center of
+the data. A few options are:
+
+1.  **Mode** - the value that appears most frequently. The mode can be
+    calculated for any kind of data, but doesn't work well for continuous data.
+
+    For our example, the mode of `x` is -1. You can compute the mode with
+    `table`:
+
+    ```r
+    table(x)
+    ```
+
+2.  **Median** - sort the data, then find the value in the middle. The median
+    can be calculated for ordinal or numerical data.
+
+    For our example, the median is -1. Compute this with `median`:
+
+    ```r
+    median(x)
+    ```
+
+3.  **Mean** - the balancing point of the data, if a waiter was trying to
+    balance the data on a tray. The mean can only be calculated for numerical
+    data.
+
+    For our example the mean is 0.4285. Compute this with `mean`:
+
+    ```r
+    mean(x)
+    ```
+
+Adding large values to the data affects the mean more than the median:
+
+```r
+y = c(x, 100)
+mean(y)
+median(y)
+```
+
+Because of this, we say that the median is **robust**.
+
+The mean is good for getting a general idea of where the center of the data
+is, while comparing it with the median reveals whether there are any
+unusually large or small values.
+
+Scale is generally summarized by a number that says how far the data is from
+the center (mean, median, etc...). Two options are:
+
+1.  **Standard Deviation** - square root of the average squared distance to the
+    mean (the distance from a point to a mean is called a **deviation**). You
+    can think of this as approximately the average distance from a data point
+    to the mean. As a rule of thumb, most of the data will be within 3 standard
+    deviations of the mean.
+
+    You can compute the standard deviation with `sd`:
+
+    ```r
+    sd(x)
+    ```
+
+2.  **Interquartile Range** (IQR) - difference between the 75th and 25th
+    percentile. The median is the 50th **percentile** of the data; it's at the
+    middle of the sorted data. We can also consider other percentiles. For
+    instance, the 25th percentile is the value one-quarter of the way through
+    the sorted data.
+
+    **Quantile** is another word for percentile. **Quartile** specifically
+    refers to the 25th, 50th, and 75th percentiles because they separate the
+    data into four parts (hence "quart-").
+
+    You can compute quantiles with `quantile`, or compute the IQR directly with
+    `IQR`:
+
+    ```r
+    quantile(x)
+    
+    # IQR
+    IQR(x)
+    ```
+
+The IQR is more robust than the standard deviation.
+
+Many of the functions for computing statistical summaries have a parameter
+`na.rm` to ignore missing values. Setting `na.rm = TRUE` is often useful when
+you're just trying to do an initial investigation of the data. However, in a
+more complete analysis, you should think carefully about what the missing
+values mean, whether they follow any patterns, and whether there are enough
+non-missing values for statistical summaries to be good representatives of the
+data.
+
+Finally, the `summary` function computes a detailed statistical summary of an R
+object. For data frames, the function computes a summary of each column,
+guessing an appropriate statistic based on the column's data type.
+
+
+### Missing Values
+
+If your data contains missing values, it's important to think about why the
+values are missing. Statisticians use two different terms to describe why data
+is missing:
+
+* missing at random (MAR)
+* missing not at random (MNAR) - causes bias!
+
+When values are **missing at random**, the cause for missingness is one or more
+features in the data set. For example, if a soil moisture sensor overheats and
+doesn't work on hot days, but air temperature is recorded in the data set,
+values are missing at random.
+
+When values are **missing not at random**, the cause for missingness is one or
+more features *not* in the data set. Think of this as a form of censorship. For
+example, if people in a food survey refuse to report how much sugar they ate on
+days where they ate junk food, values are missing not at random. Values MNAR
+can bias an analysis.
+
+:::{.callout-note}
+Technically, there's a third kind of missing data: **missing completely at
+random** (MCAR). When values are missing completely at random, the cause for
+missingness is completely unrelated to the research question and features of
+interest. This kind of missing data is rare in practice and impossible to
+identify from the data alone. Values MCAR can be ignored without causing any
+bias.
+:::
+
+The default way to handle missing values in R is to ignore them. This is just a
+default, not necessarily the best or even an appropriate way to deal with them.
+You can remove missing values from a data set by indexing:
+
+```{r}
+cl_no_sqft_na = cl[!is.na(cl$sqft), ]
+
+head(cl_no_sqft_na)
+```
+
+The `na.omit` function is less precise than indexing, because it removes rows
+that have a missing value in _any_ column. This means lots of information gets
+lost.
+
+Another way to handle missing values is to **impute**, or fill in, the values
+with estimates based on other data in the data set. We won't get into the
+details of how to impute missing values here, since it is a fairly deep
+subject. Generally it is safe to impute MAR values, but not MNAR values.
+
+
+
+### Outliers
+
+An **outlier** is an anomalous or extreme value in a data set. We can picture
+this as a value that's far away from most of the other values. Sometimes
+outliers are a natural part of the data set. In other situations, outliers can
+indicate errors in how the data were measured, recorded, or cleaned.
+
+There's no specific definition for "extreme" or "far away". A good starting
+point for detecting outliers is to make a plot that shows how the values are
+distributed. Box plots and density plots work especially well for this (you'll
+learn about how to make plots in a later lesson):
+
+```{r}
+library("ggplot2")
+
+ggplot(cl, aes(x = sqft)) + geom_boxplot()
+```
+
+Statisticians tend to use the rule of thumb that any value more than 3 standard
+deviations away from the mean is an outlier. You can use the `scale` function
+to compute how many standard deviations the elements in a column are from their
+mean:
+
+```{r}
+z = scale(cl$sqft)
+head(z)
+
+which(z <= -3 | 3 <= z)
+```
+
+Be careful to think about what your specific data set measures, as this
+definition isn't appropriate in every situation.
+
+How can you handle outliers? First, try inspecting other features from the row
+to determine whether the outlier is a valid measurement or an error. When an
+outlier is valid, keep it.
+
+If the outlier interferes with a plot you want to make, you can adjust the x
+and y limits on plots as needed to "ignore" the outlier. Make sure to mention
+this in the plot's title or caption.
+
+When an outlier is not valid, first try to correct it. For example:
+
+* Correct with a different covariate from the _same observation_.
+* Estimate with a mean or median of similar observations. This is another
+  example of imputing values.
+
+For example, in the Craigslist data, we can use the `text` column to try to
+correct outliers:
+
+```{r}
+message(cl$text[1261])
+```
+
+Based on the text, this apartment is 819 square feet, not 8190 square feet. So
+we can reassign the value:
+```{r}
+cl$sqft[1261] = 819
+```
+
+If other features don't help with correction, try getting information from
+external sources. If you can't correct the outlier but know it's invalid,
+replace it with a missing value `NA`.

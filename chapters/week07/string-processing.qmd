@@ -1,0 +1,890 @@
+# Strings & Regular Expressions
+
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Use escape codes in strings to represent non-keyboard characters
+* Explain what a text encoding is
+* Use the stringr package to detect, extract, and change patterns in strings
+* Use the regular expressions mini-language
+:::
+
+This chapter is about how to extract and clean up data from strings (including
+numbers with non-numeric characters such as `$`, `%`, and `,`).
+
+
+## The Tidyverse
+
+For working with dates, times, and strings, we recommend using packages from
+the [Tidyverse][], a popular collection of packages for doing data science.
+Compared to R's built-in functions, we've found that the functions in Tidyverse
+packages are generally easier to learn and use. They also provide additional
+features and have more robust support for characters outside of the Latin
+alphabet.
+
+Although they're developed by many different members of the R community,
+Tidyverse packages follow a unified design philosophy, and thus have many
+interfaces and data structures in common. The packages provide convenient and
+efficient alternatives to built-in R functions for many tasks, including:
+
+[Tidyverse]: https://www.tidyverse.org/
+
+* Reading and writing files (package readr)
+* Processing dates and times (packages lubridate, hms)
+* Processing strings (package stringr)
+* Reshaping data (package tidyr)
+* Making visualizations (package ggplot2)
+* And more
+
+Think of the Tidyverse as a different dialect of R. Sometimes the syntax is
+different, and sometimes ideas are easier or harder to express concisely. As a
+consequence, the Tidyverse is sometimes polarizing in the R community. It's
+useful to be literate in both base R and the Tidyverse, since both are popular.
+
+One major advantage of the Tidyverse is that the packages are usually
+well-documented and provide lots of examples. Every package has a documentation
+website and the most popular ones also have [cheatsheets][].
+
+[cheatsheets]: https://posit.co/resources/cheatsheets/
+
+
+## String Fundamentals
+
+Strings represent text, but even if your datasets are composed entirely of
+numbers, you'll need to know how to work with strings. Text formats for data
+are widespread: comma-separated values (CSV), tab-separated values (TSV),
+JavaScript object notation (JSON), a panopoly of markup languages (HTML, XML,
+YAML, TOML), and more. When you read data in these formats into R, sometimes R
+will correctly convert the values to appropriate non-string types. The rest of
+the time, you need to know how to work with strings so that you can fix
+whatever went wrong and convert the data yourself.
+
+This section introduces several fundamental concepts related to working with
+strings. The next section, Section \@ref(the-stringr-package), describes the
+stringr package for working with strings. The last section, Section
+\@ref(regular-expressions), builds on both and explains how to do powerful
+pattern matching.
+
+
+### Printing
+
+There are two different ways to print strings: you can print a representation
+of the characters in the string or you can print the actual characters in the
+string.
+
+To print a representation of the characters in a string, use the `print`
+function. The representation is useful to identify characters that are not
+normally visible, such as tabs and the characters that mark the end of a line.
+
+To print the actual characters in a string, use the `message` function.
+
+This important difference in how the `print` and `message` functions print
+strings is demonstrated in the next section.
+
+You can learn more about different ways to print output in R by reading Section
+\@ref(printing-output).
+
+
+### Escape Sequences
+
+In a string, an **escape sequence** or **escape code** consists of a backslash
+followed by one or more characters. Escape sequences make it possible to:
+
+1. Write quotes or backslashes within a string
+2. Write characters that don't appear on your keyboard (for example, characters
+   in a foreign language)
+
+For example, the escape sequence `\n` corresponds to the newline character.
+Notice that the `message` function translates `\n` into a literal new line,
+whereas the `print` function doesn't:
+
+```{r}
+x = "Hello\nNick"
+
+message(x)
+
+print(x)
+```
+
+As another example, suppose we want to put a literal quote in a string. We can
+either enclose the string in the other kind of quotes, or escape the quotes in
+the string:
+
+```{r}
+x = 'She said, "Hi"'
+
+message(x)
+
+y = "She said, \"Hi\""
+
+message(y)
+```
+
+Since escape sequences begin with backslash, we also need to use an escape
+sequence to write a literal backslash. The escape sequence for a literal
+backslash is two backslashes:
+
+```{r}
+x = "\\"
+
+message(x)
+```
+
+There's a complete list of escape sequences for R in the `?Quotes` help file.
+Other programming languages also use escape sequences, and many of them are the
+same as in R.
+
+
+### Raw Strings
+
+A **raw string** is a string where escape sequences are turned off. Raw strings
+are especially useful for writing regular expressions (covered in Section
+\@ref(regular-expressions)).
+
+Raw strings begin with `r"` and an opening delimiter `(`, `[`, or `{`. Raw
+strings end with a matching closing delimiter and quote. For example:
+
+```{r}
+x = r"(quotes " and backslashes \)"
+
+message(x)
+```
+
+Raw strings were added to R in version 4.0 (April 2020), and won't work
+correctly in older versions.
+
+
+
+### Character Encodings
+
+Computers store data as numbers. In order to store text on a computer, people
+have to agree on a **character encoding**, a system for mapping characters to
+numbers. For example, in [ASCII](https://en.wikipedia.org/wiki/ASCII), one of
+the most popular encodings in the United States, the character `a` maps to the
+number 97.
+
+Many different character encodings exist, and sharing text used to be an
+inconvenient process of asking or trying to guess the correct encoding. This
+was so inconvenient that in the 1980s, software engineers around the world
+united to create the [Unicode](https://home.unicode.org/) standard. Unicode
+[includes symbols](http://unicode.org/charts/) for nearly all languages in use
+today, as well as emoji and many ancient languages (such as Egyptian
+hieroglyphs).
+
+Unicode maps characters to numbers, but unlike a character encoding, it
+doesn't dictate how those numbers should be mapped to bytes (sequences of ones
+and zeroes). As a result, there are several different character encodings that
+support and are synonymous with Unicode. The most popular of these is UTF-8.
+
+In R, you can write Unicode characters with the escape sequence `\U` followed
+by the number for the character in [base 16][]. For instance, the number for
+`a` in Unicode is 97 (the same as in ASCII). In base 16, 97 is `61`. So you can
+write an `a` as:
+
+```{r}
+x = "\U61" # or "\u61"
+
+x
+```
+
+Unicode escape sequences are usually only used for characters that are not easy
+to type. For example, the cat emoji is number `1f408` (in base 16) in Unicode.
+So the string `"\U1f408"` is the cat emoji.
+
+Note that being able to see printed Unicode characters also depends on whether
+the font your computer is using has a glyph (image representation) for that
+character. Many fonts are limited to a small number of languages. The
+[NerdFont][] project patches fonts commonly used for programming so that they
+have better Unicode coverage. Using a font with good Unicode coverage is not
+essential, but it's convenient if you expect to work with many different
+natural languages or love using emoji.
+
+[base 16]: https://en.wikipedia.org/wiki/Hexadecimal
+[NerdFont]: https://www.nerdfonts.com/
+
+
+#### Character Encodings in Text Files
+
+Most of the time, R will handle character encodings for you automatically.
+However, if you ever read or write a text file (including CSV and other
+formats) and the text [looks like gibberish][mojibake], it might be an encoding
+problem. This is especially true on Windows, the only modern operating system
+that does not (yet) use UTF-8 as the default encoding.
+
+Encoding problems when reading a file can usually be fixed by passing the
+encoding to the function doing the reading. For instance, the code to read a
+UTF-8 encoded CSV file on Windows is:
+
+```{r, eval=FALSE}
+read.csv("my_data.csv", fileEncoding = "UTF-8")
+```
+
+Other reader functions may use a different parameter to set the encoding, so
+always check the documentation. On computers where the native language is not
+set to English, it can also help to set R's native language to English with
+`Sys.setlocale(locale = "English")`.
+
+Encoding problems when writing a file are slightly more complicated to fix. See
+[this blog post][ushey-encodings] for thorough explanation.
+
+[mojibake]: https://en.wikipedia.org/wiki/Mojibake
+[ushey-encodings]: https://kevinushey.github.io/blog/2018/02/21/string-encoding-and-r/
+
+
+
+## Processing Strings
+
+String processing encompasses a variety of tasks such as searching for patterns
+within strings, extracting data from within strings, splitting strings into
+component parts, and removing or replacing unwanted characters (excess
+whitespace, punctuation, and so on). If you work with data, sooner or later
+you'll run into a dataset in text format that needs a few text corrections
+before or after you read it into R, and for that you'll find familiarity with
+string processing invaluable.
+
+
+### The stringr Package
+
+Although R has built-in functions for string processing, we recommend using the
+[stringr][] package for all of your string processing needs. The package is
+part of the Tidyverse, a collection of packages introduced in Section
+\@ref(the-tidyverse). Major advantages of stringr over other packages and R's
+built-in functions include:
+
+* Correctness: the package builds on [International Components for Unicode
+  (ICU)][icu], the Unicode Consortium's own library for handling text encodings
+* Discoverability: every function's name begins with `str_` so they're easy to
+  discover, remember, and identify in code
+* Interface consistency: the first argument is always the string to process,
+  the second argument is always the pattern to match (if applicable)
+* Vectorization: most of the functions are [vectorized][] in the first and
+  second argument
+
+[icu]: https://en.wikipedia.org/wiki/International_Components_for_Unicode
+
+stringr has detailed [documentation][stringr] and also a
+[cheatsheet][stringr-cheat-sheet].
+
+[stringr]: https://stringr.tidyverse.org/
+[stringr-cheat-sheet]: https://github.com/rstudio/cheatsheets/blob/master/strings.pdf
+
+The first time you use stringr, you'll have to install it with
+`install.packages` (the same as any other package). Then you can load the
+package with the `library` function:
+
+```{r}
+# install.packages("stringr")
+library(stringr)
+```
+
+The typical syntax of a stringr function is:
+
+```{r, eval = FALSE}
+str_name(string, pattern, ...)
+```
+
+Where:
+
+* `name` describes what the function does
+* `string` is a string to search within or transform
+* `pattern` is a pattern to search for, if applicable
+* `...` is additional, function-specific arguments
+
+For example, the `str_detect` function *detects* whether a pattern appears
+within a string. The function returns `TRUE` if the pattern is found and
+`FALSE` if it isn't:
+
+```{r}
+str_detect("hello", "el")
+
+str_detect("hello", "ol")
+```
+
+Most of the stringr functions are vectorized in the `string` parameter:
+
+```{r}
+str_detect(c("hello", "goodbye", "lo"), "lo")
+```
+
+As another example, the `str_sub` function extracts a *substring* from a
+string, given the substring's position. The first argument is the string, the
+second is the position of the substring's first character, and the third is the
+position of the substring's last character:
+
+```{r}
+str_sub("You speak of destiny as if it was fixed.", 5, 9)
+```
+
+The `str_sub` function is especially useful for extracting data from strings
+that have a fixed width (although the [readr][] package's `read_fwf` is usually
+a better choice if you have a fixed-width file).
+
+There are a lot of stringr functions. Five that are especially important and
+are explained in this reader are:
+
+* `str_detect`, to test whether a string contains a pattern
+* `str_sub`, to extract a substring at a given position from a string
+* `str_replace`, to replace or remove parts of a string
+* `str_split_fixed`, to split a string into parts
+* `str_match`, to extract data from a string
+
+You can find a complete list of functions with examples on the stringr
+documentation's [reference page][stringr-ref] and the
+[cheatsheet][stringr-cheatsheet].
+
+[stringr-ref]: https://stringr.tidyverse.org/reference/
+[stringr-cheatsheet]: https://github.com/rstudio/cheatsheets/blob/master/strings.pdf
+
+
+### Regular Expressions
+
+The stringr functions use a special language called **regular expressions** or
+**regex** to describe patterns in strings. Many other programming languages
+also have string processing tools that use regular expressions, so fluency with
+regular expressions is a transferrable skill.
+
+You can use a regular expression to describe a complicated pattern in just a
+few characters because some characters, called **metacharacters**, have special
+meanings. Metacharacters are usually punctation characters. They are *never*
+letters or numbers, which always have their literal meaning.
+
+This table lists some of the most useful metacharacters:
+
+Metacharacter | Meaning
+------------- | -------
+`.`           | any one character (wildcard)
+``\``         | escape character (in both R and regex), see Section \@ref(escape-sequences)
+`^`           | the beginning of string (not a character)
+`$`           | the end of string (not a character)
+`[ab]`        | one character, either `'a'` or `'b'`
+`[^ab]`       | one character, anything except `'a'` or `'b'`
+`?`           | the previous character appears 0 or 1 times
+`*`           | the previous character appears 0 or more times
+`+`           | the previous character appears 1 or more times
+`()`          | make a group
+`|`           | match left OR right side (not a character)
+
+Section \@ref(regular-expression-examples) provides examples of how most of the
+metacharacters work. Even more examples are presented in the stringr package's
+[regular expressions vignette][stringr-regex]. You can find a complete listing
+of regex metacharacters in `?regex` or on the stringr
+[cheatsheet][stringr-cheatsheet].
+
+[stringr-regex]: https://stringr.tidyverse.org/articles/regular-expressions.html
+
+You can disable regular expressions in a stringr function by calling the
+`fixed` function on the pattern. For example, to test whether a string contains
+a literal dot `.`:
+
+```{r}
+x = c("No dot", "Lotsa dots...")
+str_detect(x, fixed("."))
+```
+
+It's a good idea to call `fixed` on any pattern that doesn't contain regex
+metacharacters, because it communicates to the reader that you're not using
+regex, it helps to prevent bugs, and it provides a small speed boost.
+
+
+### Replacing Parts of Strings
+
+Replacing part of a string is a common string processing task. For instance,
+quantitative data often contain non-numeric characters such as commas, currency
+symbols, and percent signs. These must be removed before converting to numeric
+data types. Replacement and removal go hand-in-hand, since removal is
+equivalent to replacing part of a string with the **empty string** `""`.
+
+The `str_replace` function replaces the *first* part of a string that matches a
+pattern (from left to right), while the related `str_replace_all` function
+replaces *every* part of a string that matches a pattern. Most stringr
+functions that do pattern matching come in a pair like this: one to process
+only the first match and one to process every match.
+
+As an example, suppose you want to remove commas from a number so that you can
+convert it with `as.numeric`, which returns `NA` for numbers that contain
+commas. You want to remove *all* of the commas, so `str_replace_all` is the
+function to use. As usual, the first argument is the string and the second is
+the pattern. The third argument is the replacement, which is the empty string
+`""` in this case:
+
+```{r}
+x = "1,000,000"
+str_replace_all(x, ",", "")
+```
+
+The `str_replace` function doesn't work as well for this task, since it only
+replaces the first match to the pattern:
+
+```{r}
+str_replace(x, ",", "")
+```
+
+You can also use these functions to replace or remove longer patterns within
+words. For instance, suppose you want to change the word `"dog"` to `"cat"`:
+
+```{r}
+x = c("dogs are great, dogs are fun", "dogs are fluffy")
+str_replace(x, "dog", "cat")
+str_replace_all(x, "dog", "cat")
+```
+
+As a final example, you can use the replacement functions and a regex pattern
+to replace repeated spaces with a single space. This is a good standardization
+step if you're working with text. The key is to use the regex quantifier `+`,
+which means a character "repeats one or more times" in the pattern, and to use
+a single space `" "` as the replacement:
+
+```{r}
+x = "This    sentence  has  extra      space."
+str_replace_all(x, " +", " ")
+```
+
+If you just want to **trim** (remove) all whitespace from the beginning and end
+of a string, you can use the `str_trim` function instead.
+
+
+### Splitting Strings
+
+Distinct data in a text are generally separated by a character like a space or
+a comma, to make them easy for people to read. Often these separators also make
+the data easy for R to parse. The idea is to split the string into a separate
+value at each separator.
+
+The `str_split` function splits a string at each match to a pattern. The
+matching characters---that is, the separators---are discarded.
+
+For example, suppose you want to split several numbers separated by commas and
+spaces:
+
+```{r}
+x = "21, 32.3, 5, 64"
+result = str_split(x, ", ")
+result
+```
+
+The `str_split` function always returns a list with one element for each input
+string. Here the list only has one element because `x` only has one element.
+You can get the first element with:
+
+```{r}
+result[[1]]
+```
+
+You then convert the values with `as.numeric`.
+
+To see why the `str_split` function always returns a list, consider what
+happens if you try to split two different strings at once:
+
+```{r}
+x = c(x, "10, 15, 1.3")
+result = str_split(x, ", ")
+result
+```
+
+Each string has a different number of parts, so the vectors in the result have
+different lengths. So a list is the only way to store them.
+
+You can also use the `str_split` function to split a sentence into words. Use
+spaces for the split:
+
+```{r}
+x = "The students in this workshop are great!"
+str_split(x, " ")
+```
+
+When you know exactly how many parts you expect a string to have, use the
+`str_split_fixed` function instead of `str_split`. It accepts a third argument
+for the maximum number of splits to make. Because the number of splits is
+fixed, the function can return the result in a matrix instead of a list. For
+example:
+
+```{r}
+x = c("1, 2, 3", "10, 20, 30")
+str_split_fixed(x, ", ", 3)
+```
+
+The `str_split_fixed` function is often more convenient than `str_split`
+because the `n`th piece of each input string is just the `n`th column of the
+result.
+
+For example, suppose you want to get the area codes from some phone numbers:
+
+```{r}
+phones = c("717-555-3421", "629-555-8902", "903-555-6781")
+result = str_split_fixed(phones, "-", 3)
+
+result[, 1]
+```
+
+
+### Extracting Matches
+
+Occasionally, you might need to extract parts of a string in a more complicated
+way than string splitting allows. One solution is to write a regular expression
+that will match all of the data you want to capture, with parentheses `( )`,
+the regex metacharacter for a group, around each distinct value. Then you can
+use the `str_match` function to extract the groups. Section \@ref(groups)
+presents some examples of regex groups.
+
+For example, suppose you want to split an email address into three parts: the
+user name, the domain name, and the [top-level domain][tld]. To create a
+regular expression that matches email addresses, you can use the `@` and `.` in
+the address as anchors. The surrounding characters are generally alphanumeric,
+which you can represent with the "word" metacharacter `\w`:
+
+```
+\w+@\w+[.]\w+
+```
+
+Next, put parentheses `( )` around each part that you want to extract:
+
+```
+(\w+)@(\w+)[.](\w+)
+```
+
+Finally, use this pattern in `str_match`, adding extra backslashes so that
+everything is escaped correctly:
+
+```{r}
+x = "datalab@ucdavis.edu"
+regex = "(\\w+)@(\\w+)[.](\\w+)"
+str_match(x, regex)
+```
+
+The function extracts the overall match to the pattern, as well as the match to
+each group. The pattern in this example doesn't work for all possible email
+addresses, since user names can contain dots and other characters that are not
+alphanumeric. You could generalize the pattern if necessary. The point is that
+the `str_match` function and groups provide an extremely flexible way to
+extract data from strings.
+
+
+## Case Study: U.S. Warehouse Stocks
+
+<!-- FIXME -->
+:::{.callout-caution title="Work in Progress"}
+We're still developing this section. It might change soon!
+:::
+
+The U.S. Department of Agriculture (USDA) publishes a variety of datasets
+online, particularly through its National Agricultural Statistics Service
+(NASS). Unfortunately, most of are published in PDF or semi-structured text
+format, which makes reading the data into R or other statistical software a
+challenge.
+
+The USDA NASS posts [monthly reports][usda-warehouse] about stocks of
+agricultural products in refrigerated warehouses. In this case study, you'll
+use string processing functions to extract a table of data from the [December
+2022 report][usda-warehouse-dec22].
+
+To begin, download the report and save it somewhere on your computer. Then open
+the file in a text editor (or RStudio) to inspect it. The goal is to extract
+the first table, about "Nuts, Dairy Products, Frozen Eggs, and Frozen Poultry,"
+from the report.
+
+[usda-warehouse]: https://usda.library.cornell.edu/concern/publications/pg15bd892
+[usda-warehouse-dec22]: https://downloads.usda.library.cornell.edu/usda-esmis/files/pg15bd892/ww72cn39q/5712nj41v/cost1222.txt
+
+The report is a semi-structured mix of natural language text and fixed-width
+tables. As a consequence, most functions for reading tabular data will not work
+well on the entire report. You could try to use a function for reading
+fixed-width data, such as `read.fwf` or the [readr][] package's `read_fwf` on
+only the lines containing a table. Another approach, which is shown here, is to
+use string processing functions to find and extract the table.
+
+The `readLines` function reads a text file into a character vector with one
+element for each line. This makes the function useful for reading unstructured
+or semi-structured text. Use the function to read the report:
+
+```{r}
+report = readLines("data/cost1222.txt")
+head(report)
+```
+
+In the report, tables always begin and end with lines that contain only dashes
+`-`. By locating these all-dash lines, you can locate the tables. Like
+`str_detect`, the `str_which` function tests whether strings in a vector match
+a pattern. The only difference is that `str_which` returns the indexes of the
+strings that matched (as if you had called `which`) rather than a logical
+vector. Use `str_which` to find the all-dash lines:
+
+```{r}
+# The regex means:
+#   ^  begining of string
+#   -+ one or more dashes
+#   $  end of string
+
+dashes = str_which(report, "^-+$")
+head(report[dashes], 2)
+```
+
+Each table contains three dash lines---one separates the header and body. The
+header and body of the first table are:
+
+```{r}
+report[dashes[1]:dashes[2]]
+
+bod = report[dashes[2]:dashes[3]]
+head(bod)
+```
+
+The columns have fixed widths, so extracting the columns is relatively easy
+with `str_sub` if you can get the offsets. In the last line of the header, the
+columns are separated by colons `:`. Thus you can use the `str_locate_all`
+function, which returns the locations of a pattern in a string, to get the
+offsets:
+
+```{r}
+# The regex means:
+#   [^:]+  one or more characters, excluding colons
+#   (:|$)  a colon or the end of the line
+
+cols = str_locate_all(report[dashes[2] - 1], "[^:]+(:|$)")
+# Like str_split, str_locate_all returns a list
+cols = cols[[1]]
+cols
+```
+
+You can use these offsets with `str_sub` to break a line in the body of the
+table into columns:
+
+```{r}
+str_sub(bod[6], cols)
+```
+
+Because of the way `str_sub` is vectorized, you can't process every line in the
+body of the table in one vectorized call. Instead, you can use `sapply` to call
+`str_sub` on each line:
+
+```{r}
+# Set USE.NAMES to make the table easier to read
+tab = sapply(bod, str_sub, cols, USE.NAMES = FALSE)
+# The sapply function transposes the table
+tab = t(tab)
+head(tab)
+```
+
+The columns still contain undesirable punctuation and whitespace, but you can
+remove these with `str_replace_all` and `str_trim`. Since the table is a
+matrix, it's necessary to use `apply` to process it column-by-column:
+
+```{r}
+# The regex means:
+#   ,     a comma
+#   |     OR
+#   [.]*  zero or more literal dots
+#   :     a colon
+#   $     the end of the line
+
+tab = apply(tab, 2, function(col) {
+  col = str_replace_all(col, ",|[.]*:$", "")
+  str_trim(col)
+})
+head(tab)
+```
+
+The first few rows and the last row can be removed, since they don't contain
+data. Then you can convert the table to a data frame and convert the individual
+columns to appropriate data types:
+
+```{r}
+tab = tab[-c(1:3, nrow(tab)), ]
+tab = data.frame(tab)
+tab[2:7] = lapply(tab[2:7], as.numeric)
+head(tab, 10)
+```
+
+The data frame is now sufficiently clean that you could use it for a simple
+analysis. Of course, there are many things you could do to improve the
+extracted data frame, such as identifying categories and subcategories in the
+first column, removing rows that are completely empty, and adding column names.
+These entail more string processing and data frame manipulation---if you want
+to practice your R skills, try doing them on your own.
+
+
+
+## Regular Expression Examples
+
+This section provides examples of several different regular expression
+metacharacters and other features. Most of the examples use the `str_view`
+function, which is especially helpful for testing regular expressions. The
+function displays an HTML-rendered version of the string with the first match
+highlighted.
+
+The [RegExr][] website is also helpful for testing regular expressions; it
+provides an interactive interface where you can write regular expressions and
+see where they match a string.
+
+[RegExr]: https://regexr.com/
+
+
+### The Wildcard
+
+The regex **wildcard** character is `.` and matches any single character. For
+example:
+
+```{r}
+x = "dog"
+str_view(x, "d.g")
+```
+
+By default, regex searches from left to right:
+
+```{r}
+str_view(x, ".")
+```
+
+
+### Escape Sequences
+
+Like R, regular expressions can contain escape sequences that begin with a
+backslash. These are computed separately and after R escape sequences. The main
+use for escape sequences in regex is to turn a metacharacter into a literal
+character.
+
+For example, suppose you want to match a literal dot `.`. The regex for a
+literal dot is `\.`. Since backslashes in R strings have to be escaped, the R
+string for this regex is `"\\.`. For example:
+
+```{r}
+str_view("this.string", "\\.")
+```
+
+The double backslash can be confusing, and it gets worse if you want to match a
+literal backslash. You have to escape the backslash in the regex (because
+backslash is the regex escape character) and then also have to escape the
+backslashes in R (because backslash is also the R escape character). So to
+match a single literal backslash in R, the code is:
+
+```{r}
+str_view("this\\that", "\\\\")
+```
+
+Raw strings (see Section \@ref(raw-strings)) make regular expressions easier to
+read, because they make backslashes literal (but they still mark the beginning
+of an escape sequence in regex). You can use a raw string to write the above
+as:
+
+```{r}
+str_view(r"(this\that)", r"(\\)")
+```
+
+### Anchors
+
+By default, a regex will match anywhere in the string. If you want to force a
+match at specific place, use an **anchor**.
+
+The beginning of string anchor is `^`. It marks the beginning of the string,
+but doesn't count as a character in the pattern.
+
+For example, suppose you want to match an `a` at the beginning of the string:
+
+```{r}
+x = c("abc", "cab")
+
+str_view(x, "a")
+
+str_view(x, "^a")
+```
+
+It doesn't make sense to put characters before `^`, since no characters can
+come before the beginning of the string.
+
+Likewise, the end of string anchor is `$`. It marks the end of the string, but
+doesn't count as a character in the pattern.
+
+
+### Character Classes
+
+In regex, square brackets `[ ]` denote a **character class**. A character class
+matches exactly one character, but that character can be any of the characters
+inside of the square brackets. The square brackets themselves don't count as
+characters in the pattern.
+
+For example, suppose you want to match `c` followed by either `a` or `t`:
+
+```{r}
+x = c("ca", "ct", "cat", "cta")
+
+str_view(x, "c[ta]")
+```
+
+You can use a dash `-` in a character class to create a **range**. For example,
+to match letters `p` through `z`:
+
+```{r}
+str_view(x, "c[p-z]")
+```
+
+Ranges also work with numbers and capital letters. To match a literal dash,
+place the dash at the end of the character class (instead of between two other
+characters), as in `[abc-]`.
+
+Most metacharacters are literal when inside a character class. For example,
+`[.]` matches a literal dot.
+
+A hat `^` at the beginning of the character class negates the class. So for
+example, `[^abc]` matches any one character _except_ for `a`, `b`, or `c`:
+
+```{r}
+str_view("abcdef", "[^abc]")
+```
+
+
+### Quantifiers
+
+**Quantifiers** are metacharacters that affect how many times the preceding
+character must appear in a match. The quantifier itself doesn't count as a
+character in the match.
+
+For example, the question mark `?` quantifier means the preceding character can
+appear 0 or 1 times. In other words, `?` makes the preceding character
+optional. For example:
+
+```{r}
+x = c("abc", "ab", "ac", "abbc")
+
+str_view(x, "ab?c")
+```
+
+The star `*` quantifier means the preceding character can appear 0 or more
+times. In other words, `*` means the preceding character can appear any number
+of times or not at all. For instance:
+
+```{r}
+str_view(x, "ab*c")
+```
+
+The plus `+` quantifier means the preceding character must appear 1 or more
+times.
+
+Quantifiers are **greedy**, meaning they always match as many characters as
+possible. In this example, notice that the pattern matches the entire string,
+even though it could also match just `abba`:
+
+```{r}
+str_view("abbabbba", ".+a")
+```
+
+You can add a question mark `?` after another quantifier to make it non-greedy:
+
+```{r}
+str_view("abbabbba", ".+?a")
+```
+
+
+### Groups
+
+In regex, parentheses `( )` denote a **group**. The parentheses themselves
+don't count as characters in the pattern. Groups are useful for repeating or
+extracting specific parts of a pattern (see Section \@ref(extracting-matches)).
+
+Quantifiers can act on groups in addition to individual characters. For
+example, suppose you want to make the entire substring `", dogs,"` optional in
+a pattern, so that both of the test strings in this example match:
+
+```{r}
+x = c("cats, dogs, and frogs", "cats and frogs")
+
+str_view(x, "cats(, dogs,)? and frogs")
+```

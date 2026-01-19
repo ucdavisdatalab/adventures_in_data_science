@@ -1,0 +1,427 @@
+---
+format:
+  html:
+    df-print: kable
+---
+
+
+#  Getting Data from the Web
+
+The internet in general and the World Wide Web specifically serves as a vast
+source of data suitable for answering a wide range of research questions. In
+this lesson we cover several common methods for acquiring this data.
+
+::: {.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Understand the reasoning behind how URLs are formatted
+* Query a web API with the `httr` package
+* Set fields in a URL to customize web API queries
+:::
+
+
+##  How the Web Works
+
+The discipline of Data Science was, in large part, ushered into being by the
+increasing availability of information available on the World Wide Web or
+through other internet sources. Prior to the popularization of the internet as
+a publishing and communications platform, the majority of scientific research
+involved controlled studies in which researchers would collect their own data
+through various direct means (surveys, medical testing, etc.) in order to test
+a stated hypothesis.
+
+The vast amount of information available on the internet disrupted this
+centuries-long dominance. Today, the dominant form of scientific research
+involves using data collected or produced by others for reasons having little
+or nothing to do with the research question being investigated by scholar.
+Users who post items about their favorite political candidate are not, for
+example, doing this so that sociologists can better under how politics function
+in America. However, their Tweets are being used in that and many other
+unforeseen capacities.
+
+Because the internet provides such a rich trove of information for study,
+understanding how to effectively get, process, and prepare information from the
+internet for scientific research is a crucial skill for any data scientist. And
+in order to understand these workflows, the data scientist must first
+understand how the internet itself functions.
+
+### Client-Server Architecture
+
+The base architecture and functioning of the internet is quite simple:
+
+::: {#fig-basic-internet}
+![](/images/ch09/basic_internet.png)
+:::
+
+1. A content producer puts information on a computer called the *server* for
+   others to retrieve;
+2. A user uses their local computer, called the *client*, to request the
+   information from the sever;
+3. The server delivers the information to the client.
+
+Each of the above detailed steps is accomplished using a technically complex
+but conceptually simple set of computer protocols. The technical details are
+beyond the scope of this course. We are here concerned with their conceptual
+architecture.
+
+#### Communication Between Clients and Servers
+
+Anytime a computer connects to any network, that computer is assigned a unique
+identifier known as an **internet protocol (IP) address** that uniquely
+identifies that computer on the network. IP addresses have the form `x.x.x.x`,
+where each `x` can be any integer from 0 to 255. For example, `169.237.102.141`
+is the current IP address of the computer that hosts the DataLab website. IP
+addresses are sometimes pre-designated for particular computers. A
+pre-designated IP address is known as **static IP address**. In other cases IP
+addresses are dynamically assigned from a range of available IP Address using a
+system known as the **Dynamic Host Configuration Protocol** (DHCP). Servers are
+typically assigned static IP addresses and clients are typically assigned
+dynamic IP addresses.
+
+::: {#fig-internet-with-ip}
+![](/images/ch09/basic_internet_with_ip.png)
+:::
+
+As humans, we are used to accessing websites via a domain name (which we'll
+discuss shortly), but you can also contact any server on the internet by simply
+typing the IP address into your browser address bar where you would normally
+enter the URL. For example, you can simply click on <https://169.237.102.144>
+to access the DataLab website.
+
+::: {.callout-note}
+Your browser may give you a security warning if you try to access a server
+directly using an IP address. For the link above, it is safe to proceed to the
+site.
+:::
+
+#### Domain Name Resolution
+
+IP addresses are the unique identifiers that make the internet work, but they
+are not very human friendly. To solve this problem, a system of domain name
+resolution was created. Under this system, internet service providers access a
+universal domain registry database that associates human readable domain names
+with machine readable IP addresses, and a secondary set of of internet
+connected servers known as **domain name servers** (DNS) provide a lookup
+service that translates domain names into IP addresses in the background. As
+the end-user, you enter and see only domain names, but the actual request
+process is a multi-step process in which domain names are translated to IP
+address in the background:
+
+::: {#fig-internet-with-dns}
+![](/images/ch09/basic_internet_dns.png)
+:::
+
+1. A content producer puts information on a computer called the **server** for
+   others to retrieve;
+2. A user uses their local computer, called the **client**, to request the
+   information from the sever using a domain name using request software such
+   as a web browser;
+3. The user's client software first sends a request to a DNS server to retrieve
+   the IP address of the server on the network associated with the entered
+   domain name;
+4. The DNS server returns the associated IP address to the client;
+5. The client then makes the information request to the server using its
+   retrieved IP address;
+6. The server delivers the information to the client.
+
+#### Request Routing
+
+Our simple diagram of the client server process shows only two computers. But
+when you connect to the internet you are not, of course, creating a direct
+connection to a single computer. Rather, you are connecting to vase network of
+literally millions of computers, what we have come to refer to as the cloud.
+
+In order to solve this problem, the internet backbone also deploys a routing
+system that directs requests and responses across the network to the
+appropriate servers and clients.
+
+When you connect to the WiFi network in your home, office, or the local coffee
+house, you are connecting to a router. That router receives all of your
+requests and, provided you are not requesting something directly from another
+computer that is connected to the same router, passes that request on to a
+larger routing network at your **internet service provider** (ISP). When the
+ISP routers receive your request, they check to see if you're requesting
+something from a computer that is connected to their network. If it is, they
+deliver the request. If it is not, they pass the request on to another,
+regional routing network. And this routing process is repeated until your
+request if finally routed to the correct server.
+
+::: {#fig-internet-routing}
+![](/images/ch09/basic_internet_routing.png)
+:::
+
+#### The Server Response
+
+When a request is sent to a server across the internet, the request includes
+both the specific URL of the resource being request and also an hidden
+**request header**. The request header provides information to the server such
+as the IP address and the operating system of the client, the transfer protocol
+being used, and the software on the client that is making the request. The
+server uses this information to properly format its response and to route it
+back to the requesting client using the same IP routing process as described
+above.
+
+#### Internet Transfer Protocols
+
+All of the information transferred between computers over the network is
+transferred as streams of binary data. In order to ensure data integrity, these
+streams are usually broken up into smaller **packets** of data which are
+transmitted independent of each other and then reassembled by the receiving
+computer once it has received all of the packets in the stream. The first
+packet returned (a header packet) typically delivers information about how many
+packets the client should expect to receive and about how they should be
+reassembled to recreate the original data stream.
+
+There are many different standards for how data streams are divided into
+packets. One standard might, for example, break the stream into a collection of
+50-byte packets, while another might use 100-byte packages. These standards are
+called **protocols**. The two protocols that are familiar to most users are
+**HTTP** and **HTTPS**, which define the hypertext transfer protocol and its
+sibling the hypertext transfer secure protocol. When you type a URL like
+<https://datalab.ucdavis.edu> into your browser, you are instructing the
+browser to use the HTTPS protocol to exchange information. Because HTTP and
+HTTPS are so common, most modern browsers do not require you to type the
+protocol name. They will simply insert the protocol for you in the background.
+
+### Understanding URLs
+
+URL is an acronym for **uniform resource locator**. "Uniform" is a key term in
+this context. URLs are not arbitrary pointers to information. They are machine
+parsable, human readable, and can contain a lot of information.
+
+All URLs are constructed using a standardized format. Consider the following
+URL:
+
+```
+https://sfbaywildlife.info/species/common_birds.htm
+```
+
+There are actually several distinct components to the above URL:
+
+```{r, echo=FALSE}
+url_protocol <- c("https://")
+url_domain <- c("sfbaywildlife.info")
+url_path <- c("/species/common_birds.htm")
+birds_columns <- c("protocol", "server", "path to file")
+birds_table <- data.frame(url_protocol, url_domain, url_path)
+colnames(birds_table) <- birds_columns
+birds_table[,]
+```
+
+We've already discussed internet protocols and domain names. The file path
+portion of the URL can also provide valuable information about the server. It
+reads exactly like a Unix file path on the command line. The path
+`/species/common_birds.htm` indicates that the file `common_birds.htm` is in
+the `species` directory on the server.
+
+#### Dynamic Files
+
+In the above example, when you enter the URL
+`https://sfbaywildlife.info/species/common_birds.htm`, your browser requests
+the file at `/species/common_birds.html` on the server. The server simply finds
+the file and delivers it to your web browser. We call this a **static web
+server** because the server itself does not do any processing of files prior to
+delivery. It simply receives requests for files living on the server and then
+sends them to the client, whose browser renders the file for viewing.
+
+Many websites, however, use dynamic processing. Pages with file extensions such
+as `.php` or `.jsp`, for example, include computer code in them. When these
+pages are requested by the server, the server executes the code in the
+designated file and sends the output of that execution to the requesting client
+rather than the actual file. Many sites, such as online stores and blogs, use
+this functionality to connect their web pages to active databases that track
+inventory and orders, for example.
+
+#### Query Strings
+
+Dynamic websites, such as e-commerce sites that are connected to databases,
+require a mechanism for users to submit information to the server for
+processing. This is accomplished through one of two HTTP requests: GET or POST.
+
+**POST requests** send submitted information to the server via a hidden **HTTP
+header** that is invisible to the end user. Scraping sites that require POST
+transactions is possible but can require significant sleuthing to determine the
+correct parameters and is beyond the scope of this course.
+
+**GET requests**, which are, happily for web scrapers more ubiquitous than POST
+requests, are much easier to understand. They are submitted via a **query
+string** that is simply appended to the request URL as in the following
+example:
+
+```
+https://ebba.english.ucsb.edu/search_combined/?ft=dragon&numkw=52
+```
+
+Here we see a query string appended to the end of the actual URL:
+
+```{r, echo=FALSE}
+url_protocol <- c("https://")
+url_domain <- c("ebba.english.ucsb.edu")
+url_path <- c("/search_combined/index.php")
+url_query <- c("?ft=dragon&numkw=52")
+birds_columns <- c("protocol", "server", "path to file", "query string")
+birds_table <- data.frame(url_protocol, url_domain, url_path, url_query)
+colnames(birds_table) <- birds_columns
+birds_table[,]
+```
+
+Query strings always appear at the end of the URL and begin with the `?`
+character followed by a series of key/value pairs separated by the `&`
+character. In the above example we see that two parameters are submitted to the
+server via the query string as follows:
+
+* `ft=dragon`
+* `numkw=52`
+
+The server will use these parameter values as input to perform a dynamic
+operation, in this case searching a database.
+
+## Accessing Data Online
+
+While there are many methods (and R packages) for acquiring data from the web,
+all fall into one of three general categories of data acquisition:
+
+* **Direct download** describes the case where a data provider has provided a
+  specific URL or web link from which you can download the data. For example,
+  when you download data from the "Files" section of Canvas, you are using the
+  direct download method of data acquisition.
+* Web **application programming interfaces** (web APIs) are web-accessible
+  endpoints that you access via a URL, just as you would any website, but that
+  are designed specifically to interact with computers (as opposed to humans).
+  APIs receive requests and return data to the requester in machine, as opposed
+  to human, readable formats, such as JSON or XML.  We will learn more about
+  working with APIs in this unit.
+* **Scraping** a web page means extracting information from human readable
+  internet sources so that it can be used programmatically (for instance, in
+  R).  We will also learn more about Scraping in this unit.
+
+Each of the above general methods can be accomplished by applying any number of
+sub-methods and packages. And each brings with it its own degree of complexity
+and difficulty. As a general rule, the various ways you can get data from the
+web can be ranked according to difficulty from most to least convenient as
+follows:
+
+1. Direct download or "data dump"
+2. R or Python package (there are packages for many popular web APIs)
+3. Documented web API
+4. Undocumented web API
+5. Scraping
+
+
+## Web APIs
+
+As noted earlier, a web application programming interface (API) provides a
+machine readable gateway for accessing data from the web.  Most APIs provide
+programmatic access to the data that lives behind a human readable website. For
+example, most social media platforms such as Twitter, Facebook, and Instagram
+provide web APIs that allow computers to programmatically access the same data
+that you, as a human, see when you interact with these platforms via a web
+browser of mobile app.  Some web APIs, however, are stand-alone, in that they
+provide machine access to data sources that have no human readable interface.
+
+One of the challenges with working with web APIs is that, while there are some
+conventions for behavior, you need to know what and how to query a specific API
+in order to interact with it. Some APIs are well documented, while others are
+not. And some, for example the Twitter API, have extensive documentation that
+is frequently erroneous, incomplete, or out of date.  As a result, working with
+web APIs can sometimes be challenging.
+
+For this unit, we will work with the [RESTCountries
+API](https://restcountries.com/) which stores data on countries all over the
+world: their currencies, flags, population, etc. There are a large number of
+public web APIs out there, such as those listed by the [public-api
+project](https://github.com/public-apis/public-apis).
+
+### Querying a Web API
+
+The R community has developed packages to facilitate interaction with many
+popular web APIs (Twitter, Facebook, etc.). Because web APIs are
+web-accessible, however, all can be accessed programmatically using basic
+internet request protocols, just as if you were going to a human readable
+webpage, provided you know how to formulate your request as a URL. The
+RESTcountries webpage publishes guidelines for accessing its API.
+
+We can see from the documentation that the API will allow us to query a list of
+country features that appear in the database using a URL with the following
+construction:
+
+```
+"https://restcountries.com/v3.1/all?fields=name"
+```
+
+You can actually go to this URL in your web browser and see the response, a
+portion of which is reproduced here:
+
+```json
+[{"name":{"common":"American Samoa","official":"American Samoa","nativeName":{"eng":{"official":"American Samoa","common":"American Samoa"},"smo":{"official":"Sāmoa Amelika","common":"Sāmoa Amelika"}}}},{"name":{"common":"Peru","official":"Republic of Peru","nativeName":{"aym":{"official":"Piruw Suyu","common":"Piruw"},"que":{"official":"Piruw Ripuwlika","common":"Piruw"},"spa":{"official":"República del Perú","common":"Perú"}}}},{"name":{"common":"Tonga","official":"Kingdom of Tonga","nativeName":{"eng":{"official":"Kingdom of Tonga","common":"Tonga"},"ton":{"official":"Kingdom of Tonga","common":"Tonga"}}}}
+```
+
+If you look closely at this extract form the response, you will see that it
+contains HTML but is not HTML. Remember that APIs exist to deliver machine
+readable information. In this case, the API is delivering data in the JSON
+format, and some of the fields in the JSON object contain information provided
+as HTML.
+
+Because the response is machine readable, we can make better use of the query
+if we run it in R rather than our web browser. Before we can do so, we need to
+setup our R environment to execute HTTP queries against the API and to process
+JSON. We'll use the `httr` package to process our http transactions and the
+`jsonlite` package to process the JSON that we receive
+
+```r
+install.packages("httr")
+install.packages("jsonlite")
+```
+
+With our packages installed, we execute our query in R with one simple command:
+
+```{r}
+library("httr")
+library("jsonlite")
+
+response <- GET("https://restcountries.com/v3.1/all?fields=name")
+```
+
+The above executes an HTTP GET request (just like your web browser) to the
+identified query URL and loads it into an httr "response" object.  If you take
+some time to examine the response object, you will see that it is a container
+object that contains a lot of useful information in addition to the actual JSON
+response that you see when you load the URL in your browser.  For example, we
+can check the status of the response to see if it was successful by look at the
+response "status_code" which should be 200 if the query executed successfully.
+
+```{r}
+message(response$status_code)
+```
+
+The actual content of the response can be found in the response object's
+"content" element. Note, however, that we have to do some formatting on the
+object in order to access it. Go ahead and look at the actual
+`response$content` object:
+
+```{r, attr.output='style="max-height: 200px;"'}
+response$content
+```
+
+Above we see that the content that is received from the API is delivered as a
+compressed binary string, which must be decompressed and converted back to
+character encoding before processing. We do this using a built-in `httr`
+function:
+
+```{r}
+bdy <- content(response, "text")
+```
+
+Once we have the content extracted and converted, we can begin to process it.
+We previously examined the response and determined that it is in JSON format,
+so our step will be to load the content into a JSON object for ease of
+traversal:
+
+```{r}
+bdy_json <- fromJSON(bdy)
+```
+
+If you examine the class and structure of the `bdy_json` object, you will see
+that `jsonlite` has converted the JSON structure into a nice R data frame where
+you can begin the process of exploration and cleaning in preparation for
+research.

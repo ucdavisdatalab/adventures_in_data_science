@@ -1,0 +1,651 @@
+```{r, echo = FALSE}
+terns = read.csv("data/2000-2023_ca_least_tern.csv")
+```
+
+# Introduction to `ggplot2`
+
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Install and load packages
+* Describe the grammar of graphics
+* Make a plot
+* Save a plot to an image file
+:::
+
+Now that you have a solid foundation in the basic functions and data structures
+of R, you can move on to its most popular application: data analysis. In this
+chapter, you'll learn how to efficiently explore and summarize data with
+visualizations and statistics. Along the way, you'll also learn how to install
+packages.
+
+
+## Packages {#sec-packages}
+
+A **package** is a collection of functions for use in R. Packages usually
+include documentation, and can also contain examples, vignettes, and data sets.
+Most packages are developed by members of the R community, so quality varies.
+There are also a few packages that are built into R but provide extra features.
+We'll use a package in @sec-data-visualization, so we're learning about them
+now.
+
+The [Comprehensive R Archive Network][cran], or CRAN, is the main place people
+publish packages. As of writing, there were 18,619 packages posted to CRAN.
+This number has been steadily increasing as R has grown in popularity.
+
+[cran]: https://cran.r-project.org/
+
+Packages span a wide variety of topics and disciplines. There are packages
+related to statistics, social sciences, geography, genetics, physics, biology,
+pharmacology, economics, agriculture, and more. The best way to find packages
+is to search online, but the CRAN website also provides ["task
+views"][cran-task-views] if you want to browse popular packages related to a
+specific discipline.
+
+[cran-task-views]: https://cran.r-project.org/web/views/
+
+The `install.packages` function installs one or more packages from CRAN. Its
+first argument is the packages to install, as a character vector.
+
+When you run `install.packages`, R will ask you to choose which **mirror** to
+download the package from. A mirror is a web server that has the same set of
+files as some other server. Mirrors are used to make downloads faster and to
+provide redundancy so that if a server stops working, files are still available
+somewhere else. CRAN has dozens of mirrors; you should choose one that's
+geographically nearby, since that usually produces the best download speeds. If
+you aren't sure which mirror to choose, you can use the 0-Cloud mirror, which
+attempts to automatically choose a mirror near you.
+
+As an example, here's the code to install the remotes package:
+
+```{r, eval = FALSE}
+install.packages("remotes")
+```
+
+If you run the code above, you'll be asked to select a mirror, and then see
+output that looks something like this:
+
+```
+--- Please select a CRAN mirror for use in this session ---
+trying URL 'https://cloud.r-project.org/src/contrib/remotes_2.3.0.tar.gz'
+Content type 'application/x-gzip' length 148405 bytes (144 KB)
+==================================================
+downloaded 144 KB
+
+* installing *source* package ‘remotes’ ...
+** package ‘remotes’ successfully unpacked and MD5 sums checked
+** using staged installation
+** R
+** inst
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** installing vignettes
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (remotes)
+
+The downloaded source packages are in
+        ‘/tmp/Rtmp8t6iGa/downloaded_packages’
+```
+
+R goes through a variety of steps to install a package, even installing other
+packages that the package depends on. You can tell that a package installation
+succeeded by the final line `DONE`. When a package installation fails, R prints
+an error message explaining the problem instead.
+
+Once a package is installed, it stays on your computer until you remove it or
+remove R. This means you only need to install each package once. However, most
+packages are periodically updated. You can reinstall a package using
+`install.packages` the same way as above to get the latest version.
+
+Alternatively, you can update all of the R packages you have installed at once
+by calling the `update.packages` function. Beware that this may take a long
+time if you have a lot of packages installed.
+
+The function to remove packages is `remove.packages`. Like `install.packages`,
+this function's first argument is the packages to remove, as a character
+vector.
+
+If you want to see which packages are installed, you can use the
+`installed.packages` function. It does not require any arguments. It returns a
+matrix with one row for each package and columns that contain a variety of
+information. Here's an example:
+
+```{r}
+packages = installed.packages()
+# Just print the version numbers for 10 packages.
+packages[1:10, "Version"]
+```
+
+You'll see a different set of packages, since you have a different computer.
+
+Before you can use the functions (or other resources) in an installed package,
+you must load the package with the `library` function. R doesn't load packages
+automatically because each package you load uses memory and may conflict with
+other packages. Thus you should only load the packages you need for whatever
+it is that you want to do. When you restart R, the loaded packages are cleared
+and you must again load any packages you want to use.
+
+Let's load the remotes package we installed earlier:
+
+```{r}
+library("remotes")
+```
+
+The `library` function works with or without quotes around the package name, so
+you may also see people write things like `library(remotes)`. We recommend
+using quotes to make it unambiguous that you are not referring to a variable.
+
+A handful of packages print out a message when loaded, but the vast majority do
+not. Thus you can assume the call to `library` was successful if nothing is
+printed. If something goes wrong while loading a package, R will print out an
+error message explaining the problem.
+
+Finally, not all R packages are published to CRAN. [GitHub][gh] is another
+popular place to publish R packages, especially ones that are experimental or
+still in development. Unlike CRAN, GitHub is a general-purpose website for
+publishing code written in any programming language, so it contains much more
+than just R packages and is not specifically R-focused.
+
+[gh]: https://github.com/
+
+The remotes package that we just installed and loaded provides functions to
+install packages from GitHub. It is generally better to install packages from
+CRAN when they are available there, since the versions on CRAN tend to be more
+stable and intended for a wide audience. However, if you want to install a
+package from GitHub, you can learn more about the remotes package by reading
+its [online documentation][remotes].
+
+[remotes]: https://remotes.r-lib.org/
+
+
+
+## Data Visualization {#sec-data-visualization}
+
+There are three popular systems for creating visualizations in R:
+
+1. The base R functions (primarily the `plot` function)
+2. The lattice package
+3. The ggplot2 package
+
+These three systems are not interoperable! Consequently, it's best to choose
+one to use exclusively. Compared to base R, both lattice and ggplot2 are better
+at handling grouped data and generally require less code to create a
+nice-looking visualization.
+
+The ggplot2 package is so popular that there are now knockoff packages for
+other data-science-oriented programming languages like Python and Julia. The
+package is also part of the [Tidyverse][tidy], a popular collection of R
+packages designed to work well together. Because of these advantages, we'll use
+ggplot2 for visualizations in this and all future lessons.
+
+[tidy]: https://www.tidyverse.org/
+
+ggplot2 has detailed [documentation][ggplot2-docs] and also a
+[cheatsheet][ggplot2-cheat].
+
+[ggplot2-docs]: https://ggplot2.tidyverse.org/
+[ggplot2-cheat]: https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
+
+The "gg" in ggplot2 stands for **grammar of graphics**. The idea of a grammar
+of graphics is that visualizations can be built up in layers. In ggplot2, the
+three layers every plot must have are:
+
+* Data
+* Geometry
+* Aesthetics
+
+There are also several optional layers. Here are a few:
+
+Layer       | Description
+----------  | -----------
+scales      | Title, label, and axis value settings
+facets      | Side-by-side plots
+guides      | Axis and legend position settings
+annotations | Shapes that are not mapped to data
+coordinates | Coordinate systems (Cartesian, logarithmic, polar)
+
+
+Let's visualize the California least terns data set from @sec-ca-least-terns to
+see how the grammar of graphics works in practice. But what kind of plot should
+we make? It depends on what we want to know about the data set!
+
+Suppose we want to understand the relationship between the number of breeding
+pairs and the total number of nests at each site, and whether this relationship
+is affected by climate events. One way to show the relationship between two
+numerical features like these is to make a scatter plot.
+
+
+### Loading ggplot2
+
+Before we can make the plot, we need to load ggplot2. As always, if this is
+your first time using the package, you'll have to install it. Then you can load
+the package:
+
+```{r}
+# install.packages("ggplot2")
+library("ggplot2")
+```
+
+### Layer 1: Data
+
+The **data layer** determines the data set(s) used to make the plot.
+
+ggplot2 and most other Tidyverse packages are designed to work with **tidy**
+data, which means:
+
+1. Each feature has its own column.
+2. Each observation has its own row.
+3. Each value has its own cell.
+
+These rules ensure data are easy to read visually and access with indexing. The
+least terns data set satisfies all of these rules.
+
+:::{.callout-note title="See also"}
+All of the data sets we use in this reader are tidy. To learn how to tidy an
+untidy data set, see the [Untidy & Relational Data][dl-r-tidy] chapter of
+DataLab's Intermediate R workshop reader.
+
+[dl-r-tidy]: https://ucdavisdatalab.github.io/workshop_intermediate_r/tidy-relational-data.html
+:::
+
+To set up the data layer, call the `ggplot` function on a data frame:
+```{r}
+ggplot(terns)
+```
+
+This returns a blank plot. We still need to add a few more layers.
+
+
+### Layer 2: Geometry
+
+The **geometry layer** determines the shape or appearance of the visual
+elements of the plot. In other words, the geometry layer determines what kind
+of plot to make: one with points, lines, boxes, or something else.
+
+There are many different geometries available in ggplot2. The package provides
+a function for each geometry, always prefixed with `geom_`.
+
+To add a geometry layer to the plot, choose the `geom_` function you want and
+add it to the plot with the `+` operator. We'll use `geom_point`, which makes a
+scatter plot (a plot with points):
+
+```{r, error=TRUE, fig.show="hide"}
+ggplot(terns) + geom_point()
+```
+
+This returns an error message that we're missing aesthetics `x` and `y`. We'll
+learn more about aesthetics in the next section, but this error message is
+especially helpful: it tells us exactly what we're missing. When you use a
+geometry you're unfamiliar with, it can be helpful to run the code for just the
+data and geometry layer like this, to see exactly which aesthetics need to be
+set.
+
+As we'll see later, it's possible to add multiple geometries to a plot.
+
+
+### Layer 3: Aesthetics
+
+The **aesthetic layer** determines the relationship between the data and the
+geometry. Use the aesthetic layer to map features in the data to aesthetics
+(visual elements) of the geometry.
+
+The `aes` function creates an aesthetic layer. The syntax is:
+
+```{r, eval = FALSE}
+aes(AESTHETIC = FEATURE, ...)
+```
+
+The names of the aesthetics depend on the geometry, but some common ones are
+`x`, `y`, `color`, `fill`, `shape`, and `size`. There is more information about
+and examples of aesthetic names in the documentation.
+
+
+For the scatter plot of breeding pairs against total nests, we'll put `bp_min`
+on the x-axis and `total_nests` on the y-axis. Below, we set both of these
+aesthetics. We also enclose all of the code for the plot in parentheses `()` so
+that we can put the code for each layer on a separate line, which makes the
+layers easier to distinguish:
+
+```{r}
+ggplot(terns) +
+  aes(x = bp_min, y = total_nests) +
+  geom_point()
+```
+
+:::{.callout-important}
+In the `aes` function, column names are never quoted.
+:::
+
+:::{.callout-note collapse="true" title="Note: The Old Aesthetic Layer Syntax"}
+In older versions of ggplot2, you must pass the aesthetic layer as the second
+argument of the `ggplot` function rather than using `+` to add it to the plot.
+This syntax is still widely used:
+
+```{r}
+ggplot(terns, aes(x = bp_min, y = total_nests)) +
+  geom_point()
+```
+:::
+
+At this point, we've supplied all three layers necessary to make a plot: data,
+geometry, and aesthetics. The plot shows what looks like a linear relationship
+between number of breeding pairs and total nests. To refine the plot, you can
+add more layers and/or set parameters on the layers you have.
+
+Let's add another aesthetic to the plot: we'll make the color and shape of each
+point correspond to `event`, the climate event for each observation:
+
+```{r}
+ggplot(terns) +
+  aes(x = bp_min, y = total_nests, color = event, shape = event) +
+  geom_point()
+```
+
+Using color and shape for the same feature is redundant, but ensures that the
+plot is accessible to colorblind people.
+
+
+#### Additional Geometries {-}
+
+Each observation in the least terns data corresponds to a specific year and
+site. What if we label the points with their years? You can add text labels to
+a plot with `geom_text`. The required aesthetic for this geometry is `label`:
+
+```{r}
+ggplot(terns) +
+  aes(
+    x = bp_min, y = total_nests,
+    color = event, shape = event,
+    label = year
+  ) +
+  geom_point() +
+  geom_text()
+```
+
+The labels make the plot more difficult to read and probably would even if we
+made them smaller, because there are so many points on the plot. Making a
+high-quality visualization is typically a process of drafting and revising,
+similar to writing a high-quality essay. In this example, adding year labels to
+the plot doesn't work well, so we'll backtrack and leave them off of the plot.
+If accounting for year was critical to our research question, we could do it in
+other ways, such as by making separate plots for each year.
+
+#### Per-geometry Aesthetics {-}
+
+Before we remove the labels, let's use them to demonstrate an important point
+about using multiple geometry and aesthetic layers: when you add an aesthetic
+layer to a plot, it applies to the entire plot. You can also set an aesthetic
+layer for an individual geometry by passing the layer as the first argument in
+the `geom_` function. Here's the same plot as above, but with the `color`
+aesthetic only set for the labels:
+
+```{r}
+ggplot(terns) +
+  aes(
+    x = bp_min, y = total_nests,
+    shape = event,
+    label = year
+  ) +
+  geom_point() +
+  geom_text(aes(color = event))
+```
+
+Notice that the points are no longer color-coded. Where you put aesthetic
+layers matters.
+
+
+#### Constant Aesthetics {-}
+
+If you want to set an aesthetic to a constant value, rather than one that's
+data dependent, do so in the geometry layer rather than the aesthetic layer.
+
+For instance, suppose we want to make all of the points blue and use only point
+shape to indicate climate events:
+
+```{r}
+ggplot(terns) +
+  aes(
+    x = bp_min, y = total_nests,
+    shape = event
+  ) +
+  geom_point(color = "blue")
+```
+
+If you set an aesthetic to a constant value inside of the aesthetic layer, the
+results you get might not be what you expect:
+
+```{r}
+ggplot(terns) +
+  aes(
+    x = bp_min, y = total_nests,
+    color = "blue", shape = event,
+    label = year
+  ) +
+  geom_point() +
+  geom_text()
+```
+
+
+### Layer 4: Scales
+
+The **scales layer** controls the title, axis labels, and axis scales of the
+plot. Most of the functions in the scales layer are prefixed with `scale_`, but
+not all of them.
+
+The `labs` function is especially important, because it's used to set the title
+and axis labels. Visualizations should generally have a title and axis labels,
+to aid the viewer:
+
+```{r}
+ggplot(terns) +
+  aes(
+    x = bp_min, y = total_nests,
+    color = event, shape = event
+  ) +
+  geom_point() +
+  labs(
+    x = "Minimum Reported Breeding Pairs",
+    y = "Total Nests",
+    color = "Climate Event", shape = "Climate Event",
+    title = "California Least Terns: Breeding Pairs vs. Nests"
+  )
+```
+
+Notice that to set the title for a legend with `labs`, you can set the
+parameters of the same names as the corresponding aesthetics. While our plot is
+still far from perfect---some of the points are hard to see because of how many
+there are---it's now good enough to provide some insight into the relationship
+between number of breeding pairs and nests.
+
+
+### Saving Plots
+
+You can use the `ggsave` function to save a plot you've assigned to a variable
+or the most recent plot you created (with no argument to `ggsave`):
+
+```{r, eval=FALSE}
+ggsave("myplot.png")
+```
+
+The file format is selected automatically based on the extension. Common
+formats include PNG, TIFF, SVG, and PDF.
+
+:::{tip}
+PNG and SVG are good choices for sharing visualizations online, while TIFF and
+PDF are good choices for print. Many journals require that visualizations be in
+TIFF format.
+:::
+
+
+:::{.callout-note collapse="true" title="Note: R Plot Devices"}
+You can also save a plot with one of R's "plot device" functions. The steps
+are:
+
+1. Call a plot device function: `png`, `jpeg`, `pdf`, `bmp`, `tiff`, or `svg`.
+2. Run your code to make the plot.
+3. Call `dev.off` to indicate that you're done plotting.
+
+This strategy works with any of R's graphics systems (not just ggplot2).
+
+Here's an example:
+```{r, eval=FALSE}
+# Run these lines in the console, not the notebook!
+jpeg("myplot.jpeg")
+ggplot(terns) +
+  aes(
+    x = bp_min, y = total_nests,
+    color = event, shape = event
+  ) +
+  geom_point() +
+  labs(
+    x = "Minimum Reported Breeding Pairs",
+    y = "Total Nests",
+    color = "Climate Event", shape = "Climate Event",
+    title = "California Least Terns: Breeding Pairs vs. Nests"
+  )
+dev.off()
+```
+:::
+
+
+### Example: Bar Plot {#sec-example-bar-plot}
+
+Suppose we want to visualize how many fledglings there are each year, further
+broken down by region. A bar plot is one appropriate way to represent this
+visually.
+
+The geometry for a bar plot is `geom_bar`. Since bar plots are mainly used to
+display frequencies, by default the `geom_bar` function counts the number of
+observations in each category on the x-axis and displays these counts on the
+y-axis. You can make `geom_bar` display values from a column on the y-axis by
+setting the `weight` aesthetic:
+
+```{r}
+ggplot(terns) +
+  aes(x = year, weight = fl_min, fill = region_3) +
+  geom_bar()
+```
+
+:::{.callout-note collapse="true" title="Note: Setting the Statistics Layer"}
+Every geometry layer has a corresponding statistics layer, which transforms
+feature values into quantities to plot. For many geometries, the default
+statistics layer is the only one that makes sense.
+
+Bar plots are an exception. The default statistics layer is `stat_count`, which
+counts observations. If you already have counts (or just want to display some
+quantities as bars), you need `stat_identity` (or the `weight` aesthetic
+described above). Here's one way to change the statistics layer:
+
+```{r}
+ggplot(terns) +
+  aes(x = year, y = fl_min, fill = region_3) +
+  geom_bar(stat = "identity")
+```
+
+This produces the same plot as setting `weight` and using the default
+statistics layer `stat_count`.
+:::
+
+The plot reveals that there are a few extraneous categories in the `region_3`
+column: `ARIZONA`, `KINGS`, and `SACRAMENTO`. These might or might not be
+erroneous---and it would be good to investigate---but they don't add anything
+to this plot, so let's exclude them.
+
+Let's also change the **color map**, the palette of colors used for the
+categories. These are both properties of the scale layer for the `fill`
+aesthetic, so we'll use a `scale_fill_` function. In particular, we'll use the
+"viridis" color map, and since the fill color corresponds to categorical
+(discrete) data, we'll use `scale_fill_viridis_d`. We'll also add labels:
+
+```{r}
+terms_to_keep = c("S.F._BAY", "CENTRAL", "SOUTHERN")
+terns_filtered = terns[terns$region_3 %in% terms_to_keep, ]
+
+ggplot(terns_filtered) +
+  aes(x = year, weight = fl_min, fill = region_3) +
+  geom_bar() +
+  scale_fill_viridis_d() +
+  labs(
+    title = "California Least Terns: Fledglings",
+    x = "Year",
+    y = "Minimum Reported Fledglings",
+    fill = "Region"
+  )
+```
+
+You can read more about the viridis color map in ggplot2's [documentation for
+this function][gg-viridis]. The plot reveals that the data set is missing
+2001-2003 and that overall, fledgling counts seem to be declining in recent
+years.
+
+[gg-viridis]: https://ggplot2.tidyverse.org/reference/scale_viridis.html
+
+:::{.callout-tip}
+The setting `position = "dodge"` instructs `geom_bar` to put the bars
+side-by-side rather than stacking them.
+:::
+
+
+### Visualization Design
+
+Designing high-quality visualizations goes beyond just mastering which R
+functions to call. You also need to think carefully about what kind of data you
+have and what message you want to convey. This section provides a few
+guidelines.
+
+The first step in data visualization is choosing an appropriate kind of plot.
+Here are some suggestions (not rules):
+
+| Feature 1   | Feature 2   | Plot
+| :---------- |:----------- |:----
+| categorical |             | bar, dot
+| categorical | categorical | bar, dot, mosaic
+| numerical   |             | box, density, histogram
+| numerical   | categorical | box, density, ridge
+| numerical   | numerical   | line, scatter, smooth scatter
+
+If you want to add a:
+
+* 3rd numerical feature, use it to change point/line sizes.
+* 3rd categorical feature, use it to change point/line styles.
+* 4th categorical feature, use side-by-side plots.
+
+Once you've selected a plot, here are some rules you should almost always
+follow:
+
+* Always add a title and axis labels. These should be in plain English, not
+  variable names!
+
+* Specify units after the axis label if the axis has units. For instance,
+  "Height (ft)".
+
+* Don't forget that many people are colorblind! Also, plots are often printed
+  in black and white. Use point and line styles to distinguish groups; color is
+  optional.
+
+* Add a legend whenever you've used more than one point or line style.
+
+* Always write a few sentences explaining what the plot reveals. Don't
+  describe the plot, because the reader can just look at it. Instead,
+  explain what they can learn from the plot and point out important details
+  that are easily overlooked.
+
+* Sometimes points get plotted on top of each other. This is called
+  _overplotting_. Plots with a lot of overplotting can be hard to read and can
+  even misrepresent the data by hiding how many points are present. Use a
+  two-dimensional density plot or jitter the points to deal with overplotting.
+
+* For side-by-side plots, use the same axis scales for both plots so that
+  comparing them is not deceptive.
+
+:::{.callout-note title="See also"}
+Visualization design is a deep topic, and whole books have been written about
+it. One resource where you can learn more is DataLab's [Principles of Data
+Visualization Workshop Reader][dataviz].
+
+[dataviz]: https://ucdavisdatalab.github.io/workshop_data_viz_principles/
+:::

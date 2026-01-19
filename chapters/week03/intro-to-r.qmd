@@ -1,0 +1,1129 @@
+# Introduction to R
+
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Run code in the R console
+* Call functions and create variables
+* Check (in)equality of values
+* Describe a file system, directory, and working directory
+* Write paths to files or directories
+* Get or set the R working directory
+* Identify RDS, CSV, TSV files and functions for reading these
+* Inspect the structure of a data frame
+:::
+
+## Why R?
+
+:::{.callout-note title="Why should you use a programming language?"}
+Code you write is **reproducible**: you can share it with someone else, and if
+they run it with the same inputs, they'll get the same results. By writing
+code, you create an unambiguous record of every step taken in your analysis.
+This is one of the major advantages of programming languages over
+point-and-click software like *Tableau* or *Microsoft Excel*.
+
+Another advantage of writing code is that it's often **reusable**. This means
+you can:
+
+* Automate repetitive tasks within an analysis
+* Recycle code from one analysis into another
+* Package useful code for distribution to your colleagues or the general
+  public
+:::
+
+![](/images/week03/rlogo.png){height=5em fig-align="center"}
+
+**[R][]** is a programming language for statistical computing and graphics. It
+provides a rich set of built-in tools for cleaning, exploring, modeling, and
+visualizing data.
+
+[R]: https://www.r-project.org/
+
+:::{.callout-note}
+The term "R" can mean the R language (the code) or the R interpreter (the
+software which runs the code). Most of the time, the meaning is clear from the
+context, but we'll be explicit in cases where the distinction is important.
+:::
+
+Compared to other programming languages, some of R's particular strengths are
+its:
+
+* Interactive interpreter and debugger
+* Focus on statistical computing
+    - Many statistical estimators, tests, and models are built-in
+    - Statisticians tend to implement new methods in R first
+* Over 23,000 community-developed **packages**: reusable bundles of code, often
+  accompanied by documentation, examples, or data sets
+* Functions and packages for creating high-quality data visualizations
+* Flexible support for many different programming abstractions and paradigms
+
+The main way you'll interact with R is by writing R code or **expressions**.
+We'll explain more soon, but first we need to install R and associated
+software.
+
+:::{.callout-important}
+To follow along with this and subsequent chapters, you'll need a recent
+version of R.
+
+[Click here][r-dl] to download the R installer. When the download is complete,
+run the installer to install (or update) R on your computer. We recommend
+keeping the installer's default settings.
+
+[r-dl]: https://cloud.r-project.org/
+
+In addition to R, you'll need a recent version of RStudio. RStudio is an
+**integrated development environment** (IDE), which means it's a comprehensive
+program for writing, editing, searching, and running code. You can do all of
+these things without RStudio, but RStudio makes the process easier.
+
+[Click here][rstudio-dl] to download the free RStudio Desktop installer. When
+the download is complete, run the installer to install RStudio Deskop on your
+computer.
+
+[rstudio-dl]: https://www.rstudio.com/products/rstudio/download/
+:::
+
+
+## The RStudio Interface
+
+The first time you open RStudio, you'll see a window divided into several
+panes, like this:
+
+![
+  How RStudio typically looks the first time you open it. Don't worry if the
+  text in the panes isn't exactly the same on your computer: it depends on your
+  operating system and versions of R and RStudio.
+](/images/week03/rstudio_start.png){.lightbox}
+
+The console pane, on the left, is the main interface to R. If you type R code
+into the console and press the `Enter` key on your keyboard, R will run your
+code and return the result.
+
+On the right are the environment pane and the plots pane. The environment pane
+shows data in your R workspace. The plots pane shows any plots you make, and
+also has tabs to browse your file system and to view R's built-in help files.
+You'll learn more about these gradually, but for now, focus on the console
+pane.
+
+Let's start by using R to do some arithmetic. In the console, you'll see that
+the cursor is on a line that begins with `>`, called the **prompt**. You can
+make R compute the sum $2 + 2$ by typing the code `2 + 2` after the prompt and
+then pressing the `Enter` key. Your code and the result from R should look like
+this:
+
+![](/images/week03/arithmetic.png)
+
+R always puts the result on a separate line (or lines) from your code. In this
+case, the result begins with the tag `[1]`, which is a hint from R that the
+result is a **vector** and that this line starts with the **element** at
+position 1. You'll learn more about vectors in @sec-vectors, and eventually
+learn about other data types that are displayed differently. The result of the
+sum, `4`, is displayed after the tag.
+
+If you enter an incomplete expression, R will change the prompt to `+`, then
+wait for you to type the rest of the expression and press the `Enter` key.
+Here's what it looks like if you only enter `2 +`:
+
+![](/images/week03/incomplete.png)
+
+You can finish entering the expression, or you can cancel it by pressing the
+`Esc` key (or `Ctrl`-`c` if you're using R without RStudio). R can only tell an
+expression is incomplete if it's missing something, like the second operand in
+`2 +`. So if you mean to enter `2 + 2` but accidentally enter `2`, which is a
+complete expression by itself, don't expect R to read your mind and wait for
+more input!
+
+
+## R Basics
+
+Try out some other arithmetic in the R console. Besides `+` for addition, the
+other arithmetic operators are:
+
+* `-` for subtraction
+* `*` for multiplication
+* `/` for division
+* `%%` for remainder division (modulo)
+* `^` or `**` for exponentiation
+
+You can combine these and use parentheses to make more complicated expressions,
+just as you would when writing a mathematical expression. When R computes a
+result, it follows the standard order of operations: parentheses,
+exponentiation, multiplication, division, addition, and finally subtraction.
+For example, to estimate the area of a circle with radius 3, you can write:
+
+```{r}
+3.14 * 3^2
+```
+
+You can write R expressions with any number of spaces (including none) around
+the operators and R will still compute the result.
+
+:::{.callout-tip}
+Use spaces!
+
+As with writing text, putting spaces in your code makes it easier for you and
+others to read, so it's good to make it a habit. Put a single space on each
+side of most operators, after commas, and after keywords.
+:::
+
+
+### Variables
+
+Since R is designed for mathematics and statistics, you might expect that it
+provides a better appoximation for $\pi$ than `3.14`. R and most other
+programming languages allow you to create named values, or **variables**. R
+provides a built-in variable called `pi` for the value of $\pi$. You can
+display a variable's value by entering its name in the console:
+
+```{r}
+pi
+```
+
+You can also use variables in expressions. For instance, here's a more precise
+expression for the area of a circle with radius 3:
+
+```{r}
+pi * 3^2
+```
+
+You can create a variable with the assignment operator `=` by writing a name on
+the left-hand side and a value or expression on the right-hand side. For
+example, to save the area of the circle in a variable called `area`, you can
+write:
+
+
+```{r}
+area = pi * 3^2
+```
+
+:::{.callout-note}
+You can use the arrow operator `<-` instead of the assignment operator:
+
+```{r}
+area <- pi * 3^2
+```
+
+In most cases, the two operators are interchangeable. For clarity, it's best to
+choose one you like and use it consistently in all of your R code. In this
+reader, we use `=` because it's the assignment operator in most programming
+languages and it's easier to type.
+:::
+
+In R, variable names can contain any combination of letters and dots (`.`).
+Names can also include numbers and underscores (`_`), but can't start with a
+them. Spaces and other symbols are not allowed in variable names. So `geese`,
+`top50.dogs`, and `nine_lives` are valid variable names, but `goose teeth`,
+`_fishes`, and `9lives` are not.
+
+The main reason to use variables is to temporarily save results from
+expressions so that you can use them in other expressions. For instance, now
+you can use the `area` variable anywhere you want the area of the circle.
+
+Notice that when you assign a result to a variable, R doesn't automatically
+display that result. If you want to see the result as well, you have to enter
+the variable's name as a separate expression:
+
+```{r}
+area
+```
+
+Another reason to use variables is to make an expression clearer and more
+general. For instance, you might want to compute the area of several circles
+with different radii. Then the expression `pi * 3^2` is too specific. Instead,
+you can create a variable `r`, then rewrite the expression as `pi * r^2`. This
+makes the expression easier to understand, because the reader doesn't have to
+intuit that `3` is the radius in the formula. Here's the code to compute and
+display the area of a circle with radius 1 this way:
+
+```{r}
+r = 1
+area = pi * r^2
+area
+```
+
+Now if you want to compute the area for a different radius, all you have to do
+is change `r` and run the code again (R will not change `area` until you do
+this). Writing code that's general enough to reuse across multiple problems can
+be a big time-saver in the long run. Later on, you'll learn ways to make this
+code even easier to reuse.
+
+:::{.callout-tip}
+Try to choose descriptive variable names, so that you and your collaborators
+can understand the meaning and purpose of each variable when reading the code.
+:::
+
+
+### Strings
+
+R treats anything inside single or double quotes as literal text rather than as
+an expression to evaluate. In programming jargon, a piece of literal text is
+called a **string**. You can use whichever kind of quotes you prefer, but the
+quote at the beginning of the string must match the quote at the end.
+
+```{r}
+'Hi'
+"Hello!"
+```
+
+Numbers and strings are not the same thing, so for example R considers `1`
+different from `"1"`. As a result, you can't use strings with most of R's
+arithmetic operators. For instance, this code causes an error:
+
+```{r, error = TRUE}
+"1" + 3
+```
+
+The error message notes that `+` is not defined for non-numeric values.
+
+
+### Comparisons {#sec-comparisons}
+
+Besides arithmetic, you can also use R to compare values. Programming tasks
+often involve comparing values. Use **comparison operators** to do so:
+
+* `<` for "less than"
+* `>` for "greater than"
+* `<=` for "less than or equal to"
+* `>=` for "greater than or equal to"
+* `==` for "equal to"
+* `!=` for "not equal to"
+
+Notice that the "equal to" operator is two equal signs. This is to distinguish
+it from the assignment operator `=`.
+
+Let's look at a few examples:
+```{r}
+1.5 < 3
+"a" > "b"
+pi == 3.14
+"hi" == 'hi'
+```
+
+When you make a comparison, R returns a **logical** value, `TRUE` or `FALSE`,
+to indicate the result. Logical values are not the same as strings, so they are
+not quoted.
+
+Logical values are values, so you can use them in other computations. For
+example:
+
+```{r}
+TRUE
+TRUE == FALSE
+```
+
+@sec-logic describes more ways to use and combine logical values.
+
+:::{.callout-warning}
+Some of R's equality operators return `TRUE` even when comparing two different
+types of data:
+
+```{r}
+"1" == 1
+"TRUE" <= TRUE
+"FALSE" <= TRUE
+```
+
+@sec-implicit-coercion explains why this happens.
+<!-- FIXME , and @sec-more-about-comparisons explains several other ways to
+compare values. -->
+:::
+
+
+### Calling Functions {#sec-calling-functions}
+
+R can do a lot more than just arithmetic. Most of R's features are provided
+through **functions**, pieces of reusable code. You can think of a function as
+a machine that takes some inputs and uses them to produce some output. In
+programming jargon, the inputs to a function are called **arguments**, the
+output is called the **return value**, and when you use a function, you're
+**calling** the function.
+
+To call a function, write its name followed by parentheses. Put any arguments
+to the function inside the parentheses. For example, the function to round a
+number to a specified decimal place is named `round`. So you can round the
+number `8.153` to the nearest integer with this code:
+
+```{r}
+round(8.153)
+```
+
+Many functions accept more than one argument. For instance, the `round`
+function accepts at least two arguments: the number to round and the number of
+decimal places to keep. When you call a function with multiple arguments,
+separate the arguments with commas. So to round `8.153` to 1 decimal place:
+
+```{r}
+round(8.153, 1)
+```
+
+When you call a function, R assigns the arguments to the function's
+**parameter**. Parameters are special variables that represent the inputs to a
+function and only exist while that function runs. For example, the `round`
+function has parameters `x` and `digits`. The next section, @sec-getting-help,
+explains how to look up the parameters of a function.
+
+Some parameters have **default arguments**. A parameter is automatically
+assigned its default argument whenever the parameter's argument is not
+specified explicitly. As a result, assigning arguments to these parameters is
+optional. For instance, the `digits` parameter of `round` has a default
+argument (round to the nearest integer), so it's okay to call `round` without
+setting `digits`, as in `round(8.153)`. In contrast, the `x` parameter doesn't
+have a default argument. @sec-getting-help explains how to look up the default
+arguments for a function.
+
+By default, R assigns arguments to parameters based on their position. The
+first argument is assigned to the function's first parameter, the second to the
+second, and so on. So in the code above, `8.153` is assigned to `x` and `1` is
+assigned to `digits`.
+
+You can also assign arguments to parameters by name with `=` (not `<-`),
+overriding their positions. So some other ways you could write the call above
+are:
+
+```{r}
+round(8.153, digits = 1)
+round(x = 8.153, digits = 1)
+round(digits = 1, x = 8.153)
+```
+
+All of these are equivalent. When you write code, choose whatever seems the
+clearest to you. Leaving parameter names out of calls saves typing, but
+including some or all of them can make the code easier to understand.
+
+Parameters are not regular variables, and only exist while their associated
+function runs. You can't set them before a call, nor can you access them after
+a call. So this code causes an error:
+
+```{r, error = TRUE}
+x = 4.755
+round(digits = 2)
+```
+
+In the error message, R says that you forgot to assign an argument to the
+parameter `x`. You can keep the variable `x` and correct the call by making `x`
+an argument (for the parameter `x`):
+
+```{r}
+round(x, digits = 2)
+```
+
+Or, written more explicitly:
+
+```{r}
+round(x = x, digits = 2)
+```
+
+The point is that variables and parameters are distinct, even if they happen to
+have the same name. The variable `x` is not the same thing as the parameter
+`x`.
+
+
+### Comments
+
+In R and most other programming languages, you can mark parts of your code as
+**comments**: expressions to ignore rather than run. Use comments to plan,
+explain, and document your code. You can also temporarily "comment out" code to
+prevent it from running, which is often helpful for testing and debugging.
+
+R comments begin with number sign `#` and extend to the end of the line:
+
+```{r}
+# This is a comment.
+```
+
+R will ignore comments when you run your code.
+
+
+## Getting Help {#sec-getting-help}
+
+Learning and using a language is hard, so it's important to know how to get
+help. The first place to look for help is R's built-in documentation. In the
+console, you can access a specific help page by name with `?` followed by the
+name of the page.
+
+There are help pages for all of R's built-in functions, usually with the same
+name as the function itself. So the code to open the help page for the `round`
+function is:
+
+```{r, eval = FALSE}
+?round
+```
+
+For functions, help pages usually include a brief description, a list of
+parameters, a description of the return value, and some examples. The help page
+for `round` shows that there are two parameters `x` and `digits`. It also says
+that `digits = 0`, meaning the default argument for `digits` is `0`.
+
+There are also help pages for other topics, such as built-in mathematical
+constants (such as `?pi`), data sets (such as `?iris`), and operators. To look
+up the help page for an operator, put the operator's name in single or double
+quotes. For example, this code opens the help page for the arithmetic
+operators:
+
+```{r, eval = FALSE}
+?"+"
+```
+
+It's always okay to put quotes around the name of the page when you use `?`,
+but they're only required if it contains non-alphabetic characters. So `?sqrt`,
+`?'sqrt'`, and `?"sqrt"` all open the documentation for `sqrt`, the square root
+function.
+
+Sometimes you might not know the name of the help page you want to look up. You
+can do a general search of R's help pages with `??` followed by a string of
+search terms. For example, to get a list of all help pages related to linear
+models:
+
+```{r, eval = FALSE}
+??"linear model"
+```
+
+This search function doesn't always work well, and it's often more efficient to
+use an online search engine. When you search for help with R online, include
+"R" as a search term. Alternatively, you can use [RSeek][rseek], which
+restricts the search to a selection of R-related websites.
+
+[rseek]: https://rseek.org/
+
+
+### When Something Goes Wrong
+
+As a programmer, sooner or later you'll run some code and get an error message
+or result you didn't expect. Don't panic! Even experienced programmers make
+mistakes regularly, so learning how to diagnose and fix problems is vital.
+
+Try going through these steps:
+
+1. If R returned a warning or error message, read it! If you're not sure what
+   the message means, try searching for it online.
+2. Check your code for typographical errors, including incorrect capitalization
+   and missing or extra commas, quotes, and parentheses.
+3. Test your code one line at a time, starting from the beginning. After each
+   line that assigns a variable, check that the value of the variable is what
+   you expect. Try to determine the exact line where the problem originates
+   (which may differ from the line that emits an error!).
+
+If none of these steps help, try asking online. [Stack Overflow][stacko] is a
+popular question and answer website for programmers. Before posting, make sure
+to read about [how to ask a good question][goodq].
+
+[stacko]: https://stackoverflow.com/
+[goodq]: https://stackoverflow.com/help/how-to-ask
+
+
+## The Working Directory Revisited
+
+<!-- FIXME -->
+This section is a review of how files on a computer work. You’ll need to
+understand this in order to read a data set from a file, and it’s also
+important for finding your saved notebooks and modules later.
+
+@sec-absolute-relative-paths explained that relative paths have a starting
+point that depends on the context where the path is used. The **working
+directory** is the starting point R uses for relative paths. Think of the
+working directory as the directory R is currently "at" or watching.
+
+The function `getwd` returns the absolute path for the current working
+directory, as a string. It doesn't require any arguments:
+
+```{r}
+getwd()
+```
+
+On your computer, the output from `getwd` will likely be different. This is a
+very useful function for getting your bearings when you write relative paths.
+If you write a relative path and it doesn't work as expected, the first thing
+to do is check the working directory.
+
+The related `setwd` function changes the working directory. It takes one
+argument: a path to the new working directory. Here's an example:
+
+```{r eval=FALSE}
+setwd("..")
+
+# Now check the working directory.
+getwd()
+```
+
+:::{.callout-warning}
+In your R scripts and notebooks, avoid calls to `setwd`. They make your code
+more difficult to understand and to run on other computers. Use appropriate
+relative paths instead.
+
+In the R console, it's okay to occasionally use `setwd`. You might need to
+change the working directory before you run some code. R's default working
+directory is your home directory. In some cases, such as when you open a
+project, RStudio will automatically change the working directory. However, it
+doesn't always change the working directory, so `setwd` is sometimes still
+necessary.
+:::
+
+Another function that's useful for dealing with the working directory and file
+system is `list.files`. The `list.files` function returns the names of all of
+the files and directories inside of a directory. It accepts a path to a
+directory as an argument, or assumes the working directory if you don't pass a
+path. For instance:
+
+```{r}
+# List files and directories in /home/.
+list.files("/home/")
+
+# List files and directories in the working directory.
+list.files()
+```
+
+As usual, since you have a different computer, you're likely to see different
+output if you run this code. If you call `list.files` with an invalid path or
+an empty directory, the output is `character(0)`:
+
+```{r}
+list.files("/this/path/is/fake/")
+```
+
+Later on, you'll learn about what `character(0)` means more generally.
+
+
+## Saving & Loading Code
+
+:::{.callout-tip}
+When you start a new project, it's a good idea to create a specific directory
+for all of the project's files. If you're using R, you should also store your R
+code in that directory. As you work, periodically save your code.
+:::
+
+Most of the time, you won't just write code directly into the R console.
+Reproducibility and reusability are important benefits of R over
+point-and-click software, and in order to realize these, you have to save your
+code to your computer's hard drive.
+
+The most common way to save R code is as an R **script** with the extension
+`.R` (see @sec-reading-files for more about extensions). Editing a script is
+similar to editing any other text file. You can write, delete, copy, cut, and
+paste code.
+
+In RStudio, you can create a new R script with this menu option:
+
+```
+File -> New File -> R Script
+```
+
+This will open a new pane in RStudio, like this:
+
+![
+  How RStudio typically looks after opening a new R Script.
+](/images/week03/rstudio_script.png)
+
+The new pane is the scripts pane, which displays all of the R scripts you're
+editing. Each script appears in a separate tab. In the screenshot, only one
+script, the new script, is open.
+
+Every line in an R script must be valid R code. Anything else you want to write
+in the script (notes, documentation, etc.) must be placed in a comment.
+
+Arrange your code in the order of the steps to solve the problem, even if you
+write some parts before others. Comment out or delete any lines of code that
+you try but ultimately decide you don't need. Make sure to save the file
+periodically so that you don't lose your work. Following these guidelines will
+help you stay organized and make it easier to share your code with others
+later.
+
+:::{.callout-tip}
+While editing, you can run the current line in the R console by pressing
+`Ctrl`-`Enter` on Windows and Linux, or `Cmd`-`Enter` on macOS. This way you
+can test and correct your code as you write it.
+:::
+
+
+### Running Scripts
+
+You can **source** (that is, run) an entire R script by calling the `source`
+function with the path to the script as an argument. This is also what the
+"Source on Save" check box refers to in RStudio. The code runs in order, only
+stopping if an error occurs.
+
+For instance, if you save the script as `my_cool_script.R`, then you can enter
+`source("my_cool_script.R")` in the console to run the entire script. Pay
+attention to the path---it may be different on your computer.
+
+
+### Notebooks: Quarto & R Markdown
+
+In the context of data science, a **notebook** is an interactive file that can
+store a mix of code, formatted text, and images. With a notebook, you can
+write, run code, and view results all in one place. Viewing and editing a
+notebook requires a web browser or IDE. Some notebooks can also be converted to
+static documents, such as PDFs. Comments are a good way keep notes as you
+develop and run your code, but notebooks provide much more flexibility of
+expression. Notebooks are a kind of [literate programming][lit].
+
+[lit]: https://en.wikipedia.org/wiki/Literate_programming
+
+Notebooks excel when you want to do highly interactive work and/or want to
+communicate results. Use notebooks to prototype code, analyze data, refine
+plots, generate documents and presentations, and practice programming. Scripts
+excel when you want to reuse code (and perhaps share it as a package) or want
+to run code that doesn't require much user interaction (such as time-consuming
+computations you'll run on a server or high-performance computing cluster). The
+remainder of this reader assumes you're using an R script rather than the R
+console or a notebook, unless otherwise noted.
+
+[Quarto][] is a popular notebook format and system for R. It also supports
+Python, Julia, and other programming languages. Quarto files have the extension
+`.qmd`. Quarto is based on an older notebook format, [R Markdown][rmd], which
+only supports R and can't be converted to as many kinds of documents. R
+Markdown is still widely used. R Markdown files have the extension `.Rmd`.
+
+[Quarto]: https://quarto.org/
+[rmd]: https://rmarkdown.rstudio.com/
+
+:::{.callout-important}
+In order to use [Quarto][], you must first download and install it. It is not
+included with R or RStudio.
+:::
+
+After installing Quarto, you can create a new Quarto file in RStudio with this
+menu option:
+
+```
+File -> New -> Quarto Document...
+```
+
+RStudio will prompt you to provide some details about the purpose of the file.
+
+Notebooks are subdivided into **chunks** (or cells). You can create as many
+chunks as you like, but each chunk can contain only one kind of content. You
+can run a code chunk by clicking on the chunk and pressing `Ctrl`-`Enter`. The
+notebook will display the result.
+
+Markdown is a simple language you can use to add formatting to (non-code) text
+in a notebook. For example, surrounding a word with asterisks, as in `Let
+*sleeping* dogs lie`, makes the surrounded word italic. You can find a short,
+interactive tutorial about Markdown [here][mdtutorial].
+
+[mdtutorial]: https://www.markdowntutorial.com/
+
+:::{.callout-note title="See Also"}
+To learn more about Quarto, see the [official documentation][quarto-docs].
+
+[quarto-docs]: https://quarto.org/docs/guide/
+:::
+
+<!--
+Now that you know how file systems and paths work, you're ready to learn how to
+save your R code to a file. R code is usually saved into an **R script**
+(extension `.R`) or an **R Markdown file** (extension `.Rmd`). R scripts are
+slightly simpler, so let's focus on those.
+
+Editing a script is similar to editing any other text document. You can write,
+delete, copy, cut, and paste text. You can also save the file to your
+computer's file system. When you do, pay attention to where you save the file,
+as you might need it later.
+-->
+
+
+## Reading Files {#sec-reading-files}
+
+Analyzing data sets is one of the most common things to do in R. The first step
+is to get R to read your data. Data sets come in a variety of file formats, and
+you need to identify the format in order to tell R how to read the data.
+
+Most of the time, you can guess the format of a file by looking at its
+**extension**, the characters (usually three) after the last dot `.` in the
+filename. For example, the extension `.jpg` or `.jpeg` indicates a [JPEG image
+file][jpg]. Some operating systems hide extensions by default, but you can find
+instructions to change this setting online by searching for "show file
+extensions" and your operating system's name. The extension is just part of the
+file's name, so it should be taken as a hint about the file's format rather
+than a guarantee.
+
+[jpg]: https://en.wikipedia.org/wiki/JPEG
+
+R has built-in functions for reading a variety of formats. The R community also
+provides **packages**, shareable and reusable pieces of code, to read even more
+formats. You'll learn more about packages later, in @sec-packages. For now,
+let's focus on data sets that can be read with R's built-in functions.
+
+Here are several formats that are frequently used to distribute data, along
+with the name of a built-in function or contributed package that can read the
+format:
+
+| Name                        | Extension  | Function or Package | Tabular?  | Text?
+| :-------------------------- | :--------  | :------------------ | :-------- | :----
+| Comma-separated Values      | `.csv`     | `read.csv`          | Yes       | Yes
+| Tab-separated Values        | `.tsv`     | `read.delim`        | Yes       | Yes
+| Fixed-width File            | `.fwf`     | `read.fwf`          | Yes       | Yes
+| Microsoft Excel             | `.xlsx`    | readr package       | Yes       | No
+| Microsoft Excel 1993-2007   | `.xls`     | readr package       | Yes       | No
+| [Apache Arrow][arrow]       | `.feather` | arrow package       | Yes       | No
+| R Data                      | `.rds`     | `readRDS`           | Sometimes | No
+| R Data                      | `.rda`     | `load`              | Sometimes | No
+| Plaintext                   | `.txt`     | `readLines`         | Sometimes | Yes
+| Extensible Markup Language  | `.xml`     | xml2 package        | No        | Yes
+| JavaScript Object Notation  | `.json`    | jsonlite package    | No        | Yes
+
+[arrow]: https://arrow.apache.org/
+
+A **tabular** data set is one that's structured as a table, with rows and
+columns. This reader focuses on tabular data sets, since they're common in
+practice and present the fewest programming challenges. Here's an example of a
+tabular data set:
+
+| Fruit  | Quantity | Price
+| :----  | -------: | ----:
+| apple  | 32       | 1.49
+| banana | 541      | 0.79
+| pear   | 10       | 1.99
+
+A **text file** is a file that contains human-readable lines of text. You can
+check this by opening the file with a text editor such as Microsoft Notepad or
+macOS TextEdit. Many file formats use text in order to make the format easier
+to work with.
+
+For instance, a **comma-separated values** (CSV) file records a tabular data
+using one line per row, with commas separating columns. If you store the table
+above in a CSV file and open the file in a text editor, here's what you'll see:
+
+```
+Fruit,Quantity,Price
+apple,32,1.49
+banana,541,0.79
+pear,10,1.99
+```
+
+A **binary file** is one that's not human-readable. You can't just read off the
+data if you open a binary file in a text editor, but they have a number of
+other advantages. Compared to text files, binary files are often faster to read
+and take up less storage space (bytes).
+
+As an example, R's built-in binary format is called RDS (which may stand for "R
+data serialized"). RDS files are extremely useful for backing up work, since
+they can store any kind of R object, even ones that are not tabular. You can
+learn more about how to create an RDS file on the `?saveRDS` help page, and how
+to read one on the `?readRDS` help page.
+
+
+## Dataset: CA Least Terns {#sec-ca-least-terns}
+
+The California least tern is a endangered subspecies of seabird that nests
+along the coast of California and Mexico. The California Department of Fish and
+Wildlife (CDFW) monitors least tern nesting sites across the state to estimate
+breeding pairs, fledglings, and predator activity in each annual breeding
+season.
+
+![
+  A California least tern. Original photo by [Mark Pavelka, U.S. Fish &
+  Wildlife Service][pavelka] ([CC BY 2.0][]).
+](/images/week03/ca_least_tern_usfws_pacificsw.jpg){
+  height=24em
+  fig-alt="A gray bird with a white belly, black head, and orange beak sitting
+  on a clutch of eggs."
+}
+
+[pavelka]: https://www.flickr.com/photos/usfws_pacificsw/5704890596/
+[CC BY 2.0]: https://creativecommons.org/licenses/by/2.0/
+
+The CDFW publishes most of the data it collects to the [California Open Data
+portal][data.ca.gov]. The examples in this and subsequent chapters use a
+cleaned 2000-2023 version of the California least tern data.
+
+[data.ca.gov]: https://data.ca.gov/
+
+:::{.callout-important}
+[Click here][ca-least-tern] to download the 2000-2023 California least tern
+data set.
+
+[ca-least-tern]: https://ucdavis.box.com/s/m2w5l2ebp2rey2do5lnn38y1e3u31pin
+
+If you haven't already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/` subdirectory. Download and save
+the California least tern data set in the `data/` subdirectory.
+:::
+
+:::{.callout-note
+  title="Documentation for 2000-2023 California Least Tern Data Set"
+  collapse=true
+}
+
+Each row in the data set contains measurements from one year-site combination.
+
+| Column                | Description
+| --------------------: | :----------
+| `year`                | Year of the breeding season
+| `site_name`           | Site name
+| `site_name_2013_2018` | Site name from 2013-2018
+| `site_name_1988_2001` | Site name from 1988-2001
+| `site_abbr`           | Abbreviated site name
+| `region_3`            | Region of state: S.F. Bay, Central, or Southern (includes Ventura)
+| `region_4`            | Region of state: S.F. Bay, Central, Ventura, or Southern
+| `event`               | Climate events
+| `bp_min`              | Reported minimum breeding pairs
+| `bp_max`              | Reported maximum breeding pairs
+| `fl_min`              | Reported minimum fledges
+| `fl_max`              | Reported maximum fledges
+| `total_nests`         | Total reported nests (maximum if a range was reported)
+| `nonpred_eggs`        | Total non-predator-related mortalities of eggs
+| `nonpred_chicks`      | Total non-predator-related mortalities of chicks
+| `nonpred_fl`          | Total non-predator-related mortalities of fledges
+| `nonpred_ad`          | Total non-predator-related mortalities of adults
+| `pred_control`        | Site predator control (yes/no)
+| `pred_eggs`           | Total predator-related mortalities of eggs
+| `pred_chicks`         | Total predator-related mortalities of chicks
+| `pred_fl`             | Total predator-related mortalities of fledges
+| `pred_ad`             | Total predator-related mortalities of adults
+| `pred_pefa`           | Predation by peregrine falcons (yes/no)
+| `pred_coy_fox`        | Predation by coyotes or foxes (yes/no)
+| `pred_meso`           | Predation by other mesocarnivores: dogs, cats, skunks, opossums, raccoons, weasels, etc. (yes/no)
+| `pred_owlspp`         | Predation by owls (yes/no)
+| `pred_corvid`         | Predation by corvids: ravens or crows (yes/no)
+| `pred_other_raptor`   | Predation by raptors other than peregrine falcons and owls (yes/no)
+| `pred_other_avian`    | Predation by birds other than raptors and corvids (yes/no)
+| `pred_misc`           | Predation by other animals (yes/no)
+| `total_pefa`          | Total mortalities due to peregrine falcons
+| `total_coy_fox`       | Total mortalities due to coyotes and foxes
+| `total_meso`          | Total mortalities due to other mesocarnivores
+| `total_owlspp`        | Total mortalities due to owls
+| `total_corvid`        | Total mortalities due to ravens and crows
+| `total_other_raptor`  | Total mortalities due to other raptors
+| `total_other_avian`   | Total mortalities due to other birds
+| `total_misc`          | Total mortalities due to other animals
+| `first_observed`      | Date CA least terns first observed at site
+| `last_observed`       | Date CA least terns last observed at site
+| `first_nest`          | Date first egg observed at site
+| `first_chick`         | Date first chick observed at site
+| `first_fledge`        | Date first fledge observed at site
+
+: {.striped .hover tbl-colwidths="[25, 75]"}
+
+The messy source data set (with more years and more columns) is available
+[here][ca-least-tern-source].
+
+[ca-least-tern-source]: https://data.ca.gov/dataset/california-least-tern-monitoring-sites-generalized-cdfw-ds3146
+:::
+
+Let's use R to read the California least tern data set. The data set is in a
+file called is `2000-2023_ca_least_tern.csv`, which suggests it's a CSV file.
+The function to read a CSV file is `read.csv`. The function's first and only
+required argument is the path to the CSV file.
+
+In the following code, the path to the California least tern data set is
+`data/2000-2023_ca_least_tern.csv`, but it might be different for you,
+depending on R's working directory and where you saved the file. We'll save the
+result from the `read.csv` function in a variable called `terns`. We can use
+this variable to access the data in subsequent code.
+
+```{r}
+terns = read.csv("data/2000-2023_ca_least_tern.csv")
+```
+
+:::{.callout-note}
+The variable name `terns` is arbitrary; you can choose something different if
+you want. However, in general, it's a good habit to choose variable names that
+describe the contents of the variable somehow.
+:::
+
+If you tried running the line of code above and got an error message, pay
+attention to what the error message says, and remember the strategies to get
+help from @sec-getting-help. The most common mistake when reading a file is
+incorrectly specifying the path, so first check that you got the path right.
+
+If the code ran without errors, it's a good idea to check that the data set
+looks like what the documentation describes. When working with a new data set,
+it usually isn't a good idea to print the whole thing (at least until you know
+how big it is). Large data sets can take a long time to print, and the output
+can be difficult to read.
+
+Instead, use the `head` function to print only the beginning, or head, of the
+data set:
+
+```{r, eval = FALSE}
+head(terns)
+```
+
+```{r, echo = FALSE}
+knitr::kable(head(terns))
+```
+
+If you run this code and see a similar table, then congratulations, you've read
+your first data set into R! ✨
+
+The California least terns data set is tabular---as you might have already
+guessed, since it came from a CSV file. In R, it's represented by a **data
+frame**, a table with rows and columns. R uses data frames to represent most
+(but not all) kinds of tabular data. The `read.csv` function, which you used to
+read this data, always returns a data frame.
+
+Typically, each row in a data frame corresponds to a single subject and
+is called an **observation**. Each column corresponds to a measurement of the
+subject and is called a **feature** or **covariate**.
+
+:::{.callout-note}
+Sometimes people also refer to columns as “variables," but we'll try to avoid
+this, because in programming contexts a variable is a name for a value (which
+might not be a column).
+:::
+
+When you first read an object into R, you might not know whether it's a data
+frame. One way to check is visually, by printing it (as you just did with
+`head`). A better way to check is with the `class` function, which returns
+information about what an object is. For a data frame, the result will always
+contain `data.frame`:
+
+```{r}
+class(terns)
+```
+
+You'll learn more about classes in @sec-data-types-classes, but for now you can
+use this function to identify data frames.
+
+
+## Inspecting a Data Frame {#sec-inspecting-a-data-frame}
+
+Similar to how the `head` function shows the first six rows of a data frame,
+the `tail` function shows the last six:
+
+```{r}
+tail(terns)
+```
+
+If there are lots of columns or the columns are wide, as is the case here, R
+wraps the output across lines.
+
+:::{.callout-tip}
+Both `head` and `tail` accept an optional second argument that specifies the
+number of rows to print:
+
+```{r}
+head(terns, 1)
+```
+:::
+
+One way to get a quick idea of what your data looks like without having to skim
+through all the columns and rows is by inspecting its **dimensions**. This is
+the number of rows and columns in a data frame, and you can access this
+information with the `dim` function:
+
+```{r}
+dim(terns)
+```
+
+So this data set has `r nrow(terns)` rows and `r ncol(terns)` columns. As an
+alternative to the `dim` function, you can use the `nrow` and `ncol` functions
+to get just the number of rows and number of columns, respectively.
+
+Since the columns have names, you might also want to get just these. You can do
+that with the `names` or `colnames` functions. Both return the same result:
+
+```{r}
+names(terns)
+colnames(terns)
+```
+
+If the rows have names, you can get those with the `rownames` function. For
+this particular data set, the rows don't have names.
+
+
+### Summarizing Data
+
+An efficient way to get a sense of what's actually in a data set is to have R
+compute summary information. This works especially well for data frames, but
+also applies to other data. R provides two different functions to get
+summaries: `str` and `summary`.
+
+The `str` function returns a **structural summary** of an object. This kind of
+summary tells us about the structure of the data---the number of rows, the
+number and names of columns, what kind of data is in each column, and some
+sample values. Here's the structural summary for the least terns data set:
+
+```{r}
+str(terns)
+```
+
+This summary lists information about each column, and includes most of what you
+found earlier by using several different functions separately. The summary uses
+`chr` to indicate columns of text ("characters") and `int` to indicate columns
+of integers.
+
+In contrast to `str`, the `summary` function returns a **statistical summary**
+of an object. This summary includes summary statistics for each column,
+choosing appropriate statistics based on the kind of data in the column. For
+numbers, this is generally the mean, median, and quantiles. For categories,
+this is the frequencies. Other kinds of statistics are shown for other kinds of
+data. Here's the statistical summary for the least terns data set:
+
+```{r}
+summary(terns)
+```
+
+
+### Selecting Columns
+
+You can select an individual column from a data frame by name with `$`, the
+dollar sign operator. The syntax is:
+
+```{r, eval = FALSE}
+VARIABLE$COLUMN_NAME
+```
+
+For example, for the least terns data set, `terns$year` selects the `year`
+column, which is the year of observation:
+
+```{r}
+terns$year
+```
+
+R provides a variety of functions to compute on columns (and other vectors of
+data). For instance, what if you want to know the time period the data set
+covers? You can use the `range` function to compute the minimum and maximum of
+a column:
+
+```{r}
+range(terns$year)
+```
+
+So the oldest observations are from `r min(terns$year)` and the newest are from
+`r max(terns$year)`, although this function and output doesn't tell us whether
+there are observations for the years in between.
+
+You can count the observations for each year with the `table` function:
+
+```{r}
+table(terns$year)
+```
+
+The `table` function is great for summarizing columns of categories, where
+numerical statistics like means and standard deviations aren't defined.
+
+On the other hand, numerical statistics work well for summarizing columns of
+numbers. You can use the `mean` function to compute the mean of a column. For
+instance, let's compute the mean of the `total_nests` column, which is the
+total number of nests seen at a site:
+
+```{r}
+mean(terns$total_nests)
+```
+
+The result is `NA` because column is missing some values (we'll explain this in
+detail in @sec-missing-values). To compute the mean with only the values that
+are present, set `na.rm = TRUE` in the call to `mean`:
+
+```{r}
+mean(terns$total_nests, na.rm = TRUE)
+```
+
+You can also use the dollar sign operator to assign values to columns. For
+instance, to assign `2000` to the entire `year` column:
+
+```{r, eval = FALSE}
+terns$year = 2000
+```
+
+Be careful when you do this, as there is no undo. Fortunately, you haven't
+saved this change to the least terns data set to your computer's hard drive
+yet, so you can reload the data set to reset it:
+
+```{r, eval = FALSE}
+terns = read.csv("data/2000-2023_ca_least_tern.csv")
+```
+
+In @sec-indexing, you'll learn how to select rows and individual elements from
+a data frame, as well as other ways to select columns.
