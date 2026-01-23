@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>15&nbsp; Data Forensics – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../chapters/week04/aggregation-grouping.html" rel="next">
+<link href="../../chapters/week04/indexing.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-e93e9c1810f24b5a1d6b05301d833057.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+.callout.callout-style-default .callout-body {
+  padding: 0 1.5rem 0;
+}
+.cell-output-stdout {
+  overflow-y: scroll;
+  max-height: 30rem;
+  margin-bottom: 0.75rem;
+}
+</style>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week04/indexing.html">Week 4</a></li><li class="breadcrumb-item"><a href="../../chapters/week04/data-forensics.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Data Forensics</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/required-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Required Software</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/research-lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Research Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/interacting-with-computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interacting with Computers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/browsing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Browsing Files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/other-commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Going Beyond Browsing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/editing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Editing Files</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/how-ai-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">How AI Works</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/version-control-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Version Control Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/git-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Git Basics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/remote-repositories.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Remote Repositories</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/the-git-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Git Workflow</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/intro-to-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/intro-to-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/data-types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/indexing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Indexing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/data-forensics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/aggregation-grouping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Aggregation &amp; Grouping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/data-visualization-principles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/intro-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Introduction to <code>ggplot2</code></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/date-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Date Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/reshaping-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Reshaping Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 7</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/string-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Strings &amp; Regular Expressions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/getting-data-from-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 8</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week08/functions-control-flow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Organizing Code</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 9</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week09/web-scraping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Web Scraping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 10</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/collaboration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Collaboration in Data-Driven Work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/branches-merges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Branches &amp; Merges</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/working-with-github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Working with GitHub</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/making-git-comfortable.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Making Git Comfortable</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Special Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/11_optical-character-recognition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/12_statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/13_reshaping-tabular-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Reshaping Tabular Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/14_network-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Network Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/15_natural-language-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/16_geospatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Geospatial Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#structural-summaries" id="toc-structural-summaries" class="nav-link active" data-scroll-target="#structural-summaries"><span class="header-section-number">15.1</span> Structural Summaries</a></li>
+  <li><a href="#statistical-forensics" id="toc-statistical-forensics" class="nav-link" data-scroll-target="#statistical-forensics"><span class="header-section-number">15.2</span> Statistical Forensics</a>
+  <ul class="collapse">
+  <li><a href="#missing-values" id="toc-missing-values" class="nav-link" data-scroll-target="#missing-values"><span class="header-section-number">15.2.1</span> Missing Values</a></li>
+  <li><a href="#outliers" id="toc-outliers" class="nav-link" data-scroll-target="#outliers"><span class="header-section-number">15.2.2</span> Outliers</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week04/data-forensics.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week04/indexing.html">Week 4</a></li><li class="breadcrumb-item"><a href="../../chapters/week04/data-forensics.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Data Forensics</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-data-forensics" class="quarto-section-identifier"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This lesson covers a variety of ways to investigate and summarize tabular data in order to understand the data better and identify potential problems. The lesson also describes how to fix some of the most common data problems.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Convert columns to appropriate data types</li>
+<li>Locate and count missing values in a data set</li>
+<li>Explain what it means for a value to be an “outlier”</li>
+<li>Locate and count outliers in a data set</li>
+<li>Explain the location statistics mean, median, and mode</li>
+<li>Explain the scale statistics range and standard deviation</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="structural-summaries" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="structural-summaries"><span class="header-section-number">15.1</span> Structural Summaries</h2>
+<p>Whenever you load a data set into R, your next step should be to investigate the data’s structure. This step is important because it can help you identify whether:</p>
+<ul>
+<li>The data was loaded correctly</li>
+<li>There are structural problems with the data that will make it difficult to use if they aren’t fixed</li>
+</ul>
+<p><a href="../week03/intro-to-r.html#sec-inspecting-a-data-frame" class="quarto-xref"><span>Section 12.9</span></a> demonstrated several functions for getting structural summaries of data. Some of these are:</p>
+<ul>
+<li><code>str</code> to get a detailed structural summary</li>
+<li><code>head</code>, <code>tail</code> to preview the data</li>
+<li><code>nrow</code>, <code>ncol</code>, <code>dim</code>, <code>length</code> to get dimension information</li>
+<li><code>names</code>, <code>colnames</code>, <code>rownames</code> to get element names</li>
+<li><code>class</code>, <code>typeof</code> to get classes and types</li>
+</ul>
+<p>Let’s look at some examples using a data set collected from the classified advertisements website Craigslist. The data set contains information from ads for rentals in the Sacramento area. First we need to load the data set:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">=</span> <span class="fu">read.csv</span>(<span class="st">"data/cl_rentals.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now we can use the <code>str</code> function to check the classes of the columns:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(cl)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   2987 obs. of  20 variables:
+ $ title       : chr  "$1,125 / 1br - 550ft2 - 1Bedroom Prime Location -2520 S Limited Access/Gated $1125 Avail Now (2520 S St)" "$1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)" "$1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)" "$1,479 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)" ...
+ $ text        : chr  "QR Code Link to This Post\n            \n        \n* SEE MY OTHER MIDTOWN 1 bedroom apts-text for web site\n*An"| __truncated__ "QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Pric"| __truncated__ "QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Pric"| __truncated__ "QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1479+    Pric"| __truncated__ ...
+ $ latitude    : num  38.6 38.6 38.6 38.6 38.6 ...
+ $ longitude   : num  -121 -121 -121 -121 -121 ...
+ $ city        : chr  "2520 S St" "The Phoenix/Sacramento/Folsom/SF" "The Phoenix/Sacramento/Folsom/SF" "The Phoenix/Sacramento/Folsom/SF" ...
+ $ date_posted : chr  "2021-02-04 15:03:12" "2021-03-02 12:41:17" "2021-03-02 13:26:17" "2021-03-03 10:02:05" ...
+ $ date_updated: chr  "2021-03-03 08:41:39" NA NA NA ...
+ $ price       : int  1125 1449 1449 1479 1414 1441 1615 1660 1877 1611 ...
+ $ deleted     : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+ $ sqft        : int  550 680 680 680 680 680 816 816 916 916 ...
+ $ bedrooms    : int  1 1 1 1 1 1 2 2 2 2 ...
+ $ bathrooms   : num  1 1 1 1 1 1 1 1 2 2 ...
+ $ pets        : chr  NA "both" "both" "both" ...
+ $ laundry     : chr  "shared" "in-unit" "in-unit" "in-unit" ...
+ $ parking     : chr  "off-street" "covered" "covered" "covered" ...
+ $ craigslist  : chr  "sacramento" "sacramento" "sacramento" "sacramento" ...
+ $ shp_place   : chr  "Sacramento" "Sacramento" "Sacramento" "Sacramento" ...
+ $ shp_city    : chr  "Sacramento" "Sacramento" "Sacramento" "Sacramento" ...
+ $ shp_state   : chr  "CA" "CA" "CA" "CA" ...
+ $ shp_county  : chr  "Sacramento" "Sacramento" "Sacramento" "Sacramento" ...</code></pre>
+</div>
+</div>
+<p>Often when you load a new data set, some of the columns won’t have the correct data type (or class) for what you want to do. For instance, in the Craigslist data, the <code>pets</code>, <code>laundry</code>, and <code>parking</code> columns all contain categorical data, so they should be factors.</p>
+<p>You can convert these columns to factors with the <code>factor</code> function from <a href="../week03/data-types.html#sec-factors" class="quarto-xref"><span>Section 13.2.4</span></a>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>pets <span class="ot">=</span> <span class="fu">factor</span>(cl<span class="sc">$</span>pets)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>laundry <span class="ot">=</span> <span class="fu">factor</span>(cl<span class="sc">$</span>laundry)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>parking <span class="ot">=</span> <span class="fu">factor</span>(cl<span class="sc">$</span>parking)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>There’s another way we could’ve done this that uses only two lines of code, no matter how many columns there are:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"pets"</span>, <span class="st">"laundry"</span>, <span class="st">"parking"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cl[cols] <span class="ot">=</span> <span class="fu">lapply</span>(cl[cols], factor)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We’ll learn more about the <code>lapply</code> function in <a href="aggregation-grouping.html#sec-apply-functions" class="quarto-xref"><span>Section 16.1</span></a>.</p>
+<p>You can use whichever approach is more convenient and makes more sense to you. If there were other columns to convert, we’d go through the same steps with the appropriate conversion function.</p>
+<p>R provides <code>as.</code> functions to convert to the most common data types. For instance, <code>as.character</code> converts an object to a string:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fl">3.1</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">as.character</span>(x)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "3.1"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>The <code>read.csv</code> function does a good job at identifying columns of numbers, so it’s rarely necessary to convert columns of numbers manually. However, you may have to do this for data you got some other way (rather than loading a file). For instance, it’s common to make these conversions when scraping data from the web.</p>
+<p>It’s also a good idea to convert categorical columns into factors with the <code>factor</code> function, and to convert columns of dates into dates (more about this in <a href="../week06/date-processing.html" class="quarto-xref"><span>Chapter 19</span></a>).</p>
+</section>
+<section id="statistical-forensics" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="statistical-forensics"><span class="header-section-number">15.2</span> Statistical Forensics</h2>
+<p>After investigating the data’s structure, it’s a good idea to check some basic statistical properties. This step is important because it can help you identify limitations of and patterns in the data.</p>
+<p>Which statistics are appropriate for a given feature often depends on the type of the feature. Recall from <a href="../week03/data-types.html#sec-data-types-classes" class="quarto-xref"><span>Section 13.2</span></a> that the types statisticians typically think about are:</p>
+<ul>
+<li><strong>Categorical</strong>
+<ul>
+<li><strong>Nominal</strong> - data separated into specific categories, with no order. For example, hair color (red, brown, blonde, …) is categorical.</li>
+<li><strong>Ordinal</strong> - data separated into specific categories, with an order. For example, school level (elementary, middle, high, college) is ordinal.</li>
+</ul></li>
+<li><strong>Numerical</strong>
+<ul>
+<li><strong>Discrete</strong> - integers, or a finite set of decimal numbers with no values in between. Sometimes discrete values can also be treated as ordinal. For example, month as a number (1, 2, …, 12) is discrete.</li>
+<li><strong>Continuous</strong> - decimal numbers. There are no specific categories, but there is an order. For example, height in inches is numerical.</li>
+</ul></li>
+</ul>
+<p>The <code>table</code> function, which was introduced in <a href="../week03/intro-to-r.html#sec-inspecting-a-data-frame" class="quarto-xref"><span>Section 12.9</span></a>, is great for summarizing categorical (and sometimes discrete) data. For example:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(cl<span class="sc">$</span>pets)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+both cats dogs none 
+2511   46   31  385 </code></pre>
+</div>
+</div>
+<p>What about numerical data?</p>
+<p>Two important questions to ask about data are:</p>
+<ol type="1">
+<li><p>Where is it? This is the <strong>location</strong> of the data.</p></li>
+<li><p>How spread out is it? This is the <strong>scale</strong> of the data.</p></li>
+</ol>
+<p>Let’s use the data</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>as an example.</p>
+<p>Location is generally summarized with a number near the middle or center of the data. A few options are:</p>
+<ol type="1">
+<li><p><strong>Mode</strong> - the value that appears most frequently. The mode can be calculated for any kind of data, but doesn’t work well for continuous data.</p>
+<p>For our example, the mode of <code>x</code> is -1. You can compute the mode with <code>table</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Median</strong> - sort the data, then find the value in the middle. The median can be calculated for ordinal or numerical data.</p>
+<p>For our example, the median is -1. Compute this with <code>median</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Mean</strong> - the balancing point of the data, if a waiter was trying to balance the data on a tray. The mean can only be calculated for numerical data.</p>
+<p>For our example the mean is 0.4285. Compute this with <code>mean</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ol>
+<p>Adding large values to the data affects the mean more than the median:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(x, <span class="dv">100</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(y)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Because of this, we say that the median is <strong>robust</strong>.</p>
+<p>The mean is good for getting a general idea of where the center of the data is, while comparing it with the median reveals whether there are any unusually large or small values.</p>
+<p>Scale is generally summarized by a number that says how far the data is from the center (mean, median, etc…). Two options are:</p>
+<ol type="1">
+<li><p><strong>Standard Deviation</strong> - square root of the average squared distance to the mean (the distance from a point to a mean is called a <strong>deviation</strong>). You can think of this as approximately the average distance from a data point to the mean. As a rule of thumb, most of the data will be within 3 standard deviations of the mean.</p>
+<p>You can compute the standard deviation with <code>sd</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Interquartile Range</strong> (IQR) - difference between the 75th and 25th percentile. The median is the 50th <strong>percentile</strong> of the data; it’s at the middle of the sorted data. We can also consider other percentiles. For instance, the 25th percentile is the value one-quarter of the way through the sorted data.</p>
+<p><strong>Quantile</strong> is another word for percentile. <strong>Quartile</strong> specifically refers to the 25th, 50th, and 75th percentiles because they separate the data into four parts (hence “quart-”).</p>
+<p>You can compute quantiles with <code>quantile</code>, or compute the IQR directly with <code>IQR</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(x)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># IQR</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">IQR</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ol>
+<p>The IQR is more robust than the standard deviation.</p>
+<p>Many of the functions for computing statistical summaries have a parameter <code>na.rm</code> to ignore missing values. Setting <code>na.rm = TRUE</code> is often useful when you’re just trying to do an initial investigation of the data. However, in a more complete analysis, you should think carefully about what the missing values mean, whether they follow any patterns, and whether there are enough non-missing values for statistical summaries to be good representatives of the data.</p>
+<p>Finally, the <code>summary</code> function computes a detailed statistical summary of an R object. For data frames, the function computes a summary of each column, guessing an appropriate statistic based on the column’s data type.</p>
+<section id="missing-values" class="level3" data-number="15.2.1">
+<h3 data-number="15.2.1" class="anchored" data-anchor-id="missing-values"><span class="header-section-number">15.2.1</span> Missing Values</h3>
+<p>If your data contains missing values, it’s important to think about why the values are missing. Statisticians use two different terms to describe why data is missing:</p>
+<ul>
+<li>missing at random (MAR)</li>
+<li>missing not at random (MNAR) - causes bias!</li>
+</ul>
+<p>When values are <strong>missing at random</strong>, the cause for missingness is one or more features in the data set. For example, if a soil moisture sensor overheats and doesn’t work on hot days, but air temperature is recorded in the data set, values are missing at random.</p>
+<p>When values are <strong>missing not at random</strong>, the cause for missingness is one or more features <em>not</em> in the data set. Think of this as a form of censorship. For example, if people in a food survey refuse to report how much sugar they ate on days where they ate junk food, values are missing not at random. Values MNAR can bias an analysis.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Technically, there’s a third kind of missing data: <strong>missing completely at random</strong> (MCAR). When values are missing completely at random, the cause for missingness is completely unrelated to the research question and features of interest. This kind of missing data is rare in practice and impossible to identify from the data alone. Values MCAR can be ignored without causing any bias.</p>
+</div>
+</div>
+<p>The default way to handle missing values in R is to ignore them. This is just a default, not necessarily the best or even an appropriate way to deal with them. You can remove missing values from a data set by indexing:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cl_no_sqft_na <span class="ot">=</span> cl[<span class="sc">!</span><span class="fu">is.na</span>(cl<span class="sc">$</span>sqft), ]</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cl_no_sqft_na)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                                                                       title
+1   $1,125 / 1br - 550ft2 - 1Bedroom Prime Location -2520 S Limited Access/Gated $1125 Avail Now (2520 S St)
+2 $1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+3 $1,449 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+4 $1,479 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+5 $1,414 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+6 $1,441 / 1br - 680ft2 - 1x1 with washer &amp; dryer in unit! Move in ready! (The Phoenix/Sacramento/Folsom/SF)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 text
+1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     QR Code Link to This Post\n            \n        \n* SEE MY OTHER MIDTOWN 1 bedroom apts-text for web site\n*An upstairs apt @ 2520 S is coming available 3/18/21\n*I have 4 apts coming avail in midtown\n*New flooring in lower apt and redone hardwood flooring in upper unit\n*1 Bedroom  lower unit in 20 unit complex (2-10 unit buildings-courtyard in middle) with manager on site\n*Gated front and back\n*9 parking spots in back\n*Laundry on site with new washers and dryers (coin op)\n*Owner pays water/sewer/garbage\n*Wall heat and window air\n*New paint and new Pergo-type wood flooring \n*Updated lighting\n*Nicely maintained building and grounds\n*$500 deposit\n*Non-Smoking/vaping Complex\n*Long time Mgr on Site\n*No dogs\n*Pictures of a like unit\n*Text/call showing Wes  show contact info\n to get copy of video\n*You need to make 3X rent, have good rental history and credit score of 600 or greater to qualify-no dogs.
+2    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+3    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1449+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+4    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1479+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+5 QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Juliet starting at $1414+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+6    QR Code Link to This Post\n            \n        \n Lease our 1x1 Apartment with Che starting at $1441+    Prices Subject to change daily!  \n Apartment Features:  \nPrivate Balconies &amp; Patios \nLuxury Vinyl Wood Flooring \nDesigner Interior Paint \nUpgraded cabinets and countertops \nModern white doors and trim \nModern white base boards  \nEnergy efficient appliances \nSpacious bathroom \nTONS of closet and storage space \nSac State Shuttle-including Sac State Shuttle App! PET FRIENDLY - MEOW! WOOF!   \n\nUpgraded Fitness Centers \nTanning Booth \nHydro Massage Table \nResident Business Center \nResort-Style Pool Furniture \nSparkling Waterfall Wall \nFire pit locations \nBeach Area for lounging \nOutdoor Recreation Area \nSand Volleyball Court \nGrilling Locations   Call today to schedule your tour ... show contact info\n -or- \nStop in to visit Mon - Sat 10:00a - 5:00p for more info! :D  \n\n\nCommunity Amenities:  \nComplete fitness center \nFour sparkling pools  \nLighted tennis courts  \nFull basketball court  \nWhirlpool Jacuzzi  \n24 hour Emergency Maintenance  Hornet Shuttle Access to Sacramento State University  \n Easy Access to Public Transportation (lightrail and bus) \n Easy Access to the American River Trail   And so much more!  \n\n Check us out online @ www.thephoenixsacramento.com TODAY!  \n  Connect with us:   \nFacebook = The Phoenix Apartment Living \nTwitter = @thephoenixlife     Prices and availability are subject to change. Offered prices are starting prices for base rent only. Other charges, conditions, fees, and terms may apply. Equal housing opportunity provider
+  latitude longitude                             city         date_posted
+1  38.5728 -121.4675                        2520 S St 2021-02-04 15:03:12
+2  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 12:41:17
+3  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-02 13:26:17
+4  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-03 10:02:05
+5  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 08:47:21
+6  38.5511 -121.4068 The Phoenix/Sacramento/Folsom/SF 2021-03-04 10:20:09
+         date_updated price deleted sqft bedrooms bathrooms pets laundry
+1 2021-03-03 08:41:39  1125   FALSE  550        1         1 &lt;NA&gt;  shared
+2                &lt;NA&gt;  1449   FALSE  680        1         1 both in-unit
+3                &lt;NA&gt;  1449   FALSE  680        1         1 both in-unit
+4                &lt;NA&gt;  1479   FALSE  680        1         1 both in-unit
+5                &lt;NA&gt;  1414   FALSE  680        1         1 both in-unit
+6                &lt;NA&gt;  1441   FALSE  680        1         1 both in-unit
+     parking craigslist  shp_place   shp_city shp_state shp_county
+1 off-street sacramento Sacramento Sacramento        CA Sacramento
+2    covered sacramento Sacramento Sacramento        CA Sacramento
+3    covered sacramento Sacramento Sacramento        CA Sacramento
+4    covered sacramento Sacramento Sacramento        CA Sacramento
+5    covered sacramento Sacramento Sacramento        CA Sacramento
+6    covered sacramento Sacramento Sacramento        CA Sacramento</code></pre>
+</div>
+</div>
+<p>The <code>na.omit</code> function is less precise than indexing, because it removes rows that have a missing value in <em>any</em> column. This means lots of information gets lost.</p>
+<p>Another way to handle missing values is to <strong>impute</strong>, or fill in, the values with estimates based on other data in the data set. We won’t get into the details of how to impute missing values here, since it is a fairly deep subject. Generally it is safe to impute MAR values, but not MNAR values.</p>
+</section>
+<section id="outliers" class="level3" data-number="15.2.2">
+<h3 data-number="15.2.2" class="anchored" data-anchor-id="outliers"><span class="header-section-number">15.2.2</span> Outliers</h3>
+<p>An <strong>outlier</strong> is an anomalous or extreme value in a data set. We can picture this as a value that’s far away from most of the other values. Sometimes outliers are a natural part of the data set. In other situations, outliers can indicate errors in how the data were measured, recorded, or cleaned.</p>
+<p>There’s no specific definition for “extreme” or “far away”. A good starting point for detecting outliers is to make a plot that shows how the values are distributed. Box plots and density plots work especially well for this (you’ll learn about how to make plots in a later lesson):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cl, <span class="fu">aes</span>(<span class="at">x =</span> sqft)) <span class="sc">+</span> <span class="fu">geom_boxplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 347 rows containing non-finite outside the scale range
+(`stat_boxplot()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data-forensics_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Statisticians tend to use the rule of thumb that any value more than 3 standard deviations away from the mean is an outlier. You can use the <code>scale</code> function to compute how many standard deviations the elements in a column are from their mean:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">=</span> <span class="fu">scale</span>(cl<span class="sc">$</span>sqft)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(z)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           [,1]
+[1,] -0.1910838
+[2,] -0.1161393
+[3,] -0.1161393
+[4,] -0.1161393
+[5,] -0.1161393
+[6,] -0.1161393</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(z <span class="sc">&lt;=</span> <span class="sc">-</span><span class="dv">3</span> <span class="sc">|</span> <span class="dv">3</span> <span class="sc">&lt;=</span> z)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1261 2461</code></pre>
+</div>
+</div>
+<p>Be careful to think about what your specific data set measures, as this definition isn’t appropriate in every situation.</p>
+<p>How can you handle outliers? First, try inspecting other features from the row to determine whether the outlier is a valid measurement or an error. When an outlier is valid, keep it.</p>
+<p>If the outlier interferes with a plot you want to make, you can adjust the x and y limits on plots as needed to “ignore” the outlier. Make sure to mention this in the plot’s title or caption.</p>
+<p>When an outlier is not valid, first try to correct it. For example:</p>
+<ul>
+<li>Correct with a different covariate from the <em>same observation</em>.</li>
+<li>Estimate with a mean or median of similar observations. This is another example of imputing values.</li>
+</ul>
+<p>For example, in the Craigslist data, we can use the <code>text</code> column to try to correct outliers:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(cl<span class="sc">$</span>text[<span class="dv">1261</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>QR Code Link to This Post
+            
+        
+Villages of the Galleria
+701 Gibson Drive, Roseville, CA, 95678
+Want more information? Follow this link:
+http://rcmi.aptdetails.com/49u13n
+Call Now:  show contact info
+
+Roseville's Premier Luxury Condominium Rentals
+This is a 1 Bedroom, 1 Bath, approximately 819 Sq. Ft. 
+Signature Collection
+This collection of fully renovated homes is limited to a select few. These unique homes are renting quickly. 
+The beautifully remodeled floor plan offers an entertainment style kitchen, gracious living area, formal dining room with access to your outdoor balcony, designer two tone paint with crown molding, spacious bathroom with relaxing oval bath tub, linen closet and large vanity. The bedroom offers a sliding glass door giving you additional access to the private balcony over looking the picturesque courtyard. 
+Brand New Featured Interiors:
+Entertainment Style Kitchen
+•   Beautiful warm espresso custom built cabinets with brush nickel hardware
+•   Opulent Granite Countertops with backsplash
+•   Satin finish under mount sink with disposal and upgraded Moen faucet and fixtures
+•   Stainless steel appliances, spacious built in microwave, multi-cycle dishwasher and self-cleaning oven
+•   Plant/décor cabinet ledge 
+•   Spacious pantry and personalized custom shelving in all cabinets
+•   Attractive bright recessed lighting
+•   Private in home personal laundry room with full size washer &amp; dryer
+Living and Dining
+•   Hand laid tile resembling hard wood flooring 
+•   Designer two-tone paint with white accent crown molding and baseboards
+•   Upgraded wooden style blinds
+•   Dual pane windows featuring custom framed molding
+•   Spacious coat closet
+Bath
+•   Oval Roman soaking tub with surround Opulent granite walls 
+•   Warm espresso custom built cabinets with brush nickel hardware
+•   Spacious linen closet and personal cabinet storage
+•   Hand selected Opulent Granite countertops
+•   Unique hand crafted above counter sink
+•   Contemporary waterfall faucet
+•   Custom wood-look framed mirror
+•   White glass contemporary light fixture with brush nickel base
+•   Upgraded brush nickel accents (towel bars and holders)
+•   Hand laid tile resembling hard wood flooring 
+Bedroom and Closet
+•   Rich plush carpeting
+•   Spacious walk in closets with personalized built in custom organizers and compartments
+Other Features and Amenities 
+•   Brilliant bright recessed lighting
+•   Central heat and air
+•   Private balcony or terrace
+•   Pre-wired for high-speed internet, multi-line phone and cable
+•   Brushed nickel hardware accents (door knobs, latches, deadbolts, locks, door knocker and light fixtures)
+•   Covered parking
+•   Additional patio storage
+Select Homes Offer
+•   Private detached garage
+•   Additional linen or storage space
+•   Cozy Gas Fireplace with carved stone-look mantel and molding
+Style, sophistication, beautiful landscaping and stunning architecture accent the Villages of the 
+Galleria apartment homes, located in dynamic Roseville, California. Villages of the Galleria is just minutes from the Galleria Mall and Fountains at Roseville and offers easy freeway access to downtown, Sacramento International Airport, Arco Arena and major employers such as NEC, Oracle and HP. Select from a variety of one, two or three bedroom floor plans. All apartment homes offer gracious living areas with designer two-tone paint, crown molding, large walk-in closets and in home full size washer and dryer. Enjoy the many fine conveniences offered, such as an expansive fitness center, executive business center and refreshing pool. Villages of the Galleria is the perfect place to call home. 
+Features
+- Contemporary Recessed Lighting 
+- Built-In Linen Closet in Bathroom * 
+- Entertainment Style Kitchens 
+- Private Balconies and Patios 
+- Crown Molding Accents 
+- Six-Panel Interior Doors 
+- Custom Maple-Front Cabinetry 
+- Nine-Foot Ceilings 
+- Microwave 
+- Pre-Wired for High Speed Internet 
+- Private Garages * 
+- Full Size Washer/Dryer 
+- Pantry * 
+- Oval Roman Soaking Tub * 
+- Cozy Gas Fireplace with Mantel * 
+- Covered Parking * 
+- Spacious Walk-In Closet(s) * 
+- Energy-Saving Multi-Cycle Dishwasher 
+Community Amenities
+- Community Garden 
+- Executive Business Center 
+- Sand Volleyball 
+- Close to Shopping 
+- Beautiful Landscaped Court Yards 
+- Playground 
+- Fitness Center 
+- Clubhouse 
+- Open Air Cabanas 
+- Easy Access to Freeways 
+- Pool and Spa 
+- Gated Community 
+- Professional Onsite Management w/ 24-Hour Emergency Maintenance 
+- Picnic Area with Barbecue 
+Office Hours
+Monday - Friday 9:00 AM - 6:00 PM
+Saturday 10:00 AM - 5:00 PM
+Sunday 12:00 PM - 5:00 PM 
+Pet Policy
+Maximum of 2 pets cats or dogs. No weight limit. Additional $25 rent per month and additional $500 deposit per pet. Inquire about our breed restrictions. 
+Equal Housing Opportunity 
+VJWLzl1wXG</code></pre>
+</div>
+</div>
+<p>Based on the text, this apartment is 819 square feet, not 8190 square feet. So we can reassign the value:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>cl<span class="sc">$</span>sqft[<span class="dv">1261</span>] <span class="ot">=</span> <span class="dv">819</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If other features don’t help with correction, try getting information from external sources. If you can’t correct the outlier but know it’s invalid, replace it with a missing value <code>NA</code>.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../chapters/week04/indexing.html" class="pagination-link" aria-label="Indexing">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Indexing</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../chapters/week04/aggregation-grouping.html" class="pagination-link" aria-label="Aggregation &amp; Grouping">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Aggregation &amp; Grouping</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week04/data-forensics.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
