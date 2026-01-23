@@ -75,14 +75,26 @@ the same as the number of rows in `terns`.
 
 ### Creating Vectors
 
-Sometimes you'll want to create your own vectors. You can do this by
-concatenating several vectors together with the `c` function. It accepts any
-number of vector arguments, and combines them into a single vector:
+Sometimes you'll want to create your own vectors. For instance, you might want
+to combine data from several columns (or datasets), need to pass a vector of
+arguments to a function, or want to use R as a calculator.
+
+You can create vectors withe the `c` function. Recall that R considers
+individual values to be vectors, so what the `c` function really does is
+concatenate vectors. That is, it accepts any number of arguments, and combines
+them into a single vector:
 
 ```{r}
 c(1, 2, 19, -3)
 c("hi", "hello")
 c(1, 2, c(3, 4))
+```
+
+For example, suppose you want to use the `unique` function to get all of the
+unique site names in `terns`:
+
+```{r}
+unique(c(terns$site_name_2013_2018, terns$site_name_1988_2001))
 ```
 
 If the arguments you pass to the `c` function have different data types, R will
@@ -95,9 +107,9 @@ c(1, "cool", 2.3)
 @sec-implicit-coercion explains the rules for this conversion in more detail.
 
 The colon operator `:` creates vectors that contain sequences of integers. This
-is useful for creating "toy" data to test things on, and later we'll see that
-it's also important in several other contexts. Here are a few different
-sequences:
+is useful for creating "toy" data to test things on, and @sec-indexing-vectors
+will show that it's important for selecting elements from other vectors. Here
+are a few different sequences:
 
 ```{r}
 1:3
@@ -149,31 +161,49 @@ to try it out with few different vectors and indexes. We'll revisit indexing in
 
 ### Vectorization {#sec-vectorization}
 
-Let's look at what happens if we call a mathematical function, like `sin`, on a
-vector:
+Let's look at what happens if we call a mathematical function, like `sqrt`, on
+a vector:
 
 ```{r}
 x = c(1, 3, 0, pi)
-sin(x)
+sqrt(x)
 ```
 
 This gives us the same result as if we had called the function separately on
 each element. That is, the result is the same as:
 
 ```{r}
-c(sin(1), sin(3), sin(0), sin(pi))
+c(sqrt(1), sqrt(3), sqrt(0), sqrt(pi))
 ```
 
 Of course, the first version is much easier to type.
 
 Functions that take a vector argument and get applied element-by-element like
 this are said to be **vectorized**. Most functions in R are vectorized,
-especially math functions. Some examples include `sin`, `cos`, `tan`, `log`,
-`exp`, and `sqrt`.
+especially math functions. Some examples include `round`, `sqrt`, `exp`, `log`,
+`sin`, `cos`, and `tan`.
+
+Vectorized functions are often useful for transforming columns. For example,
+suppose we want to transform the total number of nests in the `terns` data:
+
+```{r}
+sqrt(terns$total_nests)
+```
+
+This square root transformation can be helpful when fitting certain kinds of
+statistical models, because it shrinks large values in a dataset more than
+small ones.
 
 Functions that are not vectorized tend to be ones that combine or aggregate
 values in some way. For instance, the `sum`, `mean`, `median`, `length`, and
 `class` functions are not vectorized.
+
+Non-vectorized functions are often useful for summarizing columns. For example,
+we can compute the mean of the minimum breeding pairs in the `terns` data:
+
+```{r}
+mean(terns$bp_min, na.rm = TRUE)
+```
 
 A function can be vectorized across multiple arguments. This is easiest to
 understand in terms of the arithmetic operators. Let's see what happens if we
@@ -192,6 +222,13 @@ arithmetic operators are also vectorized:
 x - y
 x * y
 x / y
+```
+
+This means we can use arithmetic operators on whole columns. Let's compute the
+average number of fledglings per nest for each row in the `terns` data:
+
+```{r}
+terns$fl_min / terns$total_nests
 ```
 
 ### Recycling {#sec-recycling}
@@ -247,20 +284,10 @@ like this.
 
 ## Data Types & Classes {#sec-data-types-classes}
 
-Data can be categorized into different **types** based on sets of shared
-characteristics. For instance, statisticians tend to think about whether data
-are numeric or categorical:
-
-* numeric
-    + continuous (real or complex numbers)
-    + discrete (integers)
-* categorical
-    + nominal (categories with no ordering)
-    + ordinal (categories with some ordering)
-
-Of course, other types of data, like graphs (networks) and natural language
-(books, speech, and so on), are also possible. Categorizing data this way is
-useful for reasoning about which methods to apply to which data.
+@sec-types-of-data introduced the idea of categorizing data into types based on
+sets of shared characteristics. Thinking about types can help you figure out
+which analyses might be appropriate, or at least possible, for your data. Types
+are such a helpful idea that most programming languages also use types.
 
 In R, data objects are categorized in two different ways:
 
@@ -274,8 +301,8 @@ In R, data objects are categorized in two different ways:
    object has exactly one type. The `typeof` function returns the type of its
    argument.
 
-Of the two, classes tend to be more important than types. If you aren't sure
-what an object is, checking its classes should be the first thing you do.
+Of the two, classes are more important than types. If you aren't sure what an
+object is, checking its classes should be the first thing you do.
 
 The built-in classes you'll use all the time correspond to vectors and lists
 (which we'll learn more about in @sec-lists):
