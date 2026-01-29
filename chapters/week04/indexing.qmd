@@ -2,245 +2,333 @@
 terns = read.csv("data/2000-2023_ca_least_tern.csv")
 ```
 
-# Indexing
+# Indexing {#sec-indexing}
 
 :::{.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
-* Index vectors with empty, integer, string, and logical arguments
-* Negate or combine conditions with logic operators
+* Select the columns of a data frame
 * Describe when to use `[` versus `[[`
-* Index data frames to get specific rows, columns, or subsets
+* Filter the rows of a data frame
+* Negate or combine conditions with logic operators
+:::
+
+Indexing refers to getting and setting the elements of a data structure.
+Indexing is a fundamental operation in R, key to reasoning about how to solve
+problems with the language. For tabular data, two kinds of indexing---selecting
+columns and filtering rows---are the foundation upon which all analyses rest.
+This chapter is an introduction to R's many operators and functions for
+indexing.
+
+
+## More Than One Dimension
+
+@sec-indexing-vectors introduced the indexing (or square bracket) operator
+`[` as a way to get and set the elements of a vector. You can also use the
+indexing operator with many other data structures, such as data frames, lists,
+matrices, and arrays.
+
+Consider data frames. A data frame is two-dimensional: it has rows and columns.
+In order to describe the exact position of an element in a data frame, we need
+to specify both a row index and a column index. You can still use the indexing
+operator `[` to get and set elements, but now it takes two arguments:
+
+```
+DATA[ROW_INDEXES, COLUMN_INDEXES]
+```
+
+For example, to get the value at row 1 and column 2 in the California least
+terns data (@sec-ca-least-terns), you can write:
+
+```{r}
+terns[1, 2]
+```
+
+If you swap the order of the indexes, you get the value at row 2 and column 1
+instead:
+
+```{r}
+terns[2, 1]
+```
+
+As with indexing vectors, when indexing a data frame you can also:
+
+* Use a vector as an index to get multiple elements.
+* Leave an index blank to get everything in that dimension.
+* Use negative indexes to omit rows or columns.
+* Combine indexing with assignment to set elements.
+
+
+Let's look at examples of the first two. Suppose we want to get elements from
+multiple rows and columns. Here's the code to get elements from the first 3
+rows in columns 2 and 7 of the least terns data:
+
+```{r}
+terns[1:3, c(2, 7)]
+```
+
+Now suppose we want to get the elements from rows 3, 5, and 7 in all columns.
+Then you can write:
+
+```{r}
+terns[c(3, 5, 7), ]
+```
+
+By leaving the column index blank, you're telling R to select all of the
+columns. Likewise, you can leave the row index blank to select all of the rows.
+
+:::{.callout-note}
+You can also use the indexing operator `[` with data structures that have more
+than two dimensons. Maybe you can guess the syntax:
+
+```
+DATA[DIM1_INDEXES, DIM2_INDEXES, DIM3_INDEXES, ...]
+```
+
+You won't encounter any data structures with more than two dimensions in this
+course, but you might someday.
 :::
 
 
-## Indexing {#sec-indexing}
+## Selecting Columns
 
-The way to get and set elements of a data structure is by **indexing**.
-Sometimes this is also called **subsetting** or (element) **extraction**.
-Indexing is a fundamental operation in R, key to reasoning about how to solve
-problems with the language.
+In order to work with tabular data, you need to know how to **select** (or get)
+columns. Most of the time, it's best to select columns by name. Doing so makes
+code easier to understand, since the reader doesn't have to memorize the
+positions of the columns. It can also make code more reliable, since the code
+will still work even if the positions of the columns change.
 
-We first saw indexing in @sec-inspecting-a-data-frame, where we used `$`, the
-dollar sign operator, to get and set data frame columns. We saw indexing again
-in @sec-indexing-vectors, where we used `[`, the indexing or square bracket
-operator, to get and set elements of vectors.
+This section explains several different ways to select columns and how to
+choose which one to use in any given situation. Generally, the first thing to
+think about is whether you want to select just one column or multiple columns.
 
-The indexing operator `[` is R's primary operator for indexing. It works in
-four different ways, depending on the type of the index you use. These four
-ways to select elements are:
 
-1. All elements, with no index
-2. By position, with a numeric index
-3. By name, with a character index
-4. By condition, with a logical index
+### One Column {#sec-one-column}
 
-Let's examine each in more detail. We'll use this vector as an example, to keep
-things concise:
+The dollar sign operator `$`, introduced in @sec-inspecting-a-data-frame, is
+one way to select a single column from a data frame. For example, to select the
+`total_nests` column from the least terns dataset:
 
 ```{r}
-x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
-x
+terns$total_nests
 ```
 
-Even though we're using a vector here, the indexing operator works with almost
-all data structures, including factors, lists, matrices, and data frames. We'll
-look at unique behavior for some of these later on.
+The dollar sign operator always selects the column by name (not position).
 
-### All Elements {#sec-all-elements}
-
-The first way to use `[` to select elements is to leave the index blank. This
-selects all elements:
-```{r}
-x[]
-```
-
-This way of indexing is rarely used for getting elements, since it's the same
-as entering the variable name without the indexing operator. Instead, its main
-use is for setting elements. Suppose we want to set all the elements of `x` to
-`5`. You might try writing this:
+Another way to select a single column is with the **extraction operator** `[[`
+(also called the double square bracket operator). The column name must be
+quoted and goes inside the brackets. For instance:
 
 ```{r}
-x = 5
-x
+terns[["total_nests"]]
 ```
 
-Rather than setting each element to `5`, this sets `x` to the scalar `5`, which
-is not what we want. Let's reset the vector and try again, this time using the
-indexing operator:
+The double square bracket operator is helpful if you want to select a column
+with a name you've stored in a variable:
 
 ```{r}
-x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
-x[] = 5
-x
+my_column = "site_name"
+terns[[my_column]]
 ```
 
-As you can see, now all the elements are `5`. So the indexing operator is
-necessary to specify that we want to set the elements rather than the whole
-variable.
-
-Let's reset `x` one more time, so that we can use it again in the next example:
+The double square bracket operator is also important for getting and setting
+elements of lists (@sec-lists). Unlike the dollar sign operator, it can also
+get columns by position:
 
 ```{r}
-x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+terns[[1]]
 ```
 
-### By Position
+Most of the time, you should use the dollar sign operator when you want to get
+a single column.
 
-The second way to use `[` is to select elements by position. This happens when
-you use an integer or numeric index. We already saw the basics of this in
-@sec-indexing-vectors.
+:::{.callout-tip}
+Quotes are optional with the dollar sign operator. So another way to get the
+`total_nests` column is:
 
-The positions of the elements in a vector (or other data structure) correspond
-to numbers starting from 1 for the first element. This way of indexing is
-frequently used together with the sequence operator `:` to get ranges of
-values. For instance, let's get the 2nd through 4th elements of `x`:
+```r
+terns$"total_nests"
+```
+
+Use quotes if you want to get a column whose name contains spaces or other
+special characters. For all other cases, quotes are not necessary.
+:::
+
+
+### Multiple Columns
+
+The dollar sign operator `$` and double square bracket operator `[[` can only
+get one column of a data frame at a time, and they always return columns as
+vectors. This is useful when we want to compute on just one column, because
+most functions (especially math and statistics functions) require vector
+arguments.
+
+Sometimes we'll want to get multiple columns from a data frame. Imagine a data
+frame with 300 columns, but only 5 that are relevant to your research question.
+Getting rid of the extra columns makes the data easier to inspect and might
+make some computations faster. When you select multiple columns from a data
+frame, the result is also a data frame.
+
+One way to select multiple columns is with the indexing operator `[`. If you
+use the indexing operator on a data frame and only provide one index, R will
+select columns. For example, to select the `site_name` and `year` columns from
+the least terns dataset:
 
 ```{r}
-x[2:4]
+terns[c("site_name", "year")]
 ```
 
-You can also use this way of indexing to set specific elements or ranges of
-elements. For example, let's set the 3rd and 5th elements of `x` to `9` and
-`7`, respectively:
+:::{.callout-warning}
+In R, omitting an argument is different from leaving the argument blank. So
+these two expressions do different things despite looking similar:
+
+```r
+terns[c("site_name", "year")]
+```
+
+```r
+terns[c("site_name", "year"), ]
+```
+
+The first selects the `site_name` and `year` columns. The second selects the
+`site_name` and `year` rows (which causes an error, since the least terns
+dataset doesn't have row names).
+
+There's one more possibility:
+
+```r
+terns[, c("site_name", "year")]
+```
+
+Like the first expression, this selects the `site_name` and `year` columns. You
+can write the code either way. Some people prefer the first expression because
+it's shorter, while others prefer this expression because it makes it clear
+that `terns` is two-dimensional.
+:::
+
+You can select whatever combination of columns you want with the indexing
+operator, but it's somewhat inconvenient if you need to select a lot of
+columns, because you typically have to type out all of their names. For
+example, suppose we want to select all of the columns in the least terns
+dataset whose name starts with `nonpred_` (these are mortalities caused by
+something other than predation).
+
+The [dplyr][] package is a collection of functions that make working with data
+frames more convenient. Install and load the package if you want to follow
+along with this example:
+
+[dplyr]: https://dplyr.tidyverse.org/
 
 ```{r}
-x[c(3, 5)] = c(9, 7)
-x
+# install.packages("dplyr")
+library("dplyr")
 ```
 
-When getting elements, you can repeat numbers in the index to get the same
-element more than once. You can also use the order of the numbers to control
-the order of the elements:
+Remember that you only need to install each package once.
+
+The dplyr package's `select` function selects columns from a data frame. Unlike
+most of R's built-in functions, the functions in dplyr don't require quotes
+around column names. To select the `site_name` and `year` columns from the
+least terns dataset, you can write:
 
 ```{r}
-x[c(2, 1, 2, 2)]
+select(terns, site_name, year)
 ```
 
-Finally, if the index contains only negative numbers, the elements at those
-positions are excluded rather than selected. For instance, let's get all
-elements except the 1st and 5th:
+The advantage of `select` over the indexing operator `[` is that it provides
+concise ways to a lot of columns. For instance, to select all of the columns
+whose names begin with `nonpred_`, you can write:
 
 ```{r}
-x[-c(1, 5)]
+select(terns, starts_with("nonpred_"))
 ```
 
-When you index by position, the index should always be all positive or all
-negative. Using a mix of positive and negative numbers causes R to emit error
-rather than returning elements, since it's unclear what the result should be:
+You can select the same columns with the indexing operator, but you'd either
+have to type out all of their names or use a more complicated expression.
 
-```{r, error = TRUE}
-x[c(-1, 2)]
-```
+Use the indexing operator when you only need to select a few columns. Use
+dplyr's `select` function when you need to select lots of columns that follow
+some kind of pattern. The [dplyr documentation][dplyr] provides more details
+about how to use the `select` function.
 
-### By Name
 
-The third way to use `[` is to select elements by name. This happens when you
-use a character vector as the index, and only works with named data structures.
+## Filtering Rows
 
-Like indexing by position, you can use indexing by name to get or set elements.
-You can also use it to repeat elements or change the order. Let's get elements
-`a`, `c`, `d`, and `a` again from the vector `x`:
+In addition to selecting columns, you also need to know how to **filter** rows
+in order to work with tabular data. In this context, to "filter" is to get a
+subset of rows that satisfy a condition. As a motivating example, suppose we
+want to get all of the rows in the least terns dataset that correspond to the
+Los Angeles Harbor (`LA HARBOR`) site.
+
+The indexing operator `[` is one way to filter the rows of a data frame. The
+first step is to translate the condition on the rows into code. To test whether
+rows correspond to Los Angeles Harbor, we can write:
 
 ```{r}
-y = x[c("a", "c", "d", "a")]
-y
+terns$site_name == "LA HARBOR"
 ```
 
-Element names are generally unique, but if they're not, indexing by name gets
-or sets the first element whose name matches the index:
+This returns a vector of logical (`TRUE` and `FALSE`) values. Now that we have
+the code for the condition, we can use indexing to get rows where the condition
+is `TRUE`:
 
 ```{r}
-y["a"]
+terns[terns$site_name == "LA HARBOR", ]
 ```
 
-Let's reset `x` again to prepare for learning about the final way to index:
+@sec-logic describes various operators and functions you can use to write more
+complicated conditions.
+
+Notice that in the condition, we had to write `terns$site_name` rather than
+just the column name `site_name`. We have to specify that we mean a column in
+`terns` because the indexing operator doesn't make any assumptions about what
+is or isn't a column name. But most of the time, we filter rows by testing
+conditions on the columns. Typing the name of the data frame (for example,
+`terns$`) in front of every column name makes writing complicated conditions
+tedious.
+
+The dplyr package's `filter` function is another way to filter the rows of a
+data frame. By assuming that names refer to column names, `filter` makes
+writing conditions less tedious. The first argument to `filter` is the data
+frame to filter, while the second is the condition. Here's how to get the Los
+Angeles Harbor rows from the least terns dataset:
 
 ```{r}
-x = c(a = 10, b = 20, c = 30, d = 40, e = 50)
+filter(terns, site_name == "LA HARBOR")
 ```
 
-### By Condition
+You can pass additional conditions to `filter` as additional arguments. All of
+them must be satisfied (`TRUE`) for a row to be kept.
 
-The fourth and final way to use `[` is to select elements based on a condition.
-This happens when you use a logical vector as the index. The logical vector
-should have the same length as what you're indexing, and will be recycled if it
-doesn't.
+:::{.callout-note}
+R's built-in `subset` function is similar to and might have inspired dplyr's
+`filter` function. Here's how to use it to get all of the Los Angeles Harbor
+rows:
 
-#### Congruent Vectors {-}
-
-To understand indexing by condition, we first need to learn about congruent
-vectors. Two vectors are **congruent** if they have the same length and they
-correspond element-by-element.
-
-For example, suppose you do a survey that records each respondent's favorite
-animal and age. These are two different vectors of information, but each person
-will have a response for both. So you'll have two vectors that are the same
-length:
-
-```{r}
-animal = c("dog", "cat", "iguana")
-age = c(31, 24, 72)
+```r
+subset(terns, site_name == "LA HARBOR")
 ```
 
-The 1st element of each vector corresponds to the 1st person, the 2nd to the
-2nd person, and so on. These vectors are congruent.
+The `subset` function is a good alternative if you prefer not to use dplyr.
+:::
 
-Notice that columns in a data frame are always congruent!
-
-#### Back to Indexing {-}
-
-When you index by condition, the index should generally be congruent to the
-object you're indexing. Elements where the index is `TRUE` are kept and
-elements where the index is `FALSE` are dropped.
-
-If you create the index from a condition on the object, it's automatically
-congruent. For instance, let's make a condition based on the vector `x`:
-
-```{r}
-is_small = x < 25
-is_small
-```
-
-The 1st element in the logical vector `is_small` corresponds to the 1st element
-of `x`, the 2nd to the 2nd, and so on. The vectors `x` and `is_small` are
-congruent.
-
-It makes sense to use `is_small` as an index for `x`, and it gives us all the
-elements less than `25`:
-
-```{r}
-x[is_small]
-```
-
-Of course, you can also avoid using an intermediate variable for the condition:
-
-```{r}
-x[x > 10]
-```
-
-If you create index some other way (not using the object), make sure that it's
-still congruent to the object. Otherwise, the subset returned from indexing
-might not be meaningful.
-
-You can also use indexing by condition to set elements, just as the other ways
-of indexing can be used to set elements. For instance, let's set all the
-elements of `x` that are greater than `10` to the missing value `NA`:
-
-```{r}
-x[x > 10] = NA
-x
-```
+Both the indexing operator and dplyr's `filter` function are good ways to
+filter rows in a data frame. The indexing operator has the advantage that you
+can simultaneously use it to select columns by filling in the second argument.
+On the other hand, the `filter` function makes complicated conditions easier to
+type and read---this might seem like a small advantage, but code clarity is
+important.
 
 
-### Logic {#sec-logic}
+## Logic Operators {#sec-logic}
 
 All of the conditions we've seen so far have been written in terms of a single
 test. If you want to use more sophisticated conditions, R provides operators to
 negate and combine logical vectors. These operators are useful for working with
 logical vectors even outside the context of indexing.
 
-#### Negation {-}
+
+### Negation
 
 The **NOT operator** `!` converts `TRUE` to `FALSE` and `FALSE` to `TRUE`:
 ```{r}
@@ -258,7 +346,7 @@ y = c("hi", "hello")
 The NOT operator is vectorized.
 
 
-#### Combinations {-}
+### Combinations
 
 R also has operators for combining logical values.
 
@@ -284,6 +372,9 @@ TRUE | TRUE
 c(TRUE, FALSE) | c(TRUE, TRUE)
 ```
 
+The combination operators are vectorized.
+
+:::{.callout-warning}
 Be careful: everyday English is less precise than logic. You might say:
 
 > I want all subjects with age over 50 and all subjects that like cats.
@@ -294,22 +385,9 @@ But in logic this means:
 
 So think carefully about whether you need both conditions to be true (AND) or
 at least one (OR).
+:::
 
-Rarely, you might want _exactly one_ condition to be true. The **XOR (eXclusive
-OR) function** `xor()` returns `TRUE` when exactly one argument is `TRUE`. For
-example:
-
-```{r}
-xor(FALSE, FALSE)
-xor(TRUE, FALSE)
-xor(TRUE, TRUE)
-```
-
-The AND, OR, and XOR operators are vectorized.
-
-
-#### Short-circuiting {-}
-
+:::{.callout-note title="Short-circuit Operators" collapse="true"}
 The second argument is irrelevant in some conditions:
 
 * `FALSE &` is always `FALSE`
@@ -343,128 +421,18 @@ Because of this, you can't use short-circuit operators for indexing. Their main
 use is in writing conditions for if-expressions, which we'll learn about later
 on.
 
-:::{.callout-note}
 Prior to R 4.3.0, short-circuit operators didn't raise an error for inputs with
 length greater than 1 (and thus were a common source of bugs).
 :::
 
-
-## Indexing Data Frames
-
-This section explains how to get and set data in a data frame, expanding on the
-indexing techniques you learned in @sec-indexing. Under the hood, every data
-frame is a list, so first you'll learn about indexing lists.
-
-
-### Indexing Lists
-
-Lists are a **container** for other types of R objects. When you select an
-element from a list, you can either keep the container (the list) or discard
-it. The indexing operator `[` almost always keeps containers.
-
-As an example, let's get some elements from a small list:
+:::{.callout-note title="Exclusive OR" collapse="true"}
+Rarely, you might want _exactly one_ condition to be true. The **XOR (eXclusive
+OR) function** `xor()` returns `TRUE` when exactly one argument is `TRUE`. For
+example:
 
 ```{r}
-x = list(first = c(1, 2, 3), second = sin, third = c("hi", "hello"))
-y = x[c(1, 3)]
-y
-class(y)
+xor(FALSE, FALSE)
+xor(TRUE, FALSE)
+xor(TRUE, TRUE)
 ```
-
-The result is still a list. Even if we get just one element, the result of
-indexing a list with `[` is a list:
-
-```{r}
-class(x[1])
-```
-
-Sometimes this will be exactly what we want. But what if we want to get the
-first element of `x` so that we can use it in a vectorized function? Or in a
-function that only accepts numeric arguments? We need to somehow get the
-element and discard the container.
-
-The solution to this problem is the **extraction operator** `[[`, which is also
-called the double square bracket operator. The extraction operator is the
-primary way to get and set elements of lists and other containers.
-
-Unlike the indexing operator `[`, the extraction operator always discards the
-container:
-
-```{r}
-x[[1]]
-class(x[[1]])
-```
-
-The tradeoff is that the extraction operator can only get or set one element at
-a time. Note that the element can be a vector, as above. Because it can only
-get or set one element at a time, the extraction operator can only index by
-position or name. Blank and logical indexes are not allowed.
-
-The final difference between the index operator `[` and the extraction operator
-`[[` has to do with how they handle invalid indexes. The index operator `[`
-returns `NA` for invalid vector elements, and `NULL` for invalid list elements:
-
-```{r}
-c(1, 2)[10]
-x[10]
-```
-
-On the other hand, the extraction operator `[[` raises an error for invalid
-elements:
-
-```{r, error = TRUE}
-x[[10]]
-```
-
-The indexing operator `[` and the extraction operator `[[` both work with any
-data structure that has elements. However, you'll generally use the indexing
-operator `[` to index vectors, and the extraction operator `[[` to index
-containers (such as lists).
-
-
-### Two-dimensional Indexing
-
-For two-dimensional objects, like matrices and data frames, you can pass the
-indexing operator `[` or the extraction operator `[[` a separate index for each
-dimension. The rows come first:
-
-```
-DATA[ROWS, COLUMNS]
-```
-
-For instance, let's get the first 3 rows and all columns of the least terns
-data:
-
-```{r}
-terns[1:3, ]
-```
-
-As we saw in @sec-all-elements, leaving an index blank means all elements.
-
-As another example, let's get the 3rd and 5th row, and the 2nd and 4th column:
-
-```{r}
-terns[c(3, 5), c(2, 4)]
-```
-
-Mixing several different ways of indexing is allowed. So for example, we can
-get the same above, but use column names instead of positions:
-
-```{r}
-terns[c(3, 5), c("year", "site_name")]
-```
-
-For data frames, it's especially common to index the rows by condition and the
-columns by name. For instance, let's get the `site_name` and `bp_min` columns
-for all year 2000 observations in the least terns data set:
-
-```{r}
-result = terns[terns$year == 2000, c("site_name", "bp_min")]
-head(result)
-```
-
-<!-- FIXME -->
-<!--
-Also see @sec-the-drop-parameter for a case where the `[` operator behaves in a
-surprising way.
--->
+:::
