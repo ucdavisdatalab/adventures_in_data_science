@@ -36,7 +36,7 @@ specific discipline.
 ## Installing Packages
 
 The `install.packages` function installs one or more packages from CRAN. Its
-first argument is the packages to install, as a character vector.
+first argument is a name or vector of names of packages to install.
 
 When you run `install.packages`, R will ask you to choose which **mirror** to
 download the package from. A mirror is a web server that has the same set of
@@ -58,10 +58,10 @@ output that looks something like this:
 
 ```
 --- Please select a CRAN mirror for use in this session ---
-trying URL 'https://cloud.r-project.org/src/contrib/remotes_2.3.0.tar.gz'
-Content type 'application/x-gzip' length 148405 bytes (144 KB)
+trying URL 'https://cloud.r-project.org/src/contrib/remotes_2.5.0.tar.gz'
+Content type 'application/x-gzip' length 168405 bytes (164 KB)
 ==================================================
-downloaded 144 KB
+downloaded 164 KB
 
 * installing *source* package ‘remotes’ ...
 ** package ‘remotes’ successfully unpacked and MD5 sums checked
@@ -87,14 +87,16 @@ packages that the package depends on. You can tell that a package installation
 succeeded by the final line `DONE`. When a package installation fails, R prints
 an error message explaining the problem instead.
 
+:::{.callout-important}
 Once a package is installed, it stays on your computer until you remove it or
-remove R. This means you only need to install each package once. However, most
-packages are periodically updated. You can reinstall a package using
-`install.packages` the same way as above to get the latest version.
+remove R. This means you only need to install each package once!
+:::
 
-Alternatively, you can update all of the R packages you have installed at once
-by calling the `update.packages` function. Beware that this may take a long
-time if you have a lot of packages installed.
+Most packages are periodically updated. You can update specific packages to the
+latest versions by reinstalling them with `install.packages`. Alternatively,
+you can update all of the R packages you've installed at once by calling the
+`update.packages` function. Beware that this may take a long time if you have a
+lot of packages installed.
 
 The function to remove packages is `remove.packages`. Like `install.packages`,
 this function's first argument is the packages to remove, as a character
@@ -112,6 +114,25 @@ packages[1:10, "Version"]
 ```
 
 You'll see a different set of packages, since you have a different computer.
+
+:::{.callout-note}
+Not all R packages are published to CRAN. [GitHub][gh] is another popular place
+to publish R packages, especially ones that are experimental or still in
+development. Unlike CRAN, GitHub is a general-purpose website for publishing
+code written in any programming language, so it contains much more than just R
+packages and is not specifically R-focused.
+
+[gh]: https://github.com/
+
+The remotes package that we just installed provides functions to install
+packages from GitHub. It is generally better to install packages from CRAN when
+they are available there, since the versions on CRAN tend to be more stable and
+intended for a wide audience. However, if you want to install a package from
+GitHub, you can learn more about the remotes package by reading its [online
+documentation][remotes].
+
+[remotes]: https://remotes.r-lib.org/
+:::
 
 
 ## Loading Packages
@@ -138,19 +159,44 @@ not. Thus you can assume the call to `library` was successful if nothing is
 printed. If something goes wrong while loading a package, R will print out an
 error message explaining the problem.
 
-Finally, not all R packages are published to CRAN. [GitHub][gh] is another
-popular place to publish R packages, especially ones that are experimental or
-still in development. Unlike CRAN, GitHub is a general-purpose website for
-publishing code written in any programming language, so it contains much more
-than just R packages and is not specifically R-focused.
+Occasionally, you might need to check the names and versions of the packages
+loaded in your R session. For instance, if you go to another R programmer for
+help, they'll probably ask. You can make R print out information about the
+session, including loaded packages, with the `sessionInfo` function:
 
-[gh]: https://github.com/
+```r
+sessionInfo()
+```
 
-The remotes package that we just installed and loaded provides functions to
-install packages from GitHub. It is generally better to install packages from
-CRAN when they are available there, since the versions on CRAN tend to be more
-stable and intended for a wide audience. However, if you want to install a
-package from GitHub, you can learn more about the remotes package by reading
-its [online documentation][remotes].
+```
+R version 4.5.2 (2025-10-31)
+Platform: x86_64-conda-linux-gnu
+Running under: Arch Linux
 
-[remotes]: https://remotes.r-lib.org/
+Matrix products: default
+BLAS/LAPACK: /home/nick/mill/datalab/teaching/adventures_in_data_science/.pixi/envs/default/lib/libopenblasp-r0.3.30.so;  LAPACK version 3.12.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C
+
+time zone: US/Pacific
+tzcode source: system (glibc)
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base
+
+other attached packages:
+[1] remotes_2.5.0
+
+loaded via a namespace (and not attached):
+[1] compiler_4.5.2 tools_4.5.2
+```
+
+The output from `sessionInfo` will be different on your computer, depending on
+your computer hardware, operating system, default language, time zone, version
+of R, and loaded packages.
