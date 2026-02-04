@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>25&nbsp; Organizing Code – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../chapters/week09/web-scraping.html" rel="next">
+<link href="../../chapters/week07/getting-data-from-web.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-e93e9c1810f24b5a1d6b05301d833057.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+.callout.callout-style-default .callout-body {
+  padding: 0 1.5rem 0;
+}
+.cell-output-stdout {
+  overflow-y: scroll;
+  max-height: 30rem;
+  margin-bottom: 0.75rem;
+}
+</style>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week08/functions-control-flow.html">Week 8</a></li><li class="breadcrumb-item"><a href="../../chapters/week08/functions-control-flow.html"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Organizing Code</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/required-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Required Software</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/research-lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Research Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/interacting-with-computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interacting with Computers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/browsing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Browsing Files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/other-commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Going Beyond Browsing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/editing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Editing Files</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/how-ai-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">How AI Works</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/version-control-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Version Control Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/git-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Git Basics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/remote-repositories.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Remote Repositories</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/the-git-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Git Workflow</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/intro-to-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/intro-to-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/data-types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/indexing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Indexing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/data-forensics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/aggregation-grouping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Aggregation &amp; Grouping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/data-visualization-principles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/intro-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Introduction to <code>ggplot2</code></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/date-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Date Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/reshaping-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reshaping Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 7</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/string-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Strings &amp; Regular Expressions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/getting-data-from-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 8</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week08/functions-control-flow.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Organizing Code</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 9</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week09/web-scraping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Web Scraping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 10</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/collaboration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Collaboration in Data-Driven Work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/branches-merges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Branches &amp; Merges</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/working-with-github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Working with GitHub</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/making-git-comfortable.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Making Git Comfortable</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Special Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/11_optical-character-recognition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/12_statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/13_reshaping-tabular-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Reshaping Tabular Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/14_network-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Network Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/15_natural-language-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/16_geospatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Geospatial Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#functions" id="toc-functions" class="nav-link active" data-scroll-target="#functions"><span class="header-section-number">25.1</span> Functions</a>
+  <ul class="collapse">
+  <li><a href="#example-getting-largest-values" id="toc-example-getting-largest-values" class="nav-link" data-scroll-target="#example-getting-largest-values"><span class="header-section-number">25.1.1</span> Example: Getting Largest Values</a></li>
+  <li><a href="#example-returning-multiple-values" id="toc-example-returning-multiple-values" class="nav-link" data-scroll-target="#example-returning-multiple-values"><span class="header-section-number">25.1.2</span> Example: Returning Multiple Values</a></li>
+  </ul></li>
+  <li><a href="#conditional-expressions" id="toc-conditional-expressions" class="nav-link" data-scroll-target="#conditional-expressions"><span class="header-section-number">25.2</span> Conditional Expressions</a></li>
+  <li><a href="#iteration" id="toc-iteration" class="nav-link" data-scroll-target="#iteration"><span class="header-section-number">25.3</span> Iteration</a>
+  <ul class="collapse">
+  <li><a href="#for-loops" id="toc-for-loops" class="nav-link" data-scroll-target="#for-loops"><span class="header-section-number">25.3.1</span> For-Loops</a></li>
+  <li><a href="#planning-for-iteration" id="toc-planning-for-iteration" class="nav-link" data-scroll-target="#planning-for-iteration"><span class="header-section-number">25.3.2</span> Planning for Iteration</a></li>
+  </ul></li>
+  <li><a href="#case-study-ca-hospital-utilization" id="toc-case-study-ca-hospital-utilization" class="nav-link" data-scroll-target="#case-study-ca-hospital-utilization"><span class="header-section-number">25.4</span> Case Study: CA Hospital Utilization</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week08/functions-control-flow.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week08/functions-control-flow.html">Week 8</a></li><li class="breadcrumb-item"><a href="../../chapters/week08/functions-control-flow.html"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Organizing Code</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Organizing Code</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Write functions to organize and encapsulate reusable code</li>
+<li>Create code that only runs when a condition is satisfied</li>
+<li>Identify when a problem requires iteration</li>
+<li>Select appropriate iteration strategies for problems</li>
+</ul>
+</div>
+</div>
+</div>
+<p>By now, you’ve learned all of the basic skills necessary to explore a data set in R. The focus of this chapter is how to organize your code so that it’s concise, clear, and easy to automate. This will help you and your collaborators avoid tedious, redundant work, reproduce results efficiently, and run code in specialized environments for scientific computing, such as high-performance computing clusters.</p>
+<section id="functions" class="level2" data-number="25.1">
+<h2 data-number="25.1" class="anchored" data-anchor-id="functions"><span class="header-section-number">25.1</span> Functions</h2>
+<p>The main way to interact with R is by calling functions, which was first explained way back in <a href="../week03/intro-to-r.html#sec-calling-functions" class="quarto-xref"><span>Section 12.3.4</span></a>. This section explains how to write your own functions.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="The Parts of a Function">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The Parts of a Function
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Think of a function as a factory. It takes raw materials, runs them through some machinery, and produces a final product:</p>
+<ol type="1">
+<li><p>Raw materials: the inputs to a function are called <strong>arguments</strong>. Each argument is assigned to a <strong>parameter</strong>, a placeholder variable.</p></li>
+<li><p>Machinery: code in the <strong>body</strong> of a function computes something from the arguments.</p></li>
+<li><p>Final product: the output of a function is called the <strong>return value</strong>.</p></li>
+</ol>
+<!-- ![](/images/functions.png) -->
+</div>
+</div>
+<p>Functions are building blocks for solving larger problems. Take a divide-and-conquer approach, breaking large problems into smaller steps. Write a short function for each step. This approach makes it easier to:</p>
+<ul>
+<li>Test that each step works correctly.</li>
+<li>Modify, reuse, or repurpose a step.</li>
+</ul>
+<p>The <code>function</code> keyword defines a new function. Here’s the syntax:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">function</span>(parameter1, parameter2, ...) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Your code goes here</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The result goes here</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<!--
+The body of a function is usually surrounded by curly braces `{ }`, although
+they're optional if the body only contains one line of code. Indenting code
+inside of curly braces by 2-4 spaces also helps make it visually distinct from
+other code.
+-->
+<p>A function can have any number of parameters, and will automatically return the value of the last line of its body. Generally, when you define a function, you should assign it to a variable, so that you can use it later.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Choosing descriptive variable names is a good habit. For functions, that means choosing a name that describes what the function does. It often makes sense to use verbs in function names.</p>
+</div>
+</div>
+<p>For example, let’s create a function that detects negative numbers. It should take a vector of numbers as input, compare them to zero, and then return the logical result from the comparison as output. Here’s the code:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>is_negative <span class="ot">=</span> <span class="cf">function</span>(x) x <span class="sc">&lt;</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The name of the function, <code>is_negative</code>, describes what the function does and includes a verb. The parameter <code>x</code> is the input. The return value is the result <code>x &lt; 0</code>.</p>
+<p>Any time you write a function, the first thing you should do afterwards is test that it actually works. Try the <code>is_negative</code> function out on a few test cases:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_negative</span>(<span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_negative</span>(<span class="sc">-</span><span class="fl">1.1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">3</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">is_negative</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE  TRUE  TRUE FALSE FALSE</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Before you write a function, it’s useful to go through several steps:</p>
+<ol type="1">
+<li><p>Write down what you want to do, in detail. It can also help to draw a picture of what needs to happen.</p></li>
+<li><p>Check whether there’s already a built-in function. Search online and in the R documentation.</p></li>
+<li><p>Write the code to handle a simple case first. For data science problems, use a small dataset at this step.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Viewing Function Definitions">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Viewing Function Definitions
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Almost every command in R is a function, even the arithmetic operators and the parentheses! You can view the definition of a function by typing its name without trailing parentheses (in contrast to how you call functions).</p>
+<p>For example, let’s look at the body of the <code>append</code> function, which appends a value to the end of a list or vector:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>append</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>function (x, values, after = length(x)) 
+{
+    lengx &lt;- length(x)
+    if (!after) 
+        c(values, x)
+    else if (after &gt;= lengx) 
+        c(x, values)
+    else c(x[1L:after], values, x[(after + 1L):lengx])
+}
+&lt;bytecode: 0x55e4e95d6770&gt;
+&lt;environment: namespace:base&gt;</code></pre>
+</div>
+</div>
+<p>Don’t worry if you can’t understand everything the <code>append</code> function’s code does yet. It will make more sense later on, after you’ve written a few functions of your own.</p>
+<p>Many of R’s built-in functions are not entirely written in R code. You can spot these by calls to the special <code>.Primitive</code> or <code>.Internal</code> functions in their code.</p>
+<p>For instance, the <code>sum</code> function is not written in R code:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sum</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>function (..., na.rm = FALSE)  .Primitive("sum")</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="example-getting-largest-values" class="level3" data-number="25.1.1">
+<h3 data-number="25.1.1" class="anchored" data-anchor-id="example-getting-largest-values"><span class="header-section-number">25.1.1</span> Example: Getting Largest Values</h3>
+<p>Let’s write a another function. This one will get the largest values in a vector. The inputs or arguments to the function will be the vector in question and also the number of values to get. Let’s call these <code>vec</code> and <code>n</code>, respectively. The result will be a vector of the <code>n</code> largest elements. Here’s one way to write the function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>get_largest <span class="ot">=</span> <span class="cf">function</span>(vec, n) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  sorted <span class="ot">=</span> <span class="fu">sort</span>(vec, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(sorted, n)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The name of the function, <code>get_largest</code>, describes what the function does and includes a verb. If this function will be used frequently, a shorter name, such as <code>largest</code>, might be preferable (compare to the <code>head</code> function).</p>
+<p>Try the <code>get_largest</code> function on a few test cases to make sure it works correctly:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="sc">-</span><span class="dv">3</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(x, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20 10</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(x, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20 10  1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(y, <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -1 -2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"d"</span>, <span class="st">"a"</span>, <span class="st">"t"</span>, <span class="st">"a"</span>, <span class="st">"l"</span>, <span class="st">"a"</span>, <span class="st">"b"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(z, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "t" "l" "d"</code></pre>
+</div>
+</div>
+<p>Notice that the parameters <code>vec</code> and <code>n</code> inside the function do not exist as variables outside of the function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>vec</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error: object 'vec' not found</code></pre>
+</div>
+</div>
+<p>In general, R keeps parameters and variables you define inside of a function separate from variables you define outside of a function. You can read more about the specific rules for how R searches for variables in DataLab’s <a href="https://ucdavisdatalab.github.io/workshop_intermediate_r/">Intermediate R workshop reader</a>.</p>
+<p>As a function for quickly summarizing data, <code>get_largest</code> would be more convenient if the parameter <code>n</code> for the number of values to return was optional (again, compare to the <code>head</code> function). You can make the parameter <code>n</code> optional by setting a <strong>default argument</strong>: an argument assigned to the parameter if no argument is assigned in the call to the function. You can use <code>=</code> to assign default arguments to parameters when you define a function with the <code>function</code> keyword.</p>
+<p>Here’s a new definition of <code>get_largest</code> with the default <code>n = 5</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>get_largest <span class="ot">=</span> <span class="cf">function</span>(vec, <span class="at">n =</span> <span class="dv">5</span>) {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  sorted <span class="ot">=</span> <span class="fu">sort</span>(vec, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(sorted, n)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>After making a change, it’s a good idea to test the function again:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20 10  1 -3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -1 -2 -3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(z)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "t" "l" "d" "b" "a"</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="The `return` Keyword">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The <code>return</code> Keyword
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We’ve already seen that a function will automatically return the value of its last line. The <code>return</code> keyword causes a function to return a result immediately, without running any subsequent code in its body.</p>
+<p>It only makes sense to use <code>return</code> from inside of an if-expression. If your function doesn’t have any if-expressions, you don’t need to use <code>return</code>.</p>
+<p>For example, suppose you want the <code>get_largest</code> function to immediately return <code>NULL</code> if the argument for <code>vec</code> is a list. Here’s the code, along with some test cases:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>get_largest <span class="ot">=</span> <span class="cf">function</span>(vec, <span class="at">n =</span> <span class="dv">5</span>) {</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.list</span>(vec))</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  sorted <span class="ot">=</span> <span class="fu">sort</span>(vec, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(sorted, n)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 20 10  1 -3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(z)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "t" "l" "d" "b" "a"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_largest</span>(<span class="fu">list</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+</div>
+<p>Alternatively, you could make the function raise an error by calling the <code>stop</code> function. Whether it makes more sense to return <code>NULL</code> or print an error depends on how you plan to use the <code>get_largest</code> function.</p>
+<p>Notice that the last line of the <code>get_largest</code> function still doesn’t use the <code>return</code> keyword. It’s idiomatic to only use <code>return</code> when strictly necessary.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="example-returning-multiple-values" class="level3" data-number="25.1.2">
+<h3 data-number="25.1.2" class="anchored" data-anchor-id="example-returning-multiple-values"><span class="header-section-number">25.1.2</span> Example: Returning Multiple Values</h3>
+<p>A function returns one R object, but sometimes computations have multiple results. In that case, return the results in a vector, list, or other data structure.</p>
+<p>For example, let’s make a function that computes the mean and median for a vector. We’ll return the results in a named list, although we could also use a named vector:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>compute_mean_med <span class="ot">=</span> <span class="cf">function</span>(x) {</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  m1 <span class="ot">=</span> <span class="fu">mean</span>(x)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  m2 <span class="ot">=</span> <span class="fu">median</span>(x)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">mean =</span> m1, <span class="at">median =</span> m2)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="fu">compute_mean_med</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$mean
+[1] 1.75
+
+$median
+[1] 1.5</code></pre>
+</div>
+</div>
+<p>The names make the result easier to understand for the caller of the function, although they certainly aren’t required here.</p>
+</section>
+</section>
+<section id="conditional-expressions" class="level2" data-number="25.2">
+<h2 data-number="25.2" class="anchored" data-anchor-id="conditional-expressions"><span class="header-section-number">25.2</span> Conditional Expressions</h2>
+<p>Sometimes you’ll need code to do different things, depending on a condition. You can use an <strong>if-expression</strong> to write conditional code.</p>
+<p>For example, suppose you want your code to generate a different greeting depending on an input name:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>name <span class="ot">=</span> <span class="st">"Nick"</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Default greeting</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>greeting <span class="ot">=</span> <span class="st">"Nice to meet you!"</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (name <span class="sc">==</span> <span class="st">"Nick"</span>) {</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>   greeting <span class="ot">=</span> <span class="st">"Hi Nick, nice to see you again!"</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>greeting</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hi Nick, nice to see you again!"</code></pre>
+</div>
+</div>
+<p>Indent code inside of the if-expression by 2 or 4 spaces. Indentation makes your code easier to read.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The condition in an if-expression has to have length 1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>name <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Nick"</span>, <span class="st">"Susan"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Default greeting</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>greeting <span class="ot">=</span> <span class="st">"Nice to meet you!"</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (name <span class="sc">==</span> <span class="st">"Nick"</span>) {</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>   greeting <span class="ot">=</span> <span class="st">"Hi Nick, nice to see you again!"</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in if (name == "Nick") {: the condition has length &gt; 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+<p>Use the <code>else</code> keyword if you want to add an alternative when the condition is <code>FALSE</code>. So the previous code can also be written as:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>name <span class="ot">=</span> <span class="st">"Nick"</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (name <span class="sc">==</span> <span class="st">"Nick"</span>) {</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>   greeting <span class="ot">=</span> <span class="st">"Hi Nick, nice to see you again!"</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Default greeting</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>  greeting <span class="ot">=</span> <span class="st">"Nice to meet you!"</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>greeting</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Hi Nick, nice to see you again!"</code></pre>
+</div>
+</div>
+<p>Use <code>else if</code> with a condition if you want to add an alternative to the first condition that also has its own condition. Only the first case where a condition is <code>TRUE</code> will run. You can use <code>else if</code> as many times as you want, and can also use <code>else</code>. For example:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>name <span class="ot">=</span> <span class="st">"Susan"</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (name <span class="sc">==</span> <span class="st">"Nick"</span>) {</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>   greeting <span class="ot">=</span> <span class="st">"Hi Nick, nice to see you again!"</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (name <span class="sc">==</span> <span class="st">"Peter"</span>) {</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>   greeting <span class="ot">=</span> <span class="st">"Go away Peter, I'm busy!"</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>   greeting <span class="ot">=</span> <span class="st">"Nice to meet you!"</span></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>greeting</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Nice to meet you!"</code></pre>
+</div>
+</div>
+<p>You can create compound conditions with R’s logic operators <code>!</code>, <code>&amp;</code>, and <code>|</code> (see <a href="../week04/indexing.html#sec-logic" class="quarto-xref"><span>Section 15.4</span></a>). For example:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>name1 <span class="ot">=</span> <span class="st">"Wesley"</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>name2 <span class="ot">=</span> <span class="st">"Nick"</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (name1 <span class="sc">==</span> <span class="st">"Wesley"</span> <span class="sc">&amp;</span> name2 <span class="sc">==</span> <span class="st">"Nick"</span>) {</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  greeting <span class="ot">=</span> <span class="st">"These are the authors."</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  greeting <span class="ot">=</span> <span class="st">"Who are these people?!"</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>greeting</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "These are the authors."</code></pre>
+</div>
+</div>
+<p>You can write an if-statement inside of another if-statement. This is called <strong>nesting</strong> if-statements. Nesting is useful when you want to check a condition, do some computations, and then check another condition under the assumption that the first condition was <code>True</code>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If-statements correspond to <strong>special cases</strong> in your code. Lots of special cases in code makes the code harder to understand and maintain. If you find yourself using lots of if-statements, especially nested if-statements, consider whether there is a more general strategy or way to write the code.</p>
+</div>
+</div>
+<!--
+If-expressions return the value of the last expression in the evaluated block:
+
+::: {.cell}
+
+```{.r .cell-code}
+name = "Tom"
+msg = if (name == "Nick") {
+   "Hi Nick, nice to see you again!"
+} else {
+   "Nice to meet you!"
+}
+msg
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] "Nice to meet you!"
+```
+
+
+:::
+:::
+
+
+Curly braces `{ }` are optional for single-line expressions:
+
+::: {.cell}
+
+```{.r .cell-code}
+name = "Nick"
+msg = if (name == "Nick") "Hi Nick, nice to see you again!" else
+   "Nice to meet you!"
+msg
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] "Hi Nick, nice to see you again!"
+```
+
+
+:::
+:::
+
+
+But you have to be careful if you don't use them:
+
+::: {.cell}
+
+```{.r .cell-code}
+# NO GOOD:
+msg = if (name == "Nick")
+   "Hi Nick, nice to see you again!"
+else
+   "Nice to meet you!"
+```
+
+::: {.cell-output .cell-output-error}
+
+```
+Error in parse(text = input): <text>:4:1: unexpected 'else'
+3:    "Hi Nick, nice to see you again!"
+4: else
+   ^
+```
+
+
+:::
+:::
+
+
+The `else` block is optional:
+
+::: {.cell}
+
+```{.r .cell-code}
+msg = "Hi"
+name = "Tom"
+if (name == "Nick")
+   msg = "Hi Nick, nice to see you again!"
+msg
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] "Hi"
+```
+
+
+:::
+:::
+
+
+When there's no `else` block, the value of the `else` block is `NULL`:
+
+::: {.cell}
+
+```{.r .cell-code}
+name = "Tom"
+msg = if (name == "Nick")
+   "Hi Nick, nice to see you again!"
+msg
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+NULL
+```
+
+
+:::
+:::
+
+-->
+</section>
+<section id="iteration" class="level2" data-number="25.3">
+<h2 data-number="25.3" class="anchored" data-anchor-id="iteration"><span class="header-section-number">25.3</span> Iteration</h2>
+<p>R is powerful tool for automating tasks that have repetitive steps. For example, you can:</p>
+<ul>
+<li>Apply a transformation to an entire column of data.</li>
+<li>Compute distances between all pairs from a set of points.</li>
+<li>Read a large collection of files from disk in order to combine and analyze the data they contain.</li>
+<li>Simulate how a system evolves over time from a specific set of starting parameters.</li>
+<li>Scrape data from the pages of a website.</li>
+</ul>
+<p>You can implement concise, efficient solutions for these kinds of tasks in R by using <strong>iteration</strong>, which means repeating a computation many times. R provides four different strategies for writing iterative code:</p>
+<ol type="1">
+<li>Vectorization, where a function is implicitly called on each element of a vector. This was introduced in <a href="../week03/data-types.html#sec-vectorization" class="quarto-xref"><span>Section 13.1.3</span></a>.</li>
+<li>Apply functions, where a function is explicitly called on each element of a data structure. This was introduced in <a href="../week04/aggregation-grouping.html#sec-apply-functions" class="quarto-xref"><span>Section 17.1</span></a>.</li>
+<li>Loops, where an expression is evaluated repeatedly until some condition is met.</li>
+<li>Recursion, where a function calls itself.</li>
+</ol>
+<p>Vectorization is the most efficient and concise iteration strategy, but also the least flexible, because it only works with specific functions and with vectors. Apply functions are more flexible—they work with any function and any data structure with elements—but less efficient and less concise. Loops and recursion provide the most flexibility but are the least concise. Recursion tends to be the least efficient iteration strategy in R.</p>
+<!--
+In recent versions of R, apply functions are slightly more efficient than
+loops.
+-->
+<p>The rest of this section explains how to write loops and how to choose which iteration strategy to use. We assume you’re already comfortable with vectorization and have at least some familiarity with apply functions.</p>
+<section id="for-loops" class="level3" data-number="25.3.1">
+<h3 data-number="25.3.1" class="anchored" data-anchor-id="for-loops"><span class="header-section-number">25.3.1</span> For-Loops</h3>
+<p>A <strong>for-loop</strong> evaluates the expressions in its body once for each element of a data structure. The syntax of a for-loop is:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DATA is the data structure</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co"># X is one element of DATA, assigned automatically at the beginning of each</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># iteration</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (X <span class="cf">in</span> DATA) {</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Expression(s) to repeat.</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For example, to print out all the column names of the <code>terns</code> data, you can write:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (name <span class="cf">in</span> <span class="fu">names</span>(terns)) {</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(name)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>year</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>site_name</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>site_name_2013_2018</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>site_name_1988_2001</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>site_abbr</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>region_3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>region_4</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>event</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>bp_min</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>bp_max</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>fl_min</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>fl_max</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_nests</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>nonpred_eggs</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>nonpred_chicks</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>nonpred_fl</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>nonpred_ad</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_control</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_eggs</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_chicks</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_fl</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_ad</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_pefa</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_coy_fox</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_meso</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_owlspp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_corvid</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_other_raptor</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_other_avian</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>pred_misc</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_pefa</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_coy_fox</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_meso</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_owlspp</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_corvid</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_other_raptor</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_other_avian</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>total_misc</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>first_observed</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>last_observed</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>first_nest</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>first_chick</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>first_fledge</code></pre>
+</div>
+</div>
+<p>Within the body of a for-loop, you can compute values, check conditions, etc.</p>
+<!--
+```nuzgzxpnynp
+for nests in terns["total_nests"]:
+    if nests > 100:
+        print(nests)
+```
+-->
+<p>Oftentimes you’ll want to save the result of the code you perform within a for-loop. The easiest way to do this is by creating an empty vector and using <code>c</code> or <code>append</code> to append values to it:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>values <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>diffs <span class="ot">=</span> <span class="fu">c</span>()</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(values) <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> values[[i]]</span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">=</span> values[[i <span class="sc">+</span> <span class="dv">1</span>]]</span>
+<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a>  diffs <span class="ot">=</span> <span class="fu">append</span>(diffs, a <span class="sc">-</span> b)</span>
+<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a>diffs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -2  1  9 -1</code></pre>
+</div>
+</div>
+<p>This example is just for demonstration, since R’s built-in <code>diff</code> function is a much more concise and efficient way to compute differences. The point is that when you use a loop, you have to create a data structure to store the results yourself.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Appending values to a vector, as in the example, is quite inefficient. If you need to use a loop to produce a lot of results (say, more than 100):</p>
+<ol type="1">
+<li>Before the loop, create a result vector that’s the expected length of the final result. Fill vector with 0s or some other placeholder value. You can use functions such as <code>integer</code>, <code>numeric</code>, and <code>character</code> to do this.</li>
+<li>In the loop, use indexing to replace the elements of the result vector as they’re computed.</li>
+</ol>
+<p>Using this strategy, which is called <strong>pre-allocation</strong> the code in the example becomes:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>values <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">11</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>diffs <span class="ot">=</span> <span class="fu">integer</span>(<span class="fu">length</span>(values) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(values) <span class="sc">-</span> <span class="dv">1</span>)) {</span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">=</span> values[[i]]</span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">=</span> values[[i <span class="sc">+</span> <span class="dv">1</span>]]</span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>  diffs[[i]] <span class="ot">=</span> a <span class="sc">-</span> b</span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a>diffs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -2  1  9 -1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="planning-for-iteration" class="level3" data-number="25.3.2">
+<h3 data-number="25.3.2" class="anchored" data-anchor-id="planning-for-iteration"><span class="header-section-number">25.3.2</span> Planning for Iteration</h3>
+<p>At first it might seem difficult to decide if and what kind of iteration to use. Start by thinking about whether you need to do something over and over. If you don’t, then you probably don’t need to use iteration. If you do, then try iteration strategies in this order:</p>
+<ol type="1">
+<li>Vectorization</li>
+<li>Apply functions (or the purrr package’s <code>map</code> functions)
+<ul>
+<li>Try an apply function if iterations are independent.</li>
+</ul></li>
+<li>Loops
+<ul>
+<li>Try a for-loop if some iterations depend on others. <!--
+ * Try a while-loop if the number of iterations is unknown.
+ --></li>
+</ul></li>
+<li>Recursion (which isn’t covered here)
+<ul>
+<li>Convenient for naturally recursive tasks (like Fibonacci), but often there are faster solutions.</li>
+</ul></li>
+</ol>
+<p>Start by writing the code for just one iteration. Make sure that code works; it’s easy to test code for one iteration.</p>
+<p>When you have one iteration working, then try using the code with an iteration strategy (you will have to make some small changes). If it doesn’t work, try to figure out which iteration is causing the problem. One way to do this is to use <code>message</code> to print out information. Then try to write the code for the broken iteration, get that iteration working, and repeat this whole process.</p>
+</section>
+</section>
+<section id="case-study-ca-hospital-utilization" class="level2" data-number="25.4">
+<h2 data-number="25.4" class="anchored" data-anchor-id="case-study-ca-hospital-utilization"><span class="header-section-number">25.4</span> Case Study: CA Hospital Utilization</h2>
+<p>The California Department of Health Care Access and Information (HCAI) requires hospitals in the state to submit detailed information each year about how many beds they have and the total number of days for which each bed was occupied. The HCAI publishes the data to the <a href="https://data.ca.gov/">California Open Data Portal</a>. Let’s use R to read data from 2016 to 2023 and investigate whether hospital utilization is noticeably different in and after 2020.</p>
+<p>The data set consists of a separate Microsoft Excel file for each year. Before 2018, HCAI used a data format (in Excel) called ALIRTS. In 2018, they started collecting more data and switched to a data format called SIERA. The 2018 data file contains a <strong>crosswalk</strong> that shows the correspondence between SIERA columns and ALIRTS columns.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://ucdavis.box.com/s/g5tanw22647dw3uyhv3om0zt3duuj5lc">Click here</a> to download the CA Hospital Utilization data set (8 Excel files).</p>
+<p>If you haven’t already, we recommend you create a directory for this workshop. In your workshop directory, create a <code>data/ca_hospitals</code> subdirectory. Download and save the data set in the <code>data/ca_hospitals</code> subdirectory.</p>
+</div>
+</div>
+<p>When you need to solve a programming problem, get started by writing some comments that describe the problem, the inputs, and the expected output. Try to be concrete. This will help you clarify what you’re trying to achieve and serve as a guiding light while you work.</p>
+<p>As a programmer (or any kind of problem-solver), you should always be on the lookout for ways to break problems into smaller, simpler steps. Think about this when you frame a problem. Small steps are easier to reason about, implement, and test. When you complete one, you also get a nice sense of progress towards your goal.</p>
+<p>For the CA Hospital Utilization data set, our goal is to investigate whether there was a change in hospital utilization in 2020. Before we can do any investigation, we need to read the files into R. The files all contain tabular data and have similar formats, so let’s try to combine them into a single data frame. We’ll say this in the framing comments:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the CA Hospital Utilization data set into R. The inputs are yearly Excel</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="co"># files (2016-2023) that need to be combined. The pre-2018 files have a</span></span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="co"># different format from the others. The result should be a single data frame</span></span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="co"># with information about bed and patient counts.</span></span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb98-6"><a href="#cb98-6" aria-hidden="true" tabindex="-1"></a><span class="co"># After reading the data set, we'll investigate utilization in 2020.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>“Investigate utilization” is a little vague, but for an exploratory data analysis, it’s hard to say exactly what to do until you’ve started working with the data.</p>
+<p>We need to read multiple files, but we can simplify the problem by starting with just one. Let’s start with the 2023 data. It’s in an Excel file, which you can read with the <code>read_excel</code> function from the readxl package. If it’s your first time using the readxl package, you’ll need to install it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"readxl"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>read_excel</code> function requires the path to the file as the first argument. You can optionally provide the sheet name or number (starting from 1) as the second argument. Open up the Excel file in your computer’s spreadsheet program and take a look. There are multiple sheets, and the data about beds and patients are in the second sheet. Back in R, read just the second sheet:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"readxl"</span>)</span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>path <span class="ot">=</span> <span class="st">"data/ca_hospitals/hosp23_util_data_final.xlsx"</span></span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>sheet <span class="ot">=</span> <span class="fu">read_excel</span>(path, <span class="at">sheet =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+• `` -&gt; `...355`</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sheet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 355
+  Description            FAC_NO FAC_NAME FAC_STR_ADDR FAC_CITY FAC_ZIP FAC_PHONE
+  &lt;chr&gt;                  &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    
+1 FINAL 2023 UTILIZATIO… FINAL… FINAL 2… FINAL 2023 … FINAL 2… FINAL … FINAL 20…
+2 Page                   1.0    1.0      1.0          1.0      1.0     1.0      
+3 Column                 1.0    1.0      1.0          1.0      1.0     1.0      
+4 Line                   2.0    1.0      3.0          4.0      5.0     6.0      
+5 &lt;NA&gt;                   10601… ALAMEDA… 2070 CLINTO… ALAMEDA  94501   51023337…
+6 &lt;NA&gt;                   10601… ALTA BA… 2450 ASHBY … BERKELEY 94705   510-655-…
+# ℹ 348 more variables: FAC_ADMIN_NAME &lt;chr&gt;, FAC_OPERATED_THIS_YR &lt;chr&gt;,
+#   FAC_OP_PER_BEGIN_DT &lt;chr&gt;, FAC_OP_PER_END_DT &lt;chr&gt;,
+#   FAC_PAR_CORP_NAME &lt;chr&gt;, FAC_PAR_CORP_BUS_ADDR &lt;chr&gt;,
+#   FAC_PAR_CORP_CITY &lt;chr&gt;, FAC_PAR_CORP_STATE &lt;chr&gt;, FAC_PAR_CORP_ZIP &lt;chr&gt;,
+#   REPT_PREP_NAME &lt;chr&gt;, SUBMITTED_DT &lt;chr&gt;, REV_REPT_PREP_NAME &lt;chr&gt;,
+#   REVISED_DT &lt;chr&gt;, CORRECTED_DT &lt;chr&gt;, LICENSE_NO &lt;chr&gt;,
+#   LICENSE_EFF_DATE &lt;chr&gt;, LICENSE_EXP_DATE &lt;chr&gt;, LICENSE_STATUS &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>The first four rows contain metadata about the columns. The first hospital, Alameda Hospital, is listed in the fifth row. So let’s remove the first four rows:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>sheet <span class="ot">=</span> sheet[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), ]</span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sheet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 355
+  Description FAC_NO    FAC_NAME         FAC_STR_ADDR FAC_CITY FAC_ZIP FAC_PHONE
+  &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    
+1 &lt;NA&gt;        106010735 ALAMEDA HOSPITAL 2070 CLINTO… ALAMEDA  94501   51023337…
+2 &lt;NA&gt;        106010739 ALTA BATES SUMM… 2450 ASHBY … BERKELEY 94705   510-655-…
+3 &lt;NA&gt;        106010776 UCSF BENIOFF CH… 747 52ND ST… OAKLAND  94609   510-428-…
+4 &lt;NA&gt;        106010811 FAIRMONT HOSPIT… 15400 FOOTH… SAN LEA… 94578   51043748…
+5 &lt;NA&gt;        106010844 ALTA BATES SUMM… 2001 DWIGHT… BERKELEY 94704   510-655-…
+6 &lt;NA&gt;        106010846 HIGHLAND HOSPIT… 1411 EAST 3… OAKLAND  94602   51043748…
+# ℹ 348 more variables: FAC_ADMIN_NAME &lt;chr&gt;, FAC_OPERATED_THIS_YR &lt;chr&gt;,
+#   FAC_OP_PER_BEGIN_DT &lt;chr&gt;, FAC_OP_PER_END_DT &lt;chr&gt;,
+#   FAC_PAR_CORP_NAME &lt;chr&gt;, FAC_PAR_CORP_BUS_ADDR &lt;chr&gt;,
+#   FAC_PAR_CORP_CITY &lt;chr&gt;, FAC_PAR_CORP_STATE &lt;chr&gt;, FAC_PAR_CORP_ZIP &lt;chr&gt;,
+#   REPT_PREP_NAME &lt;chr&gt;, SUBMITTED_DT &lt;chr&gt;, REV_REPT_PREP_NAME &lt;chr&gt;,
+#   REVISED_DT &lt;chr&gt;, CORRECTED_DT &lt;chr&gt;, LICENSE_NO &lt;chr&gt;,
+#   LICENSE_EFF_DATE &lt;chr&gt;, LICENSE_EXP_DATE &lt;chr&gt;, LICENSE_STATUS &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>Some data sets also have metadata in the last rows, so let’s check for that here:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(sheet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 355
+  Description FAC_NO    FAC_NAME         FAC_STR_ADDR FAC_CITY FAC_ZIP FAC_PHONE
+  &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    
+1 &lt;NA&gt;        106574010 SUTTER DAVIS HO… 2000 SUTTER… DAVIS    95616   (530) 75…
+2 &lt;NA&gt;        106580996 ADVENTIST HEALT… 726 FOURTH … MARYSVI… 95901   530-751-…
+3 &lt;NA&gt;        206100718 COMMUNITY SUBAC… 3003 NORTH … FRESNO   93703   559-459-…
+4 &lt;NA&gt;        206274027 WESTLAND HOUSE   100 BARNET … MONTEREY 93940   83162453…
+5 &lt;NA&gt;        206351814 HAZEL HAWKINS M… 900 SUNSET … HOLLIST… 95023   831-635-…
+6 &lt;NA&gt;        &lt;NA&gt;      n = 506          &lt;NA&gt;         &lt;NA&gt;     &lt;NA&gt;    &lt;NA&gt;     
+# ℹ 348 more variables: FAC_ADMIN_NAME &lt;chr&gt;, FAC_OPERATED_THIS_YR &lt;chr&gt;,
+#   FAC_OP_PER_BEGIN_DT &lt;chr&gt;, FAC_OP_PER_END_DT &lt;chr&gt;,
+#   FAC_PAR_CORP_NAME &lt;chr&gt;, FAC_PAR_CORP_BUS_ADDR &lt;chr&gt;,
+#   FAC_PAR_CORP_CITY &lt;chr&gt;, FAC_PAR_CORP_STATE &lt;chr&gt;, FAC_PAR_CORP_ZIP &lt;chr&gt;,
+#   REPT_PREP_NAME &lt;chr&gt;, SUBMITTED_DT &lt;chr&gt;, REV_REPT_PREP_NAME &lt;chr&gt;,
+#   REVISED_DT &lt;chr&gt;, CORRECTED_DT &lt;chr&gt;, LICENSE_NO &lt;chr&gt;,
+#   LICENSE_EFF_DATE &lt;chr&gt;, LICENSE_EXP_DATE &lt;chr&gt;, LICENSE_STATUS &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>Sure enough, the last row contains what appears to be a count of the hospitals rather than a hospital. Let’s remove it by calling <code>head</code> with a negative number of elements, which removes that many elements from the end:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>sheet <span class="ot">=</span> <span class="fu">head</span>(sheet, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(sheet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 355
+  Description FAC_NO    FAC_NAME         FAC_STR_ADDR FAC_CITY FAC_ZIP FAC_PHONE
+  &lt;chr&gt;       &lt;chr&gt;     &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;    
+1 &lt;NA&gt;        106571086 WOODLAND MEMORI… 1325 COTTON… WOODLAND 95695   (530) 66…
+2 &lt;NA&gt;        106574010 SUTTER DAVIS HO… 2000 SUTTER… DAVIS    95616   (530) 75…
+3 &lt;NA&gt;        106580996 ADVENTIST HEALT… 726 FOURTH … MARYSVI… 95901   530-751-…
+4 &lt;NA&gt;        206100718 COMMUNITY SUBAC… 3003 NORTH … FRESNO   93703   559-459-…
+5 &lt;NA&gt;        206274027 WESTLAND HOUSE   100 BARNET … MONTEREY 93940   83162453…
+6 &lt;NA&gt;        206351814 HAZEL HAWKINS M… 900 SUNSET … HOLLIST… 95023   831-635-…
+# ℹ 348 more variables: FAC_ADMIN_NAME &lt;chr&gt;, FAC_OPERATED_THIS_YR &lt;chr&gt;,
+#   FAC_OP_PER_BEGIN_DT &lt;chr&gt;, FAC_OP_PER_END_DT &lt;chr&gt;,
+#   FAC_PAR_CORP_NAME &lt;chr&gt;, FAC_PAR_CORP_BUS_ADDR &lt;chr&gt;,
+#   FAC_PAR_CORP_CITY &lt;chr&gt;, FAC_PAR_CORP_STATE &lt;chr&gt;, FAC_PAR_CORP_ZIP &lt;chr&gt;,
+#   REPT_PREP_NAME &lt;chr&gt;, SUBMITTED_DT &lt;chr&gt;, REV_REPT_PREP_NAME &lt;chr&gt;,
+#   REVISED_DT &lt;chr&gt;, CORRECTED_DT &lt;chr&gt;, LICENSE_NO &lt;chr&gt;,
+#   LICENSE_EFF_DATE &lt;chr&gt;, LICENSE_EXP_DATE &lt;chr&gt;, LICENSE_STATUS &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>There are a lot of columns in sheet, so let’s make a list of just a few that we’ll use for analysis. We’ll keep:</p>
+<ul>
+<li>Columns with facility name, location, and operating status</li>
+<li>All of the columns whose names start with <code>TOT</code>, because these are totals for number of beds, number of census-days, and so on.</li>
+<li>Columns about acute respiratory beds, with names that contain <code>RESPIRATORY</code>, because they might also be relevant.</li>
+</ul>
+<p>We can use the stringr package, which provides string processing functions, to help us get the <code>TOT</code> and <code>RESPIRATORY</code> column names. If it’s your first time using the stringr package, you’ll have to install it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"stringr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We can use stringr’s <code>str_starts</code> function to check whether column names start with <code>TOT</code> and its <code>str_detect</code> function to check whether column names contain <code>RESPIRATORY</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"stringr"</span>)</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>facility_cols <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"FAC_NAME"</span>, <span class="st">"FAC_CITY"</span>, <span class="st">"FAC_ZIP"</span>, <span class="st">"FAC_OPERATED_THIS_YR"</span>, <span class="st">"FACILITY_LEVEL"</span>,</span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TEACH_HOSP"</span>, <span class="st">"COUNTY"</span>, <span class="st">"PRIN_SERVICE_TYPE"</span></span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> <span class="fu">names</span>(sheet)</span>
+<span id="cb111-9"><a href="#cb111-9" aria-hidden="true" tabindex="-1"></a>tot_cols <span class="ot">=</span> cols[<span class="fu">str_starts</span>(cols, <span class="st">"TOT"</span>)]</span>
+<span id="cb111-10"><a href="#cb111-10" aria-hidden="true" tabindex="-1"></a>respiratory_cols <span class="ot">=</span> cols[<span class="fu">str_detect</span>(cols, <span class="st">"RESPIRATORY"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>TOT</code> and <code>RESPIRATORY</code> columns all contain numbers, but the element type is <code>character</code>, so let’s cast to numbers them with <code>as.numeric</code>. We’ll also add a column with the year:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>numeric_cols <span class="ot">=</span> <span class="fu">c</span>(tot_cols, respiratory_cols)</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>sheet[numeric_cols] <span class="ot">=</span> <span class="fu">lapply</span>(sheet[numeric_cols], as.numeric)</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>sheet<span class="sc">$</span>year <span class="ot">=</span> <span class="dv">2023</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now we’ll select only the columns we identified as useful:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>sheet <span class="ot">=</span> sheet[<span class="fu">c</span>(<span class="st">"year"</span>, facility_cols, numeric_cols)]</span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sheet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 22
+   year FAC_NAME FAC_CITY FAC_ZIP FAC_OPERATED_THIS_YR FACILITY_LEVEL TEACH_HOSP
+  &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt;          &lt;chr&gt;     
+1  2023 ALAMEDA… ALAMEDA  94501   Yes                  Parent Facili… No        
+2  2023 ALTA BA… BERKELEY 94705   Yes                  Parent Facili… No        
+3  2023 UCSF BE… OAKLAND  94609   Yes                  Parent Facili… No        
+4  2023 FAIRMON… SAN LEA… 94578   Yes                  Consolidated … No        
+5  2023 ALTA BA… BERKELEY 94704   Yes                  Consolidated … No        
+6  2023 HIGHLAN… OAKLAND  94602   Yes                  Parent Facili… No        
+# ℹ 15 more variables: COUNTY &lt;chr&gt;, PRIN_SERVICE_TYPE &lt;chr&gt;,
+#   TOT_LIC_BEDS &lt;dbl&gt;, TOT_LIC_BED_DAYS &lt;dbl&gt;, TOT_DISCHARGES &lt;dbl&gt;,
+#   TOT_CEN_DAYS &lt;dbl&gt;, TOT_ALOS_CY &lt;dbl&gt;, TOT_ALOS_PY &lt;dbl&gt;,
+#   ACUTE_RESPIRATORY_CARE_LIC_BEDS &lt;dbl&gt;,
+#   ACUTE_RESPIRATORY_CARE_LIC_BED_DAYS &lt;dbl&gt;,
+#   ACUTE_RESPIRATORY_CARE_DISCHARGES &lt;dbl&gt;,
+#   ACUTE_RESPIRATORY_CARE_INTRA_TRANSFERS &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>Lowercase names are easier to type, so let’s also make all of the names lowercase with stringr’s <code>str_to_lower</code> function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(sheet) <span class="ot">=</span> <span class="fu">str_to_lower</span>(<span class="fu">names</span>(sheet))</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sheet)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 22
+   year fac_name fac_city fac_zip fac_operated_this_yr facility_level teach_hosp
+  &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt;          &lt;chr&gt;     
+1  2023 ALAMEDA… ALAMEDA  94501   Yes                  Parent Facili… No        
+2  2023 ALTA BA… BERKELEY 94705   Yes                  Parent Facili… No        
+3  2023 UCSF BE… OAKLAND  94609   Yes                  Parent Facili… No        
+4  2023 FAIRMON… SAN LEA… 94578   Yes                  Consolidated … No        
+5  2023 ALTA BA… BERKELEY 94704   Yes                  Consolidated … No        
+6  2023 HIGHLAN… OAKLAND  94602   Yes                  Parent Facili… No        
+# ℹ 15 more variables: county &lt;chr&gt;, prin_service_type &lt;chr&gt;,
+#   tot_lic_beds &lt;dbl&gt;, tot_lic_bed_days &lt;dbl&gt;, tot_discharges &lt;dbl&gt;,
+#   tot_cen_days &lt;dbl&gt;, tot_alos_cy &lt;dbl&gt;, tot_alos_py &lt;dbl&gt;,
+#   acute_respiratory_care_lic_beds &lt;dbl&gt;,
+#   acute_respiratory_care_lic_bed_days &lt;dbl&gt;,
+#   acute_respiratory_care_discharges &lt;dbl&gt;,
+#   acute_respiratory_care_intra_transfers &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>We’ve successfully read one of the files! Since the 2018-2023 files all have the same format, it’s likely that we can use almost the same code for all of them. Any time you want to reuse code, it’s a sign that you should write a function, so that’s what we’ll do. We’ll take all of the code we have so far and put it in the body of a function called <code>read_hospital_data</code>, adding some comments to indicate the steps:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>read_hospital_data <span class="ot">=</span> <span class="cf">function</span>() {</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Read the 2nd sheet of the file.</span></span>
+<span id="cb117-3"><a href="#cb117-3" aria-hidden="true" tabindex="-1"></a>  path <span class="ot">=</span> <span class="st">"data/ca_hospitals/hosp23_util_data_final.xlsx"</span></span>
+<span id="cb117-4"><a href="#cb117-4" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> <span class="fu">read_excel</span>(path, <span class="at">sheet =</span> <span class="dv">2</span>)</span>
+<span id="cb117-5"><a href="#cb117-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-6"><a href="#cb117-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove the first 4 and last row.</span></span>
+<span id="cb117-7"><a href="#cb117-7" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> sheet[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), ]</span>
+<span id="cb117-8"><a href="#cb117-8" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> <span class="fu">head</span>(sheet, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb117-9"><a href="#cb117-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-10"><a href="#cb117-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select only a few columns of interest.</span></span>
+<span id="cb117-11"><a href="#cb117-11" aria-hidden="true" tabindex="-1"></a>  facility_cols <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb117-12"><a href="#cb117-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FAC_NAME"</span>, <span class="st">"FAC_CITY"</span>, <span class="st">"FAC_ZIP"</span>, <span class="st">"FAC_OPERATED_THIS_YR"</span>,</span>
+<span id="cb117-13"><a href="#cb117-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FACILITY_LEVEL"</span>, <span class="st">"TEACH_HOSP"</span>, <span class="st">"COUNTY"</span>, <span class="st">"PRIN_SERVICE_TYPE"</span></span>
+<span id="cb117-14"><a href="#cb117-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb117-15"><a href="#cb117-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-16"><a href="#cb117-16" aria-hidden="true" tabindex="-1"></a>  cols <span class="ot">=</span> <span class="fu">names</span>(sheet)</span>
+<span id="cb117-17"><a href="#cb117-17" aria-hidden="true" tabindex="-1"></a>  tot_cols <span class="ot">=</span> cols[<span class="fu">str_starts</span>(cols, <span class="st">"TOT"</span>)]</span>
+<span id="cb117-18"><a href="#cb117-18" aria-hidden="true" tabindex="-1"></a>  respiratory_cols <span class="ot">=</span> cols[<span class="fu">str_detect</span>(cols, <span class="st">"RESPIRATORY"</span>)]</span>
+<span id="cb117-19"><a href="#cb117-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-20"><a href="#cb117-20" aria-hidden="true" tabindex="-1"></a>  numeric_cols <span class="ot">=</span> <span class="fu">c</span>(tot_cols, respiratory_cols)</span>
+<span id="cb117-21"><a href="#cb117-21" aria-hidden="true" tabindex="-1"></a>  sheet[numeric_cols] <span class="ot">=</span> <span class="fu">lapply</span>(sheet[numeric_cols], as.numeric)</span>
+<span id="cb117-22"><a href="#cb117-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-23"><a href="#cb117-23" aria-hidden="true" tabindex="-1"></a>  sheet<span class="sc">$</span>year <span class="ot">=</span> <span class="dv">2023</span></span>
+<span id="cb117-24"><a href="#cb117-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-25"><a href="#cb117-25" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> sheet[<span class="fu">c</span>(<span class="st">"year"</span>, facility_cols, numeric_cols)]</span>
+<span id="cb117-26"><a href="#cb117-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-27"><a href="#cb117-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rename the columns to lowercase.</span></span>
+<span id="cb117-28"><a href="#cb117-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(sheet) <span class="ot">=</span> <span class="fu">str_to_lower</span>(<span class="fu">names</span>(sheet))</span>
+<span id="cb117-29"><a href="#cb117-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb117-30"><a href="#cb117-30" aria-hidden="true" tabindex="-1"></a>  sheet</span>
+<span id="cb117-31"><a href="#cb117-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>As it is, the function still only reads the 2023 file. The other files have different paths, so the first thing we need to do is make the <code>path</code> variable a parameter. We’ll also make a <code>year</code> parameter, for the year value inserted as a column:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>read_hospital_data <span class="ot">=</span> <span class="cf">function</span>(path, year) {</span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Read the 2nd sheet of the file.</span></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> <span class="fu">read_excel</span>(path, <span class="at">sheet =</span> <span class="dv">2</span>)</span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove the first 4 and last row.</span></span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> sheet[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), ]</span>
+<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> <span class="fu">head</span>(sheet, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb118-8"><a href="#cb118-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-9"><a href="#cb118-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select only a few columns of interest.</span></span>
+<span id="cb118-10"><a href="#cb118-10" aria-hidden="true" tabindex="-1"></a>  facility_cols <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb118-11"><a href="#cb118-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FAC_NAME"</span>, <span class="st">"FAC_CITY"</span>, <span class="st">"FAC_ZIP"</span>, <span class="st">"FAC_OPERATED_THIS_YR"</span>,</span>
+<span id="cb118-12"><a href="#cb118-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FACILITY_LEVEL"</span>, <span class="st">"TEACH_HOSP"</span>, <span class="st">"COUNTY"</span>, <span class="st">"PRIN_SERVICE_TYPE"</span></span>
+<span id="cb118-13"><a href="#cb118-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb118-14"><a href="#cb118-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-15"><a href="#cb118-15" aria-hidden="true" tabindex="-1"></a>  cols <span class="ot">=</span> <span class="fu">names</span>(sheet)</span>
+<span id="cb118-16"><a href="#cb118-16" aria-hidden="true" tabindex="-1"></a>  tot_cols <span class="ot">=</span> cols[<span class="fu">str_starts</span>(cols, <span class="st">"TOT"</span>)]</span>
+<span id="cb118-17"><a href="#cb118-17" aria-hidden="true" tabindex="-1"></a>  respiratory_cols <span class="ot">=</span> cols[<span class="fu">str_detect</span>(cols, <span class="st">"RESPIRATORY"</span>)]</span>
+<span id="cb118-18"><a href="#cb118-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-19"><a href="#cb118-19" aria-hidden="true" tabindex="-1"></a>  numeric_cols <span class="ot">=</span> <span class="fu">c</span>(tot_cols, respiratory_cols)</span>
+<span id="cb118-20"><a href="#cb118-20" aria-hidden="true" tabindex="-1"></a>  sheet[numeric_cols] <span class="ot">=</span> <span class="fu">lapply</span>(sheet[numeric_cols], as.numeric)</span>
+<span id="cb118-21"><a href="#cb118-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-22"><a href="#cb118-22" aria-hidden="true" tabindex="-1"></a>  sheet<span class="sc">$</span>year <span class="ot">=</span> year</span>
+<span id="cb118-23"><a href="#cb118-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-24"><a href="#cb118-24" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> sheet[<span class="fu">c</span>(<span class="st">"year"</span>, facility_cols, numeric_cols)]</span>
+<span id="cb118-25"><a href="#cb118-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-26"><a href="#cb118-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rename the columns to lowercase.</span></span>
+<span id="cb118-27"><a href="#cb118-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(sheet) <span class="ot">=</span> <span class="fu">str_to_lower</span>(<span class="fu">names</span>(sheet))</span>
+<span id="cb118-28"><a href="#cb118-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb118-29"><a href="#cb118-29" aria-hidden="true" tabindex="-1"></a>  sheet</span>
+<span id="cb118-30"><a href="#cb118-30" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Test the function out on a few of the files to make sure it works correctly:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_hospital_data</span>(</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ca_hospitals/hosp23_util_data_final.xlsx"</span>, <span class="dv">2023</span></span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+• `` -&gt; `...355`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 22
+   year fac_name fac_city fac_zip fac_operated_this_yr facility_level teach_hosp
+  &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt;          &lt;chr&gt;     
+1  2023 ALAMEDA… ALAMEDA  94501   Yes                  Parent Facili… No        
+2  2023 ALTA BA… BERKELEY 94705   Yes                  Parent Facili… No        
+3  2023 UCSF BE… OAKLAND  94609   Yes                  Parent Facili… No        
+4  2023 FAIRMON… SAN LEA… 94578   Yes                  Consolidated … No        
+5  2023 ALTA BA… BERKELEY 94704   Yes                  Consolidated … No        
+6  2023 HIGHLAN… OAKLAND  94602   Yes                  Parent Facili… No        
+# ℹ 15 more variables: county &lt;chr&gt;, prin_service_type &lt;chr&gt;,
+#   tot_lic_beds &lt;dbl&gt;, tot_lic_bed_days &lt;dbl&gt;, tot_discharges &lt;dbl&gt;,
+#   tot_cen_days &lt;dbl&gt;, tot_alos_cy &lt;dbl&gt;, tot_alos_py &lt;dbl&gt;,
+#   acute_respiratory_care_lic_beds &lt;dbl&gt;,
+#   acute_respiratory_care_lic_bed_days &lt;dbl&gt;,
+#   acute_respiratory_care_discharges &lt;dbl&gt;,
+#   acute_respiratory_care_intra_transfers &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(</span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_hospital_data</span>(</span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/ca_hospitals/hosp21_util_data_final-revised-06.15.2023.xlsx"</span>, <span class="dv">2021</span></span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 22
+   year fac_name fac_city fac_zip fac_operated_this_yr facility_level teach_hosp
+  &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt;          &lt;chr&gt;     
+1  2021 ALAMEDA… ALAMEDA  94501   Yes                  Parent Facili… No        
+2  2021 ALTA BA… BERKELEY 94705   Yes                  Parent Facili… No        
+3  2021 UCSF BE… OAKLAND  94609   Yes                  Parent Facili… No        
+4  2021 FAIRMON… SAN LEA… 94578   Yes                  Consolidated … No        
+5  2021 ALTA BA… BERKELEY 94704   Yes                  Consolidated … No        
+6  2021 HIGHLAN… OAKLAND  94602   Yes                  Parent Facili… No        
+# ℹ 15 more variables: county &lt;chr&gt;, prin_service_type &lt;chr&gt;,
+#   tot_lic_beds &lt;dbl&gt;, tot_lic_bed_days &lt;dbl&gt;, tot_discharges &lt;dbl&gt;,
+#   tot_cen_days &lt;dbl&gt;, tot_alos_cy &lt;dbl&gt;, tot_alos_py &lt;dbl&gt;,
+#   acute_respiratory_care_lic_beds &lt;dbl&gt;,
+#   acute_respiratory_care_lic_bed_days &lt;dbl&gt;,
+#   acute_respiratory_care_discharges &lt;dbl&gt;,
+#   acute_respiratory_care_intra_transfers &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<p>The function appears to work correctly for two of the files, so let’s work towards trying it on all of the 2018-2023 files. We can use the built-in <code>list.files</code> function to get the paths to the files by setting <code>full.names = TRUE</code> (otherwise it just returns the names of the files):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>paths <span class="ot">=</span> <span class="fu">list.files</span>(<span class="st">"data/ca_hospitals/"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a>paths</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data/ca_hospitals//hosp16_util_data_final.xlsx"                   
+[2] "data/ca_hospitals//hosp17_util_data_final.xlsx"                   
+[3] "data/ca_hospitals//hosp18_util_data_final.xlsx"                   
+[4] "data/ca_hospitals//hosp19_util_data_final.xlsx"                   
+[5] "data/ca_hospitals//hosp20_util_data_final-revised-06.15.2023.xlsx"
+[6] "data/ca_hospitals//hosp21_util_data_final-revised-06.15.2023.xlsx"
+[7] "data/ca_hospitals//hosp22_util_data_final_revised_11.28.2023.xlsx"
+[8] "data/ca_hospitals//hosp23_util_data_final.xlsx"                   </code></pre>
+</div>
+</div>
+<p>In addition to the file paths, we also need the year for each file. Fortunately, the last two digits of the year are included in each file’s name. We can write a function to get these. We’ll use R’s built-in <code>basename</code> function to get the file names from the paths, and stringr’s <code>str_sub</code> function to get a substring (the year) from the name:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>get_hospital_year <span class="ot">=</span> <span class="cf">function</span>(path) {</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a>  name <span class="ot">=</span> <span class="fu">basename</span>(path)</span>
+<span id="cb126-3"><a href="#cb126-3" aria-hidden="true" tabindex="-1"></a>  year <span class="ot">=</span> <span class="fu">str_sub</span>(name, <span class="dv">5</span>, <span class="dv">6</span>)</span>
+<span id="cb126-4"><a href="#cb126-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.integer</span>(year) <span class="sc">+</span> <span class="dv">2000</span></span>
+<span id="cb126-5"><a href="#cb126-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb126-6"><a href="#cb126-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb126-7"><a href="#cb126-7" aria-hidden="true" tabindex="-1"></a><span class="fu">get_hospital_year</span>(paths[<span class="dv">1</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2016</code></pre>
+</div>
+</div>
+<!--
+Now we can use a for-loop to iterate over all of the files. We'll skip the
+pre-2018 files for now:
+
+
+::: {.cell}
+
+```{.r .cell-code}
+hosps = list()
+
+for (i in seq_along(paths)) {
+  path = paths[[i]]
+  year = get_hospital_year(path)
+  # Only years 2018-2023.
+  if (year >= 2018) {
+    hosp = read_hospital_data(path, year)
+    hosps[[i]] = hosp
+  }
+}
+```
+
+::: {.cell-output .cell-output-stderr}
+
+```
+New names:
+• `` -> `...355`
+```
+
+
+:::
+
+```{.r .cell-code}
+length(hosps)
+```
+
+::: {.cell-output .cell-output-stdout}
+
+```
+[1] 8
+```
+
+
+:::
+:::
+
+-->
+<p>With that done, we need to read the pre-2018 files. In the 2018 file, the fourth sheet is a crosswalk that shows which columns in the pre-2018 files correspond to columns in the later files. Let’s write some code to read the crosswalk. First, read the sheet:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>path <span class="ot">=</span> <span class="st">"data/ca_hospitals/hosp18_util_data_final.xlsx"</span></span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>cwalk <span class="ot">=</span> <span class="fu">read_excel</span>(path, <span class="at">sheet =</span> <span class="dv">4</span>)</span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cwalk)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+   Page  Line Column `SIERA Dataset Header (2018)` ALIRTS Dataset Header…¹ Notes
+  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;                         &lt;chr&gt;                   &lt;chr&gt;
+1     1     1      1 FAC_NAME                      FAC_NAME                &lt;NA&gt; 
+2     1     2      1 FAC_NO                        OSHPD_ID                &lt;NA&gt; 
+3     1     3      1 FAC_STR_ADDR                  &lt;NA&gt;                    Addr…
+4     1     4      1 FAC_CITY                      FAC_CITY                &lt;NA&gt; 
+5     1     5      1 FAC_ZIP                       FAC_ZIPCODE             &lt;NA&gt; 
+6     1     6      1 FAC_PHONE                     FAC_PHONE               &lt;NA&gt; 
+# ℹ abbreviated name: ¹​`ALIRTS Dataset Header (2017)`</code></pre>
+</div>
+</div>
+<p>The new and old column names are in the fourth and fifth columns, respectively, so we’ll get just those:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>cwalk <span class="ot">=</span> cwalk[, <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cwalk)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  `SIERA Dataset Header (2018)` `ALIRTS Dataset Header (2017)`
+  &lt;chr&gt;                         &lt;chr&gt;                         
+1 FAC_NAME                      FAC_NAME                      
+2 FAC_NO                        OSHPD_ID                      
+3 FAC_STR_ADDR                  &lt;NA&gt;                          
+4 FAC_CITY                      FAC_CITY                      
+5 FAC_ZIP                       FAC_ZIPCODE                   
+6 FAC_PHONE                     FAC_PHONE                     </code></pre>
+</div>
+</div>
+<p>Finally, let’s turn the <code>cwalk</code> data frame into a named vector. We’ll make the old column names the names and the new column names the elements. This way we can easily look up the new name for any of the old columns by indexing. Some of the column names in <code>cwalk</code> have extra spaces at the end, so we’ll use stringr’s <code>str_trim</code> function to remove them:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>cwalk_names <span class="ot">=</span> <span class="fu">str_trim</span>(cwalk[[<span class="dv">2</span>]])</span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>cwalk <span class="ot">=</span> <span class="fu">str_trim</span>(cwalk[[<span class="dv">1</span>]])</span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(cwalk) <span class="ot">=</span> cwalk_names</span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb132-5"><a href="#cb132-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cwalk)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      FAC_NAME       OSHPD_ID           &lt;NA&gt;       FAC_CITY    FAC_ZIPCODE 
+    "FAC_NAME"       "FAC_NO" "FAC_STR_ADDR"     "FAC_CITY"      "FAC_ZIP" 
+     FAC_PHONE 
+   "FAC_PHONE" </code></pre>
+</div>
+</div>
+<p>We can now define a new version of the <code>read_hospital_data</code> function that uses the crosswalk to change the column names when <code>year &lt; 2018</code>. Let’s also change function to exclude columns with <code>ALOS</code> in the name, because they have no equivalent in the pre-2018 files:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a>read_hospital_data <span class="ot">=</span> <span class="cf">function</span>(path, year) {</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Read the 2nd sheet of the file.</span></span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> <span class="fu">read_excel</span>(path, <span class="at">sheet =</span> <span class="dv">2</span>)</span>
+<span id="cb134-4"><a href="#cb134-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-5"><a href="#cb134-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove the first 4 and last row.</span></span>
+<span id="cb134-6"><a href="#cb134-6" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> sheet[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>), ]</span>
+<span id="cb134-7"><a href="#cb134-7" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> <span class="fu">head</span>(sheet, <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb134-8"><a href="#cb134-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-9"><a href="#cb134-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fix pre-2018 column names.</span></span>
+<span id="cb134-10"><a href="#cb134-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (year <span class="sc">&lt;</span> <span class="dv">2018</span>) {</span>
+<span id="cb134-11"><a href="#cb134-11" aria-hidden="true" tabindex="-1"></a>    new_names <span class="ot">=</span> cwalk[<span class="fu">names</span>(sheet)]</span>
+<span id="cb134-12"><a href="#cb134-12" aria-hidden="true" tabindex="-1"></a>    new_names[<span class="fu">is.na</span>(new_names)] <span class="ot">=</span> <span class="fu">names</span>(sheet)[<span class="fu">is.na</span>(new_names)]</span>
+<span id="cb134-13"><a href="#cb134-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>(sheet) <span class="ot">=</span> new_names</span>
+<span id="cb134-14"><a href="#cb134-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb134-15"><a href="#cb134-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-16"><a href="#cb134-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select only a few columns of interest.</span></span>
+<span id="cb134-17"><a href="#cb134-17" aria-hidden="true" tabindex="-1"></a>  facility_cols <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb134-18"><a href="#cb134-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FAC_NAME"</span>, <span class="st">"FAC_CITY"</span>, <span class="st">"FAC_ZIP"</span>, <span class="st">"FAC_OPERATED_THIS_YR"</span>,</span>
+<span id="cb134-19"><a href="#cb134-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"FACILITY_LEVEL"</span>, <span class="st">"TEACH_HOSP"</span>, <span class="st">"COUNTY"</span>, <span class="st">"PRIN_SERVICE_TYPE"</span></span>
+<span id="cb134-20"><a href="#cb134-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb134-21"><a href="#cb134-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-22"><a href="#cb134-22" aria-hidden="true" tabindex="-1"></a>  cols <span class="ot">=</span> <span class="fu">names</span>(sheet)</span>
+<span id="cb134-23"><a href="#cb134-23" aria-hidden="true" tabindex="-1"></a>  tot_cols <span class="ot">=</span> cols[<span class="fu">str_starts</span>(cols, <span class="st">"TOT"</span>)]</span>
+<span id="cb134-24"><a href="#cb134-24" aria-hidden="true" tabindex="-1"></a>  respiratory_cols <span class="ot">=</span> cols[<span class="fu">str_detect</span>(cols, <span class="st">"RESPIRATORY"</span>)]</span>
+<span id="cb134-25"><a href="#cb134-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-26"><a href="#cb134-26" aria-hidden="true" tabindex="-1"></a>  numeric_cols <span class="ot">=</span> <span class="fu">c</span>(tot_cols, respiratory_cols)</span>
+<span id="cb134-27"><a href="#cb134-27" aria-hidden="true" tabindex="-1"></a>  numeric_cols <span class="ot">=</span> numeric_cols[<span class="sc">!</span><span class="fu">str_detect</span>(numeric_cols, <span class="st">"ALOS"</span>)]</span>
+<span id="cb134-28"><a href="#cb134-28" aria-hidden="true" tabindex="-1"></a>  sheet[numeric_cols] <span class="ot">=</span> <span class="fu">lapply</span>(sheet[numeric_cols], as.numeric)</span>
+<span id="cb134-29"><a href="#cb134-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-30"><a href="#cb134-30" aria-hidden="true" tabindex="-1"></a>  sheet<span class="sc">$</span>year <span class="ot">=</span> year</span>
+<span id="cb134-31"><a href="#cb134-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-32"><a href="#cb134-32" aria-hidden="true" tabindex="-1"></a>  sheet <span class="ot">=</span> sheet[<span class="fu">c</span>(<span class="st">"year"</span>, facility_cols, numeric_cols)]</span>
+<span id="cb134-33"><a href="#cb134-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-34"><a href="#cb134-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rename the columns to lowercase.</span></span>
+<span id="cb134-35"><a href="#cb134-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(sheet) <span class="ot">=</span> <span class="fu">str_to_lower</span>(<span class="fu">names</span>(sheet))</span>
+<span id="cb134-36"><a href="#cb134-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb134-37"><a href="#cb134-37" aria-hidden="true" tabindex="-1"></a>  sheet</span>
+<span id="cb134-38"><a href="#cb134-38" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now we can test the function on all of the files. We’ll use a for-loop to iterate over all of the paths, read the data for each one, and store the result in a list:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>hosps <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(paths)) {</span>
+<span id="cb135-4"><a href="#cb135-4" aria-hidden="true" tabindex="-1"></a>  path <span class="ot">=</span> paths[[i]]</span>
+<span id="cb135-5"><a href="#cb135-5" aria-hidden="true" tabindex="-1"></a>  year <span class="ot">=</span> <span class="fu">get_hospital_year</span>(path)</span>
+<span id="cb135-6"><a href="#cb135-6" aria-hidden="true" tabindex="-1"></a>  hosp <span class="ot">=</span> <span class="fu">read_hospital_data</span>(path, year)</span>
+<span id="cb135-7"><a href="#cb135-7" aria-hidden="true" tabindex="-1"></a>  hosps[[i]] <span class="ot">=</span> hosp</span>
+<span id="cb135-8"><a href="#cb135-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+New names:
+New names:
+• `PSY_CENS_PATIENT_TOTL` -&gt; `PSY_CENS_PATIENT_TOTL...126`
+• `PSY_CENS_PATIENT_TOTL` -&gt; `PSY_CENS_PATIENT_TOTL...130`
+• `PSY_CENS_PATIENT_TOTL` -&gt; `PSY_CENS_PATIENT_TOTL...141`</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(hosps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8</code></pre>
+</div>
+</div>
+<p>We can use the <code>do.call</code> and <code>rbind</code> functions to bind the rows, or stack, the list of data frames:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a>hosps <span class="ot">=</span> <span class="fu">do.call</span>(rbind, hosps)</span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hosps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 18
+   year fac_name fac_city fac_zip fac_operated_this_yr facility_level teach_hosp
+  &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt;          &lt;chr&gt;     
+1  2016 ALTA BA… BERKELEY 94705   Yes                  Parent Facili… NO        
+2  2016 CHILDRE… OAKLAND  94609   Yes                  Parent Facili… NO        
+3  2016 THUNDER… OAKLAND  94609   Yes                  Parent Facili… NO        
+4  2016 FAIRMON… SAN LEA… 94578   Yes                  Consolidated … NO        
+5  2016 ALTA BA… BERKELEY 94704   Yes                  Consolidated … NO        
+6  2016 HIGHLAN… OAKLAND  94602   Yes                  Parent Facili… YES       
+# ℹ 11 more variables: county &lt;chr&gt;, prin_service_type &lt;chr&gt;,
+#   tot_lic_beds &lt;dbl&gt;, tot_lic_bed_days &lt;dbl&gt;, tot_discharges &lt;dbl&gt;,
+#   tot_cen_days &lt;dbl&gt;, acute_respiratory_care_lic_beds &lt;dbl&gt;,
+#   acute_respiratory_care_lic_bed_days &lt;dbl&gt;,
+#   acute_respiratory_care_discharges &lt;dbl&gt;,
+#   acute_respiratory_care_intra_transfers &lt;dbl&gt;,
+#   acute_respiratory_care_cen_days &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>We’ve finally got all of the data in a single data frame!</p>
+<p>To begin to address whether hospital utilization changed in 2020, let’s make a bar plot of total census-days:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb141-4"><a href="#cb141-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(hosps) <span class="sc">+</span></span>
+<span id="cb141-5"><a href="#cb141-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">weight =</span> tot_cen_days) <span class="sc">+</span></span>
+<span id="cb141-6"><a href="#cb141-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>()</span>
+<span id="cb141-7"><a href="#cb141-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="functions-control-flow_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>According to the plot, total census-days was slightly lower in 2020 than in 2019. This is a bit surprising, but it’s possible that California hospitals typically operate close to maximum capacity and were not able to substantially increase the number of beds in 2020 in response to the COVID-19 pandemic. You can use other columns in the data set, such as <code>tot_lic_beds</code> or <code>tot_lic_bed_days</code>, to check this.</p>
+<p>Let’s also look at census-days for acute respiratory care:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(hosps) <span class="sc">+</span></span>
+<span id="cb142-3"><a href="#cb142-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">weight =</span> acute_respiratory_care_cen_days) <span class="sc">+</span></span>
+<span id="cb142-4"><a href="#cb142-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>()</span>
+<span id="cb142-5"><a href="#cb142-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="functions-control-flow_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this plot, there’s a clear uptick in census-days in 2020, and then an interesting decrease to below 2019 levels in the years following. Again, you could use other columns in the data set to investigate this further. We’ll end this case study here, having accomplished the difficult task of reading the data and the much easier task of doing a cursory preliminary analysis of the data.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../chapters/week07/getting-data-from-web.html" class="pagination-link" aria-label="Getting Data from the Web">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../chapters/week09/web-scraping.html" class="pagination-link" aria-label="Web Scraping">
+        <span class="nav-page-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Web Scraping</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week08/functions-control-flow.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
