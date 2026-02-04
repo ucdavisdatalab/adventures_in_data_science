@@ -7,12 +7,24 @@ terns = read.csv("data/2000-2023_ca_least_tern.csv")
 :::{.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
-* Call a function repeatedly with `sapply` or `lapply`
+* Explain what a map (or apply) function does
+* Call a function repeatedly with the purrr package's map functions
 * Split data into groups and apply a function to each
+* Compute group statistics with the dplyr package's `group_by` and `summarize`
+  functions
+:::
+
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
+
+* dplyr
+* purrr
+
+@sec-packages explains how to install and load packages.
 :::
 
 
-## Apply Functions {#sec-apply-functions}
+## The `map` Function {#sec-apply-functions}
 
 @sec-vectorization introduced vectorization, a convenient and efficient way to
 compute multiple results. That section also mentioned that some of R's
@@ -44,25 +56,37 @@ that calls `class` on each element of the data frame. The idea is similar to
 vectorization, but since we have a list and a non-vectorized function, we have
 to do a bit more than just call `class(terns)`.
 
-The `lapply` function calls, or _applies_, a function on each element of a list
-or vector. The syntax is:
+The [purrr][] package is a collection of functions to help you do things
+repeatedly or for each element of a data structure. Install and load the
+package in order to follow along:
 
-```
-lapply(X, FUN, ...)
+[purrr]: https://purrr.tidyverse.org/
+
+```{r}
+# install.packages("purrr")
+library("purrr")
 ```
 
-The function `FUN` is called once for each element of `X`, with the element as
-the first argument. The `...` is for additional arguments to `FUN`, which are
-held constant across all the elements.
+The package's `map` function calls a function on each element of a vector
+or list. We sometimes also say it **maps** or **applies** a function over the
+elements. The syntax is:
+
+```r
+map(DATA, F, ...)
+```
+
+The `map` function calls the function `F` once for each element of `DATA`. It
+passes the element to `F` as the first argument. It also passes the `...`
+arguments to `F`, which are constant across all of the calls.
 
 Let's try this out with the least terns data and the `class` function:
 
 ```{r}
-lapply(terns, class)
+map(terns, class)
 ```
 
 The result is similar to if the `class` function was vectorized. In fact, if we
-use a vector and a vectorized function with `lapply`, the result is nearly
+use a vector and a vectorized function with `map`, the result is nearly
 identical to the result from vectorization:
 
 ```{r}
@@ -70,66 +94,85 @@ x = c(1, 2, pi)
 
 sin(x)
 
-lapply(x, sin)
+map(x, sin)
 ```
 
-The only difference is that the result from `lapply` is a list. In fact, the
-`lapply` function always returns a list with one element for each element of
-the input data. The "l" in `lapply` stands for "list".
+The only difference is that the result from `map` is a list. In fact, the `map`
+function always returns a list with one element for each element of the input
+data.
 
-The `lapply` function is one member of a family of functions called **apply
-functions**. All of the apply functions provide ways to apply a function
-repeatedly to different parts of a data structure. We'll meet a few more apply
-functions soon.
 
-When you have a choice between using vectorization or an apply function, you
+## Other Map Functions
+
+The purrr package provides many different map functions, all of which have
+names that start with `map`. All of them call another function on each element
+of a data structure. They also all have the same syntax. Where they differ is
+in how they return results. A few of these are shown in @tbl-map-functions.
+
+Function  | Return Type
+--------- | -----------
+`map_lgl` | logical
+`map_int` | integer
+`map_dbl` | numeric (double)
+`map_chr` | character
+`map`     | list
+
+: {#tbl-map-functions}
+
+
+:::{.callout-note title="Apply Functions"}
+R's **apply functions** are a built-in equivalent to map functions. The
+`lapply`, `sapply`, and `tapply` functions are the three most important
+functions in the family of apply functions, but there are many more. The
+`lapply` function is nearly identical to the `map` function.
+
+We focus on and recommend the map functions rather than the apply functions
+because they are more consistent in their syntax and specific in their return
+types. You can learn more about R's apply functions by reading [this
+StackOverflow post][apply].
+
+[apply]: https://stackoverflow.com/a/7141669
+:::
+
+When you have a choice between using vectorization or a map function, you
 should always choose vectorization. Vectorization is clearer---compare the two
 lines of code above---and it's also significantly more efficient. In fact,
 vectorization is the most efficient way to call a function repeatedly in R.
 
 As we saw with the `class` function, there are some situations where
-vectorization is not possible. That's when you should think about using an
-apply function.
+vectorization is not possible. That's when you should think about using a map
+function.
 
-
-### The `sapply` Function
-
-The related `sapply` function calls a function on each element of a list or
-vector, and simplifies the result. That last part is the crucial difference
-compared to `lapply`. When results from the calls all have the same type and
-length, `sapply` returns a vector or matrix instead of a list. When the results
-have different types or lengths, the result is the same as for `lapply`. The
-"s" in `sapply` stands for "simplify".
-
-For instance, if we use `sapply` to find the classes of the columns in the
-least terns data, we get a character vector:
+Let's look at some examples of the other map functions. If we use `map_chr` to
+find the classes of the columns in the least terns data, we get a character
+vector:
 
 ```{r}
-sapply(terns, class)
+map_chr(terns, class)
 ```
 
-Likewise, if we use `sapply` to compute the `sin` values, we get a numeric
+Likewise, if we use `map_dbl` to compute the `sin` values, we get a numeric
 vector, the same as from vectorization:
 
 ```{r}
-sapply(x, sin)
+map_dbl(x, sin)
 ```
 
 In spite of that, vectorization is still more efficient than `sapply`, so use
 vectorization instead when possible.
 
-Apply functions are incredibly useful for summarizing data. For example,
-suppose we want to compute the frequencies for all of the columns in the
-least terns data set that aren't numeric.
+Map functions are incredibly useful for summarizing data. For example, suppose
+we want to compute the frequencies for all of the columns in the least terns
+data set that aren't numeric.
 
 First, we need to identify the columns. One way to do this is with the
 `is.numeric` function. Despite the name, this function actually tests whether
 its argument is a real number, not whether it its argument is a numeric vector.
-In other words, it also returns true for integer values. We can use `sapply` to
-apply this function to all of the columns in the least terns data set:
+In other words, it also returns true for integer values. We can use `map_lgl`
+to apply this function to all of the columns in the least terns data set:
 
 ```{r}
-is_not_number = !sapply(terns, is.numeric)
+is_not_number = !map_lgl(terns, is.numeric)
 is_not_number
 ```
 
@@ -146,19 +189,21 @@ to compute frequencies. We only want to compute frequencies for those columns,
 so we need to subset the data:
 
 ```{r}
-lapply(terns[, is_not_number], table)
+map(terns[, is_not_number], table)
 ```
 
-We use `lapply` rather than `sapply` for this step because the table for each
-column will have a different length (but try `sapply` and see what happens!).
+We use `map` rather than one of the other map functions for this step because
+the table for each column will have a different length.
+
+The [purrr documentation][purrr] provides more details about how to use the
+many functions in the package.
 
 
-### The Split-Apply Pattern
+## The Split-Apply Pattern
 
 In a data set with categorical features, it's often useful to compute something
-for each category. The `lapply` and `sapply` functions can compute something
-for each element of a data structure, but categories are not necessarily
-elements.
+for each category. The map functions can compute something for each element of
+a data structure, but categories are not necessarily elements.
 
 ```{r, echo = FALSE}
 n_regions = length(unique(terns$region_3))
@@ -166,10 +211,11 @@ n_regions = length(unique(terns$region_3))
 
 For example, the least terns data set has `r n_regions` different categories in
 the `region_3` column. If we want all of the rows for one region, one way to
-get them is by indexing:
+get them is by filtering:
 
 ```{r}
-southern = terns[terns$region_3 == "SOUTHERN", ]
+library("dplyr")
+southern = filter(terns, region_3 == "SOUTHERN")
 head(southern)
 ```
 
@@ -183,8 +229,7 @@ median(southern$total_nests, na.rm = TRUE)
 ```
 
 If the categories were elements, we could avoid writing code to index each
-category, and just use the `sapply` (or `lapply`) function to apply the
-`median` function to each.
+category, and just use a map function to apply the `median` function to each.
 
 The `split` function splits a vector or data frame into groups based on a
 vector of categories. The first argument to `split` is the data, and the
@@ -207,54 +252,35 @@ individual elements contain pieces of the original `total_nests` column:
 head(by_region$SOUTHERN)
 ```
 
-Since the categories are elements in the split data, now we can use `sapply`
+Since the categories are elements in the split data, now we can use `map_dbl`
 the same way we did in previous examples:
 
 ```{r}
-sapply(by_region, median, na.rm = TRUE)
+map_dbl(by_region, median, na.rm = TRUE)
 ```
 
 This two-step process is an R idiom called the **split-apply pattern**. First
-you use `split` to convert categories into list elements, then you use an apply
-function to compute something on each category. Any time you want to compute
-results by category, you should think of this pattern.
+you use `split` to convert categories into list elements, then you use a map
+(or apply) function to compute something on each category. Any time you want to
+compute results by category, you should think of this pattern.
 
-The split-apply pattern is so useful that R provides the `tapply` function as a
-shortcut. The `tapply` function is equivalent to calling `split` and then
-`sapply`. Like `split`, the first argument is the data and the second argument
-is a congruent vector of categories. The third argument is a function to apply,
-like the function argument in `sapply`.
 
-We can use `tapply` to compute the `total_nests` medians by `region_3` for the
-least terns data set:
+## Grouping
 
-```{r}
-tapply(terns$total_nests, terns$region_3, median, na.rm = TRUE)
-```
+The dplyr package's `group_by` and `summarize` functions are analogous to
+`split` and purrr's map functions, but return the results in a data frame with
+one row for each category. In many cases, this is more convenient than a list
+or vector result.
 
-Notice that the result is identical to the one we computed before.
-
-The "t" in `tapply` stands for "table", because the `tapply` function is a
-generalization of the `table` function. If you use `length` as the third
-argument to `tapply`, you get the same results as you would from using the
-`table` function on the category vector.
-
-The `aggregate` function is closely related to `tapply`. It computes the same
-results, but organizes them into a data frame with one row for each category.
-In some cases, this format is more convenient. The arguments are the same,
-except that the second argument must be a list or data frame rather than a
-vector.
-
-As an example, here's the result of using `aggregate` to compute the
+As an example, here's how to use `group_by` and `summarize` to compute the
 `total_nests` medians:
 
 ```{r}
-aggregate(terns$total_nests, list(terns$region_3), mean)
+by_region = group_by(terns, region_3)
+summarize(by_region, median(total_nests, na.rm = TRUE))
 ```
 
-The `lapply`, `sapply`, and `tapply` functions are the three most important
-functions in the family of apply functions, but there are many more. You can
-learn more about all of R's apply functions by reading [this StackOverflow
-post][apply].
+The [dplyr documentation][dplyr] provides more details about how to use
+the `group_by` and `summarize` functions.
 
-[apply]: https://stackoverflow.com/a/7141669
+[dplyr]: https://dplyr.tidyverse.org/

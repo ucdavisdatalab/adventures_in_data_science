@@ -1,3 +1,7 @@
+```{r, echo = FALSE}
+terns = read.csv("data/2000-2023_ca_least_tern.csv")
+```
+
 # Data Forensics {#sec-data-forensics}
 
 This lesson covers a variety of ways to investigate and summarize tabular data
@@ -13,6 +17,14 @@ After this lesson, you should be able to:
 * Locate and count outliers in a data set
 * Explain the location statistics mean, median, and mode
 * Explain the scale statistics range and standard deviation
+:::
+
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
+
+* ggplot2
+
+@sec-packages explains how to install and load packages.
 :::
 
 
@@ -35,41 +47,35 @@ structural summaries of data. Some of these are:
 * `names`, `colnames`, `rownames` to get element names
 * `class`, `typeof` to get classes and types
 
-
-Let's look at some examples using a data set collected from the classified
-advertisements website Craigslist. The data set contains information from ads
-for rentals in the Sacramento area. First we need to load the data set:
-
-```{r}
-cl = read.csv("data/cl_rentals.csv")
-```
-
-Now we can use the `str` function to check the classes of the columns:
+That section gave examples with the California Least Terns dataset
+(@sec-ca-least-terns). For instance, the `str` function shows the classes of
+the columns:
 
 ```{r}
-str(cl)
+str(terns)
 ```
 
-Often when you load a new data set, some of the columns won't have the correct
-data type (or class) for what you want to do. For instance, in the Craigslist
-data, the `pets`, `laundry`, and `parking` columns all contain categorical
-data, so they should be factors.
+Often when you load a new dataset, some of the columns won't have the correct
+data type (or class) for what you want to do. For instance, in the least terns
+dataset, the `site_name`, `region_3`, and `event` columns all contain
+categorical data, so they should be factors.
 
 You can convert these columns to factors with the `factor` function from
 @sec-factors:
 
 ```{r}
-cl$pets = factor(cl$pets)
-cl$laundry = factor(cl$laundry)
-cl$parking = factor(cl$parking)
+terns$site_name = factor(terns$site_name)
+terns$region_3 = factor(terns$region_3)
+terns$event = factor(terns$event)
 ```
 
+:::{.callout-tip}
 There's another way we could've done this that uses only two lines of code, no
 matter how many columns there are:
 
 ```{r, eval = FALSE}
-cols = c("pets", "laundry", "parking")
-cl[cols] = lapply(cl[cols], factor)
+cols = c("site_name", "region_3", "event")
+terns[cols] = lapply(terns[cols], factor)
 ```
 
 We'll learn more about the `lapply` function in @sec-apply-functions.
@@ -77,6 +83,7 @@ We'll learn more about the `lapply` function in @sec-apply-functions.
 You can use whichever approach is more convenient and makes more sense to you.
 If there were other columns to convert, we'd go through the same steps with the
 appropriate conversion function.
+:::
 
 R provides `as.` functions to convert to the most common data types. For
 instance, `as.character` converts an object to a string:
@@ -101,7 +108,7 @@ It's also a good idea to convert categorical columns into factors with the
 in @sec-date-processing).
 
 
-## Statistical Forensics
+## Statistical Summaries
 
 After investigating the data's structure, it's a good idea to check some basic
 statistical properties. This step is important because it can help you identify
@@ -127,7 +134,7 @@ The `table` function, which was introduced in @sec-inspecting-a-data-frame, is
 great for summarizing categorical (and sometimes discrete) data. For example:
 
 ```{r}
-table(cl$pets)
+table(terns$region_3)
 ```
 
 What about numerical data?
@@ -140,7 +147,7 @@ Two important questions to ask about data are:
 
 Let's use the data
 
-```r
+```{r}
 x = c(-2, -1, -1, -1, 0, 2, 6)
 ```
 
@@ -155,7 +162,7 @@ the data. A few options are:
     For our example, the mode of `x` is -1. You can compute the mode with
     `table`:
 
-    ```r
+    ```{r}
     table(x)
     ```
 
@@ -164,7 +171,7 @@ the data. A few options are:
 
     For our example, the median is -1. Compute this with `median`:
 
-    ```r
+    ```{r}
     median(x)
     ```
 
@@ -174,13 +181,13 @@ the data. A few options are:
 
     For our example the mean is 0.4285. Compute this with `mean`:
 
-    ```r
+    ```{r}
     mean(x)
     ```
 
 Adding large values to the data affects the mean more than the median:
 
-```r
+```{r}
 y = c(x, 100)
 mean(y)
 median(y)
@@ -203,7 +210,7 @@ the center (mean, median, etc...). Two options are:
 
     You can compute the standard deviation with `sd`:
 
-    ```r
+    ```{r}
     sd(x)
     ```
 
@@ -220,9 +227,9 @@ the center (mean, median, etc...). Two options are:
     You can compute quantiles with `quantile`, or compute the IQR directly with
     `IQR`:
 
-    ```r
+    ```{r}
     quantile(x)
-    
+
     # IQR
     IQR(x)
     ```
@@ -242,7 +249,7 @@ object. For data frames, the function computes a summary of each column,
 guessing an appropriate statistic based on the column's data type.
 
 
-### Missing Values
+## Missing Values
 
 If your data contains missing values, it's important to think about why the
 values are missing. Statisticians use two different terms to describe why data
@@ -276,9 +283,9 @@ default, not necessarily the best or even an appropriate way to deal with them.
 You can remove missing values from a data set by indexing:
 
 ```{r}
-cl_no_sqft_na = cl[!is.na(cl$sqft), ]
+nonpred_eggs_no_na = terns[!is.na(terns$nonpred_eggs), ]
 
-head(cl_no_sqft_na)
+head(nonpred_eggs_no_na)
 ```
 
 The `na.omit` function is less precise than indexing, because it removes rows
@@ -292,7 +299,7 @@ subject. Generally it is safe to impute MAR values, but not MNAR values.
 
 
 
-### Outliers
+## Outliers
 
 An **outlier** is an anomalous or extreme value in a data set. We can picture
 this as a value that's far away from most of the other values. Sometimes
@@ -307,7 +314,13 @@ learn about how to make plots in a later lesson):
 ```{r}
 library("ggplot2")
 
-ggplot(cl, aes(x = sqft)) + geom_boxplot()
+ggplot(terns, aes(x = nonpred_eggs)) + geom_boxplot()
+
+# Some sites might have more eggs than others, so a high number of non-predator
+# egg mortalities does not necessarily mean a site is unusually dangerous. We
+# can find dangerous sites by looking at non-predator egg mortalities per nest:
+
+ggplot(terns, aes(x = nonpred_eggs / total_nests)) + geom_boxplot()
 ```
 
 Statisticians tend to use the rule of thumb that any value more than 3 standard
@@ -316,7 +329,7 @@ to compute how many standard deviations the elements in a column are from their
 mean:
 
 ```{r}
-z = scale(cl$sqft)
+z = scale(terns$nonpred_eggs)
 head(z)
 
 which(z <= -3 | 3 <= z)
@@ -339,18 +352,20 @@ When an outlier is not valid, first try to correct it. For example:
 * Estimate with a mean or median of similar observations. This is another
   example of imputing values.
 
+<!--
 For example, in the Craigslist data, we can use the `text` column to try to
 correct outliers:
 
-```{r}
+```r
 message(cl$text[1261])
 ```
 
 Based on the text, this apartment is 819 square feet, not 8190 square feet. So
 we can reassign the value:
-```{r}
+```r
 cl$sqft[1261] = 819
 ```
+-->
 
 If other features don't help with correction, try getting information from
 external sources. If you can't correct the outlier but know it's invalid,
