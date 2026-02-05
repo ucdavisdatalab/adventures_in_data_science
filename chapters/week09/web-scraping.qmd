@@ -148,7 +148,6 @@ html = r"(
   </body>
 </html> )"
 
-library("xml2")
 library("rvest")
 
 doc = read_html(html)
@@ -162,7 +161,7 @@ The top element of our document is the `html` tag, and its immediate children
 are the `head` and `body` tags:
 
 ```{r}
-tags = xml_children(doc)
+tags = html_elements(doc, xpath = "*")
 ```
 
 The result from `xml_children` is a **node set** (`xml_nodeset` object). Think
@@ -181,8 +180,8 @@ in the `title` tag, which is beneath the `head` tag. First we isolate the tag,
 then use `xml_text`:
 
 ```{r}
-title = xml_children(head)
-xml_text(title)
+title = html_children(head)
+html_text(title)
 ```
 
 Navigating through the tags by hand is tedious and easy to get wrong, but
@@ -220,7 +219,7 @@ XPath | Description
 
 The xml2 function `xml_find_all` finds all elements at given XPath:
 ```{r}
-xml_find_all(doc, "/html/body/p")
+html_elements(doc, xpath = "/html/body/p")
 ```
 
 Unlike a file path, an XPath can identify multiple elements. If you only want a
@@ -232,12 +231,12 @@ find a specific element but don't care where it is.
 
 Let's get all of the `p` elements at any level of the document:
 ```{r}
-xml_find_all(doc, "//p")
+html_elements(doc, xpath = "//p")
 ```
 
 Let's also get all `a` elements at any level beneath a `p` element:
 ```{r}
-xml_find_all(doc, "//p/a")
+html_elements(doc, xpath = "//p/a")
 ```
 
 The vertical bar `|` means "or." You can use it to get two different sets of
@@ -245,7 +244,7 @@ elements in one query.
 
 Let's get all `h1` or `p` tags:
 ```{r}
-xml_find_all(doc, "//h1|//p")
+html_elements(doc, xpath ="//h1|//p")
 ```
 
 
@@ -258,7 +257,7 @@ predicate operator, attributes are always prefixed with `@`.
 For example, suppose we want to find all tags where the `id` attribute is equal
 to `"hello"`:
 ```{r}
-xml_find_all(doc, "//*[@id = 'hello']")
+html_elements(doc, xpath = "//*[@id = 'hello']")
 ```
 
 Notice that the equality operator in XPath is `=`, not `==`. Strings in XPath
@@ -282,7 +281,7 @@ For instance, suppose we want to get elements that contain the word
 "paragraph":
 
 ```{r}
-xml_find_all(doc, "//*[contains(text(), 'paragraph')]")
+html_elements(doc, xpath = "//*[contains(text(), 'paragraph')]")
 ```
 
 Finally, note that you can also use the predicate operator to get elements at a
@@ -290,13 +289,13 @@ specific position. For example, to get the second `p` element anywhere in the
 document:
 
 ```{r}
-xml_find_all(doc, "//p[2]")
+html_elements(doc, xpath = "//p[2]")
 ```
 
 Notice that this is the same as if we had used R to get the second element:
 
 ```{r}
-xml_find_all(doc, "//p")[2]
+html_elements(doc, xpath = "//p")[2]
 ```
 
 ::: {.callout-warning}
@@ -394,7 +393,7 @@ Chrome's web developer tools to identify the table. HTML tables usually use the
 `table` tag. Let's see if it's the only table in the page:
 
 ```{r}
-tables = xml_find_all(wiki_doc, "//table")
+tables = html_elements(wiki_doc, xpath = "//table")
 tables
 ```
 
@@ -407,7 +406,7 @@ can see that the table includes `"wikitable"` and `"sortable"` in its `class`
 attribute. So let's search for these among the table elements:
 
 ```{r}
-tab = xml_find_all(tables, "//*[contains(@class, 'sortable')]")
+tab = html_elements(tables, xpath = "//*[contains(@class, 'sortable')]")
 tab
 ```
 
@@ -438,7 +437,7 @@ first row is part of the header, and the column types are not correct.
 # Fix column names.
 names(cities) = c(
   "city", "type", "county", "population2020", "population2010",
-  "population_change", "mi2", "km2", "density", "date"
+  "population_change", "land_area", "density", "date"
 )
 
 # Remove fake first row.
@@ -505,8 +504,7 @@ articles are all inside of a `div` tag with class `td_block_inner`. So for
 **Step 2**, let's get that tag:
 
 ```{r}
-xml_find_all(doc, "//div[contains(@class, 'td_block_inner')]")
-# OR html_nodes(doc, "div.td-block-inner")
+html_elements(doc, xpath = "//div[contains(@class, 'td_block_inner')]")
 ```
 
 That returns a lot of results, so let's try using the `id` attribute, which is
@@ -516,11 +514,9 @@ that we get the right section.
 We can also add in a part about getting links now:
 
 ```{r}
-div = xml_find_all(doc, "//div[@id = 'tdi_113']")
-# OR html_nodes(doc, "div#tdi_113")
+div = html_elements(doc, xpath = "//div[@id = 'tdi_51']")
 
-links = xml_find_all(div, ".//a")
-# OR html_nodes(div, "a")
+links = html_elements(div, xpath = ".//a")
 
 length(links)
 ```
@@ -535,8 +531,7 @@ tag. Generally it's more robust to rely on tags (structure) than to rely on
 attributes (other than `id` and `class`). So let's use the `h3` tag here:
 
 ```{r}
-links = xml_find_all(div, ".//h3/a")
-# OR html_nodes(div, "h3 > a")
+links = html_elements(div, xpath = ".//h3/a")
 
 length(links)
 ```
@@ -544,7 +539,7 @@ length(links)
 Now we've got the 15 links, so let's get the URLs from the `href` attribute.
 
 ```{r}
-feature_urls = xml_attr(links, "href")
+feature_urls = html_attr(links, "href")
 ```
 
 The other article listings (Sports, Science, etc) on The Aggie have a similar
@@ -555,9 +550,9 @@ and the output will be the article links.
 
 ```{r}
 parse_article_links = function(page) {
-  div = xml_find_all(page, "//div[@id = 'tdi_113']")
-  links = xml_find_all(div, ".//h3/a")
-  xml_attr(links, "href")
+  div = html_elements(page, xpath = "//div[@id = 'tdi_51']")
+  links = html_elements(div, xpath = ".//h3/a")
+  html_attr(links, "href")
 }
 ```
 
@@ -586,10 +581,8 @@ with attribute `aria-label` in a `div` with class `page-nav`. Let's see if
 that's specific enough to isolate the tag:
 
 ```{r}
-nav = xml_find_all(doc, "//div[contains(@class, 'page-nav')]")
-# OR html_nodes(doc, "div.page-nav")
-next_page = xml_find_all(nav, ".//a[contains(@aria-label, 'next-page')]")
-# OR html_nodes(nav, "a[aria-label *= 'next-page']")
+nav = html_elements(doc, xpath = "//div[contains(@class, 'page-nav')]")
+next_page = html_elements(nav, xpath = ".//a[contains(@aria-label, 'next-page')]")
 ```
 
 It looks like it is. We use `contains` here rather than `=` because it is
@@ -601,14 +594,14 @@ We can now modify our parser function to return the link to the next page:
 ```{r}
 parse_article_links = function(page) {
   # Get article URLs
-  div = xml_find_all(page, "//div[@id = 'tdi_113']")
-  links = xml_find_all(div, ".//h3/a")
-  urls = xml_attr(links, "href")
+  div = html_elements(page, xpath = "//div[@id = 'tdi_51']")
+  links = html_elements(div, xpath = ".//h3/a")
+  urls = html_attr(links, "href")
 
   # Get next page URL
-  nav = xml_find_all(page, "//div[contains(@class, 'page-nav')]")
-  next_page = xml_find_all(nav, ".//a[contains(@aria-label, 'next-page')]")
-  next_url = xml_attr(next_page, "href")
+  nav = html_elements(page, xpath = "//div[contains(@class, 'page-nav')]")
+  next_page = html_elements(nav, xpath = ".//a[contains(@aria-label, 'next-page')]")
+  next_url = html_attr(next_page, "href")
 
   # Using a list allows us to return two objects
   list(urls = urls, next_url = next_url)
@@ -641,17 +634,17 @@ Then the code becomes:
 ```{r}
 parse_article_links = function(page) {
   # Get article URLs
-  div = xml_find_all(page, "//div[@id = 'tdi_113']")
-  links = xml_find_all(div, ".//h3/a")
-  urls = xml_attr(links, "href")
+  div = html_elements(page, xpath = "//div[@id = 'tdi_113']")
+  links = html_elements(div, xpath = ".//h3/a")
+  urls = html_attr(links, "href")
 
   # Get next page URL
-  nav = xml_find_all(page, "//div[contains(@class, 'page-nav')]")
-  next_page = xml_find_all(nav, ".//a[contains(@aria-label, 'next-page')]")
+  nav = html_elements(page, xpath = "//div[contains(@class, 'page-nav')]")
+  next_page = html_elements(nav, xpath = ".//a[contains(@aria-label, 'next-page')]")
   if (length(next_page) == 0) {
     next_url = NA
   } else {
-    next_url = xml_attr(next_page, "href")
+    next_url = html_attr(next_page, "href")
   }
 
   # Using a list allows us to return two objects
@@ -727,10 +720,9 @@ the tag you want a selector for and choose "Copy Unique Selector". Beware that
 the selectors Firefox generates are often too specific to be useful for
 anything beyond the simplest web scrapers.
 
-The rvest package uses CSS selectors by default. Behind the scenes, the package
-translates these into XPath and passes them to xml2.
+The rvest package uses CSS selectors by default, which is why we've so far had to specify that we are using XPath selectors.
 
-Here are a few examples of CSS selectors, using rvest's `html_nodes` function:
+Here are a few examples of CSS selectors, using rvest's `html_elements` function:
 
 ```{r}
 html = r"(
@@ -750,11 +742,12 @@ html = r"(
 doc = read_html(html)
 
 # Get all p elements
-html_nodes(doc, "p")
+html_elements(doc, "p")
 
 # Get all links
-html_nodes(doc, "a")
+html_elements(doc, css = "a")
 
 # Get all tags with id="hello"
-html_nodes(doc, "#hello")
+html_elements(doc, "#hello")
+#OR html_elements(doc, css = "#hello")
 ```
