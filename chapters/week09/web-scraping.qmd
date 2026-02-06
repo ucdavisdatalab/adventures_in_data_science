@@ -20,7 +20,6 @@ After this lesson, you should be able to:
 * With the `rvest` package:
     + Read HTML into R
     + Extract HTML tables as data frames
-* With the `xml2` package:
     + Use XPath to extract specific elements of a page
 :::
 
@@ -124,13 +123,11 @@ automates scraping HTML tables.
 The first time you use these packages, you'll have to install them:
 
 ```r
-install.packages("xml2")
 install.packages("rvest")
 ```
 
-Let's start by parsing the example of a complete web page from earlier. The
-xml2 function `read_xml` reads an XML document, and the rvest function
-`read_html` reads an HTML document. Both accept an XML/HTML string or a file
+Let's start by parsing the example of a complete web page from earlier. The rvest function
+`read_html` reads an HTML document. It accepts either an HTML string or a file
 path (including URLs):
 
 ```{r}
@@ -154,17 +151,17 @@ doc = read_html(html)
 doc
 ```
 
-The `xml_children` function returns all of the immediate children of a given
+The `html_children` function returns all of the immediate children of a given
 element.
 
 The top element of our document is the `html` tag, and its immediate children
 are the `head` and `body` tags:
 
 ```{r}
-tags = html_elements(doc, xpath = "*")
+tags = html_children(doc)
 ```
 
-The result from `xml_children` is a **node set** (`xml_nodeset` object). Think
+The result from `html_children` is a **node set** (`xml_nodeset` object). Think
 of a node set as a vector where the elements are tags rather than numbers or
 strings. Just like a vector, you can access individual elements with the
 indexing (square bracket `[`) operator:
@@ -175,9 +172,9 @@ head = tags[1]
 head
 ```
 
-The `xml_text` function returns the text contained in a tag. Let's get the text
+The `html_text` function returns the text contained in a tag. Let's get the text
 in the `title` tag, which is beneath the `head` tag. First we isolate the tag,
-then use `xml_text`:
+then use `html_text`:
 
 ```{r}
 title = html_children(head)
@@ -189,7 +186,7 @@ fortunately there's a better way to find the tags we want.
 
 ## XPath
 
-An XML document is a tree, similar to the file system on your computer:
+An HTML document is a tree, similar to the file system on your computer:
 
 ```
 html
@@ -203,9 +200,9 @@ html
 ```
 
 When we wanted to find files, we wrote file paths. We can do something similar
-to find XML elements.
+to find HTML elements.
 
-**XPath** is a language for writing paths to elements in an XML document. XPath
+**XPath** is a language for writing paths to elements in an HTML document. XPath
 is not R-specific. At a glance, an XPath looks similar to a file path:
 
 XPath | Description
@@ -217,7 +214,7 @@ XPath | Description
 
 : {.striped .hover}
 
-The xml2 function `xml_find_all` finds all elements at given XPath:
+The rvest function `html_elements` finds all elements at given XPath:
 ```{r}
 html_elements(doc, xpath = "/html/body/p")
 ```
@@ -339,7 +336,7 @@ language of the scraper:
 3. Clean up extracted text with string methods or regex
 4. Save cleaned results
 
-In R, xml2's `read_xml` function takes care of step 1 for you, although you can
+In R, rvest's `read_html` function takes care of step 1 for you, although you can
 also use httr functions to make the request yourself.
 
 [Firefox]: https://www.mozilla.org/en-US/firefox/new/
@@ -508,13 +505,13 @@ html_elements(doc, xpath = "//div[contains(@class, 'td_block_inner')]")
 ```
 
 That returns a lot of results, so let's try using the `id` attribute, which is
-`"tdi_113"`, instead. Usually the id of an element is unique, so this ensures
+`"tdi_53"`, instead. Usually the id of an element is unique, so this ensures
 that we get the right section.
 
 We can also add in a part about getting links now:
 
 ```{r}
-div = html_elements(doc, xpath = "//div[@id = 'tdi_51']")
+div = html_elements(doc, xpath = "//div[@id = 'tdi_53']")
 
 links = html_elements(div, xpath = ".//a")
 
@@ -550,7 +547,7 @@ and the output will be the article links.
 
 ```{r}
 parse_article_links = function(page) {
-  div = html_elements(page, xpath = "//div[@id = 'tdi_51']")
+  div = html_elements(page, xpath = "//div[@id = 'tdi_53']")
   links = html_elements(div, xpath = ".//h3/a")
   html_attr(links, "href")
 }
@@ -594,7 +591,7 @@ We can now modify our parser function to return the link to the next page:
 ```{r}
 parse_article_links = function(page) {
   # Get article URLs
-  div = html_elements(page, xpath = "//div[@id = 'tdi_51']")
+  div = html_elements(page, xpath = "//div[@id = 'tdi_53']")
   links = html_elements(div, xpath = ".//h3/a")
   urls = html_attr(links, "href")
 
@@ -624,9 +621,9 @@ parse_article_links(last_page)
 ```
 
 We get an empty character vector as the URL for the next page. This is because
-the `xml_find_all` function returns an empty node set for the next page URL, so
-there aren't any `href` fields for `xml_attr` to extract. It's convenient that
-the xml2 functions behave this way, but we could also add an if-statement to
+the `html_elements` function returns an empty node set for the next page URL, so
+there aren't any `href` fields for `html_attr` to extract. It's convenient that
+the rvest functions behave this way, but we could also add an if-statement to
 the function to check (and possibly return `NA` as the next URL in this case).
 
 Then the code becomes:
@@ -634,7 +631,7 @@ Then the code becomes:
 ```{r}
 parse_article_links = function(page) {
   # Get article URLs
-  div = html_elements(page, xpath = "//div[@id = 'tdi_113']")
+  div = html_elements(page, xpath = "//div[@id = 'tdi_53']")
   links = html_elements(div, xpath = ".//h3/a")
   urls = html_attr(links, "href")
 
