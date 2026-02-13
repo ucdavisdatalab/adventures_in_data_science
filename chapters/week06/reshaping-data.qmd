@@ -18,45 +18,15 @@ This chapter uses the following packages:
 :::
 
 
-## Reshaping Untidy Data
-
 The structure of a dataset---its shape and organization---has enormous
 influence on how difficult it will be to analyze, so making structural changes
-is an important part of the cleaning process. Researchers conventionally
-arrange tabular data so that each row contains a single **observation** or
-case, and each column contains a single kind of measurement or identifier,
-called a **feature**.
-
-:::{.callout-note}
-What constitutes an observation depends on what questions you want to answer
-with the data. Sometimes you might need to work with a dataset at several
-different levels of observational unit to answer all of your questions. We'll
-see an example of this soon.
-:::
-
-In 2014, [Hadley Wickham][hadley] refined and formalized the conventions for
-tabular data by [introducing the concept of **tidy data**][tidy]. Paraphrasing
-Wickham, the rules for tidy data are:
-
-[hadley]: https://hadley.nz/
-[tidy]: https://vita.had.co.nz/papers/tidy-data.html
-
-> 1. Every column is a single feature.
-> 2. Every row is a single observation.
-> 3. Every cell is a single value.
-
-These rules ensure that all of the values in a dataset are visually organized
-and are easy to access with indexing operations. They're also specific enough
-to make tidiness a convenient standard for functions that operate on tabular
-data, so many packages for R and other programming languages are designed from
-the ground up for working with tidy data.
-
-This section explains how to **reshape** untidy data into tidy data. While
-reshaping can seem tricky at first, making sure your dataset has the right
-structure before you begin analysis saves time and frustration in the long run.
+is an important part of the cleaning process. This chapter explains how to
+**reshape** untidy data into tidy data (@sec-tidy-data). While reshaping can
+seem tricky at first, making sure your dataset has the right structure before
+you begin analysis saves time and frustration in the long run.
 
 
-### The tidyr Package
+## The tidyr Package
 
 The [tidyr][] package provides functions to reshape tabular datasets. It also
 provides examples of tidy and untidy datasets. Like most Tidyverse packages, it
@@ -72,7 +42,7 @@ As usual, install the package if you haven't already, and then load it:
 library("tidyr")
 ```
 
-### An Untidy Dataset
+## An Untidy Dataset
 
 The City of Davis has two bike counters: one is at the intersection of 3rd
 Street and University Avenue (the 3rd Street bike obelisk) and the other is at
@@ -141,7 +111,7 @@ A clear understanding of which columns are identifiers and which are
 measurements makes it easier to write the code to reshape.
 
 
-### Rows into Columns {#sec-rows-into-columns}
+## Rows into Columns {#sec-rows-into-columns}
 
 In order to make the Davis bike counts data tidy, the measurements in the
 `value` column need to be moved into two separate columns, one for each of the
@@ -190,7 +160,7 @@ busier (that is, whether there are more points above or below the $y = x$
 line).
 
 
-### Columns into Rows {#sec-columns-into-rows}
+## Columns into Rows {#sec-columns-into-rows}
 
 Suppose we want to try to get a better answer to whether Loyola or 3rd tends to
 be busier. One way we can do it is by making a line plot with the counts for
