@@ -1,77 +1,40 @@
-# Date Processing {#sec-date-processing}
+# Dates & Times {#sec-date-processing}
 
 ::: {.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
 * Explain why we use special data structures for dates & times
 * Identify the correct data structure for a given date/time
-* Use lubridate to parse a date
+* Use the lubridate package to parse dates
 * Use the date format string mini-language
 :::
 
-The major topic of this chapter is how to convert dates and times into
-appropriate R data types.
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
+
+* dplyr
+* lubridate
+* readr
+
+@sec-packages explains how to install and load packages.
+:::
+
+Given a dataset with dates or times, you might want to:
+
+* Sort the observations chronologically
+* Compute the times between observations
+* Add or subtract a time offset
+* Get just the month, year, hour, etc. of each observation
+
+You can do all of these things and more with R, but only if your dates and
+times are represented by appropriate data types.
 
 
-## The Tidyverse
+## The lubridate Package
 
-For working with dates, times, and strings, we recommend using packages from
-the [Tidyverse][], a popular collection of packages for doing data science.
-Compared to R's built-in functions, we've found that the functions in Tidyverse
-packages are generally easier to learn and use. They also provide additional
-features and have more robust support for characters outside of the Latin
-alphabet.
-
-Although they're developed by many different members of the R community,
-Tidyverse packages follow a unified design philosophy, and thus have many
-interfaces and data structures in common. The packages provide convenient and
-efficient alternatives to built-in R functions for many tasks, including:
-
-[Tidyverse]: https://www.tidyverse.org/
-
-* Reading and writing files (package readr)
-* Processing dates and times (packages lubridate, hms)
-* Processing strings (package stringr)
-* Reshaping data (package tidyr)
-* Making visualizations (package ggplot2)
-* And more
-
-Think of the Tidyverse as a different dialect of R. Sometimes the syntax is
-different, and sometimes ideas are easier or harder to express concisely. As a
-consequence, the Tidyverse is sometimes polarizing in the R community. It's
-useful to be literate in both base R and the Tidyverse, since both are popular.
-
-One major advantage of the Tidyverse is that the packages are usually
-well-documented and provide lots of examples. Every package has a documentation
-website and the most popular ones also have [cheatsheets][].
-
-[cheatsheets]: https://posit.co/resources/cheatsheets/
-
-
-## Parsing Dates & Times
-
-When working with dates and times, you might want to:
-
-* Use them to sort other data
-* Add or subtract an offset
-* Get components like the month, day, or hour
-* Compute derived components like the day of week or quarter
-* Compute differences
-
-Even though this list isn't exhaustive, it shows that there are lots of things
-you might want to do. In order to do them in R, you must first make sure that
-your dates and times are represented by appropriate data types. Most of R's
-built-in functions for loading data *do not* automatically recognize dates and
-times. This section describes several data types that represent dates and
-times, and explains how to use R to **parse**---break down and convert---dates
-and times to these types.
-
-
-### The lubridate Package
-
-As explained in Section \@ref(the-tidyverse), we recommend the Tidyverse
-packages for working with dates and times over other packages or R's built-in
-functions. There are two:
+As explained in @sec-the-tidyverse, we recommend the Tidyverse packages for
+working with dates and times over other packages or R's built-in functions.
+There are two:
 
 * [lubridate][], the primary package for working with dates and times
 * [hms][], a package specifically for working with time durations
@@ -84,6 +47,17 @@ The package has detailed [documentation][lubridate] and a
 [lubridate-cheatsheet]: https://rawgit.com/rstudio/cheatsheets/main/lubridate.pdf
 [hms]: https://hms.tidyverse.org/
 
+:::{.callout-note}
+A relatively new package, [clock][], tries to solve some problems with the
+`Date` class people have identified over the years. The package is in the r-lib
+collection of packages, which provide low-level functionality complementary to
+the Tidyverse. Eventually, it may be preferable to use the classes in clock
+rather than the `Date` class, but for now, the `Date` class is
+still suitable for most tasks.
+
+[clock]: https://clock.r-lib.org/
+:::
+
 You'll have to install the package if you haven't already, and then load it:
 
 ```{r}
@@ -91,10 +65,15 @@ You'll have to install the package if you haven't already, and then load it:
 library("lubridate")
 ```
 
-Perhaps the most common task you'll need to do with date and time data is
-convert from strings to more appropriate data types. This is because R's
-built-in functions for reading data from a text format, such as `read.csv`,
-read dates and times as strings. For example, here are some dates as strings:
+## Parsing Dates
+
+Many popular file formats for data, such as CSV, *do not* store metadata about
+which values are dates and times, so these values get typed as strings. Dates
+and times extracted from text are also naturally strings.
+
+The first step to working with dates and times typed as strings is to **parse**
+them: break them down into their components and cast them to more suitable data
+types. To demonstrate parsing dates, consider a vector of date strings:
 
 ```{r}
 date_strings = c("Jan 10, 2021", "Sep 3, 2018", "Feb 28, 1982")
@@ -109,8 +88,8 @@ strings into date or time objects that R understands. These functions are named
 with one letter per component of the date or time. The order of the letters
 must match the order of the components in the string you want to parse.
 
-In the example, the strings have the month (`m`), then the day (`d`), and then
-the year (`y`), so you can use the `mdy` function to parse them automatically:
+The example strings have the month (`m`), then the day (`d`), and then the year
+(`y`), so you can use the `mdy` function to parse them automatically:
 
 ```{r}
 dates = mdy(date_strings)
@@ -118,34 +97,25 @@ dates
 class(dates)
 ```
 
-Notice that the dates now have class `Date`, one of R's built-in classes for
-representing dates, and that R prints them differently. Now R recognizes that
-the dates are in fact dates, so they're ready to use in an analysis.
+Notice that R prints the dates differently now. Thanks to the `mdy` function,
+they now have class `Date`, one of R's built-in classes for representing dates.
+R recognizes that the dates are in fact dates, so they're ready to use in an
+analysis.
 
 There is [a complete list of the automatic parsing functions][lubridate-parse]
 in the lubridate documentation.
 
 [lubridate-parse]: https://lubridate.tidyverse.org/reference/index.html#date-time-parsing
 
-Note: a relatively new package, [clock][], tries to solve some problems with
-the `Date` class people have identified over the years. The package is in the
-r-lib collection of packages, which provide low-level functionality
-complementary to the Tidyverse. Eventually, it may be preferable to use the
-classes in clock rather than the `Date` class, but for now, the `Date` class is
-still suitable for most tasks.
-
-[clock]: https://clock.r-lib.org/
-
 Occasionally, a date or time string may have a format that lubridate can't
 parse automatically. In that case, you can use the `fast_strptime` function to
-describe the format in detail. At a minimum, the function requires two
-arguments: a vector of strings to parse and a **format string**.
+describe the format in detail.
 
-The format string describes the format of the dates or times, and is based on
-the syntax of `strptime`, a function provided by many programming languages
-(including R) to parse date or time strings. In a format string, a percent sign
-`%` followed by a character is called a **specification** and has a special
-meaning. Here are a few of the most useful ones:
+At a minimum, the function requires two arguments: a vector of strings to parse
+and a **format string**. The format string describes the format of the dates.
+In a format string, a percent sign `%` followed by a character is called a
+specifier and represents a component of a data or time. Here are some useful
+specifiers:
 
 | Specification | Description      | 2015-01-29 21:32:55
 |:------------- |:---------------- |:-------------------
@@ -160,11 +130,20 @@ meaning. Here are a few of the most useful ones:
 | `%B`          | full month name  | January
 | `%b`          | short month name | Jan
 
-You can find a complete list in `?fast_strptime`. Other characters in the
-format string do not have any special meaning. Write the format string so that
-it matches the format of the dates you want to parse.
 
-For example, let's try parsing an unusual time format:
+Other characters in the format string don't have any special meaning. Write the
+format string so that it matches the format of the dates you want to parse.
+
+:::{.callout-note}
+Most programming languages use format strings to parse and format dates and
+times. There isn't a standard, but the idea seems to have originated with the
+`strptime` and `strftime` functions in the C programming language.
+
+You can find a complete list of specifiers for lubridate in `?fast_strptime`.
+:::
+
+To demonstrate `fast_strptime`, let's try parsing an unusual time format:
+
 ```{r}
 time_string = "6 minutes, 32 seconds after 10 o'clock"
 time = fast_strptime(time_string, "%M minutes, %S seconds after %H o'clock")
@@ -172,16 +151,20 @@ time
 class(time)
 ```
 
-R represents date-times with the classes `POSIXlt` and `POSIXct`. There's no
-built-in class to represent times alone, which is why the result in the example
-above includes a date.
+R represents datetimes (which combine a date and a time) with the classes
+`POSIXlt` and `POSIXct`. There's no built-in class to represent times alone,
+which is why the result in the example above includes a date.
 
+:::{.callout-note}
 Internally, a `POSIXlt` object is a list with elements to store different date
 and time components. On the other hand, a `POSIXct` object is a single floating
-point number (type `double`). If you want to store your time data in a data
-frame, use `POSIXct` objects, since data frames don't work well with columns of
-lists. You can control whether `fast_strptime` returns a `POSIXlt` or `POSIXct`
-object by setting the `lt` parameter to `TRUE` or `FALSE`:
+point number (type `double`).
+
+If you want to store your time data in a data frame, use `POSIXct` objects,
+since data frames don't work well with columns of lists.
+
+You can control whether `fast_strptime` returns a `POSIXlt` or `POSIXct` object
+by setting the `lt` parameter to `TRUE` or `FALSE`:
 
 ```{r}
 time_ct = fast_strptime(time_string, "%M minutes, %S seconds after %H o'clock",
@@ -189,37 +172,47 @@ time_ct = fast_strptime(time_string, "%M minutes, %S seconds after %H o'clock",
 
 class(time_ct)
 ```
+:::
+
+
+## Creating Dates
 
 Another common task is combining the numeric components of a date or time into
 a single object. You can use the `make_date` and `make_datetime` functions to
 do this. The parameters are named for the different components. For example:
 
 ```{r}
-make_date(day = 10, year = 2023, month = 1)
+events = make_datetime(
+  year = c(2023, 2002),
+  month = c(1, 8),
+  day = c(10, 16),
+  hour = c(8, 14),
+  min = c(3, 59)
+)
+events
 ```
 
-These functions are [vectorized][], so you can use them to combine the
-components of many dates or times at once. They're especially useful for
-reconstructing dates and times from tabular datasets where each component is
-stored in a separate column.
+These functions are vectorized, so you can use them to combine the components
+of many dates or times at once. They're especially useful for reconstructing
+dates and times from tabular datasets where each component is stored in a
+separate column.
 
-[vectorized]: https://ucdavisdatalab.github.io/workshop_r_basics/data-structures.html#vectorization
 
-After you've converted your date and time data to appropriate types, you can do
-any of the operations listed at the beginning of this section. For example, you
-can use lubridate's `period` function to create an offset to add to a date or
-time:
+## Extracting Components
+
+Once you have dates or times, you might want to extract components from them.
+For instance, suppose we want to get the years from the dates we parsed
+earlier. You can use lubridate functions to get or set the components. These
+functions usually have the same name as the component. For instance, the `year`
+function gets the year:
 
 ```{r}
-dates
-dates + period(1, "month")
+year(dates)
 ```
 
-You can also use lubridate functions to get or set the components. These
-functions usually have the same name as the component. For instance:
+Similarly, the `month` function gets the month:
 
 ```{r}
-day(dates)
 month(dates)
 ```
 
@@ -227,19 +220,192 @@ See [the lubridate documentation][lubridate] for even more details about
 what you can do.
 
 
-## Case Study: Ocean Temperatures
+## Durations & Periods
 
-:::{.callout-caution title="Work in Progress"}
-We're still developing this section and will likely replace it with the CA
-Parks & Recreation Fleet dataset.
+Occasionally, you might need to adjust dates or times by adding an offset. For
+example, suppose we want to add 30 days to the dates from earlier. The
+`duration` function creates a **duration** (class `Duration`), which represents
+a fixed amount of time. So to add 30 days:
+
+```{r}
+dates + duration(30, "days")
+```
+
+What if we want to add 1 month to the dates instead of 30 days? The length of a
+month varies. The `duration` function gives the average amount of time in a
+month, but that won't be correct for some months. The solution is to use a
+**period** (class `Period`) rather than a duration. The `period` function
+creates a period. So to add 1 month (of variable length):
+
+```{r}
+dates + period(1, "month")
+```
+
+This increments each date by exactly 1 month, regardless of how many days that
+is.
+
+:::{.callout-tip}
+There are helper functions for common periods named after the associated unit
+of time. For example, another way add a 1-month period to the dates is with the
+`months` function:
+
+```{r}
+dates + months(1)
+```
+
+Similarly, there are helper functions for common durations. These are also
+named after the associated unit of time, but always begin with the prefix `d`.
+So to add a 30-day duration to the dates:
+
+```{r}
+dates + ddays(30)
+```
 :::
+
+
+## Case Study: CA Parks & Recreation Fleet
+
+The government of California publishes data about its fleet of vehicles on the
+[California Open Data portal][data.ca.gov]. As of March 2025, the dataset
+includes all non-confidential vehicles owned by agencies from 2015-2023. We'll
+use a subset of this data to compute how many vehicles the CA Department of
+Parks and Recreation purchased each year from 2019 to 2023. The dataset is
+published as a messy CSV, so we'll need to do some cleaning and parse the dates
+in order to use it.
+
+[data.ca.gov]: https://data.ca.gov/
+
+:::{.callout-important}
+[Click here][ca-parks-fleet] to download the CA Parks & Recreation Fleet
+dataset.
+
+[ca-parks-fleet]: https://ucdavis.box.com/s/6j40xd44miz7x6qlvgga9eieu7ya6xo3
+
+If you haven't already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/` subdirectory. Download and save
+the dataset in the `data/` subdirectory.
+:::
+
+:::{.callout-note title="Documentation for the CA Parks & Recreation Fleet Dataset" collapse="true"}
+Each row in the dataset contains measurements from one vehicle-year
+combination.
+
+[Click here][ca-fleet-docs] to download the documentation for the columns.
+
+[ca-fleet-docs]: https://ucdavis.box.com/s/v6agya4830tz1lkgq8toej5q1b9j5ntf
+
+This dataset is a subset of the much larger [CA State Fleet dataset][ca-fleet].
+
+[ca-fleet]: https://data.ca.gov/dataset/california-state-fleet
+:::
+
+To get started, read the data set from wherever you saved it:
+
+```{r}
+fleet = read.csv("data/2015-2023_ca_parks_fleet.csv")
+head(fleet)
+```
+
+Since we want to compute the number of acquisitions each year, we'll focus on
+two columns: `acquisition_method` and `acquisition_delivery_date`. The
+`acquisition_method` column indicates whether the vehicle was purchased,
+donated, transferred from a different agency, or something else. We're only
+interested in purchases, so we can filter the others out:
+
+```{r}
+library("dplyr")
+
+fleet = filter(fleet, acquisition_method == "Purchase")
+```
+
+In order to determine how many vehicles were purchased each year, we need to
+extract the year from `acquisition_delivery_date`. Let's take a look at this
+column:
+
+```{r}
+head(fleet$acquisition_delivery_date)
+```
+
+It looks like the dates are in month-day-year format, so we can use lubridate's
+`mdy` function:
+
+```{r}
+dates = mdy(fleet$acquisition_delivery_date)
+```
+
+Uh-oh. According to the warning, lubridate couldn't parse some of the dates.
+This means they probably don't follow the month-day-year format. When lubridate
+can't parse a date, it returns a missing value. We can use this to figure out
+what the dates look like:
+
+```{r}
+is_bad_date = is.na(dates)
+bad_dates = fleet$acquisition_delivery_date[is_bad_date]
+head(bad_dates, 20)
+```
+
+Instead of month-day-year dates, they're numbers like `44832`, `44462`, and
+`43451`. These numbers probably seem inscrutable, but there is an explanation
+for them: Microsoft Excel, perhaps the most popular tool for working with
+tabular data, stores dates by counting days from 31 December 1899. So 1 is 1
+January 1900, 32 is 1 February 1900, and so on. Unfortunately, the Excel
+developers incorrectly assumed 1900 was a leap year, so all of the counts were
+off by 1 after 28 February 1900. Most modern Excel-compatible spreadsheet
+programs fix this by counting from 30 December 1899 rather than 31 December, so
+that only dates before 28 February have different numbers.
+
+We can convert the numbers in the `bad_dates` variable into dates by treating
+them as offsets to 30 December 1899:
+
+```{r}
+start_date = make_date(1899, 12, 30)
+
+day_offsets = as.numeric(bad_dates)
+fixed_dates = start_date + days(day_offsets)
+head(fixed_dates, 20)
+```
+
+We can insert these back into the `dates` vector at their original positions.
+Then we can replace the `acquisition_delivery_date` column with `dates`:
+
+```{r}
+dates[is_bad_date] = fixed_dates
+
+fleet$acquisition_delivery_date = dates
+```
+
+With the dates in hand, we can compute the number of purchases from 2019 to
+2023. Since each row in the dataset represents a vehicle-year, and we just want
+to count vehicles, we must first get a subset of unique vehicles. We can do
+this by grouping on the `equipment_number` column, which is a unique identifier
+for each vehicle, and getting the first row in each group:
+
+```{r}
+by_vehicle = group_by(fleet, equipment_number)
+vehicles = filter(by_vehicle, row_number() == 1)
+```
+
+We can compute the number of purchases by extracting the years with lubridate's
+`year` function and then counting them with the `table` function:
+
+```{r}
+table(year(vehicles$acquisition_delivery_date))
+```
+
+It's unclear whether the dataset contains complete records for 2023, so the
+count for that year might be too small. It's also likely that the agency
+purchases vehicles months or years in advance of their delivery, so these
+counts are more accurately described as deliveries rather than purchases.
+
+
+## Case Study: Ocean Temperatures
 
 The U.S. National Oceanic and Atmospheric Administration (NOAA) publishes ocean
 temperature data collected by sensor buoys off the coast on the [National Data
 Buoy Center (NDBC) website][ndbc]. California also has many sensors collecting
 ocean temperature data that are not administered by the federal government.
 Data from these is published on the [California Ocean Observing Systems
-(CALOOS) Data Portal][caloos].
+(CALOOS) Data portal][caloos].
 
 [ndbc]: https://www.ndbc.noaa.gov/
 [caloos]: https://data.caloos.org/
@@ -249,6 +415,7 @@ both sources to use in R. Both publish the data in comma-separated value (CSV)
 format, but record dates, times, and temperatures differently. Thus you need to
 be careful that the dates and times are parsed correctly.
 
+:::{.callout-important}
 Download these two 2021 datasets:
 
 1. `2021_noaa-ndbc_46013.txt`, from NOAA buoy 46013, off the coast of Bodega
@@ -260,6 +427,7 @@ Download these two 2021 datasets:
 [noaa-source]: https://www.ndbc.noaa.gov/station_page.php?station=46013
 [bml-data]: https://drive.google.com/file/d/1YZbVu30usB988O4idES-VqN3e8_a9OXM/view?usp=share_link
 [bml-source]: https://data.caloos.org/#metadata/19946/station/data
+:::
 
 The NOAA data has a fixed-width format, which means each column has a fixed
 width in characters over all rows. The [readr][] package provides a function

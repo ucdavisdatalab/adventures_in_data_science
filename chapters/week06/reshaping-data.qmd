@@ -6,30 +6,24 @@ After this lesson, you should be able to:
 * Use the tidyr package to reshape data
 :::
 
-This section explains how to **reshape** tabular datasets into tidy datasets.
-While reshaping can seem tricky at first, making sure your dataset has the
-right structure before you begin analysis saves time and frustration in the
-long run.
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
 
-<!--
-The Tidyverse is so named because many functions in Tidyverse packages require
-data frames that are in **tidy** form. Before we see the requirements for a
-data set to be tidy, we need to define or review some terminology from
-statistics.
+* ggplot2
+* lubridate
+* readxl
+* tidyr
 
-A **feature** (also called a **covariate** or a **variable**) is a measurement
-of something, usually across multiple subjects. For example, we might decide to
-measure the heights of everyone in the class. Each person in the class is a
-subject, and the height measurement is a feature. Features don't have to be
-quantitative. If we also asked each person their favorite color, then favorite
-color would be another feature in our data set. Features are usually, but not
-always, the columns in a tabular data set.
+@sec-packages explains how to install and load packages.
+:::
 
-An **observation** is a set of features measured for a single subject or at a
-single time. So in the preceding example, the combined height and favorite
-color measurement for one student is one observation. Observations are usually,
-but not always, the rows in a tabular data set.
--->
+
+The structure of a dataset---its shape and organization---has enormous
+influence on how difficult it will be to analyze, so making structural changes
+is an important part of the cleaning process. This chapter explains how to
+**reshape** untidy data into tidy data (@sec-tidy-data). While reshaping can
+seem tricky at first, making sure your dataset has the right structure before
+you begin analysis saves time and frustration in the long run.
 
 
 ## The tidyr Package
@@ -45,224 +39,229 @@ As usual, install the package if you haven't already, and then load it:
 
 ```{r}
 # install.packages("tidyr")
-library(tidyr)
+library("tidyr")
 ```
 
-Let's start with an example of a tidy dataset. The `table1` dataset in the
-package records the number of tuberculosis cases across several different
-countries and years:
+## An Untidy Dataset
+
+The City of Davis has two bike counters: one is at the intersection of 3rd
+Street and University Avenue (the 3rd Street bike obelisk) and the other is at
+the intersection of Loyola Drive and Pole Line Road. The City publishes data
+from the bike counters online. DataLab combined the City's 2020 bike counts,
+aggregated to the day level, with precipitation and wind data from the U.S.
+National Oceanic and Atmospheric Administration's weather station at Sacramento
+Metropolitan Airport (this was the nearest weather station with complete
+records for 2020). We'll use this dataset to demonstrate how to transform
+untidy data.
+
+:::{.callout-important}
+[Click here][davis-bikes] to download the 2020 Davis bike counts dataset.
+
+[davis-bikes]: https://ucdavis.box.com/s/q9oox9arov97dvsocrsx6gghh7283z3i
+
+If you haven't already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/` subdirectory. Download and save
+the dataset in the `data/` subdirectory.
+:::
+
+:::{.callout-note title="Documentation for the 2020 Davis Bike Counts Dataset" collapse="true"}
+Each row in the dataset contains measurements from one date-variable
+combination.
+
+Column     | Description
+---------- | -----------
+`date`     | The date of measurement
+`variable` | What was measured: `third` and `loyola` are bike counts, `prcp` is total precipitation in millimeters, `awnd` is average daily wind speed in meters per second
+`value`    | The measured value
+
+The source for the bike counts is the City of Davis' [Bike and Pedestrian
+Statistics][bike-ped-stats] web page. The source for the total precipitation
+and average wind speed is NOAA's [weather station at Sacramento Metropolitan
+Airport][noaa-sac].
+
+[bike-ped-stats]: https://www.cityofdavis.org/city-hall/public-works-engineering-and-transportation/bike-pedestrian-program/bike-and-pedestrian-data-statistics
+[noaa-sac]: https://www.ncdc.noaa.gov/cdo-web/datasets/GHCND/stations/GHCND:USW00093225/detail
+:::
+
+The dataset is saved in an RDS file, which you can use the built-in `readRDS`
+function to read:
 
 ```{r}
-table1
+bikes = readRDS("data/2020_davis_bikes.rds")
+head(bikes)
 ```
 
-Each of the four columns contains a single kind of measurement or identifier,
-so the dataset satifies tidy rule 1. The measurements were taken at the
-country-year level, and each row contains data for one country-year pair, so
-the dataset also satisfies tidy rule 2. Each cell in the data frame only
-contains one value, so the dataset also satisfies tidy rule 3.
+This data is not tidy, because it breaks rule 1. The `value` column contains
+many different features---they even have different units! Soon we'll reshape
+the dataset to make it tidy.
 
-The same data are recorded in `table2`, `table3`, and the pair `table4a` with
-`table4b`, but these are all *untidy* datasets. For example, `table2` breaks
-rule 1 because the column `count` contains two different kinds of
-measurements---case counts and population counts:
+Before you reshape a dataset, you should also think about what role each column
+serves:
 
-```{r}
-table2
-```
-
-When considering whether you should reshape a dataset, think about what the
-features are and what the observations are. These depend on the dataset itself,
-but also on what kinds of analyses you want to do. Datasets sometimes have
-closely related features or multiple (nested) levels of observation. The tidyr
-documentation includes a [detailed article on how to reason about reshaping
-datasets][tidyr-tidy].
-
-[tidyr-tidy]: https://tidyr.tidyverse.org/articles/tidy-data.html
-
-If you do decide to reshape a dataset, then you should also think about what
-role each feature serves:
-
-* **Identifiers** are labels that distinguish observations from one another.
-  They are often but not always categorical. Examples include names or
-  identification numbers, treatment groups, and dates or times. In the
-  tuberculosis data set, the `country` and `year` columns are identifiers.
+* **Identifiers** (or indexes) are labels that distinguish observations from
+  one another. They're often but not always categorical. Examples include names
+  or identification numbers, treatment groups, and dates or times. In the bike
+  counts dataset, the `date` column is an identifier.
 
 * **Measurements** are the values collected for each observation and typically
-  the values of research interest. For the tuberculosis data set, the `cases`
-  and `population` columns are measurements.
+  the values of research interest. In the bike counts dataset, the `value`
+  column is a measurement.
 
-Having a clear understanding of which features are identifiers and which are
-measurements makes it easier to use the tidyr functions.
+A clear understanding of which columns are identifiers and which are
+measurements makes it easier to write the code to reshape.
 
 
-## Rows into Columns
+## Rows into Columns {#sec-rows-into-columns}
 
-Tidy data rule 1 is that each column must be a single feature. The `table2`
-dataset breaks this rule:
+In order to make the Davis bike counts data tidy, the measurements in the
+`value` column need to be moved into two separate columns, one for each of the
+categories in the `variable` column.
 
-```{r}
-table2
-```
+You can use the `pivot_wider` function to **pivot** a data frame, creating new
+columns from values in the rows. This makes the data frame wider (and shorter).
+Let's pivot the `bikes` data frame on the `variable` column to create four new
+columns filled with values from the `values` column.
 
-To make the dataset tidy, the measurements in the `count` column need to be
-separated into two separate columns, `cases` and `population`, based on the
-categories in the `type` column.
+The `pivot_wider` function's most important parameters are:
 
-You can use the `pivot_wider` function to **pivot** the single `count` column
-into two columns according to the `type` column. This makes the dataset wider,
-hence the name `pivot_wider`.
-
-The function's first parameter is the dataset to pivot. Other important
-parameters are:
-
-* `values_from` -- The column(s) to pivot.
+* `values_from` -- The column(s) that contains values for the new columns.
 * `names_from` -- The column that contains names for the new columns.
 * `id_cols` -- The identifier columns, which are not pivoted. This defaults to
   all columns except those in `values_from` and `names_from`.
 
-Here's how to use the function to make `table2` tidy:
+Here's how to use the function to make `bikes` tidy:
 
 ```{r}
-pivot_wider(table2, values_from = count, names_from = type)
+bikes2 = pivot_wider(bikes, values_from = value, names_from = variable)
+head(bikes2)
 ```
 
-The function automatically removes values from the `country` and `year` columns
-as needed to maintain their original correspondence with the pivoted values.
+The function automatically removes values from the `date` column as needed to
+maintain the original correspondence with the pivoted values.
 
-
-## Columns into Rows
-
-Tidy data rule 2 is that every row must be a single observation. The `table4a`
-and `table4b` datasets break this rule because each row in each dataset
-contains measurements for two different years:
+The new `bikes2` data frame contains all of the data from `bikes`, but now the
+measurements for each date share a row. In other words, the observational units
+for `bikes2` are dates, which is convenient for investigating how individual
+features change over time, as well as making same-time comparisons between
+features. To illustrate this, we can use ggplot2 to make a scatter plot of the
+bike counts at 3rd Street against the counts at Loyola Drive:
 
 ```{r}
-table4a
-table4b
+library("ggplot2")
+
+ggplot(bikes2) +
+  aes(x = third, y = loyola) +
+  geom_point()
 ```
 
-The tuberculosis case counts are in `table4a`. The population counts are in
-`table4b`. Neither is tidy.
+The plot shows that Loyola Drive occasionally has days with much higher traffic
+than 3rd Street, but it's difficult to tell whether 3rd or Loyola is typically
+busier (that is, whether there are more points above or below the $y = x$
+line).
 
-To make the `table4a` dataset tidy, the `1999` and `2000` columns need to be
-pivoted into two new columns: one for the measurements (the counts) and one for
-the identifiers (the years). It might help to visualize this as stacking the
-two separate columns `1999` and `2000` together, one on top of the other, and
-then adding a second column with the appropriate years. The same process makes
-`table4b` tidy.
 
-You can use the `pivot_longer` function to pivot the two columns `1999` and
-`2000` into a column of counts and a column of years. This makes the dataset
-longer, hence the name `pivot_longer`.
+## Columns into Rows {#sec-columns-into-rows}
 
-Again the function's first parameter is the dataset to pivot. Other important
-parameters are:
+Suppose we want to try to get a better answer to whether Loyola or 3rd tends to
+be busier. One way we can do it is by making a line plot with the counts for
+each site over time. This way we're treating each site as a group within the
+data and making a comparison between groups.
 
-* `cols` -- The columns to pivot.
+Comparing groups in a data frame is generally easier when each row corresponds
+to an observation from one group. Let's reshape the `bikes2` data frame so that
+the observational units are date-site combinations. To do this, the `third` and
+`loyola` columns need to be transformed into two new columns: one for
+measurements (the counts) and one for identifiers (the sites). It might help to
+visualize this as stacking the two separate columns `third` and `loyola`
+together, one on top of the other, and then adding a second column with the
+corresponding site names.
+
+You can use the `pivot_longer` function to **unpivot** a data frame, creating
+new rows from values in the columns. This is the inverse of a pivot. It makes
+the data frame longer (and narrower). We'll unpivot the `bikes2` data frame on
+the `third` and `loyola` columns.
+
+The `pivot_longer` function's parameters are:
+
+* `cols` -- The columns to stack into a new column; the names of these columns
+  will also go into a new column.
 * `values_to` -- Name(s) for the new measurement column(s)
 * `names_to` -- Name(s) for the new identifier column(s)
 
-Here's how to use the function to make `table4a` tidy:
+The code to unpivot `bikes2` is:
 
 ```{r}
-tidy4a = pivot_longer(table4a, -country, values_to = "cases",
-  names_to = "year")
-tidy4a
+bikes3 = pivot_longer(
+    bikes2,
+    cols = c(third, loyola),
+    values_to = "count",
+    names_to = "site"
+)
+head(bikes3)
 ```
 
-In this case, the `cols` parameter is set to all columns *except* the `country`
-column, because the `country` column does not need to be pivoted. The function
-automatically repeats values in the `country` column as needed to maintain its
-original correspondence with the pivoted values.
-
-Here's the same for `table4b`:
+For `bikes3`, the observational units are date-site combinations, as planned.
+This is convenient for comparing the two sites to each other with statistics
+and visualizations. We can use ggplot2 to make a line plot of the counts for
+the two sites:
 
 ```{r}
-tidy4b = pivot_longer(table4b, -country, values_to = "population",
-  names_to = "year")
-tidy4b
+ggplot(bikes3) +
+  aes(x = date, y = count, color = site) +
+  geom_line()
 ```
 
-Once the two datasets are tidy, you can join them with the `merge` function to
-reproduce `table1`:
+From this plot, we can see that Loyola Drive was generally busier for the first
+3 months of 2020. Traffic dropped at both sites in mid-March, probably due to
+the COVID-19 pandemic. The drop was sharper at Loyola Drive than 3rd Street, so
+3rd Street was generally busier for the remaining 9 months of 2020.
 
-```{r}
-merge(tidy4a, tidy4b)
-```
-
-
-## Separating Values
-
-Tidy data rule 3 says each value must have its own cell. The `table3` dataset
-breaks this rule because the `rate` column contains two values per cell:
-
-```{r}
-table3
-```
-
-The two values separated by `/` in the `rate` column are the tuberculosis case
-count and the population count.
-
-To make this dataset tidy, the `rate` column needs to be split into two
-columns, `cases` and `population`. The values in the `rate` column are strings,
-so one way to do this is with the stringr package's `str_split_fixed` function,
-described in Section \@ref(splitting-strings):
-
-```{r}
-library(stringr)
-
-# Split the rate column into 2 columns.
-cols = str_split_fixed(table3$rate, fixed("/"), 2)
-
-# Remove the rate column and append the 2 new columns.
-tidy3 = table3[-3]
-tidy3$cases = as.numeric(cols[, 1])
-tidy3$population = as.numeric(cols[, 2])
-tidy3
-```
-
-Extracting values, converting to appropriate data types, and then combining
-everything back into a single data frame is an extremely common pattern in data
-science.
-
-The tidyr package provides the `separate` function to streamline the steps
-taken above. The first parameter is the dataset, the second is the column to
-split, the third is the names of the new columns, and the fourth is the
-delimiter. The `convert` parameter controls whether the new columns are
-automatically converted to appropriate data types:
-
-```{r}
-separate(table3, rate, c("cases", "population"), "/", convert = TRUE)
-```
-
-As of writing, the tidyr developers have deprecated the `separate` function in
-favor of several more specific functions (`separate_wider_delim`,
-`separate_wider_position`, and `separate_wider_regex`). These functions are
-still experimental, so we still recommend using the `separate` function in the
-short term.
+:::{.callout-note}
+We didn't use `prcp` and `awnd` (and they don't differ between sites anyway).
+If we dropped them, the resulting data frame would have the same observational
+units as `bikes3`, but would also be a subset of the original `bikes` data
+frame (albeit with different column names).
+:::
 
 
 ## Case Study: SMART Ridership
 
-[Sonoma-Marin Area Rail Transit (SMART)][smart] is a single-line passenger rail
-service between the San Francisco Bay and Santa Rosa. They publish [data about
-monthly ridership][smart-riders] in PDF and Excel format. In this case study,
-you'll reshape and clean the dataset to prepare it for analysis.
+[Sonoma-Marin Area Rail Transit (SMART)][smart] is a relatively new single-line
+passenger rail service between the San Francisco Bay and Santa Rosa. They
+publish data about monthly ridership online, but the format is slightly messy.
+Let's clean and reshape the data in order to make a plot of ridership over
+time.
 
 [smart]: http://sonomamarintrain.org/
-[smart-riders]: https://www.sonomamarintrain.org/RidershipReports
 
-To get started, download the [January 2026 report in Excel
-format][smart-jan26]. Pay attention to where you save the file---or move it to
-a directory just for files related to this case study---so that you can load it
-into R. If you want, you can use R's `download.file` function to download the
-file rather than your browser.
+:::{.callout-important}
+[Click here][smart-riders] to download the SMART Ridership dataset (version
+2026-01).
+
+If you haven't already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/` subdirectory. Download and save
+the dataset in the `data/` subdirectory.
+
+[smart-riders]: https://ucdavis.box.com/s/u1f7zoycpdlfrom5pr7ihyaulvir2mm1
+:::
+
+:::{.callout-note title="Documentation for the SMART Ridership Dataset" collapse="true"}
+
+The source for the dataset is the [SMART Ridership Reports][smart-reports] web
+page.
+
+[smart-reports]: https://www.sonomamarintrain.org/RidershipReports
+:::
+
+The dataset is saved as a Microsoft Excel file. Before reading an Excel file,
+it's a good idea to manually inspect it with spreadsheet software to figure out
+how the data are organized. The SMART dataset contains two tables on the left
+side of the first sheet: one for total monthly ridership and one for average
+weekday ridership (by month).
 
 The [readxl][] package provides functions to read data from Excel files.
 Install the package if you don't already have it installed, and then load it:
 
-[smart-jan26]: https://www.sonomamarintrain.org/sites/default/files/Documents/SMART%20Ridership%20Web%20Posting_1.26.xlsx
 [readxl]: https://readxl.tidyverse.org/
 
 ```{r load-readxl}
@@ -270,28 +269,21 @@ Install the package if you don't already have it installed, and then load it:
 library("readxl")
 ```
 
-You can use the `read_excel` function to read a sheet from an Excel
-spreadsheet. Before doing so, it's a good idea to manually inspect the
-spreadsheet in a spreadsheet program. The SMART dataset contains two tables in
-the first sheet, one for total monthly ridership and another for average
-weekday ridership (by month).
+We can use the package's `read_excel` function to read sheets from an Excel
+file. It has a parameter `range` to control which cells it reads.
 
-Let's focus on the total monthly ridership table, which occupies cells B4 to
-K16. You can specify a range of cells when you call `read_excel` by setting the
-`range` parameter:
+Let's focus on the total monthly ridership table, which occupies cells B4
+to K16:
 
 ```{r read-smart-data}
-smart_path = "./data/SMART Ridership Web Posting_1.26.xlsx"
-smart = read_excel(smart_path, range = "B4:K16")
-smart
+smart = read_excel("data/2026-01_smart_ridership.xlsx", range = "B4:K16")
+head(smart)
 ```
 
-The loaded dataset needs to be cleaned. The `FY18` column uses a hyphen to
-indicate missing data and has the wrong data type. The identifiers---months and
-years---are split between the row and column names and each row contains data from seven different years, so the dataset is also not tidy. In addition, the years are indicated in fiscal years (FY), which begin in July rather than January, so some of the years need to be adjusted.
-
-You can correct the missing value in the `FY18` column with indexing, and the
-type with the `as.numeric` function:
+The dataset needs to be cleaned. The `FY18` column uses a hyphen `-` to
+indicate a missing value and has the wrong data type. We can use indexing to
+replace the hyphen with a missing value and then convert the column to an
+appropriate type with the `as.numeric` function:
 
 ```{r}
 smart$FY18[smart$FY18 == "-"] = NA
@@ -299,93 +291,96 @@ smart$FY18 = as.numeric(smart$FY18)
 head(smart)
 ```
 
+There's still a lot of cleaning to do. The identifiers in this dataset are the
+months and years, and they're split between the row and column names. Each row
+contains data from several different years, so the dataset is not tidy. In
+addition, the years are indicated in fiscal years (FY), which begin in July
+rather than January, so some of the years need to be adjusted.
+
 To make the dataset tidy, it needs to be reshaped so that the values in the
 various fiscal year columns are all in one column. In other words, the dataset
-needs to be pivoted longer (Section \@ref(columns-into-rows)). The result of
-the pivot will be easier to understand if you rename the columns as their years
-first. Here's one way to do that:
+needs to be unpivoted (@sec-columns-into-rows) on all of the `FY` columns. The
+result of the pivot will be easier to understand if we rename the columns as
+their years first. Here's one way to do that:
 
 ```{r}
 names(smart)[-1] = 2018:2026
 head(smart)
 ```
 
-Next, use `pivot_longer` to pivot the dataset:
+Next, we use `pivot_longer` to pivot the dataset:
 
 ```{r pivot-smart-data}
-smart_long = pivot_longer(smart, cols = -Month, values_to = "riders",
-  names_to = "fiscal_year")
-head(smart_long)
+smart = pivot_longer(
+  smart,
+  cols = -Month,
+  values_to = "count",
+  names_to = "fiscal_year"
+)
+head(smart)
 ```
 
-Now the dataset is tidy, but it's still not completely clean. Our next step is to convert the fiscal years to calendar years. Pivoting the column names into `fiscal_year` has resulted in the years being strings that look like numbers, so we also need to convert `fiscal_year` to numeric.
-
-Our work toward tidying the data is proceeding in several small steps that each improve the data in some small way. This next block of code introduces two tricks that make such a chain of operations easier to write and to read: the `with` function and R's pipe operator `|>`.
-
-The `with` function allows you to be less redundant when you need to refer to the same data.frame several times. The first argument is your data.frame, and the second is a block of R code. Any variable names you use in the code block will be sought in the columns of the data.frame.
-
-The other trick is the pipe operator. It connects two functions, with the output of the one written first becoming the input of the one written second. The built in pipe `|>` was introduced due to the popularity of the older `%>%` pipe provided by the `magrittr` package.
-
-The SMART fiscal year extends from July to the following June and equals the
-calendar year at the end of the period. So for observations from July to
-December, the calendar year is the fiscal year minus 1. There are many ways to calculate a new column from the existing columns — we will use the `ifelse` function to set a column's values conditional on some other columns.
-
-Our calculation is to subtract one from the fiscal year if the month is seven or less so we have to convert the months to numbers from text abbreviations. Let's use our old friend the `fast_strptime` function from the `lubridate` package (Section \@ref(the-lubridate-package)).
+In order to use the months and years in the data, we need to convert them to
+dates. As a first step towards this, we'll cast the values in the new
+`fiscal_year` column to integers:
 
 ```{r}
-library(lubridate)
-
-#convert the fiscal_year column to numeric
-smart_long$fiscal_year = as.numeric(smart_long$fiscal_year)
-
-# create a month_number column from the abbreviated month names
-smart_long$month_number = 
-  fast_strptime(smart_long$Month, "%m") |>
-  month()
-
-# convert fiscal_year to calendar year
-smart_long$cal_year =
-  with(smart_long,
-    ifelse(month_number >= 7, fiscal_year - 1, fiscal_year)
-  )
-
-head(smart_long)
+smart$fiscal_year = as.numeric(smart$fiscal_year)
+head(smart)
 ```
 
-We want to make a plot of ridership over time. To do so, time needs to be a single column that can be mapped to the horizontal axis of our plot, but right now time is split between `cal_year` and `month_number`. Let's combine and convert the `month` and `cal_year`
-columns into a calendar date with the `make_date` function from `lubridate`. Then we'll arrange the rows by date, which is more sensible than the current arrangement where all the rows for Julys are followed by all the rows for Augusts, and so on.
+Next, we can use the lubridate package's `fast_strptime` and `month` functions
+to create a new of column month numbers:
 
 ```{r}
-smart_long$date =
-  with(smart_long, make_date(year=cal_year, month=month_number))
+library("lubridate")
 
-smart_long = smart_long[order(smart_long$date),]
-
-head(smart_long, n=14)
+month_num = month(fast_strptime(smart$Month, "%m"))
 ```
 
-As a final adjustment, you can use the `tolower` function to convert the column
-names to lowercase, so that they're easier to use during analysis:
+Now we need to transform the fiscal years in the `fiscal_year` column into
+calendar years. A SMART fiscal year extends from July to the following June and
+is named after the calendar year at the end of the fiscal year. So from July to
+December, the calendar year is the fiscal year minus 1. We can use the built-in
+`ifelse` function to subtract either `1` or `0` depending on whether the
+condition `month_num >= 7` is true or false:
 
 ```{r}
-names(smart_long) = tolower(names(smart_long))
-head(smart_long)
+cal_year = smart$fiscal_year - ifelse(month_num >= 7, 1, 0)
 ```
 
-Now that the dataset is tidied and cleaned, it's straightforward to do things
-like plot it as a time series:
+:::{.callout-note}
+Alternatively, we can compute the calendar year by taking advantage of implicit
+coercion. The logical value `FALSE` corresponds to `0` and `TRUE` corresponds
+to `1`, so we can just subtract the condition to get the calendar year:
 
-```{r smart-plot}
-library("ggplot2")
+```{r}
+cal_year = smart$fiscal_year - (month_num >= 7)
+```
+:::
 
-ggplot(smart_long) + aes(x = date, y = riders) + geom_line() +
-  expand_limits(y = 0)
+Finally, we can use the lubridate package's `make_date` function to construct
+dates from the `cal_year` and `month_num` variables:
+
+```{r}
+smart$date = make_date(year = cal_year, month = month_num)
 ```
 
-Notice the huge drop (more than 90%) in April of 2020 due to the COVID-19
+With the dates in the `date` column and the counts in the `count` column, we
+have everything we need to make a plot of SMART ridership over time. We can use
+ggplot2 to make the plot:
+
+```{r}
+ggplot(smart) +
+  aes(x = date, y = count) +
+  geom_line()
+```
+
+Notice the huge drop (more than 90%) in April 2020 due to the COVID-19
 pandemic!
 
 
+<!--
 ## Without `tidyr`
 
 This section shows how to pivot datasets without the help of the tidyr package.
@@ -442,3 +437,4 @@ names(df00)[2] = "cases"
 # Step 4
 rbind(df99, df00)
 ```
+-->
