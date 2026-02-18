@@ -12,6 +12,8 @@ After this lesson, you should be able to:
 :::{.callout-important title="Required Packages"}
 This chapter uses the following packages:
 
+* dplyr
+* purrr
 * stringr
 
 @sec-packages explains how to install and load packages.
@@ -33,13 +35,10 @@ the time, you need to know how to work with strings so that you can fix
 whatever went wrong and convert the data yourself.
 
 This section introduces several fundamental concepts related to working with
-strings. The next section, @sec-the-stringr-package, describes the stringr
-package for working with strings. The last section, @sec-regular-expressions,
-builds on both and explains how to do powerful pattern matching.
+strings.
 
 
-### Printing
-
+:::{.callout-note}
 There are two different ways to print strings: you can print a representation
 of the characters in the string or you can print the actual characters in the
 string.
@@ -52,6 +51,7 @@ To print the actual characters in a string, use the `message` function.
 
 This important difference in how the `print` and `message` functions print
 strings is demonstrated in the next section.
+:::
 
 
 ### Escape Sequences
@@ -64,28 +64,36 @@ followed by one or more characters. Escape sequences make it possible to:
    in a foreign language)
 
 For example, the escape sequence `\n` corresponds to the newline character.
-Notice that the `message` function translates `\n` into a literal new line,
-whereas the `print` function doesn't:
+Notice that the `message` function prints `\n` as a literal new line:
 
 ```{r}
 x = "Hello\nNick"
 
 message(x)
-
-print(x)
 ```
 
-As another example, suppose we want to put a literal quote in a string. We can
-either enclose the string in the other kind of quotes, or escape the quotes in
-the string:
+On the other hand, when you let Python print a string or other object
+automatically (without explicitly calling `message`), it prints a
+programmer-friendly representation. For strings, the representation shows
+escape codes:
+
+```{r}
+x
+```
+
+This makes it easy to identify characters that are not normally visible, such
+as whitespace, and also makes it easy to copy the string. You can use the
+built-in `print` function to get a representation for any object.
+
+As another example, suppose we want to put literal quotation marks in a string.
+We can either enclose the string in the other kind of quotation marks (single
+versus double), or escape the quotation marks in the string:
 
 ```{r}
 x = 'She said, "Hi"'
-
 message(x)
 
 y = "She said, \"Hi\""
-
 message(y)
 ```
 
@@ -95,7 +103,6 @@ backslash is two backslashes:
 
 ```{r}
 x = "\\"
-
 message(x)
 ```
 
@@ -104,8 +111,7 @@ Other programming languages also use escape sequences, and many of them are the
 same as in R.
 
 
-### Raw Strings {#sec-raw-strings}
-
+:::{#tip-raw-strings .callout-tip}
 A **raw string** is a string where escape sequences are turned off. Raw strings
 are especially useful for writing regular expressions (covered in
 @sec-regular-expressions).
@@ -121,7 +127,7 @@ message(x)
 
 Raw strings were added to R in version 4.0 (April 2020), and won't work
 correctly in older versions.
-
+:::
 
 
 ### Character Encodings
@@ -145,40 +151,49 @@ doesn't dictate how those numbers should be mapped to bytes (sequences of ones
 and zeroes). As a result, there are several different character encodings that
 support and are synonymous with Unicode. The most popular of these is UTF-8.
 
-In R, you can write Unicode characters with the escape sequence `\U` followed
-by the number for the character in [base 16][]. For instance, the number for
-`a` in Unicode is 97 (the same as in ASCII). In base 16, 97 is `61`. So you can
-write an `a` as:
+In R, you can write Unicode characters with the escape sequence `\u` (or `\U`)
+followed by a 4-digit (or 8-digit) number for the character in [base 16][]. For
+instance, the number for `a` in Unicode is 97 (the same as in ASCII). In base
+16, 97 is `61`. So you can write an `a` as:
 
 ```{r}
-x = "\U61" # or "\u61"
-
+x = "\u61"
 x
 ```
 
+[base 16]: https://en.wikipedia.org/wiki/Hexadecimal
+
 Unicode escape sequences are usually only used for characters that are not easy
 to type. For example, the cat emoji is number `1f408` (in base 16) in Unicode.
-So the string `"\U1f408"` is the cat emoji.
+So the string `"\U1f408"` is the cat emoji:
 
-Note that being able to see printed Unicode characters also depends on whether
-the font your computer is using has a glyph (image representation) for that
-character. Many fonts are limited to a small number of languages. The
-[NerdFont][] project patches fonts commonly used for programming so that they
-have better Unicode coverage. Using a font with good Unicode coverage is not
-essential, but it's convenient if you expect to work with many different
-natural languages or love using emoji.
+```{r}
+"\U1f408"
+```
 
-[base 16]: https://en.wikipedia.org/wiki/Hexadecimal
-[NerdFont]: https://www.nerdfonts.com/
+:::{.callout-tip}
+Whether you can see a Unicode character depends on whether the current font has
+a glyph (image representation) for that character. Most fonts only have glyphs
+for a few languages.
 
+Make sure to use a font with good Unicode coverage if you love emoji or expect
+to work with many different languages. The [Noto Fonts][] project aims to
+create a collection of fonts with a common style and complete language
+coverage. The [NerdFonts][] project patches fonts commonly used for programming
+so that they have better coverage of symbols.
 
-#### Character Encodings in Text Files
+[Noto Fonts]: https://notofonts.github.io/
+[NerdFonts]: https://www.nerdfonts.com/
+:::
 
+:::{.callout-note}
 Most of the time, R will handle character encodings for you automatically.
 However, if you ever read or write a text file (including CSV and other
 formats) and the text [looks like gibberish][mojibake], it might be an encoding
 problem. This is especially true on Windows, the only modern operating system
 that does not (yet) use UTF-8 as the default encoding.
+
+[mojibake]: https://en.wikipedia.org/wiki/Mojibake
 
 Encoding problems when reading a file can usually be fixed by passing the
 encoding to the function doing the reading. For instance, the code to read a
@@ -189,16 +204,16 @@ read.csv("my_data.csv", fileEncoding = "UTF-8")
 ```
 
 Other reader functions may use a different parameter to set the encoding, so
-always check the documentation. On computers where the native language is not
-set to English, it can also help to set R's native language to English with
-`Sys.setlocale(locale = "English")`.
+always check the documentation.
+
+On computers where the native language is not set to English, it can also help
+to set R's native language to English with `Sys.setlocale(locale = "English")`.
 
 Encoding problems when writing a file are slightly more complicated to fix. See
 [this blog post][ushey-encodings] for thorough explanation.
 
-[mojibake]: https://en.wikipedia.org/wiki/Mojibake
 [ushey-encodings]: https://kevinushey.github.io/blog/2018/02/21/string-encoding-and-r/
-
+:::
 
 
 ## Processing Strings
@@ -312,7 +327,7 @@ documentation's [reference page][stringr-ref] and the
 The stringr functions use a special language called **regular expressions** or
 **regex** to describe patterns in strings. Many other programming languages
 also have string processing tools that use regular expressions, so fluency with
-regular expressions is a transferrable skill.
+regular expressions is a valuable, transferrable skill.
 
 You can use a regular expression to describe a complicated pattern in just a
 few characters because some characters, called **metacharacters**, have special
@@ -336,12 +351,15 @@ Metacharacter | Meaning
 `|`           | match left OR right side (not a character)
 
 @sec-regular-expression-examples provides examples of how most of the
-metacharacters work. Even more examples are presented in the stringr package's
-[regular expressions vignette][stringr-regex]. You can find a complete listing
-of regex metacharacters in `?regex` or on the stringr
-[cheatsheet][stringr-cheatsheet].
+metacharacters work.
+
+:::{.callout-note title="See Also"}
+Even more examples are presented in the stringr package's [regular expressions
+vignette][stringr-regex]. You can find a complete listing of regex
+metacharacters in `?regex` or on the stringr [cheatsheet][stringr-cheatsheet].
 
 [stringr-regex]: https://stringr.tidyverse.org/articles/regular-expressions.html
+:::
 
 You can disable regular expressions in a stringr function by calling the
 `fixed` function on the pattern. For example, to test whether a string contains
@@ -352,9 +370,11 @@ x = c("No dot", "Lotsa dots...")
 str_detect(x, fixed("."))
 ```
 
-It's a good idea to call `fixed` on any pattern that doesn't contain regex
-metacharacters, because it communicates to the reader that you're not using
-regex, it helps to prevent bugs, and it provides a small speed boost.
+:::{.callout-tip}
+Make it a habit to call `fixed` anytime you use a pattern that doesn't contain
+regex metacharacters. Doing so communicates to the reader that you're not using
+regex, prevents bugs, and makes your code more efficient.
+:::
 
 
 ### Replacing Parts of Strings
@@ -371,23 +391,24 @@ replaces *every* part of a string that matches a pattern. Most stringr
 functions that do pattern matching come in a pair like this: one to process
 only the first match and one to process every match.
 
-As an example, suppose you want to remove commas from a number so that you can
-convert it with `as.numeric`, which returns `NA` for numbers that contain
-commas. You want to remove *all* of the commas, so `str_replace_all` is the
-function to use. As usual, the first argument is the string and the second is
-the pattern. The third argument is the replacement, which is the empty string
-`""` in this case:
+As an example, suppose you want to remove commas from a vector of numbers (in
+strings) so that you can cast them to a numeric data type with `as.numeric`.
+You want to remove *all* of the commas, so `str_replace_all` is the function to
+use. The first argument is the string and the second is the pattern. The third
+argument is the replacement. In this case, the pattern is `","` and the
+replacement is the empty string `""`. So the code to remove the commas and cast
+the numbers is:
 
 ```{r}
-x = "1,000,000"
-str_replace_all(x, ",", "")
+x = c("1,000,000", "525,600", "42")
+as.numeric(str_replace_all(x, fixed(","), ""))
 ```
 
-The `str_replace` function doesn't work as well for this task, since it only
+The `str_replace` function wouldn't work as well for this task, since it only
 replaces the first match to the pattern:
 
 ```{r}
-str_replace(x, ",", "")
+str_replace(x, fixed(","), "")
 ```
 
 You can also use these functions to replace or remove longer patterns within
@@ -395,8 +416,8 @@ words. For instance, suppose you want to change the word `"dog"` to `"cat"`:
 
 ```{r}
 x = c("dogs are great, dogs are fun", "dogs are fluffy")
-str_replace(x, "dog", "cat")
-str_replace_all(x, "dog", "cat")
+str_replace(x, fixed("dog"), "cat")
+str_replace_all(x, fixed("dog"), "cat")
 ```
 
 As a final example, you can use the replacement functions and a regex pattern
@@ -410,8 +431,8 @@ x = "This    sentence  has  extra      space."
 str_replace_all(x, " +", " ")
 ```
 
-If you just want to **trim** (remove) all whitespace from the beginning and end
-of a string, you can use the `str_trim` function instead.
+The `str_squish` function does this as well as removing all whitespace from the
+beginning and end of a string.
 
 
 ### Splitting Strings
@@ -459,15 +480,21 @@ You can also use the `str_split` function to split a sentence into words. Use
 spaces for the split:
 
 ```{r}
-x = "The students in this workshop are great!"
-str_split(x, " ")
+sentences = c(
+  "The wonderful, wonderful cat!",
+  "Who is this duke of zill anyway?"
+)
+
+words = str_split(sentences, " ")
+words
 ```
 
+
+:::{.callout-tip}
 When you know exactly how many parts you expect a string to have, use the
-`str_split_fixed` function instead of `str_split`. It accepts a third argument
-for the maximum number of splits to make. Because the number of splits is
-fixed, the function can return the result in a matrix instead of a list. For
-example:
+`str_split_fixed` function instead of `str_split`. It requires a third argument
+for the maximum number of splits. Because the number of splits is fixed, the
+function returns the results in a matrix rather than a list. For example:
 
 ```{r}
 x = c("1, 2, 3", "10, 20, 30")
@@ -486,6 +513,7 @@ result = str_split_fixed(phones, "-", 3)
 
 result[, 1]
 ```
+:::
 
 
 ### Extracting Matches {#sec-extracting-matches}
@@ -523,19 +551,16 @@ str_match(x, regex)
 ```
 
 The function extracts the overall match to the pattern, as well as the match to
-each group. The pattern in this example doesn't work for all possible email
-addresses, since user names can contain dots and other characters that are not
+each group.
+
+The pattern in this example doesn't work for all possible email addresses,
+since user names can contain dots and other characters that are not
 alphanumeric. You could generalize the pattern if necessary. The point is that
 the `str_match` function and groups provide an extremely flexible way to
 extract data from strings.
 
 
-## Case Study: U.S. Warehouse Stocks
-
-<!-- FIXME -->
-:::{.callout-caution title="Work in Progress"}
-We're still developing this section. It might change soon!
-:::
+## Case Study: U.S. Cold Storage
 
 The U.S. Department of Agriculture (USDA) publishes a variety of datasets
 online, particularly through its National Agricultural Statistics Service
@@ -545,16 +570,24 @@ challenge.
 
 The USDA NASS posts [monthly reports][usda-warehouse] about stocks of
 agricultural products in refrigerated warehouses. In this case study, you'll
-use string processing functions to extract a table of data from the [December
-2022 report][usda-warehouse-dec22].
-
-To begin, download the report and save it somewhere on your computer. Then open
-the file in a text editor (or RStudio) to inspect it. The goal is to extract
-the first table, about "Nuts, Dairy Products, Frozen Eggs, and Frozen Poultry,"
-from the report.
+use string processing functions to extract a table of data from the December
+2022 report.
 
 [usda-warehouse]: https://usda.library.cornell.edu/concern/publications/pg15bd892
-[usda-warehouse-dec22]: https://downloads.usda.library.cornell.edu/usda-esmis/files/pg15bd892/ww72cn39q/5712nj41v/cost1222.txt
+
+:::{.callout-important}
+[Click here][usda-warehouse-dec22] to download the December 2022 Cold Storage
+report.
+
+If you haven't already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/` subdirectory. Download and save
+the dataset in the `data/` subdirectory.
+
+[usda-warehouse-dec22]: https://ucdavis.box.com/s/7jvab4ys2rfaisozq9078umx8g8vs953
+:::
+
+The goal is to extract the first table, about "Nuts, Dairy Products, Frozen
+Eggs, and Frozen Poultry," from the report.
 
 The report is a semi-structured mix of natural language text and fixed-width
 tables. As a consequence, most functions for reading tabular data will not work
@@ -568,7 +601,7 @@ element for each line. This makes the function useful for reading unstructured
 or semi-structured text. Use the function to read the report:
 
 ```{r}
-report = readLines("data/cost1222.txt")
+report = readLines("data/2022-12_cold-storage.txt")
 head(report)
 ```
 
@@ -623,21 +656,21 @@ table into columns:
 str_sub(bod[6], cols)
 ```
 
-Because of the way `str_sub` is vectorized, you can't process every line in the
-body of the table in one vectorized call. Instead, you can use `sapply` to call
-`str_sub` on each line:
+In order to process every line in the body of the table in one vectorized call,
+we have to use `str_sub_all` rather than `str_sub`. The result is a list with
+one element for each line (that is, a list of rows), but we want a list of
+columns, so we also need to transpose the list with the purrr package's
+`list_transpose` function:
 
 ```{r}
-# Set USE.NAMES to make the table easier to read
-tab = sapply(bod, str_sub, cols, USE.NAMES = FALSE)
-# The sapply function transposes the table
-tab = t(tab)
-head(tab)
+library("purrr")
+tab = str_sub_all(bod, cols)
+tab = list_transpose(tab)
 ```
 
-The columns still contain undesirable punctuation and whitespace, but you can
-remove these with `str_replace_all` and `str_trim`. Since the table is a
-matrix, it's necessary to use `apply` to process it column-by-column:
+The columns still contain undesirable punctuation and whitespace, but we can
+remove these with `str_replace_all` and `str_squish`. We can use purrr's `map`
+function to call these on each column:
 
 ```{r}
 # The regex means:
@@ -647,34 +680,45 @@ matrix, it's necessary to use `apply` to process it column-by-column:
 #   :     a colon
 #   $     the end of the line
 
-tab = apply(tab, 2, function(col) {
+tab = map(tab, \(col) {
   col = str_replace_all(col, ",|[.]*:$", "")
-  str_trim(col)
+  str_squish(col)
 })
-head(tab)
+tab[[1]]
 ```
 
-The first few rows and the last row can be removed, since they don't contain
-data. Then you can convert the table to a data frame and convert the individual
-columns to appropriate data types:
+To turn the list of columns into an actual data frame, we can use the dplyr
+package's `bind_cols` function:
 
 ```{r}
-tab = tab[-c(1:3, nrow(tab)), ]
-tab = data.frame(tab)
-tab[2:7] = lapply(tab[2:7], as.numeric)
+#| message: false
+library("dplyr")
+tab = bind_cols(tab)
 head(tab, 10)
 ```
 
-The data frame is now sufficiently clean that you could use it for a simple
-analysis. Of course, there are many things you could do to improve the
-extracted data frame, such as identifying categories and subcategories in the
-first column, removing rows that are completely empty, and adding column names.
-These entail more string processing and data frame manipulation---if you want
-to practice your R skills, try doing them on your own.
+The first few rows and the last row can be removed, since they don't contain
+data. Then we can convert the individual columns to appropriate data types:
 
+```{r}
+tab = tab[-c(1:3, nrow(tab)), ]
+tab[2:7] = map(tab[2:7], as.numeric)
+head(tab, 10)
+```
+
+The data frame is now sufficiently clean that we could use it for a simple
+analysis. Of course, there are many things we could do to improve the extracted
+data frame, such as identifying categories and subcategories in the first
+column, removing rows that are completely empty, and adding column names. These
+entail more string processing and data frame manipulation---if you want to
+practice your R skills, try doing them on your own.
 
 
 ## Regular Expression Examples {#sec-regular-expression-examples}
+
+:::{.callout-important}
+This section is intended as a reference and is not taught in the live session.
+:::
 
 This section provides examples of several different regular expression
 metacharacters and other features. Most of the examples use the `str_view`
@@ -740,7 +784,7 @@ match a single literal backslash in R, the code is:
 str_view("this\\that", "\\\\")
 ```
 
-Raw strings (see @sec-raw-strings) make regular expressions easier to read,
+Raw strings (see @tip-raw-strings) make regular expressions easier to read,
 because they make backslashes literal (but they still mark the beginning of an
 escape sequence in regex). You can use a raw string to write the above as:
 
