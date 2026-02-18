@@ -25,10 +25,9 @@ the time, you need to know how to work with strings so that you can fix
 whatever went wrong and convert the data yourself.
 
 This section introduces several fundamental concepts related to working with
-strings. The next section, Section \@ref(the-stringr-package), describes the
-stringr package for working with strings. The last section, Section
-\@ref(regular-expressions), builds on both and explains how to do powerful
-pattern matching.
+strings. The next section, @sec-the-stringr-package, describes the stringr
+package for working with strings. The last section, @sec-regular-expressions,
+builds on both and explains how to do powerful pattern matching.
 
 
 ### Printing
@@ -45,9 +44,6 @@ To print the actual characters in a string, use the `message` function.
 
 This important difference in how the `print` and `message` functions print
 strings is demonstrated in the next section.
-
-You can learn more about different ways to print output in R by reading Section
-\@ref(printing-output).
 
 
 ### Escape Sequences
@@ -100,11 +96,11 @@ Other programming languages also use escape sequences, and many of them are the
 same as in R.
 
 
-### Raw Strings
+### Raw Strings {#sec-raw-strings}
 
 A **raw string** is a string where escape sequences are turned off. Raw strings
-are especially useful for writing regular expressions (covered in Section
-\@ref(regular-expressions)).
+are especially useful for writing regular expressions (covered in
+@sec-regular-expressions).
 
 Raw strings begin with `r"` and an opening delimiter `(`, `[`, or `{`. Raw
 strings end with a matching closing delimiter and quote. For example:
@@ -208,12 +204,12 @@ before or after you read it into R, and for that you'll find familiarity with
 string processing invaluable.
 
 
-### The stringr Package
+### The stringr Package {#sec-the-stringr-package}
 
 Although R has built-in functions for string processing, we recommend using the
 [stringr][] package for all of your string processing needs. The package is
-part of the Tidyverse, a collection of packages introduced in Section
-\@ref(the-tidyverse). Major advantages of stringr over other packages and R's
+part of the Tidyverse, a collection of packages introduced in
+@sec-the-tidyverse. Major advantages of stringr over other packages and R's
 built-in functions include:
 
 * Correctness: the package builds on [International Components for Unicode
@@ -301,7 +297,7 @@ documentation's [reference page][stringr-ref] and the
 [stringr-cheatsheet]: https://github.com/rstudio/cheatsheets/blob/master/strings.pdf
 
 
-### Regular Expressions
+### Regular Expressions {#sec-regular-expressions}
 
 The stringr functions use a special language called **regular expressions** or
 **regex** to describe patterns in strings. Many other programming languages
@@ -318,7 +314,7 @@ This table lists some of the most useful metacharacters:
 Metacharacter | Meaning
 ------------- | -------
 `.`           | any one character (wildcard)
-``\``         | escape character (in both R and regex), see Section \@ref(escape-sequences)
+``\``         | escape character (in both R and regex), see @sec-escape-sequences
 `^`           | the beginning of string (not a character)
 `$`           | the end of string (not a character)
 `[ab]`        | one character, either `'a'` or `'b'`
@@ -329,7 +325,7 @@ Metacharacter | Meaning
 `()`          | make a group
 `|`           | match left OR right side (not a character)
 
-Section \@ref(regular-expression-examples) provides examples of how most of the
+@sec-regular-expression-examples provides examples of how most of the
 metacharacters work. Even more examples are presented in the stringr package's
 [regular expressions vignette][stringr-regex]. You can find a complete listing
 of regex metacharacters in `?regex` or on the stringr
@@ -482,14 +478,14 @@ result[, 1]
 ```
 
 
-### Extracting Matches
+### Extracting Matches {#sec-extracting-matches}
 
 Occasionally, you might need to extract parts of a string in a more complicated
 way than string splitting allows. One solution is to write a regular expression
 that will match all of the data you want to capture, with parentheses `( )`,
 the regex metacharacter for a group, around each distinct value. Then you can
-use the `str_match` function to extract the groups. Section \@ref(groups)
-presents some examples of regex groups.
+use the `str_match` function to extract the groups. @sec-groups presents some
+examples of regex groups.
 
 For example, suppose you want to split an email address into three parts: the
 user name, the domain name, and the [top-level domain][tld]. To create a
@@ -668,7 +664,7 @@ to practice your R skills, try doing them on your own.
 
 
 
-## Regular Expression Examples
+## Regular Expression Examples {#sec-regular-expression-examples}
 
 This section provides examples of several different regular expression
 metacharacters and other features. Most of the examples use the `str_view`
@@ -700,7 +696,7 @@ str_view(x, ".")
 ```
 
 
-### Escape Sequences
+### Escape Sequences {#sec-escape-sequences}
 
 Like R, regular expressions can contain escape sequences that begin with a
 backslash. These are computed separately and after R escape sequences. The main
@@ -725,10 +721,9 @@ match a single literal backslash in R, the code is:
 str_view("this\\that", "\\\\")
 ```
 
-Raw strings (see Section \@ref(raw-strings)) make regular expressions easier to
-read, because they make backslashes literal (but they still mark the beginning
-of an escape sequence in regex). You can use a raw string to write the above
-as:
+Raw strings (see @sec-raw-strings) make regular expressions easier to read,
+because they make backslashes literal (but they still mark the beginning of an
+escape sequence in regex). You can use a raw string to write the above as:
 
 ```{r}
 str_view(r"(this\that)", r"(\\)")
@@ -838,11 +833,11 @@ str_view("abbabbba", ".+?a")
 ```
 
 
-### Groups
+### Groups {#sec-groups}
 
 In regex, parentheses `( )` denote a **group**. The parentheses themselves
 don't count as characters in the pattern. Groups are useful for repeating or
-extracting specific parts of a pattern (see Section \@ref(extracting-matches)).
+extracting specific parts of a pattern (see @sec-extracting-matches).
 
 Quantifiers can act on groups in addition to individual characters. For
 example, suppose you want to make the entire substring `", dogs,"` optional in
