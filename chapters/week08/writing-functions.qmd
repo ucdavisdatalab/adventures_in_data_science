@@ -1,1 +1,269 @@
 # Writing Functions
+
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Write functions to organize and encapsulate reusable code
+:::
+
+By now, you've learned all of the basic skills necessary to explore a data set
+in R. The focus of this chapter is how to organize your code so that it's
+concise, clear, and easy to automate. This will help you and your collaborators
+avoid tedious, redundant work, reproduce results efficiently, and run code in
+specialized environments for scientific computing, such as high-performance
+computing clusters.
+
+
+## Functions
+
+The main way to interact with R is by calling functions, which was first
+explained way back in @sec-calling-functions. This section explains how to
+write your own functions.
+
+:::{.callout-note title="The Parts of a Function"}
+Think of a function as a factory. It takes raw materials, runs them through
+some machinery, and produces a final product:
+
+1. Raw materials: the inputs to a function are called **arguments**. Each
+   argument is assigned to a **parameter**, a placeholder variable.
+
+2. Machinery: code in the **body** of a function computes something from the
+   arguments.
+
+3. Final product: the output of a function is called the **return value**.
+
+<!-- ![](/images/functions.png) -->
+:::
+
+Functions are building blocks for solving larger problems. Take a
+divide-and-conquer approach, breaking large problems into smaller steps. Write
+a short function for each step. This approach makes it easier to:
+
+* Test that each step works correctly.
+* Modify, reuse, or repurpose a step.
+
+The `function` keyword defines a new function. Here's the syntax:
+
+```r
+function(parameter1, parameter2, ...) {
+  # Your code goes here
+
+  # The result goes here
+}
+```
+
+<!--
+The body of a function is usually surrounded by curly braces `{ }`, although
+they're optional if the body only contains one line of code. Indenting code
+inside of curly braces by 2-4 spaces also helps make it visually distinct from
+other code.
+-->
+
+A function can have any number of parameters, and will automatically return the
+value of the last line of its body. Generally, when you define a function, you
+should assign it to a variable, so that you can use it later.
+
+:::{.callout-tip}
+Choosing descriptive variable names is a good habit. For functions, that means
+choosing a name that describes what the function does. It often makes sense to
+use verbs in function names.
+:::
+
+For example, let's create a function that detects negative numbers. It should
+take a vector of numbers as input, compare them to zero, and then return the
+logical result from the comparison as output. Here's the code:
+
+```{r}
+is_negative = function(x) x < 0
+```
+
+The name of the function, `is_negative`, describes what the function does and
+includes a verb. The parameter `x` is the input. The return value is the result
+`x < 0`.
+
+Any time you write a function, the first thing you should do afterwards is test
+that it actually works. Try the `is_negative` function out on a few test cases:
+
+```{r}
+is_negative(6)
+is_negative(-1.1)
+
+x = c(5, -1, -2, 0, 3)
+is_negative(x)
+```
+
+:::{.callout-tip}
+Before you write a function, it's useful to go through several steps:
+
+1. Write down what you want to do, in detail. It can also help to
+   draw a picture of what needs to happen.
+
+2. Check whether there's already a built-in function. Search online and in the
+   R documentation.
+
+3. Write the code to handle a simple case first. For data science
+   problems, use a small dataset at this step.
+:::
+
+:::{.callout-note collapse=true title="Viewing Function Definitions"}
+Almost every command in R is a function, even the arithmetic operators and the
+parentheses! You can view the definition of a function by typing its name
+without trailing parentheses (in contrast to how you call functions).
+
+For example, let's look at the body of the `append` function, which appends a
+value to the end of a list or vector:
+
+```{r}
+append
+```
+
+Don't worry if you can't understand everything the `append` function's code
+does yet. It will make more sense later on, after you've written a few
+functions of your own.
+
+Many of R's built-in functions are not entirely written in R code. You can spot
+these by calls to the special `.Primitive` or `.Internal` functions in their
+code.
+
+For instance, the `sum` function is not written in R code:
+
+```{r}
+sum
+```
+:::
+
+### Example: Getting Largest Values
+
+Let's write a another function. This one will get the largest values in a
+vector. The inputs or arguments to the function will be the vector in question
+and also the number of values to get. Let's call these `vec` and `n`,
+respectively. The result will be a vector of the `n` largest elements. Here's
+one way to write the function:
+
+```{r}
+get_largest = function(vec, n) {
+  sorted = sort(vec, decreasing = TRUE)
+  head(sorted, n)
+}
+```
+
+The name of the function, `get_largest`, describes what the function does and
+includes a verb. If this function will be used frequently, a shorter name, such
+as `largest`, might be preferable (compare to the `head` function).
+
+Try the `get_largest` function on a few test cases to make sure it works
+correctly:
+
+```{r}
+x = c(1, 10, 20, -3)
+get_largest(x, 2)
+get_largest(x, 3)
+
+y = c(-1, -2, -3)
+get_largest(y, 2)
+
+z = c("d", "a", "t", "a", "l", "a", "b")
+get_largest(z, 3)
+```
+
+Notice that the parameters `vec` and `n` inside the function do not exist as
+variables outside of the function:
+
+```{r, error = TRUE}
+vec
+```
+
+In general, R keeps parameters and variables you define inside of a function
+separate from variables you define outside of a function. You can read more
+about the specific rules for how R searches for variables in DataLab's
+[Intermediate R workshop reader][intermediate-r].
+
+[intermediate-r]: https://ucdavisdatalab.github.io/workshop_intermediate_r/
+
+As a function for quickly summarizing data, `get_largest` would be more
+convenient if the parameter `n` for the number of values to return was optional
+(again, compare to the `head` function). You can make the parameter `n`
+optional by setting a **default argument**: an argument assigned to the
+parameter if no argument is assigned in the call to the function. You can use
+`=` to assign default arguments to parameters when you define a function with
+the `function` keyword.
+
+Here's a new definition of `get_largest` with the default `n = 5`:
+
+```{r}
+get_largest = function(vec, n = 5) {
+  sorted = sort(vec, decreasing = TRUE)
+  head(sorted, n)
+}
+```
+
+After making a change, it's a good idea to test the function again:
+
+```{r}
+get_largest(x)
+
+get_largest(y)
+
+get_largest(z)
+```
+
+:::{.callout-note collapse=true title="The `return` Keyword"}
+We've already seen that a function will automatically return the value of its
+last line. The `return` keyword causes a function to return a result
+immediately, without running any subsequent code in its body.
+
+It only makes sense to use `return` from inside of an if-expression. If your
+function doesn't have any if-expressions, you don't need to use `return`.
+
+For example, suppose you want the `get_largest` function to immediately return
+`NULL` if the argument for `vec` is a list. Here's the code, along with some
+test cases:
+
+```{r}
+get_largest = function(vec, n = 5) {
+  if (is.list(vec))
+    return(NULL)
+
+  sorted = sort(vec, decreasing = TRUE)
+  head(sorted, n)
+}
+
+get_largest(x)
+
+get_largest(z)
+
+get_largest(list(1, 2))
+```
+
+Alternatively, you could make the function raise an error by calling the `stop`
+function. Whether it makes more sense to return `NULL` or print an error
+depends on how you plan to use the `get_largest` function.
+
+Notice that the last line of the `get_largest` function still doesn't use the
+`return` keyword. It's idiomatic to only use `return` when strictly necessary.
+:::
+
+### Example: Returning Multiple Values
+
+A function returns one R object, but sometimes computations have multiple
+results. In that case, return the results in a vector, list, or other data
+structure.
+
+For example, let's make a function that computes the mean and median for a
+vector. We'll return the results in a named list, although we could also use a
+named vector:
+
+```{r}
+compute_mean_med = function(x) {
+  m1 = mean(x)
+  m2 = median(x)
+  list(mean = m1, median = m2)
+}
+
+compute_mean_med(c(1, 2, 3, 1))
+```
+
+The names make the result easier to understand for the caller of the function,
+although they certainly aren't required here.
+
+

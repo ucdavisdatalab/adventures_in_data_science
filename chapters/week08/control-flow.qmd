@@ -1,1 +1,773 @@
+```{r, echo = FALSE}
+terns = read.csv("data/2000-2023_ca_least_tern.csv")
+```
+
 # Control Flow
+
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Create code that only runs when a condition is satisfied
+* Identify when a problem requires iteration
+* Select appropriate iteration strategies for problems
+:::
+
+
+## Conditional Expressions
+
+Sometimes you'll need code to do different things, depending on a condition.
+You can use an **if-expression** to write conditional code.
+
+For example, suppose you want your code to generate a different greeting
+depending on an input name:
+
+```{r}
+name = "Nick"
+
+# Default greeting
+greeting = "Nice to meet you!"
+
+if (name == "Nick") {
+   greeting = "Hi Nick, nice to see you again!"
+}
+
+greeting
+```
+
+Indent code inside of the if-expression by 2 or 4 spaces. Indentation makes
+your code easier to read.
+
+:::{.callout-warning}
+The condition in an if-expression has to have length 1:
+
+```{r, error = TRUE}
+name = c("Nick", "Susan")
+
+# Default greeting
+greeting = "Nice to meet you!"
+
+if (name == "Nick") {
+   greeting = "Hi Nick, nice to see you again!"
+}
+```
+:::
+
+Use the `else` keyword if you want to add an alternative when the condition is
+`FALSE`. So the previous code can also be written as:
+
+```{r}
+name = "Nick"
+
+if (name == "Nick") {
+   greeting = "Hi Nick, nice to see you again!"
+} else {
+  # Default greeting
+  greeting = "Nice to meet you!"
+}
+
+greeting
+```
+
+Use `else if` with a condition if you want to add an alternative to the first
+condition that also has its own condition. Only the first case where a
+condition is `TRUE` will run. You can use `else if` as many times as you want,
+and can also use `else`. For example:
+
+```{r}
+name = "Susan"
+
+if (name == "Nick") {
+   greeting = "Hi Nick, nice to see you again!"
+} else if (name == "Peter") {
+   greeting = "Go away Peter, I'm busy!"
+} else {
+   greeting = "Nice to meet you!"
+}
+
+greeting
+```
+
+You can create compound conditions with R's logic operators `!`, `&`, and `|`
+(see @sec-logic). For example:
+
+```{r}
+name1 = "Wesley"
+name2 = "Nick"
+
+if (name1 == "Wesley" & name2 == "Nick") {
+  greeting = "These are the authors."
+} else {
+  greeting = "Who are these people?!"
+}
+
+greeting
+```
+
+You can write an if-statement inside of another if-statement. This is called
+**nesting** if-statements. Nesting is useful when you want to check a
+condition, do some computations, and then check another condition under the
+assumption that the first condition was `True`.
+
+:::{.callout-tip}
+If-statements correspond to **special cases** in your code. Lots of special
+cases in code makes the code harder to understand and maintain. If you find
+yourself using lots of if-statements, especially nested if-statements, consider
+whether there is a more general strategy or way to write the code.
+:::
+
+<!--
+If-expressions return the value of the last expression in the evaluated block:
+```{r}
+name = "Tom"
+msg = if (name == "Nick") {
+   "Hi Nick, nice to see you again!"
+} else {
+   "Nice to meet you!"
+}
+msg
+```
+
+Curly braces `{ }` are optional for single-line expressions:
+```{r}
+name = "Nick"
+msg = if (name == "Nick") "Hi Nick, nice to see you again!" else
+   "Nice to meet you!"
+msg
+```
+
+But you have to be careful if you don't use them:
+```{r, error = TRUE}
+# NO GOOD:
+msg = if (name == "Nick")
+   "Hi Nick, nice to see you again!"
+else
+   "Nice to meet you!"
+```
+
+The `else` block is optional:
+```{r}
+msg = "Hi"
+name = "Tom"
+if (name == "Nick")
+   msg = "Hi Nick, nice to see you again!"
+msg
+```
+
+When there's no `else` block, the value of the `else` block is `NULL`:
+```{r}
+name = "Tom"
+msg = if (name == "Nick")
+   "Hi Nick, nice to see you again!"
+msg
+```
+-->
+
+## Iteration
+
+R is powerful tool for automating tasks that have repetitive steps. For
+example, you can:
+
+* Apply a transformation to an entire column of data.
+* Compute distances between all pairs from a set of points.
+* Read a large collection of files from disk in order to combine and analyze
+  the data they contain.
+* Simulate how a system evolves over time from a specific set of starting
+  parameters.
+* Scrape data from the pages of a website.
+
+You can implement concise, efficient solutions for these kinds of tasks in R by
+using **iteration**, which means repeating a computation many times. R provides
+four different strategies for writing iterative code:
+
+1. Vectorization, where a function is implicitly called on each element of a
+   vector. This was introduced in @sec-vectorization.
+2. Apply functions, where a function is explicitly called on each element of a
+   data structure. This was introduced in @sec-apply-functions.
+3. Loops, where an expression is evaluated repeatedly until some condition is
+   met.
+4. Recursion, where a function calls itself.
+
+Vectorization is the most efficient and concise iteration strategy, but also
+the least flexible, because it only works with specific functions and with
+vectors. Apply functions are more flexible---they work with any function and
+any data structure with elements---but less efficient and less concise. Loops
+and recursion provide the most flexibility but are the least concise. Recursion
+tends to be the least efficient iteration strategy in R.
+
+<!--
+In recent versions of R, apply functions are slightly more efficient than
+loops.
+-->
+
+The rest of this section explains how to write loops and how to choose which
+iteration strategy to use. We assume you're already comfortable with
+vectorization and have at least some familiarity with apply functions.
+
+### For-Loops
+
+A **for-loop** evaluates the expressions in its body once for each element of a
+data structure. The syntax of a for-loop is:
+
+```r
+# DATA is the data structure
+#
+# X is one element of DATA, assigned automatically at the beginning of each
+# iteration
+#
+for (X in DATA) {
+  # Expression(s) to repeat.
+}
+```
+
+For example, to print out all the column names of the `terns` data, you can
+write:
+
+```{r}
+for (name in names(terns)) {
+  message(name)
+}
+```
+
+Within the body of a for-loop, you can compute values, check conditions, etc.
+
+<!--
+```{code-cell}
+for nests in terns["total_nests"]:
+    if nests > 100:
+        print(nests)
+```
+-->
+
+Oftentimes you'll want to save the result of the code you perform within a
+for-loop. The easiest way to do this is by creating an empty vector and using
+`c` or `append` to append values to it:
+
+```{r}
+values = c(10, 12, 11, 2, 3)
+diffs = c()
+
+for (i in seq(1, length(values) - 1)) {
+  a = values[[i]]
+  b = values[[i + 1]]
+  diffs = append(diffs, a - b)
+}
+
+diffs
+```
+
+This example is just for demonstration, since R's built-in `diff` function is a
+much more concise and efficient way to compute differences. The point is that
+when you use a loop, you have to create a data structure to store the results
+yourself.
+
+:::{.callout-warning}
+Appending values to a vector, as in the example, is quite inefficient. If you
+need to use a loop to produce a lot of results (say, more than 100):
+
+1. Before the loop, create a result vector that's the expected length of the
+   final result. Fill vector with 0s or some other placeholder value. You can
+   use functions such as `integer`, `numeric`, and `character` to do this.
+2. In the loop, use indexing to replace the elements of the result vector as
+   they're computed.
+
+Using this strategy, which is called **pre-allocation** the code in the example
+becomes:
+
+```{r}
+values = c(10, 12, 11, 2, 3)
+diffs = integer(length(values) - 1)
+
+for (i in seq(1, length(values) - 1)) {
+  a = values[[i]]
+  b = values[[i + 1]]
+  diffs[[i]] = a - b
+}
+
+diffs
+```
+:::
+
+### Planning for Iteration
+
+At first it might seem difficult to decide if and what kind of iteration to
+use. Start by thinking about whether you need to do something over and over. If
+you don't, then you probably don't need to use iteration. If you do, then try
+iteration strategies in this order:
+
+1. Vectorization
+2. Apply functions (or the purrr package's `map` functions)
+    * Try an apply function if iterations are independent.
+3. Loops
+    * Try a for-loop if some iterations depend on others.
+    <!--
+    * Try a while-loop if the number of iterations is unknown.
+    -->
+4. Recursion (which isn't covered here)
+    * Convenient for naturally recursive tasks (like Fibonacci), but often
+      there are faster solutions.
+
+Start by writing the code for just one iteration. Make sure that code works;
+it's easy to test code for one iteration.
+
+When you have one iteration working, then try using the code with an iteration
+strategy (you will have to make some small changes). If it doesn't work, try to
+figure out which iteration is causing the problem. One way to do this is to use
+`message` to print out information. Then try to write the code for the broken
+iteration, get that iteration working, and repeat this whole process.
+
+
+## Case Study: CA Hospital Utilization
+
+The California Department of Health Care Access and Information (HCAI) requires
+hospitals in the state to submit detailed information each year about how many
+beds they have and the total number of days for which each bed was occupied.
+The HCAI publishes the data to the [California Open Data Portal][data.ca.gov].
+Let's use R to read data from 2016 to 2023 and investigate whether hospital
+utilization is noticeably different in and after 2020.
+
+[data.ca.gov]: https://data.ca.gov/
+
+The data set consists of a separate Microsoft Excel file for each year. Before
+2018, HCAI used a data format (in Excel) called ALIRTS. In 2018, they started
+collecting more data and switched to a data format called SIERA. The 2018 data
+file contains a **crosswalk** that shows the correspondence between SIERA
+columns and ALIRTS columns.
+
+:::{.callout-important}
+[Click here][ca-hospitals] to download the CA Hospital Utilization data set (8
+Excel files).
+
+If you haven’t already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/ca_hospitals` subdirectory. Download
+and save the data set in the `data/ca_hospitals` subdirectory.
+
+[ca-hospitals]: https://ucdavis.box.com/s/g5tanw22647dw3uyhv3om0zt3duuj5lc
+:::
+
+When you need to solve a programming problem, get started by writing some
+comments that describe the problem, the inputs, and the expected output. Try to
+be concrete. This will help you clarify what you're trying to achieve and serve
+as a guiding light while you work.
+
+As a programmer (or any kind of problem-solver), you should always be on the
+lookout for ways to break problems into smaller, simpler steps. Think about
+this when you frame a problem. Small steps are easier to reason about,
+implement, and test. When you complete one, you also get a nice sense of
+progress towards your goal.
+
+For the CA Hospital Utilization data set, our goal is to investigate whether
+there was a change in hospital utilization in 2020. Before we can do any
+investigation, we need to read the files into R. The files all contain tabular
+data and have similar formats, so let's try to combine them into a single data
+frame. We'll say this in the framing comments:
+
+```{r}
+# Read the CA Hospital Utilization data set into R. The inputs are yearly Excel
+# files (2016-2023) that need to be combined. The pre-2018 files have a
+# different format from the others. The result should be a single data frame
+# with information about bed and patient counts.
+#
+# After reading the data set, we'll investigate utilization in 2020.
+```
+
+"Investigate utilization" is a little vague, but for an exploratory data
+analysis, it's hard to say exactly what to do until you've started working with
+the data.
+
+We need to read multiple files, but we can simplify the problem by starting
+with just one. Let's start with the 2023 data. It's in an Excel file, which you
+can read with the `read_excel` function from the readxl package. If it's your
+first time using the readxl package, you'll need to install it:
+
+```r
+install.packages("readxl")
+```
+
+The `read_excel` function requires the path to the file as the first argument.
+You can optionally provide the sheet name or number (starting from 1) as the
+second argument. Open up the Excel file in your computer's spreadsheet program
+and take a look. There are multiple sheets, and the data about beds and
+patients are in the second sheet. Back in R, read just the second sheet:
+
+```{r}
+library("readxl")
+
+path = "data/ca_hospitals/hosp23_util_data_final.xlsx"
+sheet = read_excel(path, sheet = 2)
+head(sheet)
+```
+
+The first four rows contain metadata about the columns. The first hospital,
+Alameda Hospital, is listed in the fifth row. So let's remove the first four
+rows:
+
+```{r}
+sheet = sheet[-(1:4), ]
+head(sheet)
+```
+
+Some data sets also have metadata in the last rows, so let's check for that
+here:
+
+```{r}
+tail(sheet)
+```
+
+Sure enough, the last row contains what appears to be a count of the hospitals
+rather than a hospital. Let's remove it by calling `head` with a negative
+number of elements, which removes that many elements from the end:
+
+```{r}
+sheet = head(sheet, -1)
+tail(sheet)
+```
+
+There are a lot of columns in sheet, so let's make a list of just a few that
+we'll use for analysis. We'll keep:
+
+* Columns with facility name, location, and operating status
+* All of the columns whose names start with `TOT`, because these are totals for
+  number of beds, number of census-days, and so on.
+* Columns about acute respiratory beds, with names that contain `RESPIRATORY`,
+  because they might also be relevant.
+
+We can use the stringr package, which provides string processing functions, to
+help us get the `TOT` and `RESPIRATORY` column names. If it's your first time
+using the stringr package, you'll have to install it:
+
+```r
+install.packages("stringr")
+```
+
+We can use stringr's `str_starts` function to check whether column names start
+with `TOT` and its `str_detect` function to check whether column names contain
+`RESPIRATORY`:
+
+```{r}
+library("stringr")
+
+facility_cols = c(
+  "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR", "FACILITY_LEVEL",
+  "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+)
+
+cols = names(sheet)
+tot_cols = cols[str_starts(cols, "TOT")]
+respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+```
+
+The `TOT` and `RESPIRATORY` columns all contain numbers, but the element type
+is `character`, so let's cast to numbers them with `as.numeric`. We'll also add
+a column with the year:
+
+```{r}
+numeric_cols = c(tot_cols, respiratory_cols)
+sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+sheet$year = 2023
+```
+
+Now we'll select only the columns we identified as useful:
+
+```{r}
+sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+head(sheet)
+```
+
+Lowercase names are easier to type, so let's also make all of the names
+lowercase with stringr's `str_to_lower` function:
+
+```{r}
+names(sheet) = str_to_lower(names(sheet))
+head(sheet)
+```
+
+We've successfully read one of the files! Since the 2018-2023 files all have
+the same format, it's likely that we can use almost the same code for all of
+them. Any time you want to reuse code, it's a sign that you should write a
+function, so that's what we'll do. We'll take all of the code we have so far
+and put it in the body of a function called `read_hospital_data`, adding some
+comments to indicate the steps:
+
+```r
+read_hospital_data = function() {
+  # Read the 2nd sheet of the file.
+  path = "data/ca_hospitals/hosp23_util_data_final.xlsx"
+  sheet = read_excel(path, sheet = 2)
+
+  # Remove the first 4 and last row.
+  sheet = sheet[-(1:4), ]
+  sheet = head(sheet, -1)
+
+  # Select only a few columns of interest.
+  facility_cols = c(
+    "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR",
+    "FACILITY_LEVEL", "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+  )
+
+  cols = names(sheet)
+  tot_cols = cols[str_starts(cols, "TOT")]
+  respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+
+  numeric_cols = c(tot_cols, respiratory_cols)
+  sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+  sheet$year = 2023
+
+  sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+  # Rename the columns to lowercase.
+  names(sheet) = str_to_lower(names(sheet))
+
+  sheet
+}
+```
+
+As it is, the function still only reads the 2023 file. The other files have
+different paths, so the first thing we need to do is make the `path` variable a
+parameter. We'll also make a `year` parameter, for the year value inserted as a
+column:
+
+```{r}
+read_hospital_data = function(path, year) {
+  # Read the 2nd sheet of the file.
+  sheet = read_excel(path, sheet = 2)
+
+  # Remove the first 4 and last row.
+  sheet = sheet[-(1:4), ]
+  sheet = head(sheet, -1)
+
+  # Select only a few columns of interest.
+  facility_cols = c(
+    "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR",
+    "FACILITY_LEVEL", "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+  )
+
+  cols = names(sheet)
+  tot_cols = cols[str_starts(cols, "TOT")]
+  respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+
+  numeric_cols = c(tot_cols, respiratory_cols)
+  sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+  sheet$year = year
+
+  sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+  # Rename the columns to lowercase.
+  names(sheet) = str_to_lower(names(sheet))
+
+  sheet
+}
+```
+
+Test the function out on a few of the files to make sure it works correctly:
+
+```{r}
+head(
+  read_hospital_data(
+    "data/ca_hospitals/hosp23_util_data_final.xlsx", 2023
+  )
+)
+```
+
+```{r}
+head(
+  read_hospital_data(
+    "data/ca_hospitals/hosp21_util_data_final-revised-06.15.2023.xlsx", 2021
+  )
+)
+```
+
+The function appears to work correctly for two of the files, so let's work
+towards trying it on all of the 2018-2023 files. We can use the built-in
+`list.files` function to get the paths to the files by setting `full.names =
+TRUE` (otherwise it just returns the names of the files):
+
+```{r}
+paths = list.files("data/ca_hospitals/", full.names = TRUE)
+paths
+```
+
+In addition to the file paths, we also need the year for each file.
+Fortunately, the last two digits of the year are included in each file's name.
+We can write a function to get these. We'll use R's built-in `basename`
+function to get the file names from the paths, and stringr's `str_sub` function
+to get a substring (the year) from the name:
+
+```{r}
+get_hospital_year = function(path) {
+  name = basename(path)
+  year = str_sub(name, 5, 6)
+  as.integer(year) + 2000
+}
+
+get_hospital_year(paths[1])
+```
+
+<!--
+Now we can use a for-loop to iterate over all of the files. We'll skip the
+pre-2018 files for now:
+
+```{r}
+hosps = list()
+
+for (i in seq_along(paths)) {
+  path = paths[[i]]
+  year = get_hospital_year(path)
+  # Only years 2018-2023.
+  if (year >= 2018) {
+    hosp = read_hospital_data(path, year)
+    hosps[[i]] = hosp
+  }
+}
+
+length(hosps)
+```
+-->
+
+With that done, we need to read the pre-2018 files. In the 2018 file, the
+fourth sheet is a crosswalk that shows which columns in the pre-2018 files
+correspond to columns in the later files. Let's write some code to read the
+crosswalk. First, read the sheet:
+
+```{r}
+path = "data/ca_hospitals/hosp18_util_data_final.xlsx"
+cwalk = read_excel(path, sheet = 4)
+head(cwalk)
+```
+
+The new and old column names are in the fourth and fifth columns, respectively,
+so we'll get just those:
+
+```{r}
+cwalk = cwalk[, 4:5]
+head(cwalk)
+```
+
+Finally, let's turn the `cwalk` data frame into a named vector. We'll make the
+old column names the names and the new column names the elements. This way we
+can easily look up the new name for any of the old columns by indexing. Some of
+the column names in `cwalk` have extra spaces at the end, so we'll use
+stringr's `str_trim` function to remove them:
+
+```{r}
+cwalk_names = str_trim(cwalk[[2]])
+cwalk = str_trim(cwalk[[1]])
+names(cwalk) = cwalk_names
+
+head(cwalk)
+```
+
+We can now define a new version of the `read_hospital_data` function that uses
+the crosswalk to change the column names when `year < 2018`. Let's also change
+function to exclude columns with `ALOS` in the name, because they have no
+equivalent in the pre-2018 files:
+
+
+```{r}
+read_hospital_data = function(path, year) {
+  # Read the 2nd sheet of the file.
+  sheet = read_excel(path, sheet = 2)
+
+  # Remove the first 4 and last row.
+  sheet = sheet[-(1:4), ]
+  sheet = head(sheet, -1)
+
+  # Fix pre-2018 column names.
+  if (year < 2018) {
+    new_names = cwalk[names(sheet)]
+    new_names[is.na(new_names)] = names(sheet)[is.na(new_names)]
+    names(sheet) = new_names
+  }
+
+  # Select only a few columns of interest.
+  facility_cols = c(
+    "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR",
+    "FACILITY_LEVEL", "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+  )
+
+  cols = names(sheet)
+  tot_cols = cols[str_starts(cols, "TOT")]
+  respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+
+  numeric_cols = c(tot_cols, respiratory_cols)
+  numeric_cols = numeric_cols[!str_detect(numeric_cols, "ALOS")]
+  sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+  sheet$year = year
+
+  sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+  # Rename the columns to lowercase.
+  names(sheet) = str_to_lower(names(sheet))
+
+  sheet
+}
+```
+
+Now we can test the function on all of the files. We'll use a for-loop to
+iterate over all of the paths, read the data for each one, and store the result
+in a list:
+
+```{r}
+hosps = list()
+
+for (i in seq_along(paths)) {
+  path = paths[[i]]
+  year = get_hospital_year(path)
+  hosp = read_hospital_data(path, year)
+  hosps[[i]] = hosp
+}
+
+length(hosps)
+```
+
+We can use the `do.call` and `rbind` functions to bind the rows, or stack, the
+list of data frames:
+
+```{r}
+hosps = do.call(rbind, hosps)
+head(hosps)
+```
+
+We've finally got all of the data in a single data frame!
+
+To begin to address whether hospital utilization changed in 2020, let's make a
+bar plot of total census-days:
+
+```{r}
+library("ggplot2")
+
+(
+    ggplot(hosps) +
+    aes(x = year, weight = tot_cen_days) +
+    geom_bar()
+)
+```
+
+According to the plot, total census-days was slightly lower in 2020 than in
+2019. This is a bit surprising, but it's possible that California hospitals
+typically operate close to maximum capacity and were not able to substantially
+increase the number of beds in 2020 in response to the COVID-19 pandemic. You
+can use other columns in the data set, such as `tot_lic_beds` or
+`tot_lic_bed_days`, to check this.
+
+Let's also look at census-days for acute respiratory care:
+
+
+```{r}
+(
+    ggplot(hosps) +
+    aes(x = year, weight = acute_respiratory_care_cen_days) +
+    geom_bar()
+)
+```
+
+In this plot, there's a clear uptick in census-days in 2020, and then an
+interesting decrease to below 2019 levels in the years following. Again, you
+could use other columns in the data set to investigate this further. We'll end
+this case study here, having accomplished the difficult task of reading the
+data and the much easier task of doing a cursory preliminary analysis of the
+data.
