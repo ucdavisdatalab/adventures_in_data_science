@@ -3,24 +3,68 @@
 :::{.callout-note title="Learning Goals" collapse="false"}
 After this lesson, you should be able to:
 
-* Write functions to organize and encapsulate reusable code
+* Explain why someone might want to write a function
+* Describe the syntax of a function definition
+* Describe a strategy for writing functions
+* Write functions in order to better organize code
 :::
 
-By now, you've learned all of the basic skills necessary to explore a data set
-in R. The focus of this chapter is how to organize your code so that it's
-concise, clear, and easy to automate. This will help you and your collaborators
-avoid tedious, redundant work, reproduce results efficiently, and run code in
-specialized environments for scientific computing, such as high-performance
-computing clusters.
-
-
-## Functions
+At this point, you've learned all of the basic skills necessary to explore a
+dataset in R. This chapter and the next focus on how to organize and automate
+your code so that it's concise, clear, and effective. This will help you and
+your collaborators avoid tedious, redundant work, reproduce results
+efficiently, and run code in specialized environments for research computing,
+such as high-performance computing clusters.
 
 The main way to interact with R is by calling functions, which was first
-explained way back in @sec-calling-functions. This section explains how to
+explained way back in @sec-calling-functions. This chapter explains how to
 write your own functions.
 
-:::{.callout-note title="The Parts of a Function"}
+
+## Why Write a Function?
+
+Two reasons to write functions are to:
+
+1. **Reuse** general-purpose code. Suppose, for example, that every time you
+   read a data frame into R, you standardize the column names by making them
+   lowercase and replacing spaces with underscores. By turning the code to do
+   this into a function, you can reuse it across many projects without having
+   to copy, paste, and edit (which can introduce errors).
+2. **Encapsulate** code that carries out a single step in a multi-step
+   computation. For instance, imagine you need to read a dataset, clean it, and
+   finally transform some of the features before you do any analysis. Writing a
+   function for each step (`read_data`, `clean_data`, `transform_data`, and so
+   on) makes it easier to describe the entire computation in code without being
+   overwhelmed by the details. It also means you can focus on one specific step
+   at a time: while you work on `clean_data`, the focus is on cleaning, and you
+   can assume reading the data will be handled elsewhere. You can also test
+   each function to make sure that step works correctly before moving on to the
+   next.
+
+Functions are the building blocks for solving problems. Break problems down
+into steps and write a function for each step. That way you can:
+
+* Test that each step works correctly.
+* Describe the sequence of steps concisely.
+* Modify, reuse, or repurpose steps.
+
+At first, you might not know how small (or big) each step should be. As a
+suggestion, *most* functions should be more than one line of code but short
+enough to fit on one screen.
+
+:::{.callout-tip}
+Writing code is a lot like writing an essay. Each line of code is a sentence
+that expresses one or two ideas. Each function definition is a paragraph, and
+should have a singular purpose and coherent flow. You can use comments to make
+an outline and as clarifying footnotes.
+
+As with any writing, you'll typically need to go through several revisions
+before you arrive at exactly what you want.
+:::
+
+
+## Function Definitions
+
 Think of a function as a factory. It takes raw materials, runs them through
 some machinery, and produces a final product:
 
@@ -32,77 +76,28 @@ some machinery, and produces a final product:
 
 3. Final product: the output of a function is called the **return value**.
 
-<!-- ![](/images/functions.png) -->
-:::
+The `function` keyword defines a new function. It can have any number of
+parameters. The body must be enclosed in curly braces `{ }` if it's more than
+one line of code. The function will automatically return the value of its last
+line. So a function definition looks like this:
 
-Functions are building blocks for solving larger problems. Take a
-divide-and-conquer approach, breaking large problems into smaller steps. Write
-a short function for each step. This approach makes it easier to:
-
-* Test that each step works correctly.
-* Modify, reuse, or repurpose a step.
-
-The `function` keyword defines a new function. Here's the syntax:
-
-```r
+```{r}
+#| eval: false
 function(parameter1, parameter2, ...) {
-  # Your code goes here
+  # The body of the function (the code) goes between the curly braces { }.
 
-  # The result goes here
+  # The return value (the result) goes on the last line.
 }
 ```
 
-<!--
-The body of a function is usually surrounded by curly braces `{ }`, although
-they're optional if the body only contains one line of code. Indenting code
-inside of curly braces by 2-4 spaces also helps make it visually distinct from
-other code.
--->
+When you define a function, you'll usually want to save it in a variable so
+that you can call it later. Choose a descriptive name that describes what the
+function does. Since functions do things, it often makes sense to include a
+verb in the name.
 
-A function can have any number of parameters, and will automatically return the
-value of the last line of its body. Generally, when you define a function, you
-should assign it to a variable, so that you can use it later.
-
-:::{.callout-tip}
-Choosing descriptive variable names is a good habit. For functions, that means
-choosing a name that describes what the function does. It often makes sense to
-use verbs in function names.
-:::
-
-For example, let's create a function that detects negative numbers. It should
-take a vector of numbers as input, compare them to zero, and then return the
-logical result from the comparison as output. Here's the code:
-
-```{r}
-is_negative = function(x) x < 0
-```
-
-The name of the function, `is_negative`, describes what the function does and
-includes a verb. The parameter `x` is the input. The return value is the result
-`x < 0`.
-
-Any time you write a function, the first thing you should do afterwards is test
-that it actually works. Try the `is_negative` function out on a few test cases:
-
-```{r}
-is_negative(6)
-is_negative(-1.1)
-
-x = c(5, -1, -2, 0, 3)
-is_negative(x)
-```
-
-:::{.callout-tip}
-Before you write a function, it's useful to go through several steps:
-
-1. Write down what you want to do, in detail. It can also help to
-   draw a picture of what needs to happen.
-
-2. Check whether there's already a built-in function. Search online and in the
-   R documentation.
-
-3. Write the code to handle a simple case first. For data science
-   problems, use a small dataset at this step.
+:::{.callout-important}
+Indent lines of code between curly braces by 2 or 4 spaces to make it easier to
+see where the block of code starts and ends.
 :::
 
 :::{.callout-note collapse=true title="Viewing Function Definitions"}
@@ -132,13 +127,139 @@ sum
 ```
 :::
 
-### Example: Getting Largest Values
+As a demonstration, let's create a function that detects negative numbers. It
+should take a vector of numbers as input, compare them to zero, and then return
+the logical result from the comparison as output. Here's the code:
 
-Let's write a another function. This one will get the largest values in a
-vector. The inputs or arguments to the function will be the vector in question
-and also the number of values to get. Let's call these `vec` and `n`,
-respectively. The result will be a vector of the `n` largest elements. Here's
-one way to write the function:
+```{r}
+is_negative = function(x) x < 0
+```
+
+The name of the function, `is_negative`, describes what the function does and
+includes a verb. The parameter `x` is the input. The return value is the result
+`x < 0`.
+
+Any time you write a function, the first thing you should do afterwards is test
+that it actually works. Try the `is_negative` function out on a few test cases:
+
+```{r}
+is_negative(6)
+is_negative(-1.1)
+
+x = c(5, -1, -2, 0, 3)
+is_negative(x)
+```
+
+:::{.callout-warning}
+Be cautious about using variables in the body of a function if they're assigned
+somewhere else. For example:
+
+```{r}
+x = 100
+
+f = function() x ** 2
+
+f()
+```
+
+Doing so makes your function harder for other people (and future you) to use
+because the inputs are not clearly labeled. It can also introduce subtle bugs.
+Use parameters for inputs instead:
+
+```{r}
+f = function(z) z ** 2
+
+f(x)
+```
+
+It's also okay to use variables assigned in the body of the function:
+
+```{r}
+f = function(z) {
+  result = z ** 2
+  result
+}
+
+f(x)
+```
+:::
+
+
+## How to Write a Function
+
+Before you write a function, you should:
+
+@. Write down what you want the function to do, in detail. Pay particular
+   attention to what the inputs and outputs are. Use comments, a separate
+   document, or even a piece of paper. If it's difficult to explain in words,
+   try drawing a picture. The key is to make sure that the goal is clear before
+   you start to write code.
+
+@. Check whether there's already a built-in function. Search online and in the
+   R documentation.
+
+If there isn't a function that does what you want, it's time to write one. To
+do so:
+
+@. Write the code for a simple case. For data problems, use a small dataset.
+   Don't worry about turning the code into a function yet. Make sure that the
+   result is correct.
+
+@. Once you've got the code for the simple case working, wrap it in a function
+   definition. Identify the parts of the code that will change for other cases.
+   The dataset is usually one of these, but there might also be others. Replace
+   these with parameters. Make sure the function returns the result.
+
+@. Test calling the function with the inputs for the simple case. It should
+   return exactly the same result as it did in step 3. If not, figure out why
+   and fix it.
+
+@. Test calling the function with the inputs for a different case. Make sure
+   that the result is correct. If it isn't, figure out why and fix it.
+
+@. Repeat step 6 for a few more cases. Make sure to test cases that are
+   uncommon or unusual, but realistically possible. Also test what happens in
+   cases of erroneous inputs (does your function emit an error? does the error
+   message explain the problem clearly?). By the end of this step, you should
+   feel fairly confident that your function works correctly.
+
+Keep in mind that writing a function is a process of refinement, even for
+experienced programmers. Even after going through all of the steps above, you
+might come across a new, unexpected case or discover a bug that requires you to
+edit your function.
+
+
+## Example: Getting Largest Values
+
+Suppose we want a function to get the top 3 largest values in a vector. The
+main input to the function is the vector. We could also try to write the
+function so that it returns the top `n` values instead of being fixed at 3.
+Then `n` is another input. The output is a vector of 3 (or `n`) values.
+
+There's no function built into R to do this. There might be a function in a
+package, but we'll go ahead and write the function ourselves for the sake of
+learning.
+
+We'll start by writing the code for a simple case. Suppose we're interested in
+this vector:
+
+```{r}
+x = c(1, 10, 20, -3)
+```
+
+We can sort the values with the `sort` function, and then use the `head`
+function to get the first 3:
+
+```{r}
+sorted = sort(x, decreasing = TRUE)
+head(sorted, 3)
+```
+
+Now that we've solved the simple case, let's wrap the code in a function
+definition. The vector will change from case to case, so we'll replace `x` with
+a parameter named `vec`. We might also want to change the number of values
+returned, so we'll also replace `3` with a parameter named `n`. So the function
+definition is:
 
 ```{r}
 get_largest = function(vec, n) {
@@ -151,19 +272,28 @@ The name of the function, `get_largest`, describes what the function does and
 includes a verb. If this function will be used frequently, a shorter name, such
 as `largest`, might be preferable (compare to the `head` function).
 
-Try the `get_largest` function on a few test cases to make sure it works
-correctly:
+Try the `get_largest` function on the simple case to make sure it returns the
+same result:
 
 ```{r}
-x = c(1, 10, 20, -3)
-get_largest(x, 2)
 get_largest(x, 3)
+```
+
+That looks correct, so let's try some other cases:
+
+```{r}
+# What if we ask for fewer elements?
+get_largest(x, 2)
+
+# What if we ask for too many elements?
+get_largest(x, 5)
 
 y = c(-1, -2, -3)
 get_largest(y, 2)
 
+# What if the vector contains strings?
 z = c("d", "a", "t", "a", "l", "a", "b")
-get_largest(z, 3)
+get_largest(z, 5)
 ```
 
 Notice that the parameters `vec` and `n` inside the function do not exist as
@@ -180,6 +310,7 @@ about the specific rules for how R searches for variables in DataLab's
 
 [intermediate-r]: https://ucdavisdatalab.github.io/workshop_intermediate_r/
 
+:::{.callout-note title="Note: Default Arguments" collapse=false}
 As a function for quickly summarizing data, `get_largest` would be more
 convenient if the parameter `n` for the number of values to return was optional
 (again, compare to the `head` function). You can make the parameter `n`
@@ -206,8 +337,32 @@ get_largest(y)
 
 get_largest(z)
 ```
+:::
 
-:::{.callout-note collapse=true title="The `return` Keyword"}
+:::{.callout-note title="Note: Returning Multiple Values" collapse=false}
+A function returns one R object, but sometimes computations have multiple
+results. In that case, return the results in a vector, list, or other data
+structure.
+
+For example, let's make a function that computes the mean and median for a
+vector. We'll return the results in a named list, although we could also use a
+named vector:
+
+```{r}
+compute_mean_med = function(x) {
+  m1 = mean(x)
+  m2 = median(x)
+  list(mean = m1, median = m2)
+}
+
+compute_mean_med(c(1, 2, 3, 1))
+```
+
+The names make the result easier to understand for the caller of the function,
+although they certainly aren't required here.
+:::
+
+:::{.callout-note title="Note: The `return` Keyword" collapse=true}
 We've already seen that a function will automatically return the value of its
 last line. The `return` keyword causes a function to return a result
 immediately, without running any subsequent code in its body.
@@ -242,28 +397,4 @@ depends on how you plan to use the `get_largest` function.
 Notice that the last line of the `get_largest` function still doesn't use the
 `return` keyword. It's idiomatic to only use `return` when strictly necessary.
 :::
-
-### Example: Returning Multiple Values
-
-A function returns one R object, but sometimes computations have multiple
-results. In that case, return the results in a vector, list, or other data
-structure.
-
-For example, let's make a function that computes the mean and median for a
-vector. We'll return the results in a named list, although we could also use a
-named vector:
-
-```{r}
-compute_mean_med = function(x) {
-  m1 = mean(x)
-  m2 = median(x)
-  list(mean = m1, median = m2)
-}
-
-compute_mean_med(c(1, 2, 3, 1))
-```
-
-The names make the result easier to understand for the caller of the function,
-although they certainly aren't required here.
-
 
