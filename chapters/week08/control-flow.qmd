@@ -12,155 +12,157 @@ After this lesson, you should be able to:
 * Select appropriate iteration strategies for problems
 :::
 
+Suppose you want to read and clean 10 different mass measurement datasets. All
+of the datasets have the same structure, so the code to read and clean them is
+the same. Based on what you learned in @sec-writing-functions, you decide to
+write a function, `read_mass_data`, and reuse the code. But you realize there
+are still two problems:
+
+1. When you collected the 8th dataset, you forgot to tare the scale. As a
+   result, all of the measurements are 50 grams too high. This is easy to
+   correct by subtracting 50, but only the 8th dataset needs this correction.
+   You need a way to choose which code to run based on a condition.
+2. You still have to write 10 calls to `read_mass_data`. Using a programming
+   language is supposed to help you avoid tedious things like this, and this
+   wouldn't scale well if you needed to read 100 or 1,000 datasets. You need a
+   way to run code multiple times.
+
+Both of these problems are related to the order in which code runs (the flow of
+control). R provides several **control flow** expressions that change how code
+runs. You can use control flow expressions to choose which code to run based on
+a condition or to run code multiple times. Many of the concepts in this chapter
+generalize to other programming languages, which provide similar commands to
+alter control flow.
+
 
 ## Conditional Expressions
 
-Sometimes you'll need code to do different things, depending on a condition.
-You can use an **if-expression** to write conditional code.
+A **conditional** expression is one where the computer must make a decision
+about which code to run next. The computer makes its decision by checking
+whether a condition is true. In a flowchart, a conditional looks like a branch
+(two or more ways to get somewhere):
 
-For example, suppose you want your code to generate a different greeting
-depending on an input name:
+```{mermaid}
+flowchart LR
+  start(Start) --> condition{Is condition true?}
+    condition -- True --> do_something[Do something]
+    condition -- False --> do_something_else["Do something else"]
+  do_something --> done(End)
+  do_something_else --> done
+```
+
+In most programming languages, the keyword `if` (or some variation of this)
+creates a conditional. Because of this, conditionals are also called **if
+statements**. In R, the syntax for a conditional is:
 
 ```{r}
-name = "Nick"
+#| eval: false
+if (condition) {
+  # This code runs if the condition is TRUE.
+} else {
+  # This code runs if the condition is FALSE.
+}
+```
 
-# Default greeting
-greeting = "Nice to meet you!"
+The condition must return a single `TRUE` or `FALSE` value. The `else` part of
+the conditional is optional, so if you only want to do something in the true
+case, you can just write:
 
-if (name == "Nick") {
-   greeting = "Hi Nick, nice to see you again!"
+```{r}
+#| eval: false
+if (condition) {
+  # This code runs if the condition is TRUE.
+}
+```
+
+You can test multiple conditions by replacing the curly braces `{ }` after
+`else` with another conditional:
+
+```{r}
+#| eval: false
+if (condition1) {
+  # This code runs if condition1 is TRUE.
+} else if (condition2) {
+  # This code runs if condition2 is TRUE (and condition1 is FALSE).
+} else {
+  # This code runs if both condition1 and condition2 are FALSE.
+}
+```
+
+As an illustrative example, suppose we want our code to produce a different
+greeting depending on the hour. If it's the morning (hours 6-11), the code
+should produce `"Good morning!"`. If it's the afternoon (hours 12-17), the code
+should produce `"Good afternoon!"`. For any other hour, the code should produce
+`"Hello."`. We can use a conditional to do this (see @sec-logic if you need a
+refresher on how to write conditions that return `TRUE` and `FALSE` values):
+
+```{r}
+hour = 10
+
+if (hour >= 6 && hour <= 11) {
+  greeting = "Good morning!"
+} else if (hour >= 12 && hour <= 17) {
+  greeting = "Good afternoon!"
+} else {
+  greeting = "Hello."
 }
 
 greeting
 ```
 
-Indent code inside of the if-expression by 2 or 4 spaces. Indentation makes
-your code easier to read.
+Notice how changing the value of `hour` changes the result:
+
+```{r}
+hour = 13
+
+if (hour >= 6 && hour <= 11) {
+  greeting = "Good morning!"
+} else if (hour >= 12 && hour <= 17) {
+  greeting = "Good afternoon!"
+} else {
+  greeting = "Hello."
+}
+
+greeting
+```
+
+Try out a few values for `hour` yourself. Then try modifying the code to give
+another greeting, `"Good evening!"` if it's the evening (hours 18-19).
+
+:::{.callout-note}
+In R, conditionals automatically return the value on the last line that runs
+(similar to functions). So another way to write the greeter example above is:
+
+```{r}
+hour = 13
+
+greeting = if (hour >= 6 && hour <= 11) {
+  "Good morning!"
+} else if (hour >= 12 && hour <= 17) {
+  "Good afternoon!"
+} else {
+  "Hello."
+}
+
+greeting
+```
+:::
+
+:::{.callout-note}
+You can **nest** one conditional inside the curly braces of another. Nesting is
+useful when you want to check a condition, do some computations, and then check
+another condition under the assumption that the first condition was `TRUE`.
+:::
 
 :::{.callout-warning}
-The condition in an if-expression has to have length 1:
+Conditionals correspond to **special cases** in your code. Having lots of
+special cases can make code harder to understand and maintain.
 
-```{r, error = TRUE}
-name = c("Nick", "Susan")
-
-# Default greeting
-greeting = "Nice to meet you!"
-
-if (name == "Nick") {
-   greeting = "Hi Nick, nice to see you again!"
-}
-```
+It's not bad to use conditionals, but be mindful of how you use them. Think
+about whether there's a more general way to do things instead. Be especially
+wary of nested conditionals.
 :::
 
-Use the `else` keyword if you want to add an alternative when the condition is
-`FALSE`. So the previous code can also be written as:
-
-```{r}
-name = "Nick"
-
-if (name == "Nick") {
-   greeting = "Hi Nick, nice to see you again!"
-} else {
-  # Default greeting
-  greeting = "Nice to meet you!"
-}
-
-greeting
-```
-
-Use `else if` with a condition if you want to add an alternative to the first
-condition that also has its own condition. Only the first case where a
-condition is `TRUE` will run. You can use `else if` as many times as you want,
-and can also use `else`. For example:
-
-```{r}
-name = "Susan"
-
-if (name == "Nick") {
-   greeting = "Hi Nick, nice to see you again!"
-} else if (name == "Peter") {
-   greeting = "Go away Peter, I'm busy!"
-} else {
-   greeting = "Nice to meet you!"
-}
-
-greeting
-```
-
-You can create compound conditions with R's logic operators `!`, `&`, and `|`
-(see @sec-logic). For example:
-
-```{r}
-name1 = "Wesley"
-name2 = "Nick"
-
-if (name1 == "Wesley" & name2 == "Nick") {
-  greeting = "These are the authors."
-} else {
-  greeting = "Who are these people?!"
-}
-
-greeting
-```
-
-You can write an if-statement inside of another if-statement. This is called
-**nesting** if-statements. Nesting is useful when you want to check a
-condition, do some computations, and then check another condition under the
-assumption that the first condition was `True`.
-
-:::{.callout-tip}
-If-statements correspond to **special cases** in your code. Lots of special
-cases in code makes the code harder to understand and maintain. If you find
-yourself using lots of if-statements, especially nested if-statements, consider
-whether there is a more general strategy or way to write the code.
-:::
-
-<!--
-If-expressions return the value of the last expression in the evaluated block:
-```{r}
-name = "Tom"
-msg = if (name == "Nick") {
-   "Hi Nick, nice to see you again!"
-} else {
-   "Nice to meet you!"
-}
-msg
-```
-
-Curly braces `{ }` are optional for single-line expressions:
-```{r}
-name = "Nick"
-msg = if (name == "Nick") "Hi Nick, nice to see you again!" else
-   "Nice to meet you!"
-msg
-```
-
-But you have to be careful if you don't use them:
-```{r, error = TRUE}
-# NO GOOD:
-msg = if (name == "Nick")
-   "Hi Nick, nice to see you again!"
-else
-   "Nice to meet you!"
-```
-
-The `else` block is optional:
-```{r}
-msg = "Hi"
-name = "Tom"
-if (name == "Nick")
-   msg = "Hi Nick, nice to see you again!"
-msg
-```
-
-When there's no `else` block, the value of the `else` block is `NULL`:
-```{r}
-name = "Tom"
-msg = if (name == "Nick")
-   "Hi Nick, nice to see you again!"
-msg
-```
--->
 
 ## Iteration
 
@@ -204,6 +206,21 @@ iteration strategy to use. We assume you're already comfortable with
 vectorization and have at least some familiarity with apply functions.
 
 ### For-Loops
+
+:::{.callout-note collapse=false}
+As a flowchart, the control flow looks like this:
+
+```{mermaid}
+flowchart LR
+  start(Start) --> any_more{Any more datasets?}
+    any_more -- Yes --> read["read_mass_data()"]
+    read --> any_more
+    any_more -- No --> done(End)
+
+style read font-family:monospace
+```
+:::
+
 
 A **for-loop** evaluates the expressions in its body once for each element of a
 data structure. The syntax of a for-loop is:
