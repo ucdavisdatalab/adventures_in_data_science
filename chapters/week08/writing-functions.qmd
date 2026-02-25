@@ -9,6 +9,16 @@ After this lesson, you should be able to:
 * Write functions in order to better organize code
 :::
 
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
+
+* dplyr
+* readxl
+* stringr
+
+@sec-packages explains how to install and load packages.
+:::
+
 At this point, you've learned all of the basic skills necessary to explore a
 dataset in R. This chapter and the next focus on how to organize and automate
 your code so that it's concise, clear, and effective. This will help you and
@@ -398,3 +408,221 @@ Notice that the last line of the `get_largest` function still doesn't use the
 `return` keyword. It's idiomatic to only use `return` when strictly necessary.
 :::
 
+
+## Case Study: U.S. Alternative Fueling Stations, Part I
+
+The United States Department of Energy collects data about alternative
+(non-petroleum) fuel distribution and use within the country. They publish the
+data they collect on their [Alternative Fuels Data Center][afdc] (AFDC)
+website. In this case study, which consists of three parts, we'll clean and
+analyze an AFDC dataset about alternative fueling stations.
+
+[afdc]: https://afdc.energy.gov/
+
+:::{.callout-important}
+[Click here][us-alt-fuels] to download the 2007-2013 U.S. Alternative Fueling
+Stations dataset.
+
+[us-alt-fuels]: https://ucdavis.box.com/s/wio50tf9icf5c2ez6viz5uieqt2oi5ha
+
+If you haven't already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/` subdirectory. Download and save
+the dataset in the `data/` subdirectory.
+:::
+
+:::{.callout-note title="Documentation for the U.S. Alternative Fueling Stations Dataset" collapse=true}
+The dataset is an Excel file with a documentation sheet and one data sheet for
+each year. Each data sheet contains counts broken down by state and fuel type.
+The format of the data sheets changes in 2014.
+
+The source of this dataset is the historical counts on the U.S. DoE's
+[Alternative Fueling Station Counts by State][us-alt-fuels-source] page.
+
+[us-alt-fuels-source]: https://afdc.energy.gov/stations/states
+:::
+
+The dataset is in an Excel file with a separate sheet for each year. We'd like
+to be able to read the data for every year and combine it all into a single
+data frame. To get started, let's focus on a single step: reading the data for
+just one year. We'll use the first year, 2007, since the data for the pre-2014
+years have a simpler structure.
+
+R doesn't provide a built-in function to read Excel files, so we'll use the
+[readxl][] package. Install the package if you haven't already, and then load
+it:
+
+```{r}
+# install.packages("readxl")
+library("readxl")
+```
+
+[readxl]: https://readxl.tidyverse.org/
+
+The readxl package's `read_excel` function reads a single sheet from an Excel
+file. We can set the function's `sheet` parameter to select the sheet by
+position or name. In the alternative fueling stations dataset, each data sheet
+is named after the associated year. So the code to read and print the 2007 data
+is:
+
+```{r}
+path = "data/2007-2023_us_alt_fuels.xlsx"
+stations = read_excel(path, sheet = "2007")
+head(stations)
+```
+
+From this, we can see that the column names are actually in the 2nd row of the
+sheet (row 1 in the data frame). So let's change the call to `read_excel` to
+skip the 1st row:
+
+```{r}
+stations = read_excel(path, sheet = "2007", skip = 1)
+head(stations)
+```
+
+Columns 5, 6, and 8 are still missing names. The names of these columns are in
+row 2 of the data frame. We'll use the [stringr][] package, which provides
+functions for processing strings, to help here. Install the package if you
+haven't already, and then load it:
+
+[stringr]: https://stringr.tidyverse.org/
+
+```{r}
+# install.packages("stringr")
+library("stringr")
+```
+
+We can use stringr's `str_starts` function to detect the column names that
+start with `...`. The first argument is the strings and the second is the
+pattern to detect. Call the `fixed` function on the pattern make stringr
+treat it as-is. Then we can use indexing to get the column names from row 2:
+
+```{r}
+names = names(stations)
+is_dot_name = str_starts(names, fixed("..."))
+names[is_dot_name] = as.character(stations[2, is_dot_name])
+names
+```
+
+Let's also make the column names lowercase, so that they're easy to type. We
+can use stringr's `str_to_lower` function to do this:
+
+```{r}
+names = str_to_lower(names)
+names
+```
+
+Assign the names back to the column names:
+
+```{r}
+names(stations) = names
+head(stations)
+```
+
+Many rows are partially or completely blank. We only want to keep the rows that
+contain counts. So let's use dplyr's `filter` function to remove all of the
+rows where `biodiesel` is missing:
+
+```{r}
+# install.packages("dplyr")
+library("dplyr")
+
+stations = filter(stations, !is.na(biodiesel))
+head(stations)
+```
+
+The `electric`, `hydrogen`, and `propane` columns are character columns, but
+they should be numeric. Let's convert the `electric` column. We'll leave
+`hydrogen` and `propane` as-is (with a comment in the code), since we're not
+going to use them in our analysis. While we're at it, we'll also add a `year`
+column with the year:
+
+```{r}
+stations$electric = as.numeric(stations$electric)
+# TODO: hydrogen, propane
+stations$year = 2007
+
+head(stations)
+```
+
+This data frame is clean enough for analysis.
+
+We want to carry out the same steps for other years of data, so let's turn the
+code into a function. Gather together all of the code and enclose it in a
+function definition:
+
+```{r}
+#| eval: false
+function() {
+  path = "data/2007-2023_us_alt_fuels.xlsx"
+  stations = read_excel(path, sheet = "2007", skip = 1)
+
+  names = names(stations)
+  is_dot_name = str_starts(names, fixed("..."))
+  names[is_dot_name] = as.character(stations[2, is_dot_name])
+  names = str_to_lower(names)
+  names(stations) = names
+
+  stations = filter(stations, !is.na(biodiesel))
+
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = 2007
+}
+```
+
+The inputs are the path to the dataset and the year (which is also the sheet
+name). The output is the cleaned data frame. Add parameters for the inputs and
+put the output on the last line. Let's call the function `read_fuel_sheet`. You
+can also optionally add some comments to clarify how the function works:
+
+```{r}
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  is_dot_name = str_starts(names, fixed("..."))
+  names[is_dot_name] = as.character(stations[2, is_dot_name])
+  names = str_to_lower(names)
+  names(stations) = names
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+Test the new function to make sure it returns the same result on the example
+case:
+
+```{r}
+read_fuel_sheet(path, 2007)
+```
+
+The result looks okay, so try a few more cases:
+
+```{r}
+read_fuel_sheet(path, 2008)
+
+read_fuel_sheet(path, 2010)
+```
+
+The function seems to generalize well to other years where the data have the
+same structure. The structure of the data changed in 2014. Let's test the
+function on one of these years:
+
+```{r}
+#| error: true
+read_fuel_sheet(path, 2015)
+```
+
+The function raises an error, which isn't too surprising. It looks like we
+still have some work to do to make the function general enough to read the data
+for 2014 and subsequent years. We'll save that for part II of this case study.
