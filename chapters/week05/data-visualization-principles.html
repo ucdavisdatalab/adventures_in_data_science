@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>18&nbsp; Data Visualization Principles &amp; Perception – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../chapters/week05/intro-ggplot2.html" rel="next">
+<link href="../../chapters/week04/aggregation-grouping.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-19b5e973626355a97465437b783fde54.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+.callout.callout-style-default .callout-body {
+  padding: 0 1.5rem 0;
+}
+.cell-output-stdout {
+  overflow-y: scroll;
+  max-height: 30rem;
+  margin-bottom: 0.75rem;
+}
+</style>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week05/data-visualization-principles.html">Week 5</a></li><li class="breadcrumb-item"><a href="../../chapters/week05/data-visualization-principles.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/required-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Required Software</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/research-lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Research Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/interacting-with-computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interacting with Computers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/browsing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Browsing Files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/other-commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Going Beyond Browsing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/editing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Editing Files</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/how-ai-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">How AI Works</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/version-control-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Version Control Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/git-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Git Basics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/remote-repositories.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Remote Repositories</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/the-git-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Git Workflow</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/intro-to-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/intro-to-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/data-types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/indexing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Indexing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/data-forensics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/aggregation-grouping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Aggregation &amp; Grouping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/data-visualization-principles.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/intro-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Introduction to <code>ggplot2</code></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/date-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Dates &amp; Times</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/reshaping-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reshaping Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 7</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/string-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Strings &amp; Regular Expressions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/getting-data-from-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 8</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week08/writing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Writing Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week08/control-flow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Control Flow</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 9</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week09/web-scraping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Web Scraping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 10</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/collaboration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Collaboration in Data-Driven Work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/branches-merges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Branches &amp; Merges</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/working-with-github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Working with GitHub</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/making-git-comfortable.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Making Git Comfortable</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Special Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/11_optical-character-recognition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/12_statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/13_reshaping-tabular-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Reshaping Tabular Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/14_network-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Network Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/15_natural-language-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/16_geospatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Geospatial Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#a-brief-history-of-data-visualization" id="toc-a-brief-history-of-data-visualization" class="nav-link active" data-scroll-target="#a-brief-history-of-data-visualization"><span class="header-section-number">18.1</span> A Brief History of Data Visualization</a>
+  <ul class="collapse">
+  <li><a href="#famous-data-visualizations" id="toc-famous-data-visualizations" class="nav-link" data-scroll-target="#famous-data-visualizations"><span class="header-section-number">18.1.1</span> Famous Data Visualizations</a></li>
+  </ul></li>
+  <li><a href="#what-is-data-visualization" id="toc-what-is-data-visualization" class="nav-link" data-scroll-target="#what-is-data-visualization"><span class="header-section-number">18.2</span> What is Data Visualization?</a>
+  <ul class="collapse">
+  <li><a href="#why-viz" id="toc-why-viz" class="nav-link" data-scroll-target="#why-viz"><span class="header-section-number">18.2.1</span> Why Viz?</a></li>
+  <li><a href="#good-data-visualizations" id="toc-good-data-visualizations" class="nav-link" data-scroll-target="#good-data-visualizations"><span class="header-section-number">18.2.2</span> Good Data Visualizations</a></li>
+  <li><a href="#bad-data-visualizations" id="toc-bad-data-visualizations" class="nav-link" data-scroll-target="#bad-data-visualizations"><span class="header-section-number">18.2.3</span> Bad Data Visualizations</a></li>
+  </ul></li>
+  <li><a href="#before-you-viz-make-a-plan" id="toc-before-you-viz-make-a-plan" class="nav-link" data-scroll-target="#before-you-viz-make-a-plan"><span class="header-section-number">18.3</span> Before You Viz, Make a Plan</a>
+  <ul class="collapse">
+  <li><a href="#purpose" id="toc-purpose" class="nav-link" data-scroll-target="#purpose"><span class="header-section-number">18.3.1</span> Purpose</a></li>
+  <li><a href="#audience" id="toc-audience" class="nav-link" data-scroll-target="#audience"><span class="header-section-number">18.3.2</span> Audience</a></li>
+  <li><a href="#medium" id="toc-medium" class="nav-link" data-scroll-target="#medium"><span class="header-section-number">18.3.3</span> Medium</a></li>
+  <li><a href="#tools" id="toc-tools" class="nav-link" data-scroll-target="#tools"><span class="header-section-number">18.3.4</span> Tools</a></li>
+  <li><a href="#message" id="toc-message" class="nav-link" data-scroll-target="#message"><span class="header-section-number">18.3.5</span> Message</a></li>
+  <li><a href="#critical-approaches" id="toc-critical-approaches" class="nav-link" data-scroll-target="#critical-approaches"><span class="header-section-number">18.3.6</span> Critical Approaches</a></li>
+  </ul></li>
+  <li><a href="#graphical-elements-of-a-plot" id="toc-graphical-elements-of-a-plot" class="nav-link" data-scroll-target="#graphical-elements-of-a-plot"><span class="header-section-number">18.4</span> Graphical Elements of a Plot</a></li>
+  <li><a href="#principles-of-visual-perception" id="toc-principles-of-visual-perception" class="nav-link" data-scroll-target="#principles-of-visual-perception"><span class="header-section-number">18.5</span> Principles of Visual Perception</a>
+  <ul class="collapse">
+  <li><a href="#visual-magic-tricks" id="toc-visual-magic-tricks" class="nav-link" data-scroll-target="#visual-magic-tricks"><span class="header-section-number">18.5.1</span> Visual Magic Tricks</a></li>
+  <li><a href="#stevens-psychophysical-power-law" id="toc-stevens-psychophysical-power-law" class="nav-link" data-scroll-target="#stevens-psychophysical-power-law"><span class="header-section-number">18.5.2</span> Steven’s Psychophysical Power Law</a></li>
+  <li><a href="#perception-and-encodings" id="toc-perception-and-encodings" class="nav-link" data-scroll-target="#perception-and-encodings"><span class="header-section-number">18.5.3</span> Perception and Encodings</a></li>
+  <li><a href="#evaluating-graphics" id="toc-evaluating-graphics" class="nav-link" data-scroll-target="#evaluating-graphics"><span class="header-section-number">18.5.4</span> Evaluating Graphics</a></li>
+  <li><a href="#gestalt-principles" id="toc-gestalt-principles" class="nav-link" data-scroll-target="#gestalt-principles"><span class="header-section-number">18.5.5</span> Gestalt Principles</a></li>
+  </ul></li>
+  <li><a href="#sec-accessible-data-visualizations" id="toc-sec-accessible-data-visualizations" class="nav-link" data-scroll-target="#sec-accessible-data-visualizations"><span class="header-section-number">18.6</span> Accessible Data Visualizations</a>
+  <ul class="collapse">
+  <li><a href="#color" id="toc-color" class="nav-link" data-scroll-target="#color"><span class="header-section-number">18.6.1</span> Color</a></li>
+  <li><a href="#alternative-text" id="toc-alternative-text" class="nav-link" data-scroll-target="#alternative-text"><span class="header-section-number">18.6.2</span> Alternative Text</a></li>
+  </ul></li>
+  <li><a href="#designing-statistical-graphics" id="toc-designing-statistical-graphics" class="nav-link" data-scroll-target="#designing-statistical-graphics"><span class="header-section-number">18.7</span> Designing Statistical Graphics</a>
+  <ul class="collapse">
+  <li><a href="#step-1-identify-your-data-type" id="toc-step-1-identify-your-data-type" class="nav-link" data-scroll-target="#step-1-identify-your-data-type">Step 1: Identify Your Data Type</a></li>
+  <li><a href="#step-2-determine-your-functional-approach" id="toc-step-2-determine-your-functional-approach" class="nav-link" data-scroll-target="#step-2-determine-your-functional-approach">Step 2: Determine Your Functional Approach</a></li>
+  <li><a href="#step-3-select-a-plot-type" id="toc-step-3-select-a-plot-type" class="nav-link" data-scroll-target="#step-3-select-a-plot-type">Step 3: Select a Plot Type</a></li>
+  <li><a href="#step-4-iterate" id="toc-step-4-iterate" class="nav-link" data-scroll-target="#step-4-iterate">Step 4: Iterate</a></li>
+  </ul></li>
+  <li><a href="#tips-for-better-plots" id="toc-tips-for-better-plots" class="nav-link" data-scroll-target="#tips-for-better-plots"><span class="header-section-number">18.8</span> Tips for Better Plots</a>
+  <ul class="collapse">
+  <li><a href="#get-rid-of-chartjunk" id="toc-get-rid-of-chartjunk" class="nav-link" data-scroll-target="#get-rid-of-chartjunk"><span class="header-section-number">18.8.1</span> Get Rid of Chartjunk</a></li>
+  <li><a href="#facilitate-comparisons" id="toc-facilitate-comparisons" class="nav-link" data-scroll-target="#facilitate-comparisons"><span class="header-section-number">18.8.2</span> Facilitate Comparisons</a></li>
+  <li><a href="#create-information-rich-plots" id="toc-create-information-rich-plots" class="nav-link" data-scroll-target="#create-information-rich-plots"><span class="header-section-number">18.8.3</span> Create Information-Rich Plots</a></li>
+  <li><a href="#dont-distort-the-data" id="toc-dont-distort-the-data" class="nav-link" data-scroll-target="#dont-distort-the-data"><span class="header-section-number">18.8.4</span> Don’t Distort the Data</a></li>
+  <li><a href="#practice" id="toc-practice" class="nav-link" data-scroll-target="#practice"><span class="header-section-number">18.8.5</span> Practice</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week05/data-visualization-principles.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week05/data-visualization-principles.html">Week 5</a></li><li class="breadcrumb-item"><a href="../../chapters/week05/data-visualization-principles.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Explain when, and why, to use a data visualization</li>
+<li>Describe common features of “good” data visualizations</li>
+<li>Identify principles of visual perception that can be used to make effective and expressive plots</li>
+<li>Compare the features and utility of various plot types</li>
+<li>Choose an appropriate kind of plot based on the data</li>
+<li>Know where to go for more resources on making accessible and equitable data visualizations.</li>
+</ul>
+</div>
+</div>
+</div>
+<p>Data visualization is the graphical display of abstract information to help us make sense of phenomena and to communicate these findings. It is a powerful tool to help us uncover and share the stories of our data. Visualizations help us retain and analyze all the information in our data, uncover and share our insights, and describe our research in a useful way. <em>If a picture is worth a thousand words, then a good data visualization is worth millions.</em></p>
+<p>But how many of us have ever taken a course explicitly on data visualization? It’s typically not taught in standard data analysis courses, yet it is a mainstay for nearly every sector in today’s data-driven world. Today we’ll dive into the what, how, and why of data visualization and describe some best practices that you can immediately implement into your research workflows. Along the way we’ll also focus on building up our collective data literacy skills, and employ critical approaches to produce science that is more robust, transparent, and equitable.</p>
+<section id="a-brief-history-of-data-visualization" class="level2" data-number="18.1">
+<h2 data-number="18.1" class="anchored" data-anchor-id="a-brief-history-of-data-visualization"><span class="header-section-number">18.1</span> A Brief History of Data Visualization</h2>
+<div id="fig-timeline" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-timeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/workshop_data_visualization_timeline_data_viz_wikipedia.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-timeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.1: (<a href="https://commons.wikimedia.org/w/index.php?curid=96668758">source</a>)
+</figcaption>
+</figure>
+</div>
+<p>Data visualization is not a modern invention. Quantitative information display has been traced back to prehistory with the locations of stars mapped on the <a href="https://en.wikipedia.org/wiki/Lascaux">Lasaux cave drawings</a>. <a href="https://en.wikipedia.org/wiki/History_of_ancient_numeral_systems#/media/File:Accountancy_clay_envelope_Louvre_Sb1932.jpg">Clay tokens</a>, <a href="https://en.wikipedia.org/wiki/Quipu#/media/File:Inca_Quipu.jpg">quipu</a>, and <a href="https://en.wikipedia.org/wiki/Marshall_Islands_stick_chart#/media/File:Micronesian_navigational_chart.jpg">stick charts</a> dating back as far as 5500 BC also illustrate our long history of creating shared representations of data. The oldest known data visualization dates to 1160 BC with the <a href="https://en.wikipedia.org/wiki/Turin_Papyrus_Map#/media/File:TurinPapyrus1.jpg">Turin Papyrus Map</a>, which accurately illustrates the distribution of geological resources in a region in Egypt. These earliest forms of data visualization served purposes of navigating culture and living within society—from accounting to agriculture, transportation, religion, and medicine. They were used to help us explore and understand natural phenomena and the workings of the universe.</p>
+<p>The French philosopher Rene Descartes is attributed as developing the precursor to today’s modern plot in the 17th century—a two-dimensional coordinate system for displaying values. Later in the 18th century William Playfair began creating left to right oriented plots, allowing the viewer to explore how values change over time. He’s also attributed to inventing the bar graph and, unfortunately, the pie chart (we’ll get to why that’s unfortunate, later). Into the 19th and 20th centuries we see an explosion of chart types</p>
+<p>Unsurprisingly, the invention of tools like paper and computers shaped our relationship with knowledge and information, playing a strong role in how we collect, analyze, store and visualize data. As we gather more and more complex data, we seek more ways to visualize its meaning and in the 19th and 20th centuries we see an explosion of chart types and techniques for communicating with statistical graphics.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For a more complete history of data visualization, check out <em><a href="https://link.springer.com/chapter/10.1007/978-3-540-33037-0_2">A Brief History of Data Visualization</a></em> by M. Friendly.</p>
+</div>
+</div>
+<p>In particular, check out the following famous data visualizations.</p>
+<section id="famous-data-visualizations" class="level3" data-number="18.1.1">
+<h3 data-number="18.1.1" class="anchored" data-anchor-id="famous-data-visualizations"><span class="header-section-number">18.1.1</span> Famous Data Visualizations</h3>
+<p><strong>Florence Nightingale</strong>, the “mother of nursing,” produced in 1857 a rose diagram depicting seasonal sources of British soldier’s fatalities in the Crimean War. Out of the 18,000 soldiers who had died, 16,000 had died of disease in a hospital (blue shading) rather than from their wounds (black shading). This image is credited with helping to persuade the British government to improve conditions in military hospitals.</p>
+<div id="fig-mortality" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mortality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/nightingale_mortality_fig.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mortality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.2: The context surrounding this rose diagram is actually quite bit more complex. For additional background, <a href="https://99percentinvisible.org/episode/florence-nightingale-data-viz-pioneer/transcript/">check out this podcast</a> based on the book <em>The Data Detective</em> by Tim Harford.
+</figcaption>
+</figure>
+</div>
+<p><strong>John Snow</strong>, a London physician, traced the source of an 1854 cholera outbreak in Soho. By examining the locations of reported cholera deaths, Snow demonstrated that the disease was connected to a contaminated well on Broad Street, contributing to growing understanding that cholera was a waterborne disease and not caused by foul ‘miasmas’ in the air. He later used a map in his publication to show the concentration of the cholera cases around the contaminated pump. On this map, the height of the dark bars correspond to the number of deaths at a given location. While Snow didn’t invent the mapping technique of layering thematic data on top of topographic maps, nor actually compose the map himself (it was created by cartographer Charles Cheffins), this map was so effective that history often calls Snow the “father of epidemiology.” Learn more about the history of the map in this recent <a href="https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/something-in-the-water-the-mythology-of-snows-map-of-cholera/">post by Kenneth Field</a>.</p>
+<div id="fig-snow" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-snow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/snow_london_cholera_map.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-snow-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.3
+</figcaption>
+</figure>
+</div>
+<p>Lastly, no discussion of the history of data visualization is complete without a nod to Charles Minard’s acclaimed depiction of Napoleon Bonaparte’s ill-fated invasion of Russia. Edward Tufte declared in his popular 1983 book <em>The Visual Display of Quantitative Information</em> that <strong>Napoleon’s March</strong> “may well be the best statistical graphic ever produced.” The thick band denotes the size of the army at each position, beginning at the Polish-Russian border. The dark lower band is tied to temperature and time scales, and shows the path of Napoleon’s retreat from Moscow and shrinking army size during the bitterly cold winter.</p>
+<div id="fig-napoleon" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-napoleon-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/Tufte_napoleon_march_minard.gif" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-napoleon-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.4
+</figcaption>
+</figure>
+</div>
+<p>This image has also been recreated with modern plotting software, including the ggplot2 package in R, which you will learn about in the next lesson.</p>
+<div id="fig-napoleon-ggplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-napoleon-ggplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/wickham_napoleon_march.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-napoleon-ggplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.5: (source: <em>ggplot2: Grammar of Graphics in R</em> by Hadley Wickam)
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="what-is-data-visualization" class="level2" data-number="18.2">
+<h2 data-number="18.2" class="anchored" data-anchor-id="what-is-data-visualization"><span class="header-section-number">18.2</span> What is Data Visualization?</h2>
+<p>At their core, data visualizations are products that:</p>
+<ul>
+<li>Represent data.</li>
+<li>Have a specific purpose.</li>
+<li>Tell a data-driven story.</li>
+</ul>
+<p>There are two main types of data visualizations:</p>
+<ol type="1">
+<li><strong>Information visualizations</strong> (aka infographics or infoviz) tend to be visually striking, dramatizing a problem with unique and visually appealing imagery that draws the casual viewer in.</li>
+<li><strong>Statistical graphics</strong> aim to make comparisons, to reveal patterns and discrepancies. We use statistical graphs to communicate our research results, often for viewers who are already immersed or interested in the problem.</li>
+</ol>
+<p>While many topics within this reader will apply to infoviz as well, our emphasis is on creating judicious and accurate statistical graphics.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For more info comparing infoviz and statistical graphs, see <a href="https://www.jstor.org/stable/43304809?seq=1">Gelman and Unwin 2013</a>.</p>
+</div>
+</div>
+<section id="why-viz" class="level3" data-number="18.2.1">
+<h3 data-number="18.2.1" class="anchored" data-anchor-id="why-viz"><span class="header-section-number">18.2.1</span> Why Viz?</h3>
+<p>There are lots of ways to represent our data. In fact, tables are often the most common way to report data, and they are great at conveying exact values. But interpretation of data displayed in a table is largely up to the viewer. It’s hard to perceive the overall summary of the data from a table, unless it’s really simple and, in that case, you often don’t even need a table and can just report those statistics as text.</p>
+<p>Data visualization, on the other hand, takes advantage of our ability to process information by shifting the balance between our natural perceptive and cognitive abilities to convey a specific message. Most of the information that’s sent to our brains is visual. In fact, it’s been found that the human brain processes visual imagery 60,000 times faster than text! Data visualizations allow us to move from a predominantly thinking perspective to a seeing perspective. The cerebral cortex, which primarily handles our cognition, is slow and less efficient than the visual cortex, which processes images. Thus, visual diagrams are often easier for us to process than pages of words describing our research. Absorbing information quickly allows us to make novel inferences, and make more productive and informed decisions. Not surprisingly, well composed data visualizations are the most effective type of scientific communication.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For guidance on how to convert a table into a plot, see <a href="http://www.stat.columbia.edu/~gelman/research/published/dodhia.pdf">this paper by Andrew Gelman</a>.</p>
+</div>
+</div>
+<p>Ultimately, the utility of a data visualization depends on how well it’s composed.</p>
+</section>
+<section id="good-data-visualizations" class="level3" data-number="18.2.2">
+<h3 data-number="18.2.2" class="anchored" data-anchor-id="good-data-visualizations"><span class="header-section-number">18.2.2</span> Good Data Visualizations</h3>
+<ul>
+<li>Provide rapid access to data.</li>
+<li>Faithfully represent the data and tell a story.</li>
+<li>Are expressive.</li>
+<li>Are effective.</li>
+</ul>
+<p>Helpful data visualizations intuitively, clearly, accurately, and efficiently explain complex ideas. The patterns and relationships presented must be valid, and the visual relevant to the data it presents. A data visualization cannot exist without a narrative, and good data visualizations always include context. Good plots grab our attention and create a positive visual impact. This aids our ability to make connections and recall the features of the data. They can be aesthetically pleasing but that’s not the end goal. Good plots are accessible (not everyone perceives the visual world the same way). They leverage aspects of human perception to allow for intuitive inference of relationships between abstract concepts (our data).</p>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Want to feel inspired? Check out <a href="https://informationisbeautiful.net/">Information is Beautiful</a> and <a href="https://flowingdata.com/">Flowing Data</a>.</p>
+</div>
+</div>
+<div id="fig-best-in-show" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-best-in-show-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/IIB_Best-In-Show_1276x2.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-best-in-show-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.6: (<a href="https://informationisbeautiful.net/visualizations/best-in-show-whats-the-top-data-dog/">source</a>)
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="bad-data-visualizations" class="level3" data-number="18.2.3">
+<h3 data-number="18.2.3" class="anchored" data-anchor-id="bad-data-visualizations"><span class="header-section-number">18.2.3</span> Bad Data Visualizations</h3>
+<ul>
+<li>Have too much, or too little, information.</li>
+<li>Are inconsistent.</li>
+<li>Ignore limits of human perception.</li>
+<li>Misrepresent the data.</li>
+<li>Use inappropriate (or garbage) data.</li>
+</ul>
+<p>Have you ever seen a pie chart where the labeled slices add up to something other than 100%? That’s a poorly executed data visualization. Goal: don’t end up on <a href="https://viz.wtf/">WTF Viz</a>.</p>
+<div id="fig-wtf" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wtf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/wtf_viz_tumblr_qqfe5kmQze1sgh0voo1_1280.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wtf-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.7: (<a href="https://viz.wtf/post/646651837987061760/the-star-herald-starherald-has-a-daily-poll">source</a>)
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="before-you-viz-make-a-plan" class="level2" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="before-you-viz-make-a-plan"><span class="header-section-number">18.3</span> Before You Viz, Make a Plan</h2>
+<p>Modern software makes it easy to quickly create a plot. But before you fire up your computer and start plotting, <strong>stop and think.</strong> Write out your visualization plan. This will save you time in the long run, and result in a more robust data visualization.</p>
+<p>Ask yourself:</p>
+<ul>
+<li>Why am I making this visualization? (purpose)</li>
+<li>Who am I making it for? (audience)</li>
+<li>How will I use and share it? (medium)</li>
+<li>What can I use to make it? (tools)</li>
+<li>What story does it tell? (message)</li>
+<li>Who does it affect? Who is left out? (critical approach)</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>How many plots you need is always the wrong question. You need exactly as many as you need to tell your story.</p>
+</div>
+</div>
+<section id="purpose" class="level3" data-number="18.3.1">
+<h3 data-number="18.3.1" class="anchored" data-anchor-id="purpose"><span class="header-section-number">18.3.1</span> Purpose</h3>
+<p>First, identify <strong>why</strong> you are making a visualization. We use data visualizations in different ways across the iterative steps of the research data pipeline:</p>
+<div id="fig-data-pipeline" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/research_data_pipeline_viz.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-data-pipeline-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.8
+</figcaption>
+</figure>
+</div>
+<ul>
+<li><strong>Collection</strong>: plots can help us understand who, what, and where the data represent. It can help us track our progress, and help us project required effort to complete this phase of the project.</li>
+<li><strong>Cleaning</strong>: plotting is a quick and effective way to spot errors in our data. It allows us to grasp the extent of issues such as outliers and missing data.</li>
+<li><strong>Exploration</strong>: plots are a powerful tool for exploratory data analysis (EDA). Plots help us identify patterns, summarize variables and relationships. (see <a href="https://www.jstor.org/stable/1558734?seq=1">Tukey 1960</a>)</li>
+<li><strong>Confirmation</strong>: plots also help us conduct confirmatory data analysis (CDA). We can plot diagnostics like the model fit, residuals, and model comparisons that confirm whether a model is correct. CDA is an iterative process over the course of research, one reason why we advocate using scripting languages and other reproducible workflows for generating graphics.</li>
+<li><strong>Validation</strong>: plots also help us to debug and validate our code. We can visually inspect the results at each step of the code we are writing and verify whether it satisfies our expectations.</li>
+<li><strong>Communication</strong>: sharing the insights from our data with others is probably the most commonly understood and emphasized purpose of data visualizations. This is also often the hardest type of data visualization to “get right,” because we don’t always remember to design the visual to speak specifically to who we are sharing it with.</li>
+</ul>
+</section>
+<section id="audience" class="level3" data-number="18.3.2">
+<h3 data-number="18.3.2" class="anchored" data-anchor-id="audience"><span class="header-section-number">18.3.2</span> Audience</h3>
+<p>Who are you making the data visualization for? There is no such thing as a “generic” data visualization. Are you making the figure for:</p>
+<ul>
+<li><strong>Yourself</strong>, to help you clean or explore your data?</li>
+<li>Your <strong>immediate colleagues or research team</strong> to update them on your research progress?</li>
+<li><strong>Experts in your field</strong> reading your publication or listening to your presentation?</li>
+<li>A <strong>general audience</strong> as part of your public outreach?</li>
+<li><strong>Policy makers</strong> who might not know all the details but might be making big decisions based on your results?</li>
+</ul>
+<p>Knowing who you’re making the visualization for will help you think through the following steps to create something of value for your intended purpose. It will also help you determine how effort is needed to compose a plot to achieve your goal.</p>
+</section>
+<section id="medium" class="level3" data-number="18.3.3">
+<h3 data-number="18.3.3" class="anchored" data-anchor-id="medium"><span class="header-section-number">18.3.3</span> Medium</h3>
+<p>There are always constraints when creating a data visualization. It’s best to discover these before you start, rather than after you’ve created a beautiful data visualization that’s completely inappropriate for your intended use.</p>
+<p>If you’re creating the visual to accompany a journal article, you probably need to use a static figure and not an interactive or dynamic dashboard. Does your journal allow for color figures? When in doubt, start with greyscale—it’s a lot easier to add color, rather than take it away, as you revise your figures.</p>
+<p>If you’re showing the figure during a presentation, you probably want to simplify it—you audience will have 5 seconds max to read, understand, and interpret your visualization. A really complex figure that requires minutes to comprehend will just distract your audience away from what you—and your data—are saying. It might be more effective to compose and display the same plot in different ways to best communicate your points.</p>
+<p>For a poster presentation where your audience is expected to spend significant time pondering over your findings, you might want to have one very large, clear figure that disentangles the complexity of your project.</p>
+<p>If you’re creating a visual for a website, you might be able to go nuts—bring on the interactivity, the dynamic data display—until you crash the server because it requires too much compute time.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Checklist">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Checklist
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul class="task-list">
+<li><label><input type="checkbox">Static or dynamic/interactive?</label></li>
+<li><label><input type="checkbox">Dashboard/apps?</label></li>
+<li><label><input type="checkbox">Projector, paper, website?</label></li>
+<li><label><input type="checkbox">Resolution?</label></li>
+<li><label><input type="checkbox">Color?</label></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="tools" class="level3" data-number="18.3.4">
+<h3 data-number="18.3.4" class="anchored" data-anchor-id="tools"><span class="header-section-number">18.3.4</span> Tools</h3>
+<p>At the <a href="https://datalab.ucdavis.edu">UC Davis DataLab</a>, we advocate for the use of open-source software and scripting languages for data-driven research projects, including for generating data visualizations.</p>
+<p>Using scripting languages makes it easy for you to reproduce your data visualizations. As you clean and update your data, you can re-create your visuals easily by re-running your code. You can also return to a figure later and know exactly what it represents and how you made it. You don’t have to worry about remembering which buttons you clicked, and in what order, like you would when using a GUI based software.</p>
+<p>Using free, open-source software also means that you can easily and freely share your data, code, and output with your collaborators, reducing the equity and reproducibility barriers posed by the use of proprietary software. Open-source software that’s great for plotting—like R—also has amazing user communities and resources to help you learn the code and create your ideal visualization.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Be practical with yourself: you probably aren’t going to learn a new package or other plotting software overnight. If your conference talk is tomorrow, using familiar software like Excel for plotting can be fine, especially if you know some <a href="https://ucdavisdatalab.github.io/workshop_data_viz_principles/quick-tips-for-better-plots.html#get-rid-of-chartjunk">tricks to clean up and customize the appearance of your plots</a>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Here’s a non-exhaustive list of open source tools we recommend for data visualization:</p>
+<ul>
+<li>Static visualizations:
+<ul>
+<li>ggplot for <a href="https://ggplot2.tidyverse.org/">R</a>, <a href="https://plotnine.readthedocs.io/en/latest/">Python</a>, and <a href="http://gadflyjl.org/stable/">Julia</a></li>
+<li><a href="https://seaborn.pydata.org/">Seaborn</a> for Python</li>
+</ul></li>
+<li>Geospatial visualizations:
+<ul>
+<li><a href="https://qgis.org/">QGIS</a></li>
+</ul></li>
+<li>Dynamic and interactive visualizations:
+<ul>
+<li><a href="https://leafletjs.com/">Leaflet</a> for mapping</li>
+<li><a href="https://d3js.org/">D3</a></li>
+<li>Plotly for <a href="https://plotly.com/r/">R</a>, <a href="https://plotly.com/python/">Python</a>, and <a href="https://plotly.com/julia/">Julia</a></li>
+<li>Bokeh for <a href="https://hafen.github.io/rbokeh/">R</a> and <a href="https://docs.bokeh.org/en/latest/">Python</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="message" class="level3" data-number="18.3.5">
+<h3 data-number="18.3.5" class="anchored" data-anchor-id="message"><span class="header-section-number">18.3.5</span> Message</h3>
+<p>Research is storytelling with data. Every data visualization is an important piece of that story. It may help you confirm (or reject) a hypothesis, discover new correlations, or predict the likelihood of a future event.</p>
+<p>Creating statistical graphics is like writing a novel—you get to decide who and what will be featured in your data story. And just like one page of a novel, your data visualization alone doesn’t tell the whole story. Every data visualization should contain the details required for explanation, and they require narratives.</p>
+<p>Write out captions for each plot before you make it. What does the plot show? After creating the plot, go back and update the caption with the take home points for your viewer. How might others focus on a different message? If you can’t articulate what the plot is about then you probably should rethink what you are choosing to display and how you are showing it.</p>
+</section>
+<section id="critical-approaches" class="level3" data-number="18.3.6">
+<h3 data-number="18.3.6" class="anchored" data-anchor-id="critical-approaches"><span class="header-section-number">18.3.6</span> Critical Approaches</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Don’t skip this step.</strong> It’s last on this list but is the most important on your journey to making useful data visualizations. Data are information, and information is power. Use this power intentionally and mindfully throughout the process of creating and sharing your visualizations.</p>
+</div>
+</div>
+<p>As you reflect on your answers to the planning prompts above, critically review the features of your data:</p>
+<ul>
+<li><strong>What do the variables you’ve selected for your visualization mean?</strong> How are they defined? How did those definitions come to be? Why did you select them?</li>
+<li><strong>Who will your data visualizations affect? What groups are left out?</strong> How does this affect the story your data tells? How might someone misrepresent or misunderstand your story? <a href="https://mitpress.mit.edu/books/data-feminism">Bring back the bodies</a>.</li>
+</ul>
+<p>Conducting these connotative and denotative explorations of your data will not only result in a more robust visualization, but will make you a better researcher and support a more inclusive and equitable society.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To learn more and practice these steps on some case studies, check out our <a href="https://ucdavisdatalab.github.io/workshop_critical_data_viz/">Critical Approach to Data Visualization workshop</a> and <a href="https://datalab.ucdavis.edu/data-feminism/">Data Feminism research and learning cluster</a>.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="graphical-elements-of-a-plot" class="level2" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="graphical-elements-of-a-plot"><span class="header-section-number">18.4</span> Graphical Elements of a Plot</h2>
+<p>A data visualization is useful only if it encodes information in a way that our eyes can perceive and our brain can understand. <strong>Marks</strong> and <strong>channels</strong> are the building blocks of all data visualizations and are employed to accomplish this encoding.</p>
+<p><strong>Marks</strong> are the the basic geometries, or graphical elements, in a plot that depict our data items or their linkages. Marks indicate “where” something is and include points (0d), lines (1d), areas (2d), and volumes (3d).</p>
+<p><strong>Channels</strong> are the attributes of that control how the marks appear. Channels are used to encode (or indicate) the values or meaning of our data. Channels were first described in the mid-20th century by Jacques Bertin in his book <em>Semilogie graphique</em> (the <em>Semiology of Graphics</em> [1967]), which argues that visual perception operates according to rules that can be followed to express information visually in intuitive, accurate and efficient ways. He described seven main categories of visual variables (channels): location or position, size, shape, orientation, color, and texture. More recent publications list up to 12 channels useful for encoding meaning in data visualizations (<a href="https://doi.org/10.1002/9781118786352.wbieg0761">Roth 2017</a>).</p>
+<p>By understanding the nature of our data in combination with the principles of visual perception, we can decide which marks and channels to use for a given data visualizations.</p>
+<div id="fig-munzner" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-munzner-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/workshop_data_visualization_munzer_marks_channels_figure.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-munzner-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.9: (source: <em><a href="https://www.oreilly.com/library/view/visualization-analysis-and/9781466508910/K14708_C005.xhtml">Visualization Analysis and Design</a></em> by Tamara Munzner)
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="principles-of-visual-perception" class="level2" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="principles-of-visual-perception"><span class="header-section-number">18.5</span> Principles of Visual Perception</h2>
+<p>Leveraging principles of visual perception (the ability to see and interpret surrounding visual information) will help us identify appropriate plot types and design better, more informative graphics. Humans are wired to look for structure, patterns, and logic. Our brains are amazing—they take ambiguous visual information and transform it into something organized, symmetrical, or familiar so we can understand it. But, we don’t process all visual information equally.</p>
+<section id="visual-magic-tricks" class="level3" data-number="18.5.1">
+<h3 data-number="18.5.1" class="anchored" data-anchor-id="visual-magic-tricks"><span class="header-section-number">18.5.1</span> Visual Magic Tricks</h3>
+<p>Take a look at the following questions and images.</p>
+<div id="fig-line-trick" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-line-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/whichisbigger.JPG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-line-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.10: Which line is bigger?
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Answer">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>They’re the same length, if you pay careful attention to the scales of the axes!</p>
+</div>
+</div>
+</div>
+<div id="fig-circle-trick" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-circle-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/workshop_data_visualization_tricks_circles_bw.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-circle-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.11: Which inner circle is bigger?
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Answer">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The circles are the same size.</p>
+</div>
+</div>
+</div>
+<div id="fig-line-connect-trick" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-line-connect-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/whichlinesup1.JPG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-line-connect-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.12: Do these lines connect?
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Answer">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The lines do NOT connect. Hold up a ruler or straight edge and prove it for yourself.</p>
+</div>
+</div>
+</div>
+<div id="fig-gradient-trick" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gradient-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/gradient-optical-illusion_wikimedia.svg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gradient-trick-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.13: Is the center bar in this image by Dodek a gradient?
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Answer">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Nope! It’s a solid color.</p>
+</div>
+</div>
+</div>
+<div id="fig-rubins-vase" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rubins-vase-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/Rubins_vase_wikipedia_bw.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rubins-vase-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.14: What shape(s) do you see in this image?
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Answer">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Did you see a vase or two faces?</p>
+</div>
+</div>
+</div>
+<p>These visual “magic tricks” work because they capitalize on innate weaknesses in our visual perception.</p>
+</section>
+<section id="stevens-psychophysical-power-law" class="level3" data-number="18.5.2">
+<h3 data-number="18.5.2" class="anchored" data-anchor-id="stevens-psychophysical-power-law"><span class="header-section-number">18.5.2</span> Steven’s Psychophysical Power Law</h3>
+<p>Research studies by Stanley Smith Stevens and others have shown that we exhibit innate biases in how we perceive magnitude changes in the intensity of various types of stimuli.</p>
+<p>For example, we perceive the intensity of an electrical shock to a greater degree than its actual, physical intensity would seem to warrant. We’re also poor at accurately perceiving changes in brightness and estimate it to increasing less than it actually does. However, we have near perfect perception of length proportional to its actual increase. This is especially true if lengths are aligned and on the same scale. Knowing this can help us design more intuitively useful plots.</p>
+<div id="fig-munzner-viz" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-munzner-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/workshop_data_visualization_stevens_law_munzer_figure.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-munzner-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.15: (source: Figure 5.7 in <em><a href="https://www.oreilly.com/library/view/visualization-analysis-and/9781466508910/">Visualization Analysis and Design</a></em> by Tamara Munzner)
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="perception-and-encodings" class="level3" data-number="18.5.3">
+<h3 data-number="18.5.3" class="anchored" data-anchor-id="perception-and-encodings"><span class="header-section-number">18.5.3</span> Perception and Encodings</h3>
+<p>Based on psychophysics, we can rank encodings to help us identify which ones will more accurately allow us to judge differences in relative magnitudes, which is important when working with ordinal, interval or ratio data.</p>
+<div id="fig-perception" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-perception-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/Mackinlay_16-Figure14-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-perception-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.16: (source: <a href="https://doi.org/10.1145/22949.22950">Jock Mackinlay, 1986, Computer Science ACM Trans. Graph.</a>)
+</figcaption>
+</figure>
+</div>
+<p>From most to least accurate by magnitude perception:</p>
+<ul>
+<li><strong>Position along a common scale.</strong> Spatial position is the easiest feature for us to recognize and evaluate, and unsurprisingly is used in the most common plot types: bar charts, scatterplots.</li>
+<li><strong>Positions along identical but nonaligned scales.</strong> Small multiples, grid, lattice, panel, and Rellis charts.</li>
+<li><strong>Length.</strong> We can easily recognize proportions and evaluate lengths, especially when they are aligned, such as in bar charts.</li>
+<li><strong>Direction.</strong> We recognize directionality fairly easily. Trend charts utilize this to demonstrate changes over time.</li>
+<li><strong>Angle, slope.</strong> It’s harder to evaluate angles than length or position. Pie charts can be as efficient as stacked bar charts, unless there are more than 3 parts to the whole. But ask yourself—if there are fewer than 3 or fewer parts, do you really need a visualization?</li>
+<li><strong>Area.</strong> Determining the relative magnitude of areas is much harder compared to lengths, and should be used (like in bubble charts) for indicating the relative importance, and not absolute magnitude changes.</li>
+<li><strong>Volume.</strong> 3D objects as represented in 2-D space are hard to evaluate. Avoid them. I’m looking at you, exploding 3D pie chart.</li>
+<li><strong>Curvature.</strong> Perceiving changes in the degree of a curve magnifies the difficulties in detecting direction, angle, and non-aligned lengths.</li>
+<li><strong>Density, color saturation and shading.</strong> Color is the least accurate way to convey patterns. Saturation is the intensity of a single hue, and increasing color intensity is intuitively perceived as correlating to an increasing value. But individual hues are hard to compare to one another. Heatmaps along the same color gradient can be a good way to convey an overall picture of change in values over a range. We’ll talk more about color later on.</li>
+<li><strong>Color hue.</strong> For data visualizations, color hue is the most challenging encoding to detect changes in magnitude.</li>
+</ul>
+</section>
+<section id="evaluating-graphics" class="level3" data-number="18.5.4">
+<h3 data-number="18.5.4" class="anchored" data-anchor-id="evaluating-graphics"><span class="header-section-number">18.5.4</span> Evaluating Graphics</h3>
+<blockquote class="blockquote">
+<p>No matter how clever the choice of the information, and no matter how technologically impressive the encoding, a visualization fails if the decoding fails. (Cleveland 1983)</p>
+</blockquote>
+<p>How do we detect if our encodings have failed? Munzner uses the principles of expressiveness and effectiveness to help us evaluate our data visualizations.</p>
+<p>The <strong>expressiveness</strong> of a visual encoding should “express all of, and only, the attributes of the data.” It is violated when we use encodings that do not match our data type or our visualization goals. When it fails, a chart is not only sub-optimal and confusing, it can be incorrect and misleading. Charts can fail the expressiveness test if their encodings imply ordering when there actually is none, or they mis-order a variable.</p>
+<p>The <strong>effectiveness</strong> of a visual encoding addresses how accurately can the interpreter of the chart decode the encodings within it and derive accurate knowledge. According to Munzner, “the importance of the attribute should match the salience of the channel,” meaning we should use channels at the top of the list to encode the variables that are the most important to communicating our data story.</p>
+<p>When looking at a plot, can you accurately detect differences is the sizes of the bubbles? Can you discriminate between all of the colors, compare the shades? Can you separate the dimensions of the data?</p>
+<p>Taking these principles together, when we want to compare magnitudes of <strong>ordinal data</strong> (numeric, continuous, or ordered qualitative data—like height, weight, number of children in a family, or a rating), we should use encodings at the top of Mackinlay’s list above.</p>
+<p>Conversely, for <strong>nominal data</strong> (categorical or un-ordered qualitative data—like gender), use these identity channels:</p>
+<ul>
+<li><strong>Shape</strong>: glyphs are effective at grouping categorical attributes together. But be mindful that the more shapes you use, the harder it will be for a viewer to remember what corresponds to which specific data attribute.</li>
+<li><strong>Color</strong>: while color can be very effective in data visualizations (see the Gestalt principles below) typically less is more. Apply contrasting colors only to differences in meanings in the data, or to emphasize the main elements. Start with grey, and add color only as necessary. And, be mindful when defining your color palette. <a href="https://colorbrewer2.org/">Color brewer</a> and <a href="https://projects.susielu.com/viz-palette">Viz Palette</a> provide palettes that optimize our perceptive abilities and design for accessibility. Do a color check—how will a person with colorblindness perceive your graphics?</li>
+<li><strong>Texture</strong>: similar to shape and color, texture can be useful for differentiating between categories or separate areas. Textures can be particularly effective at replacing colors, such as in black and white figures, and for increasing accessibility by reinforcing a color encoding.</li>
+</ul>
+<p>Combining channels can result in integral or separable coding pairs, respectively allowing attributes to be perceived holistically or with separate judgments regarding their graphical dimension.</p>
+<div id="fig-ware" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/ware_information_visualization.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ware-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.17: (source: <a href="https://www.elsevier.com/books/information-visualization/ware/978-0-12-812875-6">Colin Ware (2019) “Information Visualization”</a>)
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="gestalt-principles" class="level3" data-number="18.5.5">
+<h3 data-number="18.5.5" class="anchored" data-anchor-id="gestalt-principles"><span class="header-section-number">18.5.5</span> Gestalt Principles</h3>
+<p>In addition to decoding specific elements, our brains have an amazing ability to create and perceive structure along visual objects. This is commonly referred to as the Gestalt principles of visual perception. This framework, combined with Steven’s Law, can help us think through how to use marks and channels together to create expressive and effective data visualizations:</p>
+<ul>
+<li><strong>Similarity</strong>: objects with the same visual properties are assumed to be similar and are grouped together.
+<ul>
+<li>Example: use design elements such as shape, color, and organization to indicate groupings of the data. In design theory these are called “preattentive features” because we actually see and perceive them before we really think about them. In some experiments it was found to take less than 0.5 seconds for the eye and brain to process a preattentive property of an image.</li>
+</ul></li>
+<li><strong>Proximity</strong>: objects that are close together are perceived as a group.
+<ul>
+<li>Example: since physical distance connotes similarity, grouping bars on a chart can indicate similarities among their data. Instead of listing it in a legend, directly label data groupings by adding informative text directly onto the graph.</li>
+</ul></li>
+<li><strong>Continuity</strong>: elements that are aligned (on the same line, curve, or plane) are perceived to be more closely related to each other than to other elements.
+<ul>
+<li>Example: it is often easier for us to perceive the groupings if the shapes are curves, rather than lines with sharp edges.</li>
+</ul></li>
+<li><strong>Enclosure</strong>: objects that appear to have a boundary around them (i.e., are found within the same common or enclosed region) are perceived as being related.
+<ul>
+<li>Example: Add line boundaries or shades to group objects.</li>
+</ul></li>
+<li><strong>Connection</strong>: objects that are connected, such as by a line, are perceived as a group.
+<ul>
+<li>Example: connect different data together to indicate a relationship. This connectedness is highly effective as it often over-rules the other principles for group perception. Every line plot is an example of connectedness.</li>
+</ul></li>
+<li><strong>Closure</strong>: complex arrangements of visual elements are perceived as a single, recognizable pattern.
+<ul>
+<li>Example: open structures are often perceived as closed, complete and regular.</li>
+</ul></li>
+<li><strong>Figure and Ground</strong>: objects are perceived as either standing out prominently in the foreground (or front figure) of an image, or recede into the background.
+<ul>
+<li>Example: shading or color blocking can be employed to to distinguish between the more important figure and less important ground features of an image. Place elements of the most importance in the foreground figure.</li>
+</ul></li>
+<li><strong>Focal Point</strong>: whatever stands out visually is perceived as the most important. It will grabs our attention first, and holds it for the longest.
+<ul>
+<li>Example: use design elements selectively to draw attention to the most important features of the data.</li>
+</ul></li>
+</ul>
+<div id="fig-gestalt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gestalt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/gestalt_principles.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gestalt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.18: Gestalt principles for perpetual grouping and figure-ground segregation. (source: <em>Gestalt Principles for Attention and Segmentation in Natural and Artificial Vision Systems</em> by G. Kootstra, N. Bergstrom, D. Kragic (2011).)
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-accessible-data-visualizations" class="level2" data-number="18.6">
+<h2 data-number="18.6" class="anchored" data-anchor-id="sec-accessible-data-visualizations"><span class="header-section-number">18.6</span> Accessible Data Visualizations</h2>
+<section id="color" class="level3" data-number="18.6.1">
+<h3 data-number="18.6.1" class="anchored" data-anchor-id="color"><span class="header-section-number">18.6.1</span> Color</h3>
+<p>Color can be one of the most challenging—and important—attributes to apply to a plot. Special care must be taken when applying color to our data visualizations to ensure they are accessible to persons with color blindness. Color blindness prevents viewers from distinguishing between certain colors, their brightness, and/or shades of a color. Affecting approximately 1 in 12 men (8%) and 1 in 200 women (0.5%) around the world, it is likely that some viewers of your data visualization will perceive its colors differently.</p>
+<p>Overall <a href="https://doi.org/10.1038/s41467-020-19160-7">we’re not doing a good job at using color mindfully in our science communication</a>. If you want to use color, the following are some recommendations to keep in mind.</p>
+<p><strong>Recommendation 1: Avoid problematic color combinations.</strong> The most common types of color blindness makes it hard to tell the difference between red and green (deuteranope and protanope color blindness). Blue-yellow color blindness (tritanope) is less common. Avoid using: red/green, green/brown, green/blue, blue/gray combinations. Many graphing software unfortunately use these combinations as a default and you will have to manually change this on your figures.</p>
+<p>To demonstrate why these combinations are problematic, here is a color vision test:</p>
+<div id="fig-color-vision" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-color-vision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/nature_color_science_fails.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-color-vision-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.19: (source: <a href="https://doi.org/10.1038/s41467-020-19160-7">Crameri, F., Shephard, G.E. &amp; Heron, P.J. The misuse of colour in science communication. Nat Commun 11, 5444 (2020)</a>)
+</figcaption>
+</figure>
+</div>
+<p><strong>Recommendation 2: Use an online tool to help you pick a colorblind friendly palette</strong> depending on your data and visualization needs. Examples include:</p>
+<ul>
+<li><a href="https://colorbrewer2.org/#type=sequential&amp;scheme=BuGn&amp;n=3">colorbrewer</a>: palettes, color advice for mapping, and good general tips</li>
+<li><a href="https://coolors.co/">coolors</a></li>
+</ul>
+<div id="fig-colorbrewer" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-colorbrewer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/color_brewer_screengrab.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-colorbrewer-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.20
+</figcaption>
+</figure>
+</div>
+<p><strong>Recommendation 3: Use a colorblindness simulator</strong> to check your visualization. Who won’t be able to see the differences you’re trying to display with color? Here are a few simulators:</p>
+<ul>
+<li><a href="http://www.color-blindness.com/coblis-color-blindness-simulator/">Coblis</a></li>
+<li><a href="https://colororacle.org/">Color Oracle</a></li>
+</ul>
+<p><strong>Recommendation 4: Add textures</strong>, symbols, or other channels to reinforce the grouping attributes on your plot.</p>
+<div id="fig-textures" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-textures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/textures_js.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-textures-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.21: (<a href="https://wearecolorblind.com/resources/textures-js-patterns-for-data-visualization/">source</a>)
+</figcaption>
+</figure>
+</div>
+<p><strong>Recommendation 5: Rethink your plot.</strong> You may not actually need color at all to effectively display your data.</p>
+<div id="fig-color-blindness" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-color-blindness-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/dataquest_color_blindness_example.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-color-blindness-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.22: (<a href="https://www.dataquest.io/blog/what-to-consider-when-choosing-colors-for-data-visualization/">source</a>)
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Here are some more resources to help you use color effectively and mindfully in your data visualizations.</p>
+<p>Color and design:</p>
+<ul>
+<li><a href="https://doi.org/10.2312/eurp.20161151">Visualization-Aware Color Design: Aesthetic, Perceptual &amp; Functional Constraints</a></li>
+<li><a href="https://cmci.colorado.edu/visualab/papers/colordiff_vis2017.pdf">Modeling Color Difference for Visualization Design</a> (n experiment showing how mark type influences color perception in data viz)</li>
+<li><a href="https://wearecolorblind.com/resources/textures-js-patterns-for-data-visualization/">Textures and patterns for colorblindness</a></li>
+</ul>
+<!-- [szafir17]: https://doi.org/10.1109/TVCG.2017.2744359 -->
+<p>Color accessibility in R:</p>
+<ul>
+<li><a href="https://cran.r-project.org/web/packages/RColorBrewer/">RColorBrewer package</a></li>
+<li><a href="https://sjmgarnier.github.io/viridis/">viridis package</a></li>
+<li><a href="https://coolbutuseless.github.io/package/ggpattern/">ggpattern package</a></li>
+<li><a href="https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/colorPaletteCheatsheet.pdf">R color cheatsheet</a></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="alternative-text" class="level3" data-number="18.6.2">
+<h3 data-number="18.6.2" class="anchored" data-anchor-id="alternative-text"><span class="header-section-number">18.6.2</span> Alternative Text</h3>
+<p>So far we’ve taken for granted that visualization is an accessible mode of communication, but researchers and audiences alike are not all sighted. RStudio is behind on vision impairment accessibility, but some packages can provide text descriptions and sonification/audification of plots to improve accessibility for non-visual data interaction.</p>
+<p>For example, the <a href="https://r-resources.massey.ac.nz/BrailleRInAction/">BrailleR package</a>, has a <code>VI</code> function that wraps around ggplot objects and provides a text-description output. This description is a starting point but it does not summarize the data itself, so it is important to consider also informative figure captions or embedded alternative text so that all viewers are able to interpret the visualization.</p>
+<p>Other packages like the sonification package’s <code>sonify</code> function can be used to represent data in audio form. With the function, the x-axis can span sound across time, so that the length of time a sound plays follows the data long the x-axis from left to right; the y-axis can be expressed as pitch, so that the pitch of the sound matches to the values of the data (lower value means lower pitch).</p>
+</section>
+</section>
+<section id="designing-statistical-graphics" class="level2" data-number="18.7">
+<h2 data-number="18.7" class="anchored" data-anchor-id="designing-statistical-graphics"><span class="header-section-number">18.7</span> Designing Statistical Graphics</h2>
+<p>You are now ready to make your plot! You can combine marks and channels to create nearly any plot type, and there are many established types of statistical graphics that you can choose from to showcase your data. Each type has its benefits, and drawbacks, based on how it encodes your data.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Match the chart type to your data—and what you want it to show—and not the other way around.</p>
+</div>
+</div>
+<section id="step-1-identify-your-data-type" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="step-1-identify-your-data-type">Step 1: Identify Your Data Type</h3>
+<p>Data can be quantitative or qualitative:</p>
+<ul>
+<li>Quantitative data is either continuous (numerical data like height and weight), or discrete (constrained values, such as the number of children in a family).</li>
+<li>Qualitative data can be ordered (categories that have a relationship but no meaningful distance between them, such as movie star ratings), or nominal (categories that have no meaningful order, such as gender).</li>
+</ul>
+</section>
+<section id="step-2-determine-your-functional-approach" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="step-2-determine-your-functional-approach">Step 2: Determine Your Functional Approach</h3>
+<p>Ask ask yourself:</p>
+<ul>
+<li>What are the tasks you want the visual to support?
+<ul>
+<li>Showing how values compare to each other? How the data are distributed? How they are composed? How values relate?</li>
+</ul></li>
+<li>What specific visual best supports those tasks?</li>
+<li>What do you expect people to naturally do in their “visual queries” as they explore the plot?</li>
+<li>How can you modify the graphical marks and channels to support faster queries?</li>
+</ul>
+</section>
+<section id="step-3-select-a-plot-type" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="step-3-select-a-plot-type">Step 3: Select a Plot Type</h3>
+<p>Now that you’ve identified your data types and what you need your visualization to show, explore your different chart type options! Start with this nifty <a href="https://www.data-to-viz.com/">From Data to Viz</a> tool. Select your data type(s) and click through for the pros, cons, and alternate options for a bevy of charts.</p>
+<div id="fig-data-to-viz" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-to-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../images/ch08/from_data_to_viz_screengrab.PNG" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-data-to-viz-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18.23
+</figcaption>
+</figure>
+</div>
+<p>For example, if you want to enable accurate comparisons of individual quantitative values and their relationships, try a scatterplot or a chart with lines or bars sitting aligned on a single axis.</p>
+<p>The following list contains an overview of some of the most common plot types you may encounter:</p>
+<p><strong>Single quantitative variables</strong> are plotted to show the frequency distribution of the data. While <strong>histograms</strong> are the most common density plots, a single quantitative variable can also be plotted using a rug plot/strip chart, boxplot, or violin plot (described below, where they’re most commonly employed).</p>
+<p><strong>Two quantitative variables</strong> can be plotted using a:</p>
+<ul>
+<li><strong>Scatterplot</strong>: each axis encodes the values of a different quantitative variable, and individual data are represented as points (or dots) on the chart.</li>
+<li><strong>Line plot</strong>: data points are connected by straight lines. Line-scatter plots are are common for time series or trend data.</li>
+</ul>
+<p><strong>One quantitative and one qualitative variable</strong> are suitable for a:</p>
+<ul>
+<li><strong>Bar chart</strong>: bars represent the amount of data in different categories of a variable. One axis encodes the frequencies of the quantitative data, and the other axis the categories of the qualitative data.</li>
+<li><strong>Boxplot</strong>: shows the median, quartiles, and bounds of your data.</li>
+<li><strong>Violin plot</strong>: in essence, a boxplot that also shows the distribution of your quantitative variable.</li>
+<li><strong>Word cloud</strong>: these eye-catching visualizations display a list of words with their font size corresponding to their importance. But, they require huge sample sizes and are not very useful as they often distort reality. For example, long words will look more prominent just because they have more letters and cover more area—our eyes don’t intuitively parse out word height from length.</li>
+<li><strong>Pie chart</strong>: uses relative frequencies to show how large each category is in relation to the whole.</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled" title="Warning">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Pie charts are grudgingly listed here because you will see them in the wild, but resist the temptation to use them!</p>
+<p>Based on our visual perception, pie charts are inherently problematic because they encode values as visual attributes. Pie charts encode data as the area of each slice, as well as the angle that it forms in the center of the pie, making it difficult to easily perceive and compare differences.</p>
+<p>Over <a href="https://viz.wtf/archive/tagged/piechart">492 posts on WTF Visualizations</a> are tagged as pie charts! Almost any other chart type is better than a pie chart.</p>
+</div>
+</div>
+<p>Other complex plot types you may encounter that layer additional marks and channels on the above chart types are:</p>
+<ul>
+<li><strong>Lollipop chart</strong>: a dot chart where the dots are connected by lines to an axis.</li>
+<li><strong>Mosaic plot</strong>: also called a treemap, these plots display hierarchical data as sets of nested rectangles sized proportionately to their values.</li>
+<li><strong>Bubble plots</strong>: scatterplots where the size of a dot corresponds to a third numerical or ordered categorical value.</li>
+<li><strong>Radar plots / star chart</strong>: line plots where each variable has its own axis and all axes are joined at the center of the figure.</li>
+<li><strong>Network diagrams</strong>: also called graphs, these plots show connections (edges) between entities (nodes).</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To learn more about network diagrams, check out DataLab’s <a href="https://ucdavisdatalab.github.io/research-toolkits/network_researcher_toolkit.html">network toolkit</a> and <a href="https://www.youtube.com/watch?v=H6IkFnykX1s&amp;feature=youtu.be">network analysis workshop</a>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="See also">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>See also
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Google also has an <a href="https://developers.google.com/chart/interactive/docs/gallery?csw=1">interactive plot gallery</a>. And <a href="https://stats.stackexchange.com/questions/78844/a-gallery-of-charts-diagrams-and-plot-types">this Stack Exchange post</a> has even more chart type resources.</p>
+<p>But remember, some encodings are more difficult to accurately decode. When in doubt, stick to simple figures with points and lines.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="What About Maps?!">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What About Maps?!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Geospatial data visualization by nature is complex and encodes a lot of attributes. Interested in learning more? Check our DataLab’s <a href="https://datalab.ucdavis.edu/spatial-sciences/">Spatial Sciences research and learning cluster</a> and <a href="https://stage-datalab.library.ucdavis.edu/workshops/descriptions/">workshops</a>.</p>
+</div>
+</div>
+</section>
+<section id="step-4-iterate" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="step-4-iterate">Step 4: Iterate</h3>
+<p>Create your visual, and run through step 2 again keeping in mind the principles of visual perception, effectiveness and efficiency. Does it meet your needs? If not, try a different type. <strong>Graphing, like writing, requires continuous editing.</strong></p>
+</section>
+</section>
+<section id="tips-for-better-plots" class="level2" data-number="18.8">
+<h2 data-number="18.8" class="anchored" data-anchor-id="tips-for-better-plots"><span class="header-section-number">18.8</span> Tips for Better Plots</h2>
+<p>Making effective data visualizations takes practice and experience. The more plots you look at, the more you will intuitively recognize what works—and what doesn’t—for data visual storytelling. One takeaway I hope you discover is the need to avoid unnecessary complexities.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the “story” is simple, keep it simple. If the “story” is complex, make it look simple.</p>
+</div>
+</div>
+<p>Below are some tips to help achieve those goals.</p>
+<section id="get-rid-of-chartjunk" class="level3" data-number="18.8.1">
+<h3 data-number="18.8.1" class="anchored" data-anchor-id="get-rid-of-chartjunk"><span class="header-section-number">18.8.1</span> Get Rid of Chartjunk</h3>
+<p>An easy way to instantly improve your plots is to eliminate superfluous material. Extra tick marks and grid lines; unnecessary text and arrows; decimal places beyond the measurement error of the level of difference; cute little butterfly clip art: this <strong>chartjunk</strong> has no meaning and it clutters up a chart, making it hard for your viewer to see what’s most important—your data. The amount of ink on your figure should directly correspond with the amount of data you present. If it doesn’t, you have a lot of chartjunk. (Evidence #10298 that pie charts are never a good choice.)</p>
+<p>Try these de-cluttering steps to improve your charts:</p>
+<ul>
+<li>Shift from center to left-justified text</li>
+<li>Retain white space</li>
+<li>Clear contrasts</li>
+<li>Remove chart borders</li>
+<li>Remove (or strongly mute) gridlines</li>
+<li>Remove data markers and point labels (unless they are important)</li>
+<li>Remove unnecessary polygon filling</li>
+<li>Cleanup and rename axis labels to be intuitive</li>
+<li>Replace the title with something informative</li>
+<li>Label the data directly using the principle of proximity</li>
+<li>Leverage consistent color and other aesthetics</li>
+</ul>
+<p>Creating visual order and reducing chartjunk will dramatically improve your graphic by helping your data stand out.</p>
+</section>
+<section id="facilitate-comparisons" class="level3" data-number="18.8.2">
+<h3 data-number="18.8.2" class="anchored" data-anchor-id="facilitate-comparisons"><span class="header-section-number">18.8.2</span> Facilitate Comparisons</h3>
+<ul>
+<li>Avoid having the graph elements interfere with the data</li>
+<li>Juxtapose or supepose plots (using the same scales)</li>
+<li>Use visually prominent symbols</li>
+<li>Avoid over-plotting; try jittering, or smoothing</li>
+<li>Don’t change a scale mid-axis</li>
+<li>Use only one scale on one axis</li>
+<li>Use color, judiciously</li>
+<li>Avoid jiggling the baseline</li>
+<li>Don’t distort the data; take care when selecting the encodings</li>
+</ul>
+<p>A common mistake is to use more encodings than there are dimensions of the data. If you data only has two dimensions (say number of students in STEM by gender identity), your figure could reasonably use points, rarely area, and never volume. (I’m looking at you, 3D pie chart.)</p>
+</section>
+<section id="create-information-rich-plots" class="level3" data-number="18.8.3">
+<h3 data-number="18.8.3" class="anchored" data-anchor-id="create-information-rich-plots"><span class="header-section-number">18.8.3</span> Create Information-Rich Plots</h3>
+<p>Data visualizations cannot exist without text. They require context to infer meaning. Ask yourself:</p>
+<ul>
+<li>Does the caption describe what has been graphed? Does it draw attention to the important features? Describe the conclusions drawn by the graph?</li>
+<li>Are the legends and labels clear and intuitive?</li>
+<li>Are important reference lines and points labeled?</li>
+</ul>
+</section>
+<section id="dont-distort-the-data" class="level3" data-number="18.8.4">
+<h3 data-number="18.8.4" class="anchored" data-anchor-id="dont-distort-the-data"><span class="header-section-number">18.8.4</span> Don’t Distort the Data</h3>
+<p>There’s a bestselling book called [“How to Lie with Statistics”][]. Written by the journalist (and not a statistician) Darrell Huff in 1954, the book focuses on how decisions we make in selecting the data and analysis method, along with errors in interpretation, can generate incorrect conclusions. Similarly, visualization principles can be mis-applied when graphing such that the takeaway message from a graphic distorts reality. Review your plots to make sure they both tell, and show, the truth.</p>
+</section>
+<section id="practice" class="level3" data-number="18.8.5">
+<h3 data-number="18.8.5" class="anchored" data-anchor-id="practice"><span class="header-section-number">18.8.5</span> Practice</h3>
+<p>Just as an author edits before publishing the novel, and an artist sketches before making the masterpiece, plotting is an iterative process. Proofread for clarity and consistency. Check whether your plots pass the expressiveness and effectiveness tests. Does a viewer draw the same conclusions from the figure that you do?</p>
+<p>Here’s a <a href="https://docs.google.com/document/d/1rwoa8XPgvTKHE5Weh9RhrO8igfJ6E8bqyZtddZpwomc/edit?usp=sharing">cheat sheet and checklist</a> to help you design and improve your data visualizations. Happy plotting!</p>
+<div class="callout callout-style-default callout-note callout-titled" title="References and Additional Resources">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>References and Additional Resources
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Websites:</p>
+<ul>
+<li><a href="https://www.datavis.ca/milestones/">Milestones in the History of Thematic Cartography, Statistical Graphics, and Data Visualization</a></li>
+<li><a href="https://www.data-to-viz.com/">From Data to Viz</a></li>
+<li><a href="https://informationisbeautiful.net/">Information is Beautiful</a></li>
+<li><a href="https://flowingdata.com/">Flowing Data</a></li>
+<li><a href="https://viz.wtf/">WTF Visualizations</a></li>
+<li><a href="https://www.csc2.ncsu.edu/faculty/healey/PP/">Perception in Visualization</a>, a computer scientist’s viewpoint</li>
+</ul>
+<p>Articles:</p>
+<ul>
+<li>Mickinlay, Jock. 1986. Automating the design of graphical presentations of relational information. ACM Transactions on Graphics. <a href="https://doi.org/10.1145/22949.22950" class="uri">https://doi.org/10.1145/22949.22950</a></li>
+<li>Cleveland, William S. &amp; Kleiner, Beat. 1975. A Graphical Technique for Enhancing Scatterplots with Moving Statistics. In Proceedings of the Annual Meeting. Atlanta, GA.</li>
+<li>Fisher, Ronald Alymer. (1915). Theory of Statistical Estimation. Proceedings of the Cambridge Philosophical Society. 22. 700-725.</li>
+</ul>
+<p>Contemporary books and chapters:</p>
+<ul>
+<li>Cleveland, William. 1994. The elements of graphing data, 2nd edition. Hobart Press.</li>
+<li>Drucker, J. 2014. Graphesis: Visual Forms of Knowledge Production. Harvard UP. Cambridge, MA.</li>
+<li>Friendly, M. 2007. A Brief History of Data Visualization. In Handbook of Computational Statistics: Data Visualization. III. Springer-Verlag. Heidelberg. 1-34.</li>
+<li>Munzner, Tamara. 2014. <a href="https://www.oreilly.com/library/view/visualization-analysis-and/9781466508910/">Visualization analysis and design</a>.</li>
+<li>Huff, Darrell. 1954. How to Lie with statistics. W. W. Norton &amp; Company. New York.</li>
+<li>Tufte, Edward R. 1983. The Visual Display of Quantitative Information. Graphics Press. Cheshire, CT.</li>
+<li>Wainer, Howard. 2007. <a href="https://press.princeton.edu/books/paperback/9780691134055/graphic-discovery">Graphic discovery: a trout in the milk and other visual adventures</a>.</li>
+<li>Wilkinson, Leland. 2005. The Grammar of Graphics, 2nd ed.. Springer. New York. Yau, Visualize this: The flowing data guide to design, visualization, and statistics</li>
+</ul>
+<p>Historical books:</p>
+<ul>
+<li>Bertin, Jacques. 1983. Semiology of Graphics. University of Wisconsin Press. Madison, WI. (trans. W. Berg) 1967</li>
+<li>Descartes, Réne. 1637. La Géométrie. In Discours de la Méthode. Essellier. Paris.</li>
+<li>Minard, Charles Joseph. 1861. Des Tableaux Graphiques et des Cartes Figuratives. E. Thunot et Cie. Paris.</li>
+<li>Playfair, William. 1786. Commercial and Political Atlas: Representing, by Copper-Plate Charts, the Progress of the Commerce, Revenues, Expenditure, and Debts of England, during the Whole of the Eighteenth Century. Corry. London.</li>
+<li>Snow, John. 1855. On the Mode of Communication of Cholera. (n.p.). London.</li>
+<li>Tukey, John Wilder. 1977. Exploratory Data Analysis. Addison-Wesley. Reading, MA.</li>
+<li>Tukey, John Wilder. 1960. <a href="https://www.jstor.org/stable/1558734?seq=1">A survey of sampling from contaminated distributions. In Contributions to Probability and Statistics: Essays in Honor of Harold Hotelling</a> (I. Olkin et al., eds.) 448–485. Stanford Univ. Press.</li>
+</ul>
+<p>R graphics references:</p>
+<ul>
+<li>Murrell, Paul. 2019. R Graphics (3rd Edition). Chapman and Hall/CRC.</li>
+<li>Sarkar, Deepayan. 2008. Lattice: Multivariate data visualization with R. Springer.</li>
+<li><a href="https://ggplot2-book.org/">ggplot2: Elegant Graphics for Data Analysis (3e)</a> by Wickham, Navarro, and Pedersen</li>
+<li><a href="https://r-graphics.org/">R Graphics Cookbook (2e)</a> by Chang</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../chapters/week04/aggregation-grouping.html" class="pagination-link" aria-label="Aggregation &amp; Grouping">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Aggregation &amp; Grouping</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../chapters/week05/intro-ggplot2.html" class="pagination-link" aria-label="Introduction to `ggplot2`">
+        <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Introduction to <code>ggplot2</code></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week05/data-visualization-principles.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
