@@ -18,6 +18,7 @@ After this lesson, you should be able to:
 This chapter uses the following packages:
 
 * dplyr
+* ggplot2
 * purrr
 * readxl
 * stringr
@@ -55,6 +56,7 @@ about which code to run next. The computer makes its decision by checking
 whether a condition is true. In a flowchart, a conditional looks like a branch
 (two or more ways to get somewhere):
 
+:::{#fig-conditional}
 ```{mermaid}
 flowchart LR
   start(Start) --> condition{Is condition true?}
@@ -63,6 +65,10 @@ flowchart LR
   do_something --> done(End)
   do_something_else --> done
 ```
+
+A flowchart that shows a conditional. The computer checks a condition to
+decide which code to run.
+:::
 
 In most programming languages, the keyword `if` (or some variation of this)
 creates a conditional. Because of this, conditionals are also called **if
@@ -102,12 +108,16 @@ if (condition1) {
 }
 ```
 
-As an illustrative example, suppose we want our code to produce a different
-greeting depending on the hour. If it's the morning (hours 6-11), the code
-should produce `"Good morning!"`. If it's the afternoon (hours 12-17), the code
-should produce `"Good afternoon!"`. For any other hour, the code should produce
-`"Hello."`. We can use a conditional to do this (see @sec-logic if you need a
-refresher on how to write conditions that return `TRUE` and `FALSE` values):
+As an example, suppose we want our code to produce a different greeting
+depending on the hour:
+
+* If it's the morning (hours 6-11), the code should produce `"Good morning!"`.
+* If it's the afternoon (hours 12-17), the code should produce `"Good
+  afternoon!"`.
+* For any other hour, the code should produce `"Hello."`.
+
+We can use a conditional to do this (see @sec-logic if you need a refresher on
+how to write conditions that return `TRUE` and `FALSE` values):
 
 ```{r}
 hour = 10
@@ -405,35 +415,89 @@ part III of this case study (@sec-case-study-fuel-3), we'll see how to use the
 function to read all of them.
 
 
-## The `map` Function {#sec-apply-functions}
+## Iteration
+
+R is powerful tool for automating tasks that have repetitive steps. For
+example, you can:
+
+* Apply a transformation to an entire column of data.
+* Compute distances between all pairs from a set of points.
+* Read a large collection of files from disk in order to combine and analyze
+  the data they contain.
+* Simulate how a system evolves over time from a specific set of starting
+  parameters.
+* Scrape data from the pages of a website.
+
+You can implement concise, efficient solutions for these kinds of tasks by
+using **iteration**, which means repeating a computation many times. In a
+flowchart, iteration looks like a loop (a path that begins and ends at the same
+place):
+
+:::{#fig-while-loop}
+```{mermaid}
+flowchart LR
+  start(Start) --> condition{Is condition true?}
+    condition -- True --> body[Do something]
+    body --> condition
+    condition -- False ----> done(End)
+```
+
+A flowchart that shows a while loop (one kind of iteration). The computer
+checks a condition at the beginning of each iteration to decide whether to
+continue iterating or stop.
+:::
+
+R provides four different strategies for writing iterative code:
+
+1. Vectorization, where a function is implicitly called on each element of a
+   vector. This was introduced in @sec-vectorization.
+2. Map (or apply) functions, where a function is explicitly called on each
+   element of a data structure.
+3. Loops, where an expression is evaluated repeatedly until some condition is
+   met.
+4. Recursion, where a function calls itself.
+
+Vectorization is the most efficient and concise iteration strategy, but also
+the least flexible, because it only works with specific functions and with
+vectors. Map functions are more flexible---they work with any function and any
+data structure with elements---but less efficient and less concise. Loops and
+recursion provide the most flexibility but are the least concise. Recursion
+tends to be the least efficient iteration strategy in R.
+
+The next two sections, @sec-the-purrr-package and @sec-for-loops, introduce map
+functions and loops, respectively. @sec-how-to-write-iterative-code explains
+how to choose which iteration strategy to use and how to write iterative code.
+
+
+## The purrr Package {#sec-the-purrr-package}
 
 @sec-vectorization introduced vectorization, a convenient and efficient way to
 compute multiple results. That section also mentioned that some of R's
 functions---the ones that summarize or aggregate data---are not vectorized.
 
 The `class` function is an example of a function that's not vectorized. If we
-call the `class` function on the least terns data set, we get just one result
-for the data set as a whole:
+call the `class` function on the least terns dataset, we get just one result
+for the dataset as a whole:
 
 ```{r}
 class(terns)
 ```
 
-What if we want to get the class of each column? We can get the class for a
-single column by selecting the column with `$`, the dollar sign operator:
+We can get the class of a single column by selecting the column with `$`, the
+dollar sign operator:
 
 ```{r}
 class(terns$year)
 ```
 
-But what if we want the classes for all the columns? We could write a call to
+What if we want the classes of all the columns? We could write a call to
 `class` for each column, but that would be tedious. When you're working with a
 programming language, you should try to avoid tedium; there's usually a better,
 more automated way.
 
-@sec-lists pointed out that data frames are technically lists, where each
-column is one element. With that in mind, what we need here is a line of code
-that calls `class` on each element of the data frame. The idea is similar to
+Data frames are technically lists (@sec-lists), where each column is one
+element. With that in mind, what we need here is a line of code that calls
+`class` on each element of the data frame. The idea is similar to
 vectorization, but since we have a list and a non-vectorized function, we have
 to do a bit more than just call `class(terns)`.
 
@@ -452,7 +516,8 @@ The package's `map` function calls a function on each element of a vector
 or list. We sometimes also say it **maps** or **applies** a function over the
 elements. The syntax is:
 
-```r
+```{r}
+#| eval: false
 map(DATA, F, ...)
 ```
 
@@ -483,7 +548,7 @@ function always returns a list with one element for each element of the input
 data.
 
 
-## Other Map Functions
+### Other Map Functions
 
 The purrr package provides many different map functions, all of which have
 names that start with `map`. All of them call another function on each element
@@ -501,7 +566,7 @@ Function  | Return Type
 : {#tbl-map-functions}
 
 
-:::{.callout-note title="Apply Functions"}
+:::{.callout-note title="Note: Apply Functions"}
 R's **apply functions** are a built-in equivalent to map functions. The
 `lapply`, `sapply`, and `tapply` functions are the three most important
 functions in the family of apply functions, but there are many more. The
@@ -515,6 +580,7 @@ StackOverflow post][apply].
 [apply]: https://stackoverflow.com/a/7141669
 :::
 
+<!--
 When you have a choice between using vectorization or a map function, you
 should always choose vectorization. Vectorization is clearer---compare the two
 lines of code above---and it's also significantly more efficient. In fact,
@@ -523,6 +589,7 @@ vectorization is the most efficient way to call a function repeatedly in R.
 As we saw with the `class` function, there are some situations where
 vectorization is not possible. That's when you should think about using a map
 function.
+-->
 
 Let's look at some examples of the other map functions. If we use `map_chr` to
 find the classes of the columns in the least terns data, we get a character
@@ -542,15 +609,16 @@ map_dbl(x, sin)
 In spite of that, vectorization is still more efficient than `sapply`, so use
 vectorization instead when possible.
 
+<!--
 Map functions are incredibly useful for summarizing data. For example, suppose
 we want to compute the frequencies for all of the columns in the least terns
-data set that aren't numeric.
+dataset that aren't numeric.
 
 First, we need to identify the columns. One way to do this is with the
 `is.numeric` function. Despite the name, this function actually tests whether
 its argument is a real number, not whether it its argument is a numeric vector.
 In other words, it also returns true for integer values. We can use `map_lgl`
-to apply this function to all of the columns in the least terns data set:
+to apply this function to all of the columns in the least terns dataset:
 
 ```{r}
 is_not_number = !map_lgl(terns, is.numeric)
@@ -558,12 +626,12 @@ is_not_number
 ```
 
 Is it worth using R code to identify the non-numeric columns? Since there are
-only `r ncol(terns)` columns in the least terns data set, maybe not. But if the
-data set was larger, with say 100 columns, it definitely would be.
+only `r ncol(terns)` columns in the least terns dataset, maybe not. But if the
+dataset was larger, with say 100 columns, it definitely would be.
 
 In general, it's a good habit to use R to do things rather than do them
 manually. You'll get more practice programming, and your code will be more
-flexible if you want to adapt it to other data sets.
+flexible if you want to adapt it to other datasets.
 
 Now that we know which columns are non-numeric, we can use the `table` function
 to compute frequencies. We only want to compute frequencies for those columns,
@@ -575,152 +643,153 @@ map(terns[, is_not_number], table)
 
 We use `map` rather than one of the other map functions for this step because
 the table for each column will have a different length.
+-->
 
 The [purrr documentation][purrr] provides more details about how to use the
 many functions in the package.
 
 
-## Iteration
 
-R is powerful tool for automating tasks that have repetitive steps. For
-example, you can:
+## For Loops {#sec-for-loops}
 
-* Apply a transformation to an entire column of data.
-* Compute distances between all pairs from a set of points.
-* Read a large collection of files from disk in order to combine and analyze
-  the data they contain.
-* Simulate how a system evolves over time from a specific set of starting
-  parameters.
-* Scrape data from the pages of a website.
+A **for loop** runs the code in its body once for each element of a data
+structure. In a flowchart, a for loop looks like a loop (a path that begins and
+ends in the same place)---hence the name:
 
-You can implement concise, efficient solutions for these kinds of tasks in R by
-using **iteration**, which means repeating a computation many times. R provides
-four different strategies for writing iterative code:
-
-1. Vectorization, where a function is implicitly called on each element of a
-   vector. This was introduced in @sec-vectorization.
-2. Apply functions, where a function is explicitly called on each element of a
-   data structure. This was introduced in @sec-apply-functions.
-3. Loops, where an expression is evaluated repeatedly until some condition is
-   met.
-4. Recursion, where a function calls itself.
-
-Vectorization is the most efficient and concise iteration strategy, but also
-the least flexible, because it only works with specific functions and with
-vectors. Apply functions are more flexible---they work with any function and
-any data structure with elements---but less efficient and less concise. Loops
-and recursion provide the most flexibility but are the least concise. Recursion
-tends to be the least efficient iteration strategy in R.
-
-<!--
-In recent versions of R, apply functions are slightly more efficient than
-loops.
--->
-
-The rest of this section explains how to write loops and how to choose which
-iteration strategy to use. We assume you're already comfortable with
-vectorization and have at least some familiarity with apply functions.
-
-### For-Loops
-
-:::{.callout-note collapse=false}
-As a flowchart, the control flow looks like this:
-
+:::{#fig-for-loop}
 ```{mermaid}
 flowchart LR
-  start(Start) --> any_more{Any more datasets?}
-    any_more -- Yes --> read["read_mass_data()"]
-    read --> any_more
-    any_more -- No --> done(End)
-
-style read font-family:monospace
+  start(Start) --> condition{Are there more elements?}
+    condition -- Yes --> get_elt["Get the next element"]
+    get_elt --> body[Do something]
+    body --> condition
+    condition -- No ----> done(End)
 ```
+
+A flowchart that shows a map function, apply function, or for loop. At the
+beginning of each iteration, the computer checks whether there is another
+element in the data to decide whether to continue iterating. If there is, the
+computer automatically assigns the next element to a variable.
 :::
 
-
-A **for-loop** evaluates the expressions in its body once for each element of a
-data structure. The syntax of a for-loop is:
-
-```r
-# DATA is the data structure
-#
-# X is one element of DATA, assigned automatically at the beginning of each
-# iteration
-#
-for (X in DATA) {
-  # Expression(s) to repeat.
-}
-```
-
-For example, to print out all the column names of the `terns` data, you can
-write:
+In most programming languages, the keyword `for` creates a for loop. In R, the
+syntax of a for loop is:
 
 ```{r}
-for (name in names(terns)) {
-  message(name)
+#| eval: false
+for (element in data) {
+  # This code runs once for each element in data.
 }
 ```
 
-Within the body of a for-loop, you can compute values, check conditions, etc.
+The loop automatically assigns the next element of `data` to the variable
+`element` at the beginning of each iteration. The loop iterates once for each
+element, unless a keyword causes the loop to end early.
 
-<!--
-```{code-cell}
-for nests in terns["total_nests"]:
-    if nests > 100:
-        print(nests)
-```
--->
-
-Oftentimes you'll want to save the result of the code you perform within a
-for-loop. The easiest way to do this is by creating an empty vector and using
-`c` or `append` to append values to it:
+:::{.callout-tip}
+For loops and map functions do almost the same thing. Here's how the for loop
+syntax above translates into a map function:
 
 ```{r}
-values = c(10, 12, 11, 2, 3)
-diffs = c()
-
-for (i in seq(1, length(values) - 1)) {
-  a = values[[i]]
-  b = values[[i + 1]]
-  diffs = append(diffs, a - b)
-}
-
-diffs
+#| eval: false
+map(data, \(element) {
+  # This code runs once for each element in data.
+})
 ```
 
-This example is just for demonstration, since R's built-in `diff` function is a
-much more concise and efficient way to compute differences. The point is that
-when you use a loop, you have to create a data structure to store the results
-yourself.
+Map functions tend to be easier to use because they automatically return the
+result from each iteration. For loops don't, and leave it up to you to figure
+out how to store the results.
 
-:::{.callout-warning}
-Appending values to a vector, as in the example, is quite inefficient. If you
-need to use a loop to produce a lot of results (say, more than 100):
+The limitation of map functions is that the each iteration must be independent.
+You can't have an iteration that depends on the result of a prior iteration.
+For loops don't have this limitation. Dependent iterations are common in
+simulations, but not so common in data cleaning and analysis tasks.
+:::
 
-1. Before the loop, create a result vector that's the expected length of the
-   final result. Fill vector with 0s or some other placeholder value. You can
-   use functions such as `integer`, `numeric`, and `character` to do this.
+As a demonstration, let's print out a message with the current iteration number
+for 5 iterations:
+
+```{r}
+for (i in 1:5) {
+  message("Hi from iteration ", i)
+}
+```
+
+Unlike other iteration strategies, loops don't return a result automatically.
+It's up to you to use variables to store any results you want to use later. To
+do this:
+
+1. Before the loop, create a result vector (or list) that's the same length as
+   the number of iterations. Fill vector with 0s or some other placeholder
+   value. You can use functions such as `integer`, `numeric`, and `character`
+   to do this.
 2. In the loop, use indexing to replace the elements of the result vector as
    they're computed.
 
-Using this strategy, which is called **pre-allocation** the code in the example
-becomes:
+This approach to storing results is called **pre-allocation**. Here's an
+example of pre-allocation for a loop that computes what happens if you
+repeatedly call the sine function on a value:
 
 ```{r}
-values = c(10, 12, 11, 2, 3)
-diffs = integer(length(values) - 1)
+# Number of iterations:
+n = 1 + 99
 
-for (i in seq(1, length(values) - 1)) {
-  a = values[[i]]
-  b = values[[i + 1]]
-  diffs[[i]] = a - b
+# Create a numeric vector with n elements and set the first element to 1.
+result = numeric(n)
+result[1] = 1
+
+for (i in 2:n) {
+  # Get the result from the previous iteration.
+  # This is why this loop starts at i = 2.
+  prev_result = result[i - 1]
+
+  # Compute the sine of the previous result.
+  # Save it into the results vector at position i.
+  result[i] = sin(prev_result)
 }
-
-diffs
 ```
+
+Plotting the result vector makes it easier to see the pattern in the values:
+
+```{r}
+library("ggplot2")
+
+result_df = data.frame(x = 1:n, y = result)
+ggplot(result_df) + geom_point() + aes(x = x, y = y)
+```
+
+:::{.callout-note}
+The `break` keyword causes a loop to immediately exit. It only makes sense to
+use `break` inside of a conditional (otherwise, the loop will exit in the first
+iteration).
+
+The `next` keyword causes a loop to immediately go to the next iteration. As
+with `break`, it only makes sense to use `next` inside of a conditional.
 :::
 
-### Planning for Iteration
+:::{.callout-note title="Note: While Loops"}
+A **while loop** makes the computer check a condition at the beginning of each
+iteration to decide whether to run the code in the loop's body. @fig-while-loop
+shows what a while loop looks like in a flowchart.
+
+In most programming languages, the keyword `while` creates a while loop. In R,
+the syntax of a while loop is:
+
+```{r}
+#| eval: false
+while (condition) {
+  # This code runs repeatedly until the condition is FALSE.
+}
+```
+
+While loops are a generalization of for loops, and only do the bare minimum
+necessary to iterate. They tend to be most useful when you don't know how many
+iterations are necessary to complete a task.
+:::
+
+
+## How to Write Iterative Code {#sec-how-to-write-iterative-code}
 
 At first it might seem difficult to decide if and what kind of iteration to
 use. Start by thinking about whether you need to do something over and over. If
@@ -728,7 +797,7 @@ you don't, then you probably don't need to use iteration. If you do, then try
 iteration strategies in this order:
 
 1. Vectorization
-2. Apply functions (or the purrr package's `map` functions)
+2. Map (or apply) functions
     * Try an apply function if iterations are independent.
 3. Loops
     * Try a for-loop if some iterations depend on others.
@@ -760,19 +829,19 @@ utilization is noticeably different in and after 2020.
 
 [data.ca.gov]: https://data.ca.gov/
 
-The data set consists of a separate Microsoft Excel file for each year. Before
+The dataset consists of a separate Microsoft Excel file for each year. Before
 2018, HCAI used a data format (in Excel) called ALIRTS. In 2018, they started
 collecting more data and switched to a data format called SIERA. The 2018 data
 file contains a **crosswalk** that shows the correspondence between SIERA
 columns and ALIRTS columns.
 
 :::{.callout-important}
-[Click here][ca-hospitals] to download the CA Hospital Utilization data set (8
+[Click here][ca-hospitals] to download the CA Hospital Utilization dataset (8
 Excel files).
 
 If you haven’t already, we recommend you create a directory for this workshop.
 In your workshop directory, create a `data/ca_hospitals` subdirectory. Download
-and save the data set in the `data/ca_hospitals` subdirectory.
+and save the dataset in the `data/ca_hospitals` subdirectory.
 
 [ca-hospitals]: https://ucdavis.box.com/s/g5tanw22647dw3uyhv3om0zt3duuj5lc
 :::
@@ -788,19 +857,19 @@ this when you frame a problem. Small steps are easier to reason about,
 implement, and test. When you complete one, you also get a nice sense of
 progress towards your goal.
 
-For the CA Hospital Utilization data set, our goal is to investigate whether
+For the CA Hospital Utilization dataset, our goal is to investigate whether
 there was a change in hospital utilization in 2020. Before we can do any
 investigation, we need to read the files into R. The files all contain tabular
 data and have similar formats, so let's try to combine them into a single data
 frame. We'll say this in the framing comments:
 
 ```{r}
-# Read the CA Hospital Utilization data set into R. The inputs are yearly Excel
+# Read the CA Hospital Utilization dataset into R. The inputs are yearly Excel
 # files (2016-2023) that need to be combined. The pre-2018 files have a
 # different format from the others. The result should be a single data frame
 # with information about bed and patient counts.
 #
-# After reading the data set, we'll investigate utilization in 2020.
+# After reading the dataset, we'll investigate utilization in 2020.
 ```
 
 "Investigate utilization" is a little vague, but for an exploratory data
@@ -812,7 +881,8 @@ with just one. Let's start with the 2023 data. It's in an Excel file, which you
 can read with the `read_excel` function from the readxl package. If it's your
 first time using the readxl package, you'll need to install it:
 
-```r
+```{r}
+#| eval: false
 install.packages("readxl")
 ```
 
@@ -839,7 +909,7 @@ sheet = sheet[-(1:4), ]
 head(sheet)
 ```
 
-Some data sets also have metadata in the last rows, so let's check for that
+Some datasets also have metadata in the last rows, so let's check for that
 here:
 
 ```{r}
@@ -1184,7 +1254,7 @@ According to the plot, total census-days was slightly lower in 2020 than in
 2019. This is a bit surprising, but it's possible that California hospitals
 typically operate close to maximum capacity and were not able to substantially
 increase the number of beds in 2020 in response to the COVID-19 pandemic. You
-can use other columns in the data set, such as `tot_lic_beds` or
+can use other columns in the dataset, such as `tot_lic_beds` or
 `tot_lic_bed_days`, to check this.
 
 Let's also look at census-days for acute respiratory care:
@@ -1200,7 +1270,7 @@ Let's also look at census-days for acute respiratory care:
 
 In this plot, there's a clear uptick in census-days in 2020, and then an
 interesting decrease to below 2019 levels in the years following. Again, you
-could use other columns in the data set to investigate this further. We'll end
+could use other columns in the dataset to investigate this further. We'll end
 this case study here, having accomplished the difficult task of reading the
 data and the much easier task of doing a cursory preliminary analysis of the
 data.
