@@ -12,6 +12,17 @@ After this lesson, you should be able to:
 * Select appropriate iteration strategies for problems
 :::
 
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
+
+* dplyr
+* purrr
+* readxl
+* stringr
+
+@sec-packages explains how to install and load packages.
+:::
+
 Suppose you want to read and clean 10 different mass measurement datasets. All
 of the datasets have the same structure, so the code to read and clean them is
 the same. Based on what you learned in @sec-writing-functions, you decide to
@@ -162,6 +173,234 @@ It's not bad to use conditionals, but be mindful of how you use them. Think
 about whether there's a more general way to do things instead. Be especially
 wary of nested conditionals.
 :::
+
+
+## Case Study: U.S. Alternative Fueling Stations, Part II {#sec-case-study-fuel-2}
+
+Let's continue the U.S. Alternative Fueling Stations case study from
+@sec-case-study-fuel-1. In the previous part, we wrote a function,
+`read_fuel_sheet`, to read and clean sheets from the dataset Excel file:
+
+```{r}
+#| output: false
+library("dplyr")
+library("readxl")
+library("stringr")
+
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  is_dot_name = str_starts(names, fixed("..."))
+  names[is_dot_name] = as.character(stations[2, is_dot_name])
+  names = str_to_lower(names)
+  names(stations) = names
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+We designed the function around the 2007 data sheet, but the format of the
+sheets changed in 2014. So the `read_fuel_sheet` function emits an error for
+2014 and later. Let's edit the function so that it works well for every year.
+We can use conditionals for code that should only run for some of the years.
+
+To get started, let's write code to read and clean the data for 2023, since
+it's the last year. We can use the code in `read_fuel_sheet` as a reference.
+We'll still use the readxl package's `read_excel` function to read the sheet:
+
+```{r}
+path = "data/2007-2023_us_alt_fuels.xlsx"
+stations = read_excel(path, sheet = "2023", skip = 1)
+head(stations)
+```
+
+This immediately reveals one reason why the `read_fuel_sheet` function didn't
+work. For 2014 and later, all of the column names are in the 2nd row of the
+sheet. There's no need to get names from other rows. Let's make a note of this
+in a comment.
+
+We still need to convert the column names to lowercase:
+
+```{r}
+names = names(stations)
+# For 2014 and later, no need to get column names from two different rows.
+names = str_to_lower(names)
+```
+
+One of the columns is named `renewable diesel`, which will be difficult to use
+in analysis because it contains a space. We can use stringr's `str_replace_all`
+to replace the space with an underscore:
+
+```{r}
+names = str_replace_all(names, fixed(" "), "_")
+names
+```
+
+Four of the names seem incorrect: `electrica`, `hydrogenb`, `propanec`, and
+`totald`. If we examine the dataset with spreadsheet software, we can see that
+these column names have alphabetic superscripts in 2014 and later. There are
+many ways to fix this, but we'll use dplyr's `rename` function:
+
+```{r}
+names(stations) = names
+
+# For 2014 and later:
+stations = rename(
+  stations,
+  electric = electrica,
+  hydrogen = hydrogenb,
+  propane = propanec,
+  total = totald
+)
+head(stations)
+```
+
+The next step in `read_fuel_sheet` is to remove blank rows (rows with missing
+values). The 2023 data frame has rows that are partially blank, but they do
+have values in the `electric` column. By inspecting the sheet, we can see that
+for 2014 and later, the `electric` column contains multiple values separated by
+the pipe character `|`. The `electric` values for each state are also split
+across two rows. Since we want to compare the data over time, we only need the
+station count, which is in the first row. So we'll use the code from
+`read_fuel_sheet` that filters out the blank rows:
+
+```{r}
+stations = filter(stations, !is.na(biodiesel))
+head(stations)
+```
+
+With that done, let's split the `electric` column into two columns, since it
+contains two values. The first value is the number of stations, which we'll
+keep in the `electric` column. The second value is the number of outlets, which
+we'll put in a column called `electric_outlets`. To make it easier to convert
+the columns to numbers, we'll remove all of the commas (`,`) with stringr's
+`str_replace_all` function. Then we can use stringr's `str_split_fixed`
+function to split the column in two. Finally, we can use `as.numeric` to
+convert the columns to numbers before saving them back into the data frame:
+
+```{r}
+# For 2014 and later:
+electric = str_replace_all(stations$electric, fixed(","), "")
+electric = str_split_fixed(electric, fixed(" | "), 2)
+stations$electric = as.numeric(electric[, 1])
+stations$electric_outlets = as.numeric(electric[, 2])
+```
+
+The `hydrogen` and `propane` columns have the same problem. We'll skip fixing
+them, since the code to do so is almost identical.
+
+The 2023 data frame is now clean enough for analysis. The code to read and
+clean it is:
+
+```{r}
+#| eval: false
+stations = read_excel(path, sheet = "2023", skip = 1)
+
+names = names(stations)
+# For 2014 and later, no need to get column names from two different rows.
+names = str_to_lower(names)
+names = str_replace_all(names, fixed(" "), "_")
+names(stations) = names
+
+# For 2014 and later:
+stations = rename(
+  stations,
+  electric = electrica,
+  hydrogen = hydrogenb,
+  propane = propanec,
+  total = totald
+)
+
+stations = filter(stations, !is.na(biodiesel))
+
+# For 2014 and later:
+electric = str_replace_all(stations$electric, fixed(","), "")
+electric = str_split_fixed(electric, fixed(" | "), 2)
+stations$electric = as.numeric(electric[, 1])
+stations$electric_outlets = as.numeric(electric[, 2])
+```
+
+We can use conditionals to combine this with code in the body of the
+`read_fuel_sheet` function. Specifically, we need to check `year < 2014` or
+`year >= 2014` at a few points. One way to write the code for the combined
+function is:
+
+```{r}
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  if (year < 2014) {
+    is_dot_name = str_starts(names, fixed("..."))
+    names[is_dot_name] = as.character(stations[2, is_dot_name])
+  }
+  names = str_to_lower(names)
+  names = str_replace_all(names, fixed(" "), "_")
+  names(stations) = names
+  if (year >= 2014) {
+    stations = rename(
+      stations,
+      electric = electrica,
+      hydrogen = hydrogenb,
+      propane = propanec,
+      total = totald
+    )
+  }
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  if (year >= 2014) {
+    electric = str_replace_all(stations$electric, fixed(","), "")
+    electric = str_split_fixed(electric, fixed(" | "), 2)
+    stations$electric = as.numeric(electric[, 1])
+    stations$electric_outlets = as.numeric(electric[, 2])
+    # TODO: hydrogen, propane
+  }
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+Notice how using multiple conditionals makes it harder to understand what the
+function does. We could instead use one conditional, but we'd have to repeat
+parts of the code that are the same. Alternatively, we could move some of the
+cleaning steps to other functions, so that `read_fuel_sheet` is shorter and
+easier to understand (without changing what it does).
+
+Let's test the new `read_fuel_sheet` function on the 2023 data:
+
+```{r}
+read_fuel_sheet(path, 2023)
+```
+
+We should also make sure that it still returns the same result for the 2007
+data:
+
+```{r}
+read_fuel_sheet(path, 2007)
+```
+
+This looks good. We've now got a function that can read any of the years. In
+part III of this case study (@sec-case-study-fuel-3), we'll see how to use the
+function to read all of them.
 
 
 ## Iteration
