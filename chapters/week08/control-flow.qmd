@@ -818,6 +818,133 @@ figure out which iteration is causing the problem. One way to do this is to use
 iteration, get that iteration working, and repeat this whole process.
 
 
+## Case Study: U.S. Alternative Fueling Stations, Part III {#sec-case-study-fuel-3}
+
+Let's finish the U.S. Alternative Fueling Stations case study we began in
+@sec-case-study-fuel-1 and continued in @sec-case-study-fuel-2. In the previous
+part, we modified the `read_fuel_sheet` function so that it can read and clean
+sheets for any year in the dataset Excel file:
+
+```{r}
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  if (year < 2014) {
+    is_dot_name = str_starts(names, fixed("..."))
+    names[is_dot_name] = as.character(stations[2, is_dot_name])
+  }
+  names = str_to_lower(names)
+  names = str_replace_all(names, fixed(" "), "_")
+  names(stations) = names
+  if (year >= 2014) {
+    stations = rename(
+      stations,
+      electric = electrica,
+      hydrogen = hydrogenb,
+      propane = propanec,
+      total = totald
+    )
+  }
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  if (year >= 2014) {
+    electric = str_replace_all(stations$electric, fixed(","), "")
+    electric = str_split_fixed(electric, fixed(" | "), 2)
+    stations$electric = as.numeric(electric[, 1])
+    stations$electric_outlets = as.numeric(electric[, 2])
+    # TODO: hydrogen, propane
+  }
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+In this part, let's use the function to read all of the sheets, then combine
+them into a single data frame and make a plot of number of electric stations
+over time. Imagine what it would look like if we wrote out the code to read the
+data for each year separately:
+
+```{r}
+#| eval: false
+path = "data/2007-2023_us_alt_fuels.xlsx"
+read_fuel_sheet(path, 2007)
+read_fuel_sheet(path, 2008)
+# ...
+read_fuel_sheet(path, 2023)
+```
+
+The year is what differs between the calls, so we need to iterate over the
+years. We could create a vector of years with `2007:2023`. Instead, let's use
+readxl's `excel_sheets` function to get the sheet names, which correspond to
+years, and convert them to numbers:
+
+```{r}
+years = excel_sheets(path)
+# Skip the first sheet (which is documentation) and convert to numbers.
+years = as.numeric(years[-1])
+years
+```
+
+Now we need to call the `read_fuel_sheet` function with each year in the
+`years` vector. We can use purrr's `map` function to do this. Since the year
+should be the second argument to `read_fuel_sheet`, we have to write the call
+out explicitly (alternatively, we could modify `read_fuel_sheet` so that the
+year is the first argument):
+
+```{r}
+#| output: false
+sheets = map(years, \(year) {
+  read_fuel_sheet(path, year)
+})
+```
+
+This gives a list of data frames, one for each year. We want to bind them into
+a single data frame, stacking the rows of each one atop the next. We can use
+dplyr's `bind_rows` function to do this:
+
+```{r}
+stations = bind_rows(sheets)
+head(stations)
+```
+
+With the data in good shape, we're ready to make a plot. Let's make a line plot
+with the year on the x-axis, the number of electric stations on the y-axis, and
+the lines color-coded by state:
+
+```{r}
+ggplot(stations) +
+  geom_line() +
+  aes(x = year, y = electric, color = state)
+```
+
+This plot is a bit hard to read because there are so many states. Let's use
+dplyr's `filter` function to focus only on states on the west coast:
+
+```{r}
+west = filter(
+  stations,
+  state %in% c("California", "Oregon", "Washington", "Alaska", "Hawaii")
+)
+
+ggplot(west) +
+  geom_line() +
+  aes(x = year, y = electric, color = state)
+```
+
+Now we can see that California has substantially more electric stations than
+the other west coast states. This could be due to its larger population or due
+to increased funding for alternative fueling stations.
+
+
 ## Case Study: CA Hospital Utilization
 
 The California Department of Health Care Access and Information (HCAI) requires
