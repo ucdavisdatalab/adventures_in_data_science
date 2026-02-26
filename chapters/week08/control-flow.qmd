@@ -513,18 +513,36 @@ package in order to follow along:
 library("purrr")
 ```
 
-The package's `map` function calls a function on each element of a vector
-or list. We sometimes also say it **maps** or **applies** a function over the
-elements. The syntax is:
+The package's `map` function calls a function on each element of a vector,
+list, or other data structure. We say it **maps** or **applies** a function
+over the elements. In a flowchart, the `map` function looks like this:
+
+:::{#fig-for-loop}
+```{mermaid}
+flowchart LR
+  start(Start) --> condition{Are there more elements?}
+    condition -- Yes --> get_elt["Get the next element"]
+    get_elt --> body[Do something]
+    body --> condition
+    condition -- No ----> done(End)
+```
+
+A flowchart that shows a map function, apply function, or for loop. At the
+beginning of each iteration, the computer checks whether there is another
+element in the data to decide whether to continue iterating. If there is, the
+computer automatically assigns the next element to a variable.
+:::
+
+The syntax of the `map` function is:
 
 ```{r}
 #| eval: false
-map(DATA, F, ...)
+map(data, fun, ...)
 ```
 
-The `map` function calls the function `F` once for each element of `DATA`. It
-passes the element to `F` as the first argument. It also passes the `...`
-arguments to `F`, which are constant across all of the calls.
+The `map` function calls the function `fun` once for each element of `data`. It
+passes the element to `fun` as the first argument. It also passes the `...`
+arguments to `fun`, which are constant across all of the calls.
 
 Let's try this out with the least terns data and the `class` function:
 
@@ -547,6 +565,20 @@ map(x, sin)
 The only difference is that the result from `map` is a list. In fact, the `map`
 function always returns a list with one element for each element of the input
 data.
+
+:::{.callout-tip}
+If you want to use `map` to repeat arbitrary code rather than a specific
+function, you can use `\()` or the `function` keyword to create an anonymous
+function (one that isn't assigned to a variable). Then the syntax of the `map`
+function is:
+
+```{r}
+#| eval: false
+map(data, \(element) {
+  # This code runs once for each element in data.
+})
+```
+:::
 
 :::{.callout-note title="Note: Apply Functions"}
 R's **apply functions** are a built-in equivalent to map functions. The
@@ -653,24 +685,7 @@ many functions in the package.
 ## For Loops {#sec-for-loops}
 
 A **for loop** runs the code in its body once for each element of a data
-structure. In a flowchart, a for loop looks like a loop (a path that begins and
-ends in the same place)---hence the name:
-
-:::{#fig-for-loop}
-```{mermaid}
-flowchart LR
-  start(Start) --> condition{Are there more elements?}
-    condition -- Yes --> get_elt["Get the next element"]
-    get_elt --> body[Do something]
-    body --> condition
-    condition -- No ----> done(End)
-```
-
-A flowchart that shows a map function, apply function, or for loop. At the
-beginning of each iteration, the computer checks whether there is another
-element in the data to decide whether to continue iterating. If there is, the
-computer automatically assigns the next element to a variable.
-:::
+structure. @fig-for-loop shows what for loop looks like in a flowchart.
 
 In most programming languages, the keyword `for` creates a for loop. In R, the
 syntax of a for loop is:
