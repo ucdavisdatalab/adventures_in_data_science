@@ -1401,3 +1401,53 @@ could use other columns in the dataset to investigate this further. We'll end
 this case study here, having accomplished the difficult task of reading the
 data and the much easier task of doing a cursory preliminary analysis of the
 data.
+
+
+## Case Study: The Collatz Conjecture
+
+The [Collatz Conjecture][collatz] is a conjecture in math that was introduced
+in 1937 by Lothar Collatz and remains unproven today, despite being relatively
+easy to explain. Here's a statement of the conjecture:
+
+[collatz]: https://en.wikipedia.org/wiki/Collatz_conjecture
+
+> Start from any positive integer. If the integer is even, divide by 2. If the
+> integer is odd, multiply by 3 and add 1.
+>
+> If the result is not 1, repeat using the result as the new starting value.
+>
+> The result will always reach 1 eventually, regardless of the starting value.
+
+The sequences of numbers this process generates are called **Collatz
+sequences**. For instance, the Collatz sequence starting from 2 is `2, 1`. The
+Collatz sequence starting from 12 is `12, 6, 3, 10, 5, 16, 8, 4, 2, 1`.
+
+You can use iteration to compute the Collatz sequence for a given starting
+value. Since each number in the sequence depends on the previous one, and since
+the length of the sequence varies, a while-loop is the most appropriate
+iteration strategy:
+
+```{r}
+n = 5
+i = 0
+while (n != 1) {
+  i = i + 1
+  if (n %% 2 == 0) {
+    n = n / 2
+  } else {
+    n = 3 * n + 1
+  }
+  message(n, " ", appendLF = FALSE)
+}
+```
+
+As of 2020, scientists have used computers to check the Collatz sequences for
+every number up to approximately $2^{64}$.
+
+
+::: {.callout-note title="See also"}
+For more details about the Collatz Conjecture, check out [this
+video][collatz-video].
+
+[collatz-video]: https://www.youtube.com/watch?v=094y1Z2wpJg
+:::
