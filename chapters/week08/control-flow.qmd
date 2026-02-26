@@ -415,23 +415,24 @@ part III of this case study (@sec-case-study-fuel-3), we'll see how to use the
 function to read all of them.
 
 
-## Iteration
+## Loops
 
-R is powerful tool for automating tasks that have repetitive steps. For
-example, you can:
+Computers are great at **iterative** tasks, where some of the steps need to be
+repeated. Examples of tasks like this include:
 
-* Apply a transformation to an entire column of data.
-* Compute distances between all pairs from a set of points.
-* Read a large collection of files from disk in order to combine and analyze
-  the data they contain.
-* Simulate how a system evolves over time from a specific set of starting
-  parameters.
-* Scrape data from the pages of a website.
+* Applying a transformation to (each element of) an entire column of data.
+* Computing distances between all pairs for a set of points.
+* Reading a collection of files in order to combine and analyze their data.
+* Simulating how a complex system evolves from one time step to the next.
+* Scraping the pages of a website.
 
-You can implement concise, efficient solutions for these kinds of tasks by
-using **iteration**, which means repeating a computation many times. In a
-flowchart, iteration looks like a loop (a path that begins and ends at the same
-place):
+Each run of a repeated step is called an **iteration**. So in the example about
+reading a collection of files, one iteration means reading one file.
+
+In programming languages, we use control flow expressions called **loops** to
+make the computer repeat some code. There are many different kinds of loops,
+but in a flowchart, they always look like a path that begins and ends at the
+same place (hence the name "loop"):
 
 :::{#fig-while-loop}
 ```{mermaid}
@@ -442,31 +443,31 @@ flowchart LR
     condition -- False ----> done(End)
 ```
 
-A flowchart that shows a while loop (one kind of iteration). The computer
-checks a condition at the beginning of each iteration to decide whether to
-continue iterating or stop.
+A flowchart that shows a while loop (one kind of loop). The computer checks a
+condition at the beginning of each iteration to decide whether to continue
+iterating or stop.
 :::
 
-R provides four different strategies for writing iterative code:
+In R, there are four distinct categories of loops:
 
 1. Vectorization, where a function is implicitly called on each element of a
-   vector. This was introduced in @sec-vectorization.
-2. Map (or apply) functions, where a function is explicitly called on each
-   element of a data structure.
-3. Loops, where an expression is evaluated repeatedly until some condition is
-   met.
+   vector.
+2. Map functions (& apply functions), where a function is explicitly called on
+   each element of a data structure.
+3. For loops (& while loops), where an expression is evaluated repeatedly until
+   some condition is met.
 4. Recursion, where a function calls itself.
 
-Vectorization is the most efficient and concise iteration strategy, but also
-the least flexible, because it only works with specific functions and with
-vectors. Map functions are more flexible---they work with any function and any
-data structure with elements---but less efficient and less concise. Loops and
-recursion provide the most flexibility but are the least concise. Recursion
-tends to be the least efficient iteration strategy in R.
+We introduced vectorization in @sec-vectorization, several chapters ago. The
+next section, @sec-the-purrr-package, introduces the purrr package and map
+functions. @sec-for-loops introduces for loops. In @sec-how-to-write-loop,
+we'll describe how to write loops to solve iterative problems and how to decide
+which kind of loop to use.
 
-The next two sections, @sec-the-purrr-package and @sec-for-loops, introduce map
-functions and loops, respectively. @sec-how-to-write-iterative-code explains
-how to choose which iteration strategy to use and how to write iterative code.
+:::{.callout-note}
+We don't cover recursion because it tends to be difficult for people to
+understand. Recursion is also the least efficient kind of loop in R.
+:::
 
 
 ## The purrr Package {#sec-the-purrr-package}
@@ -547,6 +548,20 @@ The only difference is that the result from `map` is a list. In fact, the `map`
 function always returns a list with one element for each element of the input
 data.
 
+:::{.callout-note title="Note: Apply Functions"}
+R's **apply functions** are a built-in equivalent to map functions. The
+`lapply`, `sapply`, and `tapply` functions are the three most important
+functions in the family of apply functions, but there are many more. The
+`lapply` function is nearly identical to the `map` function.
+
+We focus on and recommend the map functions rather than the apply functions
+because they are more consistent in their syntax and specific in their return
+types. You can learn more about R's apply functions by reading [this
+StackOverflow post][apply].
+
+[apply]: https://stackoverflow.com/a/7141669
+:::
+
 
 ### Other Map Functions
 
@@ -564,21 +579,6 @@ Function  | Return Type
 `map`     | list
 
 : {#tbl-map-functions}
-
-
-:::{.callout-note title="Note: Apply Functions"}
-R's **apply functions** are a built-in equivalent to map functions. The
-`lapply`, `sapply`, and `tapply` functions are the three most important
-functions in the family of apply functions, but there are many more. The
-`lapply` function is nearly identical to the `map` function.
-
-We focus on and recommend the map functions rather than the apply functions
-because they are more consistent in their syntax and specific in their return
-types. You can learn more about R's apply functions by reading [this
-StackOverflow post][apply].
-
-[apply]: https://stackoverflow.com/a/7141669
-:::
 
 <!--
 When you have a choice between using vectorization or a map function, you
@@ -716,9 +716,8 @@ for (i in 1:5) {
 }
 ```
 
-Unlike other iteration strategies, loops don't return a result automatically.
-It's up to you to use variables to store any results you want to use later. To
-do this:
+Unlike map functions, loops don't return a result automatically. It's up to you
+to use variables to store any results you want to use later. To do this:
 
 1. Before the loop, create a result vector (or list) that's the same length as
    the number of iterations. Fill vector with 0s or some other placeholder
@@ -760,12 +759,14 @@ ggplot(result_df) + geom_point() + aes(x = x, y = y)
 ```
 
 :::{.callout-note}
-The `break` keyword causes a loop to immediately exit. It only makes sense to
-use `break` inside of a conditional (otherwise, the loop will exit in the first
-iteration).
+The `break` keyword causes a for loop to immediately exit. It only makes sense
+to use `break` inside of a conditional (otherwise, the loop will exit in the
+first iteration).
 
-The `next` keyword causes a loop to immediately go to the next iteration. As
-with `break`, it only makes sense to use `next` inside of a conditional.
+The `next` keyword causes a for loop to immediately go to the next iteration.
+As with `break`, it only makes sense to use `next` inside of a conditional.
+
+You can also use `break` and `next` in while loops.
 :::
 
 :::{.callout-note title="Note: While Loops"}
@@ -789,33 +790,56 @@ iterations are necessary to complete a task.
 :::
 
 
-## How to Write Iterative Code {#sec-how-to-write-iterative-code}
+## How to Write a Loop {#sec-how-to-write-loop}
 
-At first it might seem difficult to decide if and what kind of iteration to
-use. Start by thinking about whether you need to do something over and over. If
-you don't, then you probably don't need to use iteration. If you do, then try
-iteration strategies in this order:
+Before you write a loop, write down what you want the code to do. Think about
+whether the code needs to do something over and over. If it doesn't, you
+probably shouldn't use a loop. Do this in comments, in a separate document, or
+even on paper.
+
+Once you've finished writing out and clarifying the goal, it's time to write
+the code. Go through these steps:
+
+1. Write the code for one iteration. Don't worry about putting the code in a
+   loop yet. Make sure that the result is correct. Sometimes the best way to
+   approach this is by writing a function (see @sec-how-to-write-function).
+
+2. Make a copy of the code from step 1 and edit it to run a different
+   iteration. Pay attention to what you have to change. Once again, make sure
+   that the result is correct.
+
+3. Once you've got the code working for two iterations, make another copy and
+   wrap it in a loop. The parts of the code that had to change in step 2 are a
+   hint about what will change in every iteration. Replace changing data with
+   the loop's automatic variable. Put code that should only run on some of the
+   iterations in conditionals.
+
+4. Test that the loop code works correctly. If it doesn't, try to pinpoint
+   which iteration is causing the problem. One way to do this is to use
+   `message` to print out information. Then write out the code for just the
+   broken iteration, get it working, and repeat this process from step 3.
+
+To decide what kind of loop to use, go down this list:
 
 1. Vectorization
 2. Map (or apply) functions
     * Try an apply function if iterations are independent.
-3. Loops
+3. For and while loops
     * Try a for-loop if some iterations depend on others.
-    <!--
     * Try a while-loop if the number of iterations is unknown.
-    -->
-4. Recursion (which isn't covered here)
+4. Recursion
     * Convenient for naturally recursive tasks (like Fibonacci), but often
       there are faster solutions.
 
-Start by writing the code for just one iteration. Make sure that code works;
-it's easy to test code for one iteration.
+The list items are organized from fastest to slowest, although the speed
+difference between map functions and for loops is negligible.
 
-When you have one iteration working, then try using the code with an iteration
-strategy (you will have to make some small changes). If it doesn't work, try to
-figure out which iteration is causing the problem. One way to do this is to use
-`message` to print out information. Then try to write the code for the broken
-iteration, get that iteration working, and repeat this whole process.
+Vectorization is the most efficient and concise, but only works with specific
+functions on vectors. Map functions work with any function and any data
+structure with elements, while still returning the results automatically. For
+and while loops provide the most flexibility, but leave it up to you to save
+the results. Recursion works well for specific kinds of problems, but can be
+confusing and is the slowest kind of loop in R.
 
 
 ## Case Study: U.S. Alternative Fueling Stations, Part III {#sec-case-study-fuel-3}
