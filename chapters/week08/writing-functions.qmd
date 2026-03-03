@@ -1,0 +1,629 @@
+# Writing Functions {#sec-writing-functions}
+
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Explain why someone might want to write a function
+* Describe the syntax of a function definition
+* Describe a strategy for writing functions
+* Write functions in order to better organize code
+:::
+
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
+
+* dplyr
+* readxl
+* stringr
+
+@sec-packages explains how to install and load packages.
+:::
+
+At this point, you've learned all of the basic skills necessary to explore a
+dataset in R. This chapter and the next focus on how to organize and automate
+your code so that it's concise, clear, and effective. This will help you and
+your collaborators avoid tedious, redundant work, reproduce results
+efficiently, and run code in specialized environments for research computing,
+such as high-performance computing clusters.
+
+The main way to interact with R is by calling functions, which was first
+explained way back in @sec-calling-functions. This chapter explains how to
+write your own functions.
+
+
+## Why Write a Function?
+
+Two reasons to write functions are to:
+
+1. **Reuse** general-purpose code. Suppose, for example, that every time you
+   read a data frame into R, you standardize the column names by making them
+   lowercase and replacing spaces with underscores. By turning the code to do
+   this into a function, you can reuse it across many projects without having
+   to copy, paste, and edit (which can introduce errors).
+2. **Encapsulate** code that carries out a single step in a multi-step
+   computation. For instance, imagine you need to read a dataset, clean it, and
+   finally transform some of the features before you do any analysis. Writing a
+   function for each step (`read_data`, `clean_data`, `transform_data`, and so
+   on) makes it easier to describe the entire computation in code without being
+   overwhelmed by the details. It also means you can focus on one specific step
+   at a time: while you work on `clean_data`, the focus is on cleaning, and you
+   can assume reading the data will be handled elsewhere. You can also test
+   each function to make sure that step works correctly before moving on to the
+   next.
+
+Functions are the building blocks for solving problems. Break problems down
+into steps and write a function for each step. That way you can:
+
+* Test that each step works correctly.
+* Describe the sequence of steps concisely.
+* Modify, reuse, or repurpose steps.
+
+At first, you might not know how small (or big) each step should be. As a
+suggestion, *most* functions should be more than one line of code but short
+enough to fit on one screen.
+
+:::{.callout-tip}
+Writing code is a lot like writing an essay. Each line of code is a sentence
+that expresses one or two ideas. Each function definition is a paragraph, and
+should have a singular purpose and coherent flow. You can use comments to make
+an outline and as clarifying footnotes.
+
+As with any writing, you'll typically need to go through several revisions
+before you arrive at exactly what you want.
+:::
+
+
+## Function Definitions
+
+Think of a function as a factory. It takes raw materials, runs them through
+some machinery, and produces a final product:
+
+1. Raw materials: the inputs to a function are called **arguments**. Each
+   argument is assigned to a **parameter**, a placeholder variable.
+
+2. Machinery: code in the **body** of a function computes something from the
+   arguments.
+
+3. Final product: the output of a function is called the **return value**.
+
+The `function` keyword defines a new function. It can have any number of
+parameters. The body must be enclosed in curly braces `{ }` if it's more than
+one line of code. The function will automatically return the value of its last
+line. So a function definition looks like this:
+
+```{r}
+#| eval: false
+function(parameter1, parameter2, ...) {
+  # The body of the function (the code) goes between the curly braces { }.
+
+  # The return value (the result) goes on the last line.
+}
+```
+
+When you define a function, you'll usually want to save it in a variable so
+that you can call it later. Choose a descriptive name that describes what the
+function does. Since functions do things, it often makes sense to include a
+verb in the name.
+
+:::{.callout-important}
+Indent lines of code between curly braces by 2 or 4 spaces to make it easier to
+see where the block of code starts and ends.
+:::
+
+:::{.callout-note collapse=true title="Viewing Function Definitions"}
+Almost every command in R is a function, even the arithmetic operators and the
+parentheses! You can view the definition of a function by typing its name
+without trailing parentheses (in contrast to how you call functions).
+
+For example, let's look at the body of the `append` function, which appends a
+value to the end of a list or vector:
+
+```{r}
+append
+```
+
+Don't worry if you can't understand everything the `append` function's code
+does yet. It will make more sense later on, after you've written a few
+functions of your own.
+
+Many of R's built-in functions are not entirely written in R code. You can spot
+these by calls to the special `.Primitive` or `.Internal` functions in their
+code.
+
+For instance, the `sum` function is not written in R code:
+
+```{r}
+sum
+```
+:::
+
+As a demonstration, let's create a function that detects negative numbers. It
+should take a vector of numbers as input, compare them to zero, and then return
+the logical result from the comparison as output. Here's the code:
+
+```{r}
+is_negative = function(x) x < 0
+```
+
+The name of the function, `is_negative`, describes what the function does and
+includes a verb. The parameter `x` is the input. The return value is the result
+`x < 0`.
+
+Any time you write a function, the first thing you should do afterwards is test
+that it actually works. Try the `is_negative` function out on a few test cases:
+
+```{r}
+is_negative(6)
+is_negative(-1.1)
+
+x = c(5, -1, -2, 0, 3)
+is_negative(x)
+```
+
+:::{.callout-warning}
+Be cautious about using variables in the body of a function if they're assigned
+somewhere else. For example:
+
+```{r}
+x = 100
+
+f = function() x ** 2
+
+f()
+```
+
+Doing so makes your function harder for other people (and future you) to use
+because the inputs are not clearly labeled. It can also introduce subtle bugs.
+Use parameters for inputs instead:
+
+```{r}
+f = function(z) z ** 2
+
+f(x)
+```
+
+It's also okay to use variables assigned in the body of the function:
+
+```{r}
+f = function(z) {
+  result = z ** 2
+  result
+}
+
+f(x)
+```
+:::
+
+
+## How to Write a Function {#sec-how-to-write-function}
+
+Before you write a function, you should:
+
+@. Write down what you want the function to do, in detail. Pay particular
+   attention to what the inputs and outputs are. Use comments, a separate
+   document, or even a piece of paper. If it's difficult to explain in words,
+   try drawing a picture. The key is to make sure that the goal is clear before
+   you start to write code.
+
+@. Check whether there's already a built-in function. Search online and in the
+   R documentation.
+
+If there isn't a function that does what you want, it's time to write one. To
+do so:
+
+@. Write the code for a simple case. For data problems, use a small dataset.
+   Don't worry about turning the code into a function yet. Make sure that the
+   result is correct.
+
+@. Once you've got the code for the simple case working, wrap it in a function
+   definition. Identify the parts of the code that will change for other cases.
+   The dataset is usually one of these, but there might also be others. Replace
+   these with parameters. Make sure the function returns the result.
+
+@. Test calling the function with the inputs for the simple case. It should
+   return exactly the same result as it did in step 3. If not, figure out why
+   and fix it.
+
+@. Test calling the function with the inputs for a different case. Make sure
+   that the result is correct. If it isn't, figure out why and fix it.
+
+@. Repeat step 6 for a few more cases. Make sure to test cases that are
+   uncommon or unusual, but realistically possible. Also test what happens in
+   cases of erroneous inputs (does your function emit an error? does the error
+   message explain the problem clearly?). By the end of this step, you should
+   feel fairly confident that your function works correctly.
+
+Keep in mind that writing a function is a process of refinement, even for
+experienced programmers. Even after going through all of the steps above, you
+might come across a new, unexpected case or discover a bug that requires you to
+edit your function.
+
+
+## Example: Getting Largest Values
+
+Suppose we want a function to get the top 3 largest values in a vector. The
+main input to the function is the vector. We could also try to write the
+function so that it returns the top `n` values instead of being fixed at 3.
+Then `n` is another input. The output is a vector of 3 (or `n`) values.
+
+There's no function built into R to do this. There might be a function in a
+package, but we'll go ahead and write the function ourselves for the sake of
+learning.
+
+We'll start by writing the code for a simple case. Suppose we're interested in
+this vector:
+
+```{r}
+x = c(1, 10, 20, -3)
+```
+
+We can sort the values with the `sort` function, and then use the `head`
+function to get the first 3:
+
+```{r}
+sorted = sort(x, decreasing = TRUE)
+head(sorted, 3)
+```
+
+Now that we've solved the simple case, let's wrap the code in a function
+definition. The vector will change from case to case, so we'll replace `x` with
+a parameter named `vec`. We might also want to change the number of values
+returned, so we'll also replace `3` with a parameter named `n`. So the function
+definition is:
+
+```{r}
+get_largest = function(vec, n) {
+  sorted = sort(vec, decreasing = TRUE)
+  head(sorted, n)
+}
+```
+
+The name of the function, `get_largest`, describes what the function does and
+includes a verb. If this function will be used frequently, a shorter name, such
+as `largest`, might be preferable (compare to the `head` function).
+
+Try the `get_largest` function on the simple case to make sure it returns the
+same result:
+
+```{r}
+get_largest(x, 3)
+```
+
+That looks correct, so let's try some other cases:
+
+```{r}
+# What if we ask for fewer elements?
+get_largest(x, 2)
+
+# What if we ask for too many elements?
+get_largest(x, 5)
+
+y = c(-1, -2, -3)
+get_largest(y, 2)
+
+# What if the vector contains strings?
+z = c("d", "a", "t", "a", "l", "a", "b")
+get_largest(z, 5)
+```
+
+Notice that the parameters `vec` and `n` inside the function do not exist as
+variables outside of the function:
+
+```{r, error = TRUE}
+vec
+```
+
+In general, R keeps parameters and variables you define inside of a function
+separate from variables you define outside of a function. You can read more
+about the specific rules for how R searches for variables in DataLab's
+[Intermediate R workshop reader][intermediate-r].
+
+[intermediate-r]: https://ucdavisdatalab.github.io/workshop_intermediate_r/
+
+:::{.callout-note title="Note: Default Arguments" collapse=false}
+As a function for quickly summarizing data, `get_largest` would be more
+convenient if the parameter `n` for the number of values to return was optional
+(again, compare to the `head` function). You can make the parameter `n`
+optional by setting a **default argument**: an argument assigned to the
+parameter if no argument is assigned in the call to the function. You can use
+`=` to assign default arguments to parameters when you define a function with
+the `function` keyword.
+
+Here's a new definition of `get_largest` with the default `n = 5`:
+
+```{r}
+get_largest = function(vec, n = 5) {
+  sorted = sort(vec, decreasing = TRUE)
+  head(sorted, n)
+}
+```
+
+After making a change, it's a good idea to test the function again:
+
+```{r}
+get_largest(x)
+
+get_largest(y)
+
+get_largest(z)
+```
+:::
+
+:::{.callout-note title="Note: Returning Multiple Values" collapse=false}
+A function returns one R object, but sometimes computations have multiple
+results. In that case, return the results in a vector, list, or other data
+structure.
+
+For example, let's make a function that computes the mean and median for a
+vector. We'll return the results in a named list, although we could also use a
+named vector:
+
+```{r}
+compute_mean_med = function(x) {
+  m1 = mean(x)
+  m2 = median(x)
+  list(mean = m1, median = m2)
+}
+
+compute_mean_med(c(1, 2, 3, 1))
+```
+
+The names make the result easier to understand for the caller of the function,
+although they certainly aren't required here.
+:::
+
+:::{.callout-note title="Note: The `return` Keyword" collapse=true}
+We've already seen that a function will automatically return the value of its
+last line. The `return` keyword causes a function to return a result
+immediately, without running any subsequent code in its body.
+
+It only makes sense to use `return` from inside of an if-expression. If your
+function doesn't have any if-expressions, you don't need to use `return`.
+
+For example, suppose you want the `get_largest` function to immediately return
+`NULL` if the argument for `vec` is a list. Here's the code, along with some
+test cases:
+
+```{r}
+get_largest = function(vec, n = 5) {
+  if (is.list(vec))
+    return(NULL)
+
+  sorted = sort(vec, decreasing = TRUE)
+  head(sorted, n)
+}
+
+get_largest(x)
+
+get_largest(z)
+
+get_largest(list(1, 2))
+```
+
+Alternatively, you could make the function raise an error by calling the `stop`
+function. Whether it makes more sense to return `NULL` or print an error
+depends on how you plan to use the `get_largest` function.
+
+Notice that the last line of the `get_largest` function still doesn't use the
+`return` keyword. It's idiomatic to only use `return` when strictly necessary.
+:::
+
+
+## Case Study: U.S. Alternative Fueling Stations, Part I {#sec-case-study-fuel-1}
+
+The United States Department of Energy collects data about alternative
+(non-petroleum) fuel distribution and use within the country. They publish the
+data they collect on their [Alternative Fuels Data Center][afdc] (AFDC)
+website. In this case study, which consists of three parts, we'll clean and
+analyze an AFDC dataset about alternative fueling stations.
+
+[afdc]: https://afdc.energy.gov/
+
+:::{.callout-important}
+[Click here][us-alt-fuels] to download the 2007-2013 U.S. Alternative Fueling
+Stations dataset.
+
+[us-alt-fuels]: https://ucdavis.box.com/s/wio50tf9icf5c2ez6viz5uieqt2oi5ha
+
+If you haven't already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/` subdirectory. Download and save
+the dataset in the `data/` subdirectory.
+:::
+
+:::{.callout-note title="Documentation for the U.S. Alternative Fueling Stations Dataset" collapse=true}
+The dataset is an Excel file with a documentation sheet and one data sheet for
+each year. Each data sheet contains counts broken down by state and fuel type.
+The format of the data sheets changes in 2014.
+
+The source of this dataset is the historical counts on the U.S. DoE's
+[Alternative Fueling Station Counts by State][us-alt-fuels-source] page.
+
+[us-alt-fuels-source]: https://afdc.energy.gov/stations/states
+:::
+
+The dataset is in an Excel file with a separate sheet for each year. We'd like
+to be able to read the data for every year and combine it all into a single
+data frame. To get started, let's focus on a single step: reading the data for
+just one year. We'll use the first year, 2007, since the data for the pre-2014
+years have a simpler structure.
+
+R doesn't provide a built-in function to read Excel files, so we'll use the
+[readxl][] package. Install the package if you haven't already, and then load
+it:
+
+```{r}
+# install.packages("readxl")
+library("readxl")
+```
+
+[readxl]: https://readxl.tidyverse.org/
+
+The readxl package's `read_excel` function reads a single sheet from an Excel
+file. We can set the function's `sheet` parameter to select the sheet by
+position or name. In the alternative fueling stations dataset, each data sheet
+is named after the associated year. So the code to read and print the 2007 data
+is:
+
+```{r}
+path = "data/2007-2023_us_alt_fuels.xlsx"
+stations = read_excel(path, sheet = "2007")
+head(stations)
+```
+
+From this, we can see that the column names are actually in the 2nd row of the
+sheet (row 1 in the data frame). So let's change the call to `read_excel` to
+skip the 1st row:
+
+```{r}
+stations = read_excel(path, sheet = "2007", skip = 1)
+head(stations)
+```
+
+Columns 5, 6, and 8 are still missing names. The names of these columns are in
+row 2 of the data frame. We'll use the [stringr][] package, which provides
+functions for processing strings, to help here. Install the package if you
+haven't already, and then load it:
+
+[stringr]: https://stringr.tidyverse.org/
+
+```{r}
+# install.packages("stringr")
+library("stringr")
+```
+
+We can use stringr's `str_starts` function to detect the column names that
+start with `...`. The first argument is the strings and the second is the
+pattern to detect. Call the `fixed` function on the pattern make stringr
+treat it as-is. Then we can use indexing to get the column names from row 2:
+
+```{r}
+names = names(stations)
+is_dot_name = str_starts(names, fixed("..."))
+names[is_dot_name] = as.character(stations[2, is_dot_name])
+names
+```
+
+Let's also make the column names lowercase, so that they're easy to type. We
+can use stringr's `str_to_lower` function to do this:
+
+```{r}
+names = str_to_lower(names)
+names
+```
+
+Assign the names back to the column names:
+
+```{r}
+names(stations) = names
+head(stations)
+```
+
+Many rows are partially or completely blank. We only want to keep the rows that
+contain counts. So let's use dplyr's `filter` function to remove all of the
+rows where `biodiesel` is missing:
+
+```{r}
+# install.packages("dplyr")
+library("dplyr")
+
+stations = filter(stations, !is.na(biodiesel))
+head(stations)
+```
+
+The `electric`, `hydrogen`, and `propane` columns are character columns, but
+they should be numeric. Let's convert the `electric` column. We'll leave
+`hydrogen` and `propane` as-is (with a comment in the code), since we're not
+going to use them in our analysis. While we're at it, we'll also add a `year`
+column with the year:
+
+```{r}
+stations$electric = as.numeric(stations$electric)
+# TODO: hydrogen, propane
+stations$year = 2007
+
+head(stations)
+```
+
+This data frame is clean enough for analysis.
+
+We want to carry out the same steps for other years of data, so let's turn the
+code into a function. Gather together all of the code and enclose it in a
+function definition:
+
+```{r}
+#| eval: false
+function() {
+  path = "data/2007-2023_us_alt_fuels.xlsx"
+  stations = read_excel(path, sheet = "2007", skip = 1)
+
+  names = names(stations)
+  is_dot_name = str_starts(names, fixed("..."))
+  names[is_dot_name] = as.character(stations[2, is_dot_name])
+  names = str_to_lower(names)
+  names(stations) = names
+
+  stations = filter(stations, !is.na(biodiesel))
+
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = 2007
+}
+```
+
+The inputs are the path to the dataset and the year (which is also the sheet
+name). The output is the cleaned data frame. Add parameters for the inputs and
+put the output on the last line. Let's call the function `read_fuel_sheet`. You
+can also optionally add some comments to clarify how the function works:
+
+```{r}
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  is_dot_name = str_starts(names, fixed("..."))
+  names[is_dot_name] = as.character(stations[2, is_dot_name])
+  names = str_to_lower(names)
+  names(stations) = names
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+Test the new function to make sure it returns the same result on the example
+case:
+
+```{r}
+read_fuel_sheet(path, 2007)
+```
+
+The result looks okay, so try a few more cases:
+
+```{r}
+read_fuel_sheet(path, 2008)
+
+read_fuel_sheet(path, 2010)
+```
+
+The function seems to generalize well to other years where the data have the
+same structure. The structure of the data changed in 2014. Let's test the
+function on one of these years:
+
+```{r}
+#| error: true
+read_fuel_sheet(path, 2015)
+```
+
+The function raises an error, which isn't too surprising. It looks like we
+still have some work to do to make the function general enough to read the data
+for 2014 and subsequent years. We'll save that for part II of this case study
+(@sec-case-study-fuel-2}.

@@ -1,0 +1,1492 @@
+```{r, echo = FALSE}
+terns = read.csv("data/2000-2023_ca_least_tern.csv")
+```
+
+# Control Flow
+
+:::{.callout-note title="Learning Goals" collapse="false"}
+After this lesson, you should be able to:
+
+* Create code that only runs when a condition is satisfied
+* Identify when a problem requires iteration
+* Select appropriate iteration strategies for problems
+* Explain what a map (or apply) function does
+* Call a function repeatedly with the purrr package's map functions
+:::
+
+:::{.callout-important title="Required Packages"}
+This chapter uses the following packages:
+
+* dplyr
+* ggplot2
+* purrr
+* readxl
+* stringr
+
+@sec-packages explains how to install and load packages.
+:::
+
+Suppose you want to read and clean 10 different mass measurement datasets. All
+of the datasets have the same structure, so the code to read and clean them is
+the same. Based on what you learned in @sec-writing-functions, you decide to
+write a function, `read_mass_data`, and reuse the code. But you realize there
+are still two problems:
+
+1. When you collected the 8th dataset, you forgot to tare the scale. As a
+   result, all of the measurements are 50 grams too high. This is easy to
+   correct by subtracting 50, but only the 8th dataset needs this correction.
+   You need a way to choose which code to run based on a condition.
+2. You still have to write 10 calls to `read_mass_data`. Using a programming
+   language is supposed to help you avoid tedious things like this, and this
+   wouldn't scale well if you needed to read 100 or 1,000 datasets. You need a
+   way to run code multiple times.
+
+Both of these problems are related to the order in which code runs (the flow of
+control). R provides several **control flow** expressions that change how code
+runs. You can use control flow expressions to choose which code to run based on
+a condition or to run code multiple times. Many of the concepts in this chapter
+generalize to other programming languages, which provide similar commands to
+alter control flow.
+
+
+## Conditional Expressions
+
+A **conditional** expression is one where the computer must make a decision
+about which code to run next. The computer makes its decision by checking
+whether a condition is true. In a flowchart, a conditional looks like a branch
+(two or more ways to get somewhere):
+
+:::{#fig-conditional}
+```{mermaid}
+flowchart LR
+  start(Start) --> condition{Is condition true?}
+    condition -- True --> do_something[Do something]
+    condition -- False --> do_something_else["Do something else"]
+  do_something --> done(End)
+  do_something_else --> done
+```
+
+A flowchart that shows a conditional. The computer checks a condition to
+decide which code to run.
+:::
+
+In most programming languages, the keyword `if` (or some variation of this)
+creates a conditional. Because of this, conditionals are also called **if
+statements**. In R, the syntax for a conditional is:
+
+```{r}
+#| eval: false
+if (condition) {
+  # This code runs if the condition is TRUE.
+} else {
+  # This code runs if the condition is FALSE.
+}
+```
+
+The condition must return a single `TRUE` or `FALSE` value. The `else` part of
+the conditional is optional, so if you only want to do something in the true
+case, you can just write:
+
+```{r}
+#| eval: false
+if (condition) {
+  # This code runs if the condition is TRUE.
+}
+```
+
+You can test multiple conditions by replacing the curly braces `{ }` after
+`else` with another conditional:
+
+```{r}
+#| eval: false
+if (condition1) {
+  # This code runs if condition1 is TRUE.
+} else if (condition2) {
+  # This code runs if condition2 is TRUE (and condition1 is FALSE).
+} else {
+  # This code runs if both condition1 and condition2 are FALSE.
+}
+```
+
+As an example, suppose we want our code to produce a different greeting
+depending on the hour:
+
+* If it's the morning (hours 6-11), the code should produce `"Good morning!"`.
+* If it's the afternoon (hours 12-17), the code should produce `"Good
+  afternoon!"`.
+* For any other hour, the code should produce `"Hello."`.
+
+We can use a conditional to do this (see @sec-logic if you need a refresher on
+how to write conditions that return `TRUE` and `FALSE` values):
+
+```{r}
+hour = 10
+
+if (hour >= 6 && hour <= 11) {
+  greeting = "Good morning!"
+} else if (hour >= 12 && hour <= 17) {
+  greeting = "Good afternoon!"
+} else {
+  greeting = "Hello."
+}
+
+greeting
+```
+
+Notice how changing the value of `hour` changes the result:
+
+```{r}
+hour = 13
+
+if (hour >= 6 && hour <= 11) {
+  greeting = "Good morning!"
+} else if (hour >= 12 && hour <= 17) {
+  greeting = "Good afternoon!"
+} else {
+  greeting = "Hello."
+}
+
+greeting
+```
+
+Try out a few values for `hour` yourself. Then try modifying the code to give
+another greeting, `"Good evening!"` if it's the evening (hours 18-19).
+
+:::{.callout-note}
+In R, conditionals automatically return the value on the last line that runs
+(similar to functions). So another way to write the greeter example above is:
+
+```{r}
+hour = 13
+
+greeting = if (hour >= 6 && hour <= 11) {
+  "Good morning!"
+} else if (hour >= 12 && hour <= 17) {
+  "Good afternoon!"
+} else {
+  "Hello."
+}
+
+greeting
+```
+:::
+
+:::{.callout-note}
+You can **nest** one conditional inside the curly braces of another. Nesting is
+useful when you want to check a condition, do some computations, and then check
+another condition under the assumption that the first condition was `TRUE`.
+:::
+
+:::{.callout-warning}
+Conditionals correspond to **special cases** in your code. Having lots of
+special cases can make code harder to understand and maintain.
+
+It's not bad to use conditionals, but be mindful of how you use them. Think
+about whether there's a more general way to do things instead. Be especially
+wary of nested conditionals.
+:::
+
+
+## Case Study: U.S. Alternative Fueling Stations, Part II {#sec-case-study-fuel-2}
+
+Let's continue the U.S. Alternative Fueling Stations case study from
+@sec-case-study-fuel-1. In the previous part, we wrote a function,
+`read_fuel_sheet`, to read and clean sheets from the dataset Excel file:
+
+```{r}
+#| output: false
+library("dplyr")
+library("readxl")
+library("stringr")
+
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  is_dot_name = str_starts(names, fixed("..."))
+  names[is_dot_name] = as.character(stations[2, is_dot_name])
+  names = str_to_lower(names)
+  names(stations) = names
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+We designed the function around the 2007 data sheet, but the format of the
+sheets changed in 2014. So the `read_fuel_sheet` function emits an error for
+2014 and later. Let's edit the function so that it works well for every year.
+We can use conditionals for code that should only run for some of the years.
+
+To get started, let's write code to read and clean the data for 2023, since
+it's the last year. We can use the code in `read_fuel_sheet` as a reference.
+We'll still use the readxl package's `read_excel` function to read the sheet:
+
+```{r}
+path = "data/2007-2023_us_alt_fuels.xlsx"
+stations = read_excel(path, sheet = "2023", skip = 1)
+head(stations)
+```
+
+This immediately reveals one reason why the `read_fuel_sheet` function didn't
+work. For 2014 and later, all of the column names are in the 2nd row of the
+sheet. There's no need to get names from other rows. Let's make a note of this
+in a comment.
+
+We still need to convert the column names to lowercase:
+
+```{r}
+names = names(stations)
+# For 2014 and later, no need to get column names from two different rows.
+names = str_to_lower(names)
+```
+
+One of the columns is named `renewable diesel`, which will be difficult to use
+in analysis because it contains a space. We can use stringr's `str_replace_all`
+to replace the space with an underscore:
+
+```{r}
+names = str_replace_all(names, fixed(" "), "_")
+names
+```
+
+Four of the names seem incorrect: `electrica`, `hydrogenb`, `propanec`, and
+`totald`. If we examine the dataset with spreadsheet software, we can see that
+these column names have alphabetic superscripts in 2014 and later. There are
+many ways to fix this, but we'll use dplyr's `rename` function:
+
+```{r}
+names(stations) = names
+
+# For 2014 and later:
+stations = rename(
+  stations,
+  electric = electrica,
+  hydrogen = hydrogenb,
+  propane = propanec,
+  total = totald
+)
+head(stations)
+```
+
+The next step in `read_fuel_sheet` is to remove blank rows (rows with missing
+values). The 2023 data frame has rows that are partially blank, but they do
+have values in the `electric` column. By inspecting the sheet, we can see that
+for 2014 and later, the `electric` column contains multiple values separated by
+the pipe character `|`. The `electric` values for each state are also split
+across two rows. Since we want to compare the data over time, we only need the
+station count, which is in the first row. So we'll use the code from
+`read_fuel_sheet` that filters out the blank rows:
+
+```{r}
+stations = filter(stations, !is.na(biodiesel))
+head(stations)
+```
+
+With that done, let's split the `electric` column into two columns, since it
+contains two values. The first value is the number of stations, which we'll
+keep in the `electric` column. The second value is the number of outlets, which
+we'll put in a column called `electric_outlets`. To make it easier to convert
+the columns to numbers, we'll remove all of the commas (`,`) with stringr's
+`str_replace_all` function. Then we can use stringr's `str_split_fixed`
+function to split the column in two. Finally, we can use `as.numeric` to
+convert the columns to numbers before saving them back into the data frame:
+
+```{r}
+# For 2014 and later:
+electric = str_replace_all(stations$electric, fixed(","), "")
+electric = str_split_fixed(electric, fixed(" | "), 2)
+stations$electric = as.numeric(electric[, 1])
+stations$electric_outlets = as.numeric(electric[, 2])
+```
+
+The `hydrogen` and `propane` columns have the same problem. We'll skip fixing
+them, since the code to do so is almost identical.
+
+The 2023 data frame is now clean enough for analysis. The code to read and
+clean it is:
+
+```{r}
+#| eval: false
+stations = read_excel(path, sheet = "2023", skip = 1)
+
+names = names(stations)
+# For 2014 and later, no need to get column names from two different rows.
+names = str_to_lower(names)
+names = str_replace_all(names, fixed(" "), "_")
+names(stations) = names
+
+# For 2014 and later:
+stations = rename(
+  stations,
+  electric = electrica,
+  hydrogen = hydrogenb,
+  propane = propanec,
+  total = totald
+)
+
+stations = filter(stations, !is.na(biodiesel))
+
+# For 2014 and later:
+electric = str_replace_all(stations$electric, fixed(","), "")
+electric = str_split_fixed(electric, fixed(" | "), 2)
+stations$electric = as.numeric(electric[, 1])
+stations$electric_outlets = as.numeric(electric[, 2])
+```
+
+We can use conditionals to combine this with code in the body of the
+`read_fuel_sheet` function. Specifically, we need to check `year < 2014` or
+`year >= 2014` at a few points. One way to write the code for the combined
+function is:
+
+```{r}
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  if (year < 2014) {
+    is_dot_name = str_starts(names, fixed("..."))
+    names[is_dot_name] = as.character(stations[2, is_dot_name])
+  }
+  names = str_to_lower(names)
+  names = str_replace_all(names, fixed(" "), "_")
+  names(stations) = names
+  if (year >= 2014) {
+    stations = rename(
+      stations,
+      electric = electrica,
+      hydrogen = hydrogenb,
+      propane = propanec,
+      total = totald
+    )
+  }
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  if (year >= 2014) {
+    electric = str_replace_all(stations$electric, fixed(","), "")
+    electric = str_split_fixed(electric, fixed(" | "), 2)
+    stations$electric = as.numeric(electric[, 1])
+    stations$electric_outlets = as.numeric(electric[, 2])
+    # TODO: hydrogen, propane
+  }
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+Notice how using multiple conditionals makes it harder to understand what the
+function does. We could instead use one conditional, but we'd have to repeat
+parts of the code that are the same. Alternatively, we could move some of the
+cleaning steps to other functions, so that `read_fuel_sheet` is shorter and
+easier to understand (without changing what it does).
+
+Let's test the new `read_fuel_sheet` function on the 2023 data:
+
+```{r}
+read_fuel_sheet(path, 2023)
+```
+
+We should also make sure that it still returns the same result for the 2007
+data:
+
+```{r}
+read_fuel_sheet(path, 2007)
+```
+
+This looks good. We've now got a function that can read any of the years. In
+part III of this case study (@sec-case-study-fuel-3), we'll see how to use the
+function to read all of them.
+
+
+## Loops
+
+Computers are great at **iterative** tasks, where some of the steps need to be
+repeated. Examples of tasks like this include:
+
+* Applying a transformation to (each element of) an entire column of data.
+* Computing distances between all pairs for a set of points.
+* Reading a collection of files in order to combine and analyze their data.
+* Simulating how a complex system evolves from one time step to the next.
+* Scraping the pages of a website.
+
+Each run of a repeated step is called an **iteration**. So in the example about
+reading a collection of files, one iteration means reading one file.
+
+In programming languages, we use control flow expressions called **loops** to
+make the computer repeat some code. There are many different kinds of loops,
+but in a flowchart, they always look like a path that begins and ends at the
+same place (hence the name "loop"):
+
+:::{#fig-while-loop}
+```{mermaid}
+flowchart LR
+  start(Start) --> condition{Is condition true?}
+    condition -- True --> body[Do something]
+    body --> condition
+    condition -- False ----> done(End)
+```
+
+A flowchart that shows a while loop (one kind of loop). The computer checks a
+condition at the beginning of each iteration to decide whether to continue
+iterating or stop.
+:::
+
+In R, there are four distinct categories of loops:
+
+1. Vectorization, where a function is implicitly called on each element of a
+   vector.
+2. Map functions (& apply functions), where a function is explicitly called on
+   each element of a data structure.
+3. For loops (& while loops), where an expression is evaluated repeatedly until
+   some condition is met.
+4. Recursion, where a function calls itself.
+
+We introduced vectorization in @sec-vectorization, several chapters ago. The
+next section, @sec-the-purrr-package, introduces the purrr package and map
+functions. @sec-for-loops introduces for loops. In @sec-how-to-write-loop,
+we'll describe how to write loops to solve iterative problems and how to decide
+which kind of loop to use.
+
+:::{.callout-note}
+We don't cover recursion because it tends to be difficult for people to
+understand. Recursion is also the least efficient kind of loop in R.
+:::
+
+
+## The purrr Package {#sec-the-purrr-package}
+
+@sec-vectorization introduced vectorization, a convenient and efficient way to
+compute multiple results. That section also mentioned that some of R's
+functions---the ones that summarize or aggregate data---are not vectorized.
+
+The `class` function is an example of a function that's not vectorized. If we
+call the `class` function on the least terns dataset, we get just one result
+for the dataset as a whole:
+
+```{r}
+class(terns)
+```
+
+We can get the class of a single column by selecting the column with `$`, the
+dollar sign operator:
+
+```{r}
+class(terns$year)
+```
+
+What if we want the classes of all the columns? We could write a call to
+`class` for each column, but that would be tedious. When you're working with a
+programming language, you should try to avoid tedium; there's usually a better,
+more automated way.
+
+Data frames are technically lists (@sec-lists), where each column is one
+element. With that in mind, what we need here is a line of code that calls
+`class` on each element of the data frame. The idea is similar to
+vectorization, but since we have a list and a non-vectorized function, we have
+to do a bit more than just call `class(terns)`.
+
+The [purrr][] package is a collection of functions to help you do things
+repeatedly or for each element of a data structure. Install and load the
+package in order to follow along:
+
+[purrr]: https://purrr.tidyverse.org/
+
+```{r}
+# install.packages("purrr")
+library("purrr")
+```
+
+The package's `map` function calls a function on each element of a vector,
+list, or other data structure. We say it **maps** or **applies** a function
+over the elements. In a flowchart, the `map` function looks like this:
+
+:::{#fig-for-loop}
+```{mermaid}
+flowchart LR
+  start(Start) --> condition{Are there more elements?}
+    condition -- Yes --> get_elt["Get the next element"]
+    get_elt --> body[Do something]
+    body --> condition
+    condition -- No ----> done(End)
+```
+
+A flowchart that shows a map function, apply function, or for loop. At the
+beginning of each iteration, the computer checks whether there is another
+element in the data to decide whether to continue iterating. If there is, the
+computer automatically assigns the next element to a variable.
+:::
+
+The syntax of the `map` function is:
+
+```{r}
+#| eval: false
+map(data, fun, ...)
+```
+
+The `map` function calls the function `fun` once for each element of `data`. It
+passes the element to `fun` as the first argument. It also passes the `...`
+arguments to `fun`, which are constant across all of the calls.
+
+Let's try this out with the least terns data and the `class` function:
+
+```{r}
+map(terns, class)
+```
+
+The result is similar to if the `class` function was vectorized. In fact, if we
+use a vector and a vectorized function with `map`, the result is nearly
+identical to the result from vectorization:
+
+```{r}
+x = c(1, 2, pi)
+
+sin(x)
+
+map(x, sin)
+```
+
+The only difference is that the result from `map` is a list. In fact, the `map`
+function always returns a list with one element for each element of the input
+data.
+
+:::{.callout-tip}
+If you want to use `map` to repeat arbitrary code rather than a specific
+function, you can use `\()` or the `function` keyword to create an anonymous
+function (one that isn't assigned to a variable). Then the syntax of the `map`
+function is:
+
+```{r}
+#| eval: false
+map(data, \(element) {
+  # This code runs once for each element in data.
+})
+```
+:::
+
+:::{.callout-note title="Note: Apply Functions"}
+R's **apply functions** are a built-in equivalent to map functions. The
+`lapply`, `sapply`, and `tapply` functions are the three most important
+functions in the family of apply functions, but there are many more. The
+`lapply` function is nearly identical to the `map` function.
+
+We focus on and recommend the map functions rather than the apply functions
+because they are more consistent in their syntax and specific in their return
+types. You can learn more about R's apply functions by reading [this
+StackOverflow post][apply].
+
+[apply]: https://stackoverflow.com/a/7141669
+:::
+
+
+### Other Map Functions
+
+The purrr package provides many different map functions, all of which have
+names that start with `map`. All of them call another function on each element
+of a data structure. They also all have the same syntax. Where they differ is
+in how they return results. A few of these are shown in @tbl-map-functions.
+
+Function  | Return Type
+--------- | -----------
+`map_lgl` | logical
+`map_int` | integer
+`map_dbl` | numeric (double)
+`map_chr` | character
+`map`     | list
+
+: {#tbl-map-functions}
+
+<!--
+When you have a choice between using vectorization or a map function, you
+should always choose vectorization. Vectorization is clearer---compare the two
+lines of code above---and it's also significantly more efficient. In fact,
+vectorization is the most efficient way to call a function repeatedly in R.
+
+As we saw with the `class` function, there are some situations where
+vectorization is not possible. That's when you should think about using a map
+function.
+-->
+
+Let's look at some examples of the other map functions. If we use `map_chr` to
+find the classes of the columns in the least terns data, we get a character
+vector:
+
+```{r}
+map_chr(terns, class)
+```
+
+Likewise, if we use `map_dbl` to compute the `sin` values, we get a numeric
+vector, the same as from vectorization:
+
+```{r}
+map_dbl(x, sin)
+```
+
+In spite of that, vectorization is still more efficient than `sapply`, so use
+vectorization instead when possible.
+
+<!--
+Map functions are incredibly useful for summarizing data. For example, suppose
+we want to compute the frequencies for all of the columns in the least terns
+dataset that aren't numeric.
+
+First, we need to identify the columns. One way to do this is with the
+`is.numeric` function. Despite the name, this function actually tests whether
+its argument is a real number, not whether it its argument is a numeric vector.
+In other words, it also returns true for integer values. We can use `map_lgl`
+to apply this function to all of the columns in the least terns dataset:
+
+```{r}
+is_not_number = !map_lgl(terns, is.numeric)
+is_not_number
+```
+
+Is it worth using R code to identify the non-numeric columns? Since there are
+only `r ncol(terns)` columns in the least terns dataset, maybe not. But if the
+dataset was larger, with say 100 columns, it definitely would be.
+
+In general, it's a good habit to use R to do things rather than do them
+manually. You'll get more practice programming, and your code will be more
+flexible if you want to adapt it to other datasets.
+
+Now that we know which columns are non-numeric, we can use the `table` function
+to compute frequencies. We only want to compute frequencies for those columns,
+so we need to subset the data:
+
+```{r}
+map(terns[, is_not_number], table)
+```
+
+We use `map` rather than one of the other map functions for this step because
+the table for each column will have a different length.
+-->
+
+The [purrr documentation][purrr] provides more details about how to use the
+many functions in the package.
+
+
+
+## For Loops {#sec-for-loops}
+
+A **for loop** runs the code in its body once for each element of a data
+structure. @fig-for-loop shows what for loop looks like in a flowchart.
+
+In most programming languages, the keyword `for` creates a for loop. In R, the
+syntax of a for loop is:
+
+```{r}
+#| eval: false
+for (element in data) {
+  # This code runs once for each element in data.
+}
+```
+
+The loop automatically assigns the next element of `data` to the variable
+`element` at the beginning of each iteration. The loop iterates once for each
+element, unless a keyword causes the loop to end early.
+
+:::{.callout-tip}
+For loops and map functions do almost the same thing. Here's how the for loop
+syntax above translates into a map function:
+
+```{r}
+#| eval: false
+map(data, \(element) {
+  # This code runs once for each element in data.
+})
+```
+
+Map functions tend to be easier to use because they automatically return the
+result from each iteration. For loops don't, and leave it up to you to figure
+out how to store the results.
+
+The limitation of map functions is that the each iteration must be independent.
+You can't have an iteration that depends on the result of a prior iteration.
+For loops don't have this limitation. Dependent iterations are common in
+simulations, but not so common in data cleaning and analysis tasks.
+:::
+
+As a demonstration, let's print out a message with the current iteration number
+for 5 iterations:
+
+```{r}
+for (i in 1:5) {
+  message("Hi from iteration ", i)
+}
+```
+
+Unlike map functions, loops don't return a result automatically. It's up to you
+to use variables to store any results you want to use later. To do this:
+
+1. Before the loop, create a result vector (or list) that's the same length as
+   the number of iterations. Fill vector with 0s or some other placeholder
+   value. You can use functions such as `integer`, `numeric`, and `character`
+   to do this.
+2. In the loop, use indexing to replace the elements of the result vector as
+   they're computed.
+
+This approach to storing results is called **pre-allocation**. Here's an
+example of pre-allocation for a loop that computes what happens if you
+repeatedly call the sine function on a value:
+
+```{r}
+# Number of iterations:
+n = 1 + 99
+
+# Create a numeric vector with n elements and set the first element to 1.
+result = numeric(n)
+result[1] = 1
+
+for (i in 2:n) {
+  # Get the result from the previous iteration.
+  # This is why this loop starts at i = 2.
+  prev_result = result[i - 1]
+
+  # Compute the sine of the previous result.
+  # Save it into the results vector at position i.
+  result[i] = sin(prev_result)
+}
+```
+
+Plotting the result vector makes it easier to see the pattern in the values:
+
+```{r}
+library("ggplot2")
+
+result_df = data.frame(x = 1:n, y = result)
+ggplot(result_df) + geom_point() + aes(x = x, y = y)
+```
+
+:::{.callout-note}
+The `break` keyword causes a for loop to immediately exit. It only makes sense
+to use `break` inside of a conditional (otherwise, the loop will exit in the
+first iteration).
+
+The `next` keyword causes a for loop to immediately go to the next iteration.
+As with `break`, it only makes sense to use `next` inside of a conditional.
+
+You can also use `break` and `next` in while loops.
+:::
+
+:::{.callout-note title="Note: While Loops"}
+A **while loop** makes the computer check a condition at the beginning of each
+iteration to decide whether to run the code in the loop's body. @fig-while-loop
+shows what a while loop looks like in a flowchart.
+
+In most programming languages, the keyword `while` creates a while loop. In R,
+the syntax of a while loop is:
+
+```{r}
+#| eval: false
+while (condition) {
+  # This code runs repeatedly until the condition is FALSE.
+}
+```
+
+While loops are a generalization of for loops, and only do the bare minimum
+necessary to iterate. They tend to be most useful when you don't know how many
+iterations are necessary to complete a task.
+:::
+
+
+## How to Write a Loop {#sec-how-to-write-loop}
+
+Before you write a loop, write down what you want the code to do. Think about
+whether the code needs to do something over and over. If it doesn't, you
+probably shouldn't use a loop. Do this in comments, in a separate document, or
+even on paper.
+
+Once you've finished writing out and clarifying the goal, it's time to write
+the code. Go through these steps:
+
+1. Write the code for one iteration. Don't worry about putting the code in a
+   loop yet. Make sure that the result is correct. Sometimes the best way to
+   approach this is by writing a function (see @sec-how-to-write-function).
+
+2. Make a copy of the code from step 1 and edit it to run a different
+   iteration. Pay attention to what you have to change. Once again, make sure
+   that the result is correct.
+
+3. Once you've got the code working for two iterations, make another copy and
+   wrap it in a loop. The parts of the code that had to change in step 2 are a
+   hint about what will change in every iteration. Replace changing data with
+   the loop's automatic variable. Put code that should only run on some of the
+   iterations in conditionals.
+
+4. Test that the loop code works correctly. If it doesn't, try to pinpoint
+   which iteration is causing the problem. One way to do this is to use
+   `message` to print out information. Then write out the code for just the
+   broken iteration, get it working, and repeat this process from step 3.
+
+To decide what kind of loop to use, go down this list:
+
+1. Vectorization
+2. Map (or apply) functions
+    * Try an apply function if iterations are independent.
+3. For and while loops
+    * Try a for-loop if some iterations depend on others.
+    * Try a while-loop if the number of iterations is unknown.
+4. Recursion
+    * Convenient for naturally recursive tasks (like Fibonacci), but often
+      there are faster solutions.
+
+The list items are organized from fastest to slowest, although the speed
+difference between map functions and for loops is negligible.
+
+Vectorization is the most efficient and concise, but only works with specific
+functions on vectors. Map functions work with any function and any data
+structure with elements, while still returning the results automatically. For
+and while loops provide the most flexibility, but leave it up to you to save
+the results. Recursion works well for specific kinds of problems, but can be
+confusing and is the slowest kind of loop in R.
+
+
+## Case Study: U.S. Alternative Fueling Stations, Part III {#sec-case-study-fuel-3}
+
+Let's finish the U.S. Alternative Fueling Stations case study we began in
+@sec-case-study-fuel-1 and continued in @sec-case-study-fuel-2. In the previous
+part, we modified the `read_fuel_sheet` function so that it can read and clean
+sheets for any year in the dataset Excel file:
+
+```{r}
+read_fuel_sheet = function(path, year) {
+  sheet = as.character(year)
+  stations = read_excel(path, sheet = sheet, skip = 1)
+
+  # Clean up the column names.
+  names = names(stations)
+  if (year < 2014) {
+    is_dot_name = str_starts(names, fixed("..."))
+    names[is_dot_name] = as.character(stations[2, is_dot_name])
+  }
+  names = str_to_lower(names)
+  names = str_replace_all(names, fixed(" "), "_")
+  names(stations) = names
+  if (year >= 2014) {
+    stations = rename(
+      stations,
+      electric = electrica,
+      hydrogen = hydrogenb,
+      propane = propanec,
+      total = totald
+    )
+  }
+
+  # Remove blank rows.
+  stations = filter(stations, !is.na(biodiesel))
+
+  # Correct column types and add year column.
+  if (year >= 2014) {
+    electric = str_replace_all(stations$electric, fixed(","), "")
+    electric = str_split_fixed(electric, fixed(" | "), 2)
+    stations$electric = as.numeric(electric[, 1])
+    stations$electric_outlets = as.numeric(electric[, 2])
+    # TODO: hydrogen, propane
+  }
+  stations$electric = as.numeric(stations$electric)
+  # TODO: hydrogen, propane
+  stations$year = year
+
+  stations
+}
+```
+
+In this part, let's use the function to read all of the sheets, then combine
+them into a single data frame and make a plot of number of electric stations
+over time. Imagine what it would look like if we wrote out the code to read the
+data for each year separately:
+
+```{r}
+#| eval: false
+path = "data/2007-2023_us_alt_fuels.xlsx"
+read_fuel_sheet(path, 2007)
+read_fuel_sheet(path, 2008)
+# ...
+read_fuel_sheet(path, 2023)
+```
+
+The year is what differs between the calls, so we need to iterate over the
+years. We could create a vector of years with `2007:2023`. Instead, let's use
+readxl's `excel_sheets` function to get the sheet names, which correspond to
+years, and convert them to numbers:
+
+```{r}
+years = excel_sheets(path)
+# Skip the first sheet (which is documentation) and convert to numbers.
+years = as.numeric(years[-1])
+years
+```
+
+Now we need to call the `read_fuel_sheet` function with each year in the
+`years` vector. We can use purrr's `map` function to do this. Since the year
+should be the second argument to `read_fuel_sheet`, we have to write the call
+out explicitly (alternatively, we could modify `read_fuel_sheet` so that the
+year is the first argument):
+
+```{r}
+#| output: false
+sheets = map(years, \(year) {
+  read_fuel_sheet(path, year)
+})
+```
+
+This gives a list of data frames, one for each year. We want to bind them into
+a single data frame, stacking the rows of each one atop the next. We can use
+dplyr's `bind_rows` function to do this:
+
+```{r}
+stations = bind_rows(sheets)
+head(stations)
+```
+
+With the data in good shape, we're ready to make a plot. Let's make a line plot
+with the year on the x-axis, the number of electric stations on the y-axis, and
+the lines color-coded by state:
+
+```{r}
+ggplot(stations) +
+  geom_line() +
+  aes(x = year, y = electric, color = state)
+```
+
+This plot is a bit hard to read because there are so many states. Let's use
+dplyr's `filter` function to focus only on states on the west coast:
+
+```{r}
+west = filter(
+  stations,
+  state %in% c("California", "Oregon", "Washington", "Alaska", "Hawaii")
+)
+
+ggplot(west) +
+  geom_line() +
+  aes(x = year, y = electric, color = state)
+```
+
+Now we can see that California has substantially more electric stations than
+the other west coast states. This could be due to its larger population or due
+to increased funding for alternative fueling stations.
+
+
+## Case Study: CA Hospital Utilization
+
+The California Department of Health Care Access and Information (HCAI) requires
+hospitals in the state to submit detailed information each year about how many
+beds they have and the total number of days for which each bed was occupied.
+The HCAI publishes the data to the [California Open Data Portal][data.ca.gov].
+Let's use R to read data from 2016 to 2023 and investigate whether hospital
+utilization is noticeably different in and after 2020.
+
+[data.ca.gov]: https://data.ca.gov/
+
+The dataset consists of a separate Microsoft Excel file for each year. Before
+2018, HCAI used a data format (in Excel) called ALIRTS. In 2018, they started
+collecting more data and switched to a data format called SIERA. The 2018 data
+file contains a **crosswalk** that shows the correspondence between SIERA
+columns and ALIRTS columns.
+
+:::{.callout-important}
+[Click here][ca-hospitals] to download the CA Hospital Utilization dataset (8
+Excel files).
+
+If you haven’t already, we recommend you create a directory for this workshop.
+In your workshop directory, create a `data/ca_hospitals` subdirectory. Download
+and save the dataset in the `data/ca_hospitals` subdirectory.
+
+[ca-hospitals]: https://ucdavis.box.com/s/g5tanw22647dw3uyhv3om0zt3duuj5lc
+:::
+
+When you need to solve a programming problem, get started by writing some
+comments that describe the problem, the inputs, and the expected output. Try to
+be concrete. This will help you clarify what you're trying to achieve and serve
+as a guiding light while you work.
+
+As a programmer (or any kind of problem-solver), you should always be on the
+lookout for ways to break problems into smaller, simpler steps. Think about
+this when you frame a problem. Small steps are easier to reason about,
+implement, and test. When you complete one, you also get a nice sense of
+progress towards your goal.
+
+For the CA Hospital Utilization dataset, our goal is to investigate whether
+there was a change in hospital utilization in 2020. Before we can do any
+investigation, we need to read the files into R. The files all contain tabular
+data and have similar formats, so let's try to combine them into a single data
+frame. We'll say this in the framing comments:
+
+```{r}
+# Read the CA Hospital Utilization dataset into R. The inputs are yearly Excel
+# files (2016-2023) that need to be combined. The pre-2018 files have a
+# different format from the others. The result should be a single data frame
+# with information about bed and patient counts.
+#
+# After reading the dataset, we'll investigate utilization in 2020.
+```
+
+"Investigate utilization" is a little vague, but for an exploratory data
+analysis, it's hard to say exactly what to do until you've started working with
+the data.
+
+We need to read multiple files, but we can simplify the problem by starting
+with just one. Let's start with the 2023 data. It's in an Excel file, which you
+can read with the `read_excel` function from the readxl package. If it's your
+first time using the readxl package, you'll need to install it:
+
+```{r}
+#| eval: false
+install.packages("readxl")
+```
+
+The `read_excel` function requires the path to the file as the first argument.
+You can optionally provide the sheet name or number (starting from 1) as the
+second argument. Open up the Excel file in your computer's spreadsheet program
+and take a look. There are multiple sheets, and the data about beds and
+patients are in the second sheet. Back in R, read just the second sheet:
+
+```{r}
+library("readxl")
+
+path = "data/ca_hospitals/hosp23_util_data_final.xlsx"
+sheet = read_excel(path, sheet = 2)
+head(sheet)
+```
+
+The first four rows contain metadata about the columns. The first hospital,
+Alameda Hospital, is listed in the fifth row. So let's remove the first four
+rows:
+
+```{r}
+sheet = sheet[-(1:4), ]
+head(sheet)
+```
+
+Some datasets also have metadata in the last rows, so let's check for that
+here:
+
+```{r}
+tail(sheet)
+```
+
+Sure enough, the last row contains what appears to be a count of the hospitals
+rather than a hospital. Let's remove it by calling `head` with a negative
+number of elements, which removes that many elements from the end:
+
+```{r}
+sheet = head(sheet, -1)
+tail(sheet)
+```
+
+There are a lot of columns in sheet, so let's make a list of just a few that
+we'll use for analysis. We'll keep:
+
+* Columns with facility name, location, and operating status
+* All of the columns whose names start with `TOT`, because these are totals for
+  number of beds, number of census-days, and so on.
+* Columns about acute respiratory beds, with names that contain `RESPIRATORY`,
+  because they might also be relevant.
+
+We can use the stringr package, which provides string processing functions, to
+help us get the `TOT` and `RESPIRATORY` column names. If it's your first time
+using the stringr package, you'll have to install it:
+
+```r
+install.packages("stringr")
+```
+
+We can use stringr's `str_starts` function to check whether column names start
+with `TOT` and its `str_detect` function to check whether column names contain
+`RESPIRATORY`:
+
+```{r}
+library("stringr")
+
+facility_cols = c(
+  "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR", "FACILITY_LEVEL",
+  "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+)
+
+cols = names(sheet)
+tot_cols = cols[str_starts(cols, "TOT")]
+respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+```
+
+The `TOT` and `RESPIRATORY` columns all contain numbers, but the element type
+is `character`, so let's cast to numbers them with `as.numeric`. We'll also add
+a column with the year:
+
+```{r}
+numeric_cols = c(tot_cols, respiratory_cols)
+sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+sheet$year = 2023
+```
+
+Now we'll select only the columns we identified as useful:
+
+```{r}
+sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+head(sheet)
+```
+
+Lowercase names are easier to type, so let's also make all of the names
+lowercase with stringr's `str_to_lower` function:
+
+```{r}
+names(sheet) = str_to_lower(names(sheet))
+head(sheet)
+```
+
+We've successfully read one of the files! Since the 2018-2023 files all have
+the same format, it's likely that we can use almost the same code for all of
+them. Any time you want to reuse code, it's a sign that you should write a
+function, so that's what we'll do. We'll take all of the code we have so far
+and put it in the body of a function called `read_hospital_data`, adding some
+comments to indicate the steps:
+
+```r
+read_hospital_data = function() {
+  # Read the 2nd sheet of the file.
+  path = "data/ca_hospitals/hosp23_util_data_final.xlsx"
+  sheet = read_excel(path, sheet = 2)
+
+  # Remove the first 4 and last row.
+  sheet = sheet[-(1:4), ]
+  sheet = head(sheet, -1)
+
+  # Select only a few columns of interest.
+  facility_cols = c(
+    "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR",
+    "FACILITY_LEVEL", "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+  )
+
+  cols = names(sheet)
+  tot_cols = cols[str_starts(cols, "TOT")]
+  respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+
+  numeric_cols = c(tot_cols, respiratory_cols)
+  sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+  sheet$year = 2023
+
+  sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+  # Rename the columns to lowercase.
+  names(sheet) = str_to_lower(names(sheet))
+
+  sheet
+}
+```
+
+As it is, the function still only reads the 2023 file. The other files have
+different paths, so the first thing we need to do is make the `path` variable a
+parameter. We'll also make a `year` parameter, for the year value inserted as a
+column:
+
+```{r}
+read_hospital_data = function(path, year) {
+  # Read the 2nd sheet of the file.
+  sheet = read_excel(path, sheet = 2)
+
+  # Remove the first 4 and last row.
+  sheet = sheet[-(1:4), ]
+  sheet = head(sheet, -1)
+
+  # Select only a few columns of interest.
+  facility_cols = c(
+    "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR",
+    "FACILITY_LEVEL", "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+  )
+
+  cols = names(sheet)
+  tot_cols = cols[str_starts(cols, "TOT")]
+  respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+
+  numeric_cols = c(tot_cols, respiratory_cols)
+  sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+  sheet$year = year
+
+  sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+  # Rename the columns to lowercase.
+  names(sheet) = str_to_lower(names(sheet))
+
+  sheet
+}
+```
+
+Test the function out on a few of the files to make sure it works correctly:
+
+```{r}
+head(
+  read_hospital_data(
+    "data/ca_hospitals/hosp23_util_data_final.xlsx", 2023
+  )
+)
+```
+
+```{r}
+head(
+  read_hospital_data(
+    "data/ca_hospitals/hosp21_util_data_final-revised-06.15.2023.xlsx", 2021
+  )
+)
+```
+
+The function appears to work correctly for two of the files, so let's work
+towards trying it on all of the 2018-2023 files. We can use the built-in
+`list.files` function to get the paths to the files by setting `full.names =
+TRUE` (otherwise it just returns the names of the files):
+
+```{r}
+paths = list.files("data/ca_hospitals/", full.names = TRUE)
+paths
+```
+
+In addition to the file paths, we also need the year for each file.
+Fortunately, the last two digits of the year are included in each file's name.
+We can write a function to get these. We'll use R's built-in `basename`
+function to get the file names from the paths, and stringr's `str_sub` function
+to get a substring (the year) from the name:
+
+```{r}
+get_hospital_year = function(path) {
+  name = basename(path)
+  year = str_sub(name, 5, 6)
+  as.integer(year) + 2000
+}
+
+get_hospital_year(paths[1])
+```
+
+<!--
+Now we can use a for-loop to iterate over all of the files. We'll skip the
+pre-2018 files for now:
+
+```{r}
+hosps = list()
+
+for (i in seq_along(paths)) {
+  path = paths[[i]]
+  year = get_hospital_year(path)
+  # Only years 2018-2023.
+  if (year >= 2018) {
+    hosp = read_hospital_data(path, year)
+    hosps[[i]] = hosp
+  }
+}
+
+length(hosps)
+```
+-->
+
+With that done, we need to read the pre-2018 files. In the 2018 file, the
+fourth sheet is a crosswalk that shows which columns in the pre-2018 files
+correspond to columns in the later files. Let's write some code to read the
+crosswalk. First, read the sheet:
+
+```{r}
+path = "data/ca_hospitals/hosp18_util_data_final.xlsx"
+cwalk = read_excel(path, sheet = 4)
+head(cwalk)
+```
+
+The new and old column names are in the fourth and fifth columns, respectively,
+so we'll get just those:
+
+```{r}
+cwalk = cwalk[, 4:5]
+head(cwalk)
+```
+
+Finally, let's turn the `cwalk` data frame into a named vector. We'll make the
+old column names the names and the new column names the elements. This way we
+can easily look up the new name for any of the old columns by indexing. Some of
+the column names in `cwalk` have extra spaces at the end, so we'll use
+stringr's `str_trim` function to remove them:
+
+```{r}
+cwalk_names = str_trim(cwalk[[2]])
+cwalk = str_trim(cwalk[[1]])
+names(cwalk) = cwalk_names
+
+head(cwalk)
+```
+
+We can now define a new version of the `read_hospital_data` function that uses
+the crosswalk to change the column names when `year < 2018`. Let's also change
+function to exclude columns with `ALOS` in the name, because they have no
+equivalent in the pre-2018 files:
+
+
+```{r}
+read_hospital_data = function(path, year) {
+  # Read the 2nd sheet of the file.
+  sheet = read_excel(path, sheet = 2)
+
+  # Remove the first 4 and last row.
+  sheet = sheet[-(1:4), ]
+  sheet = head(sheet, -1)
+
+  # Fix pre-2018 column names.
+  if (year < 2018) {
+    new_names = cwalk[names(sheet)]
+    new_names[is.na(new_names)] = names(sheet)[is.na(new_names)]
+    names(sheet) = new_names
+  }
+
+  # Select only a few columns of interest.
+  facility_cols = c(
+    "FAC_NAME", "FAC_CITY", "FAC_ZIP", "FAC_OPERATED_THIS_YR",
+    "FACILITY_LEVEL", "TEACH_HOSP", "COUNTY", "PRIN_SERVICE_TYPE"
+  )
+
+  cols = names(sheet)
+  tot_cols = cols[str_starts(cols, "TOT")]
+  respiratory_cols = cols[str_detect(cols, "RESPIRATORY")]
+
+  numeric_cols = c(tot_cols, respiratory_cols)
+  numeric_cols = numeric_cols[!str_detect(numeric_cols, "ALOS")]
+  sheet[numeric_cols] = lapply(sheet[numeric_cols], as.numeric)
+
+  sheet$year = year
+
+  sheet = sheet[c("year", facility_cols, numeric_cols)]
+
+  # Rename the columns to lowercase.
+  names(sheet) = str_to_lower(names(sheet))
+
+  sheet
+}
+```
+
+Now we can test the function on all of the files. We'll use a for-loop to
+iterate over all of the paths, read the data for each one, and store the result
+in a list:
+
+```{r}
+hosps = list()
+
+for (i in seq_along(paths)) {
+  path = paths[[i]]
+  year = get_hospital_year(path)
+  hosp = read_hospital_data(path, year)
+  hosps[[i]] = hosp
+}
+
+length(hosps)
+```
+
+We can use the `do.call` and `rbind` functions to bind the rows, or stack, the
+list of data frames:
+
+```{r}
+hosps = do.call(rbind, hosps)
+head(hosps)
+```
+
+We've finally got all of the data in a single data frame!
+
+To begin to address whether hospital utilization changed in 2020, let's make a
+bar plot of total census-days:
+
+```{r}
+library("ggplot2")
+
+(
+    ggplot(hosps) +
+    aes(x = year, weight = tot_cen_days) +
+    geom_bar()
+)
+```
+
+According to the plot, total census-days was slightly lower in 2020 than in
+2019. This is a bit surprising, but it's possible that California hospitals
+typically operate close to maximum capacity and were not able to substantially
+increase the number of beds in 2020 in response to the COVID-19 pandemic. You
+can use other columns in the dataset, such as `tot_lic_beds` or
+`tot_lic_bed_days`, to check this.
+
+Let's also look at census-days for acute respiratory care:
+
+
+```{r}
+(
+    ggplot(hosps) +
+    aes(x = year, weight = acute_respiratory_care_cen_days) +
+    geom_bar()
+)
+```
+
+In this plot, there's a clear uptick in census-days in 2020, and then an
+interesting decrease to below 2019 levels in the years following. Again, you
+could use other columns in the dataset to investigate this further. We'll end
+this case study here, having accomplished the difficult task of reading the
+data and the much easier task of doing a cursory preliminary analysis of the
+data.
+
+
+## Case Study: The Collatz Conjecture
+
+The [Collatz Conjecture][collatz] is a conjecture in math that was introduced
+in 1937 by Lothar Collatz and remains unproven today, despite being relatively
+easy to explain. Here's a statement of the conjecture:
+
+[collatz]: https://en.wikipedia.org/wiki/Collatz_conjecture
+
+> Start from any positive integer. If the integer is even, divide by 2. If the
+> integer is odd, multiply by 3 and add 1.
+>
+> If the result is not 1, repeat using the result as the new starting value.
+>
+> The result will always reach 1 eventually, regardless of the starting value.
+
+The sequences of numbers this process generates are called **Collatz
+sequences**. For instance, the Collatz sequence starting from 2 is `2, 1`. The
+Collatz sequence starting from 12 is `12, 6, 3, 10, 5, 16, 8, 4, 2, 1`.
+
+You can use iteration to compute the Collatz sequence for a given starting
+value. Since each number in the sequence depends on the previous one, and since
+the length of the sequence varies, a while-loop is the most appropriate
+iteration strategy:
+
+```{r}
+n = 5
+i = 0
+while (n != 1) {
+  i = i + 1
+  if (n %% 2 == 0) {
+    n = n / 2
+  } else {
+    n = 3 * n + 1
+  }
+  message(n, " ", appendLF = FALSE)
+}
+```
+
+As of 2020, scientists have used computers to check the Collatz sequences for
+every number up to approximately $2^{64}$.
+
+
+::: {.callout-note title="See also"}
+For more details about the Collatz Conjecture, check out [this
+video][collatz-video].
+
+[collatz-video]: https://www.youtube.com/watch?v=094y1Z2wpJg
+:::
