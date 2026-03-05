@@ -4,7 +4,9 @@ format:
     df-print: kable
 ---
 
-```{r, echo=FALSE, results=FALSE}
+```{r}
+#| echo: false
+#| output: false
 source("R/ch09.R")
 ```
 
@@ -53,7 +55,7 @@ they can be distinguished by name regardless of which way they're written.
 For example, here's some HTML that uses the `em` (emphasis, usually italic) and
 `strong` (usually bold) tags, as well as the singleton `br` (line break) tag:
 
-```html
+```{.html}
 <em><strong>This text</strong> is emphasized.<br /></em> Not emphasized
 ```
 
@@ -67,7 +69,7 @@ tag name.
 For instance, the HTML `a` (anchor) tag creates a link to the URL provided for
 the `href` attribute:
 
-```html
+```{.html}
 <a href="http://www.google.com/" id="mytag">My Search Engine</a>
 ```
 
@@ -75,7 +77,7 @@ In this case the tag also has a value set for the `id` attribute.
 
 Now let's look at an example of HTML for a complete, albeit simple, web page:
 
-```html
+```{.html}
 <html>
   <head>
     <title>This is the page title!</title>
@@ -122,7 +124,8 @@ automates scraping HTML tables.
 
 The first time you use these packages, you'll have to install them:
 
-```r
+```{r}
+#| eval: false
 install.packages("rvest")
 ```
 
@@ -188,7 +191,7 @@ fortunately there's a better way to find the tags we want.
 
 An HTML document is a tree, similar to the file system on your computer:
 
-```
+```{.none}
 html
 ├── head
 │   └── title
@@ -215,6 +218,7 @@ XPath | Description
 : {.striped .hover}
 
 The rvest function `html_elements` finds all elements at given XPath:
+
 ```{r}
 html_elements(doc, xpath = "/html/body/p")
 ```
@@ -227,11 +231,13 @@ separator means "at any level beneath." It's a useful shortcut when you want to
 find a specific element but don't care where it is.
 
 Let's get all of the `p` elements at any level of the document:
+
 ```{r}
 html_elements(doc, xpath = "//p")
 ```
 
 Let's also get all `a` elements at any level beneath a `p` element:
+
 ```{r}
 html_elements(doc, xpath = "//p/a")
 ```
@@ -240,6 +246,7 @@ The vertical bar `|` means "or." You can use it to get two different sets of
 elements in one query.
 
 Let's get all `h1` or `p` tags:
+
 ```{r}
 html_elements(doc, xpath ="//h1|//p")
 ```
@@ -253,6 +260,7 @@ predicate operator, attributes are always prefixed with `@`.
 
 For example, suppose we want to find all tags where the `id` attribute is equal
 to `"hello"`:
+
 ```{r}
 html_elements(doc, xpath = "//*[@id = 'hello']")
 ```
@@ -373,12 +381,17 @@ California][wiki-cities]. Let's scrape the table to get a data frame.
 [wiki-cities]: https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California
 
 **Step 1** is to download the page:
-```{r wiki_scrape, echo=FALSE, results=FALSE}
+
+```{r wiki_scrape}
+#| echo: false
+#| output: false
 wiki_url =
   "https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California"
 wiki_doc = .read_html_cache(wiki_url)
 ```
-```r
+
+```{r}
+#| eval: false
 wiki_url =
   "https://en.wikipedia.org/wiki/List_of_cities_and_towns_in_California"
 
@@ -480,12 +493,15 @@ larger scraping project where we go on to scrape individual articles.
 First for **Step 1**, let's download the features page so we can extract the
 links:
 
-```{r aggie_features, echo=FALSE, results=FALSE}
+```{r aggie_features}
+#| echo: false
+#| output: false
 url = "https://theaggie.org/category/features/"
 doc = .read_html_cache(url)
 ```
 
-```r
+```{r}
+#| eval: false
 url = "https://theaggie.org/category/features/"
 doc = read_html(url)
 ```
@@ -554,10 +570,14 @@ parse_article_links = function(page) {
 
 We can test this out on the Sports page. First we download the page:
 
-```{r aggie_sports, echo=FALSE, results=FALSE}
+```{r aggie_sports}
+#| echo: false
+#| output: false
 sports = .read_html_cache("https://theaggie.org/category/sports")
 ```
-```r
+
+```{r}
+#| eval: false
 sports = read_html("https://theaggie.org/category/sports")
 ```
 
@@ -611,12 +631,17 @@ Since our function gets URL for the next page, what happens on the last page?
 Looking at the last page in the browser, there is no link to the next page.
 Let's see what our scraper function does:
 
-```{r aggie_last, echo=FALSE, results=FALSE}
+```{r aggie_last}
+#| echo: false
+#| output: false
 last_page = .read_html_cache("https://theaggie.org/category/features/page/187/")
 ```
-```r
+
+```{r}
+#| eval: false
 last_page = read_html("https://theaggie.org/category/features/page/187/")
 ```
+
 ```{r}
 parse_article_links(last_page)
 ```
@@ -655,7 +680,8 @@ Now our function should work well even on the last page.
 If we want to scrape links to all of the articles in the features section, we
 can use our function in a loop:
 
-```r
+```{r}
+#| eval: false
 # NOTE: This code is likely to take a while to run, and is meant more for
 # reading than for you to run and try out.
 
