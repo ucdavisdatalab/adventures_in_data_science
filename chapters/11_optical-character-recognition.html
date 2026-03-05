@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>32&nbsp; Optical Character Recognition – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/12_statistics.html" rel="next">
+<link href="../chapters/week10/making-git-comfortable.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-19b5e973626355a97465437b783fde54.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+.callout.callout-style-default .callout-body {
+  padding: 0 1.5rem 0;
+}
+.cell-output-stdout {
+  overflow-y: scroll;
+  max-height: 30rem;
+  margin-bottom: 0.75rem;
+}
+</style>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/11_optical-character-recognition.html">Special Topics</a></li><li class="breadcrumb-item"><a href="../chapters/11_optical-character-recognition.html"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/required-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Required Software</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week01/research-lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Research Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week01/interacting-with-computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interacting with Computers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week01/browsing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Browsing Files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week01/other-commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Going Beyond Browsing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week01/editing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Editing Files</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week02/how-ai-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">How AI Works</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week02/version-control-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Version Control Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week02/git-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Git Basics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week02/remote-repositories.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Remote Repositories</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week02/the-git-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Git Workflow</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week02/intro-to-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week03/intro-to-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week03/data-types.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week04/packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week04/indexing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Indexing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week04/data-forensics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week04/aggregation-grouping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Aggregation &amp; Grouping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week05/data-visualization-principles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week05/intro-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Introduction to <code>ggplot2</code></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week06/date-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Dates &amp; Times</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week06/reshaping-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reshaping Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 7</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week07/data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week07/string-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Strings &amp; Regular Expressions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week07/getting-data-from-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 8</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week08/writing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Writing Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week08/control-flow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Control Flow</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 9</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week09/web-scraping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Web Scraping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 10</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week10/collaboration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Collaboration in Data-Driven Work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week10/branches-merges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Branches &amp; Merges</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week10/working-with-github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Working with GitHub</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/week10/making-git-comfortable.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Making Git Comfortable</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Special Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/11_optical-character-recognition.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/12_statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/13_reshaping-tabular-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Reshaping Tabular Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/14_network-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Network Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/15_natural-language-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/16_geospatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Geospatial Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#what-is-optical-character-recognition" id="toc-what-is-optical-character-recognition" class="nav-link active" data-scroll-target="#what-is-optical-character-recognition"><span class="header-section-number">32.1</span> What is Optical Character Recognition?</a></li>
+  <li><a href="#loading-page-images" id="toc-loading-page-images" class="nav-link" data-scroll-target="#loading-page-images"><span class="header-section-number">32.2</span> Loading Page Images</a></li>
+  <li><a href="#running-ocr" id="toc-running-ocr" class="nav-link" data-scroll-target="#running-ocr"><span class="header-section-number">32.3</span> Running OCR</a></li>
+  <li><a href="#accuracy" id="toc-accuracy" class="nav-link" data-scroll-target="#accuracy"><span class="header-section-number">32.4</span> Accuracy</a></li>
+  <li><a href="#unreadable-text" id="toc-unreadable-text" class="nav-link" data-scroll-target="#unreadable-text"><span class="header-section-number">32.5</span> Unreadable Text</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/11_optical-character-recognition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/11_optical-character-recognition.html">Special Topics</a></li><li class="breadcrumb-item"><a href="../chapters/11_optical-character-recognition.html"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This lesson focuses on extracting data from non-digital sources, such as printed documents, using several packages for optical character recognition (OCR).</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Explain what OCR is and how it “reads”</li>
+<li>Explain how OCR is used</li>
+<li>Differentiate between how <code>print</code> and <code>message</code> represent formatting</li>
+<li>Describe different strategies for improving OCR accuracy</li>
+</ul>
+</div>
+</div>
+</div>
+<section id="what-is-optical-character-recognition" class="level2" data-number="32.1">
+<h2 data-number="32.1" class="anchored" data-anchor-id="what-is-optical-character-recognition"><span class="header-section-number">32.1</span> What is Optical Character Recognition?</h2>
+<p>Much of the data we’ve used in the course thus far has been <strong>born-digital</strong>. That is, we’ve used data that originates from a digital source and does not exist elsewhere in some other form. Think back, for example, to the lecture on strings in R (<span class="quarto-unresolved-ref">?sec-strings-and-regular-expressions</span>): your homework required you to type text directly into RStudio, manipulate it, and print it to screen. But millions, even billions, of data-rich documents do not originate from digital sources. The United States Census, for example, dates back to 1790; we still have these records and could go study them to get a sense of what the population was like hundreds of years ago. Likewise, printing and publishing far precedes the advent of computers; much of the literary record is still bound up between the covers books or stowed away in archives. Computers, however, can’t read the way we read, so if we wanted to use digital methods to analyze such materials, we’d need to convert them into a computationally tractable form. How do we do so?</p>
+<p>One way would be to transcribe documents by hand, either by typing out <strong>plain text</strong> versions with word processing software or by using other data entry methods like keypunching to record the information those documents contain. Amazon’s Mechanical Turk service is an example of this kind of data entry. It’s also worth noting that, for much of the history of computing, data entry was highly gendered and considered to be “dumb”, secretarial work that young women would perform. Much of the divisions between “cool” coding and computational grunt work that, in a broad, cultural sense, continue to inform how we think about programming, and indeed who gets to program, stem from such perceptions. In spite of (or perhaps because of) such perceptions, huge amounts of data owe their existence to manual data entry. That said, the process itself is expensive, time consuming, error-prone, and, well, dull.</p>
+<p><strong>Optical character recognition</strong>, or OCR, is an attempt to offload the work of digitization onto computers. Speaking in a general sense, this process ingests images of print pages (such as those available on <a href="https://books.google.com/">Google Books</a> or <a href="https://www.hathitrust.org/">HathiTrust</a>), applies various <strong>preprocessing</strong> procedures to those images to make them a bit easier to read, and then scans through them, trying to match the features it finds with a “vocabulary” of text elements it keeps as a point of reference. When it makes a match, OCR records a character and enters it into a <strong>text buffer</strong> (a temporary data store). Oftentimes this buffer also includes formatting data for spaces, new lines, paragraphs, and so on. When OCR is finished, it outputs its matches as a data object, which you can then further manipulate or analyze using other code.</p>
+</section>
+<section id="loading-page-images" class="level2" data-number="32.2">
+<h2 data-number="32.2" class="anchored" data-anchor-id="loading-page-images"><span class="header-section-number">32.2</span> Loading Page Images</h2>
+<p>OCR “reads” by tracking pixel variations across page images. This means every page you want to digitize must be converted into an image format. For the purposes of introducing you to OCR, we won’t go through the process of creating these images from scratch; instead, we’ll be using ready-made examples. The most common page image formats you’ll encounter are PDF and PNG. They’re lightweight, portable, and usually retain the image quality OCR software needs to find text.</p>
+<p>The pdftools package is good for working with these files:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pdftools")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"pdftools"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Once you’ve downloaded/installed it, you can load a PDF into RStudio from your computer by entering its path as a string and assigning that string to a variable, like so:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="st">"data/pdf_sample.pdf"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Note that we haven’t used a special reater function, like <code>read.csv</code> or <code>readRDS</code>. The pdftools package will grab this file from its location and load it properly when you run a process on it.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can also just write the string out in whatever function you want to call, but we’ll keep our <code>pdf</code> variable for the sake of clarity.</p>
+</div>
+</div>
+<p>The same method works with web addresses. We’ll be using web material. First, write out an address and assign it to a variable.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pdf <span class="ot">&lt;-</span> <span class="st">"https://datalab.ucdavis.edu/adventures-in-datascience/pdf_sample.pdf"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Some PDF files will have text data already encoded into them. This is especially the case if someone made a file with word processing software (like when you write a paper in Word and email a PDF to your TA or professor). You can check whether a PDF has text data with the <code>pdf_text</code> function. Assign the function’s output to a variable and print it to screen with <code>message</code>, like so:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>text_data <span class="ot">&lt;-</span> <span class="fu">pdf_text</span>(pdf)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(text_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+
+
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+
+                                             The quick brown fox jumps over the lazy dog.
+                                             The quick brown fox jumps over the lazy dog.
+                                             The quick brown fox jumps over the lazy dog.
+                                             The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+
+                       The quick brown fox jumps over the lazy dog.
+                       The quick brown fox jumps over the lazy dog.
+                       The quick brown fox jumps over the lazy dog.
+                       The quick brown fox jumps over the lazy dog.
+                       The quick brown fox jumps over the lazy dog.
+
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog.
+
+                                               The quick brown fox jumps over the lazy dog.
+                                               The quick brown fox jumps over the lazy dog.
+                                               The quick brown fox jumps over the lazy dog.
+                                               The quick brown fox jumps over the lazy dog.
+
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+
+                       The quick brown fox jumps over the lazy dog.
+                       The quick brown fox jumps over the lazy dog.
+                       The quick brown fox jumps over the lazy dog.
+                       The quick brown fox jumps over the lazy dog.</code></pre>
+</div>
+</div>
+<p>Notice the printout recreates the original formatting from the PDF. If you were to use the <code>print</code> function on the text output, you’d see all the line breaks and spaces <code>pdf_text</code> created to match its output with the file. This re-creation would be even more apparent if you were to save the output to a new file with <code>write</code>. Doing so would produce a close, plain text approximation of the original PDF.</p>
+<p>You can also process multi-page PDF files with <code>pdf_text</code>. It can transcribe whole books and will keep them in a single text buffer, which you can then assign to a variable or save to a file. Keep in mind, however, that if your PDF files have headers, footers, page numbers, chapter breaks, or other such paratextual information, <code>pdf_text</code> will include these in its output.</p>
+<p>If, when you run <code>pdf_text</code>, you find that your file already contains text data, you’re set! There’s no need to perform OCR and you can immediately start working with your data. However, if you run the function and find that it outputs a blank character string, you’ll need to OCR it. The next section shows you how.</p>
+</section>
+<section id="running-ocr" class="level2" data-number="32.3">
+<h2 data-number="32.3" class="anchored" data-anchor-id="running-ocr"><span class="header-section-number">32.3</span> Running OCR</h2>
+<p>First, you’ll need to download/install another package, tesseract, which complements pdftools. The latter only loads/reads PDFs, whereas tesseract actually performs OCR. Download/install tesseract:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tesseract")</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"tesseract"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s use a different PDF to try out tesseract:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>new_pdf <span class="ot">&lt;-</span> <span class="st">"https://jeroen.github.io/images/ocrscan.pdf"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To run OCR on this PDF, use the following:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(new_pdf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Print the output to screen with <code>message</code> and see if the process worked:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(ocr_output)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>THE SLEREXE COMPANY LIMITED
+SAPORS LANE - BOOLE - DORSET - BH 25 8ER
+e sous (4513) 617 - Tk 12345
+Our Ref. 350/BIC/EAC 186 Janvary, 1972.
+De. PN, Cundall,
+Kining Surveys Lid.,
+Holroyd Road,
+Reading,
+Berks.
+Dear Pece,
+
+Pernit ne to introduce you to the facility of facsinile
+transmission.
+
+In facainile a photocell is coused to perforn a raster scan over
+the subject copy. The varistions of princ density on the docunent
+cause the photecell o generate an analogous electrical video signal.
+This signal is used to mdulate a carrier, vhich is cransmitted to o
+cemote destination over &amp; radio or cable commnications link.
+
+¢ the remote cerminal, demodulation reconstructs the video
+signal, which is used to modulate the density of print produced by @
+printing device. Tnis device is scanning in 4 raster scan synchronised
+Uich that at the cransmitring terminal. As &amp; result, a facsimile
+copy of the subject document is produced.
+
+Probably you have uees for this facility in your organisation.
+
+Yours sincerely,
+P.J. cross
+Group Leader - Facsinile Research</code></pre>
+</div>
+</div>
+<p>Voila! You’ve just digitized text. The formatting is a little off, but things look good overall. And most importantly, it looks like everything has been transcribed correctly.</p>
+<p>As you ran this process, you might’ve noticed that a new PNG file briefly appeared on your computer. This is because tesseract converts the PDF file to PNG file as part of its behind-the-scenes pre-processing work and silently deletes the PNG file when it finishes running. If you have a collection of PDF files that you’d like to OCR, it can sometimes be faster and less memory intensive to convert them all to PNG files first. You can perform this conversion like so:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  new_pdf, <span class="at">format =</span> <span class="st">"png"</span>, <span class="at">filenames =</span> <span class="st">"images/ch11/png_example.png"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in sprintf(filenames, pages, format): 2 arguments not used by format
+'images/ch11/png_example.png'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Converting page 1 to images/ch11/png_example.png... done!</code></pre>
+</div>
+</div>
+<p>In addition to returning the a PNG object in your R session, the <code>pdf_convert</code> function will also save the file in your working directory. You could, for example, use a for-loop and a vector of paths to PDF files to convert all of them to PNG files. Since <code>pdf_convert</code> saves them to disk, they can be stored until you’re ready to OCR them.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pdfs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"list.pdf"</span>, <span class="st">"of.pdf"</span>, <span class="st">"files.pdf"</span>, <span class="st">"to.pdf"</span>, <span class="st">"convert.pdf"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>outfiles <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"list.png"</span>, <span class="st">"of.png"</span>, <span class="st">"files.png"</span>, <span class="st">"to.png"</span>, <span class="st">"convert.png"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(pdfs)) {</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pdf_convert</span>(pdfs[i], <span class="at">format=</span><span class="st">"png"</span>, <span class="at">filenames=</span>outfiles[i])</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>ocr</code> function works with a number of different file types (typically images). For instance, it accepts PNGs as well as PDFs:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>png_ocr_output <span class="ot">&lt;-</span> <span class="fu">ocr</span>(png)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="accuracy" class="level2" data-number="32.4">
+<h2 data-number="32.4" class="anchored" data-anchor-id="accuracy"><span class="header-section-number">32.4</span> Accuracy</h2>
+<p>If you use <code>message</code> to print the output from OCRing the PNG file in the example above, you might notice that the text is messier than it was when we used <code>pdf_text_ocr</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(png_ocr_output)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>THE SLEREXE COMPANY LIMITED
+SAPORS LANE - BOOLE - DORSET - BH 25 8ER
+e sous (4513) 617 - Tk 12345
+Our Ref. 350/BIC/EAC 186 Janvary, 1972.
+De. PN, Cundall,
+Kining Surveys Lid.,
+Holroyd Road,
+Reading,
+Berks.
+Dear Pece,
+
+Pernit ne to introduce you to the facility of facsinile
+transmission.
+
+In facainile a photocell is coused to perforn a raster scan over
+the subject copy. The varistions of princ density on the docunent
+cause the photecell o generate an analogous electrical video signal.
+This signal is used to mdulate a carrier, vhich is cransmitted to o
+cemote destination over &amp; radio or cable commnications link.
+
+¢ the remote cerminal, demodulation reconstructs the video
+signal, which is used to modulate the density of print produced by @
+printing device. Tnis device is scanning in 4 raster scan synchronised
+Uich that at the cransmitring terminal. As &amp; result, a facsimile
+copy of the subject document is produced.
+
+Probably you have uees for this facility in your organisation.
+
+Yours sincerely,
+P.J. cross
+Group Leader - Facsinile Research</code></pre>
+</div>
+</div>
+<p>This doesn’t have to do with the PNG file format per se but rather with the way we created our file. If you open it, you’ll see that it’s quite blurry, which has made it harder for <code>ocr</code> to match the text it represents:</p>
+<div id="fig-blurry-page" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-blurry-page-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../images/ch11/blurry_page_image.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-blurry-page-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;32.1
+</figcaption>
+</figure>
+</div>
+<p>This blurriness is because <code>pdf_convert</code> defaults to 72 dots per inch (DPI). <strong>DPI</strong> is a measure of how many pixels, or <em>dots</em>, a digital image file uses to represent an inch of the image. DPI quantifies resolution and originated in inkjet printing. More pixels means higher image resolution, though this comes with a trade off: images with a high DPI are also bigger and take up more space on your computer. Usually, a DPI of 150 is sufficient for most OCR jobs, especially if your documents were printed with technologies like typewriters, dot matrix printers, and so on, and if they feature fairly legible typefaces (Times New Roman, for example). A DPI of 300, however, is ideal. You can set the DPI in <code>pdf_convert</code> by adding a <code>dpi</code> argument in the call:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>hi_res_png <span class="ot">&lt;-</span> <span class="fu">pdf_convert</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  new_pdf, <span class="at">format=</span><span class="st">"png"</span>, <span class="at">dpi=</span><span class="dv">150</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">filenames=</span><span class="st">"images/ch11/hi_res_png_example.png"</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in sprintf(filenames, pages, format): 2 arguments not used by format
+'images/ch11/hi_res_png_example.png'</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Converting page 1 to images/ch11/hi_res_png_example.png... done!</code></pre>
+</div>
+</div>
+<p>Another function, <code>ocr_data</code>, outputs a data frame that contains all of the words tesseract found when it scanned through your image, along with a column of <strong>confidence scores</strong>. These scores, which range from 0-100, provide valuable information about how well the OCR process has performed, which in turn may tell you whether you need to modify your PDF or PNG files further before OCRing them (more on this below). Generally, you can trust scores of 93 and above.</p>
+<p>To get confidence scores for an OCR job, call <code>ocr_data</code> and subset the <code>confidence</code> column, like so:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ocr_data <span class="ot">&lt;-</span> <span class="fu">ocr_data</span>(hi_res_png)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>confidence_scores <span class="ot">&lt;-</span> ocr_data<span class="sc">$</span>confidence</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>confidence_scores</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 92.00555 92.16185 91.26955 91.26955 93.30071 92.80251 93.25327 71.22106
+  [9] 93.01385 87.86584 89.25087 89.25087 39.46595 39.46595 96.18760 92.64400
+ [17] 88.31395 96.62357 91.38167 88.73389 88.73389 87.54987 87.54987 92.04705
+ [25] 89.52077 91.29449 90.80710 92.46021 92.75455 89.72379 92.27145 92.01097
+ [33] 91.00894 89.22992 91.89604 91.02854 92.30912 90.34227 90.34227 91.70280
+ [41] 92.35736 91.17986 91.17986 92.30919 89.62785 82.76822 40.42221 91.66215
+ [49] 91.92680 93.24316 90.77785 90.77785 91.95331 91.95331 92.47021 93.19882
+ [57] 91.73550 91.52353 91.88087 61.49971 91.50322 92.83280 88.38924 88.38924
+ [65] 92.01638 92.67615 91.98049 43.38534 90.48783 92.81612 92.41699 91.47611
+ [73] 91.84003 91.84003 92.20630 86.01997 91.97392 92.16437 91.10802 92.11120
+ [81] 89.69808 92.23833 92.46779 91.11872 91.73578 91.94142 91.98083 92.07896
+ [89] 92.07896 92.64109 91.36734 91.36734 91.05901 92.81266 92.59015 91.31464
+ [97] 90.42278 90.42278 92.18396 92.17403 92.28313 91.59138 90.33145 92.01377
+[105] 92.01377 91.19365 91.39406 91.58421 79.49812 91.90497 91.70367 91.50892
+[113] 92.86395 93.07679 91.78714 92.10359 92.12737 91.94938 89.91416 91.05914
+[121] 92.03944 93.12405 93.26999 93.26999 92.23213 90.81768 70.74520 92.39217
+[129] 89.55022 86.20355 89.34053 88.06285 92.31555 93.13564 92.01375 91.13263
+[137] 91.13263 92.17674 92.80893 91.49842 90.36536 90.36536 91.31169 92.65086
+[145] 92.95564 91.97475 91.96663 91.11794 91.92394 91.60635 91.32370 91.32370
+[153] 91.62907 93.08089 92.95688 92.60538 92.07363 91.69480 92.84332 92.31062
+[161] 91.96275 91.96792 91.56029 91.68050 92.09031 84.39836 88.10213 92.19061
+[169] 92.44096 93.29742 92.41998 91.57234 84.95621 85.53573 85.33029 91.52122
+[177] 96.01897 88.61853 82.43198 89.51816 77.73746 76.97222 71.24612 58.29185
+[185] 66.72427 46.87411</code></pre>
+</div>
+</div>
+<p>The mean is a good indicator of the overall OCR quality:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>confidence_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(confidence_scores)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>confidence_mean</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 88.93843</code></pre>
+</div>
+</div>
+<p>Looks pretty good, though there were a few low scores that dragged the score down a bit. Let’s look at the median:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>confidence_median <span class="ot">&lt;-</span> <span class="fu">median</span>(confidence_scores)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>confidence_median</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 91.68765</code></pre>
+</div>
+</div>
+<p>We can work with that!</p>
+<p>If we want to check our output a bit more closely, we can do two things. First, we can look directly at <code>ocr_data</code> and compare, row by row, a given word and its confidence score.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_data, <span class="dv">25</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          word confidence              bbox
+1       SAPORS   92.00555   422,194,497,208
+2         LANE   92.16185   508,194,560,208
+3            -   91.26955   570,203,575,205
+4        BOOLE   91.26955   585,193,651,208
+5            -   93.30071   661,202,666,205
+6       DORSET   92.80251   676,193,755,208
+7            -   93.25327   764,203,769,205
+8         BH25   71.22106   780,193,831,208
+9            8   93.01385   842,193,850,208
+10          ER   87.86584   856,194,883,208
+11   TELEPHONE   89.25087   449,232,534,243
+12       BOOLE   89.25087   544,232,589,243
+13        (945   39.46595   600,229,634,246
+14         13)   39.46595   640,229,664,246
+15       51617   96.18760   675,229,719,244
+16           -   92.64400   730,237,735,240
+17       TELEX   88.31395   746,232,792,243
+18      123456   96.62357   804,228,857,244
+19         Our   91.38167   211,392,246,408
+20        Ref.   88.73389   261,391,306,407
+21 350/PJC/EAC   88.73389   325,389,459,409
+22        18th   87.54987   863,389,910,405
+23    January,   87.54987  924,389,1020,408
+24       1972.   92.04705 1038,388,1095,405
+25         Dr.   89.52077   212,492,244,508</code></pre>
+</div>
+</div>
+<p>That’s a lot of information though. Something a little more sparse might be better. We can use base R’s <code>table</code> function to count the number of times unique words appear in the OCR data. We do this with the <code>word</code> column in our <code>ocr_data</code> variable from above:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">table</span>(ocr_data<span class="sc">$</span>word)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>ocr_vocabulary <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(ocr_vocabulary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Let’s look at the first 30 words:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ocr_vocabulary, <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Var1 Freq
+1               -    5
+2               .    1
+3            (945    1
+4               1    1
+5          123456    1
+6             13)    1
+7            18th    1
+8           1972.    1
+9            2038    1
+10    350/PJC/EAC    1
+11          51617    1
+12              8    1
+13             80    1
+14              a    9
+15             an    1
+16      analogous    1
+17             As    1
+18             at    1
+19             At    1
+20         Berks.    1
+21           BH25    1
+22          BOOLE    2
+23             by    1
+24          cable    1
+25       carrier,    1
+26          cause    1
+27         caused    1
+28 communications    1
+29           copy    1
+30          copy.    1</code></pre>
+</div>
+</div>
+<p>This representation makes it easy to spot errors like discrepancies in spelling. We could correct those either manually or with string matching. One way to further examine this table is to look for words that only appear once or twice in the output; among such entries you’ll often find misspellings. The table does, however, have its limitations. Looking at this data can quickly become overwhelming if you send in too much text. Additionally, notice that punctuation “sticks” to words and that uppercase and lowercase variants of words are counted separately, rather than together. These quirks are fine, useful even, if we’re just spot-checking for errors, but we’d need to further clean this data if we wanted to use it in computational text analysis. A later lecture will discuss other methods that we can use to clean text.</p>
+<p>When working in a data-forensic mode with page images, it’s a good idea to pull a few files at random and run them through <code>ocr_data</code> to see what you’re working with. OCR accuracy is often wholly reliant on the quality of the page images, and most of the work that goes into digitizing text involves properly preparing those images for OCR. Adjustments include making sure images are converted to black and white, increasing image contrast and brightness, increasing DPI, and rotating images so that their text is more or less horizontal. The tesseract package performs some of these tasks itself, but you can also do them ahead of time and often you’ll have more control over quality this way. The tesseract documentation goes into detail about what you can do to improve accuracy before even opening R; we can’t cover this in depth, but keep the resource in mind as you work with this type of material. And remember: the only way to completely trust your accuracy is to go through the OCR output yourself. It’s a very common thing to have to make small tweaks to output. In this sense, we haven’t quite left the era of hand transcription.</p>
+</section>
+<section id="unreadable-text" class="level2" data-number="32.5">
+<h2 data-number="32.5" class="anchored" data-anchor-id="unreadable-text"><span class="header-section-number">32.5</span> Unreadable Text</h2>
+<p>All that said, these various strategies for improving accuracy will only get you so far if your page images are composed in a way OCR just can’t read. OCR systems contain a lot of in-built assumptions about what “normal” text is, and they are incredibly brittle when they encounter text that diverges from that norm. Early systems, for example, required documents to be printed with special, machine-readable typefaces; texts that contained anything other than this design couldn’t be read. Now, OCR is much better at handling a variety of text styling, but systems still struggle with old print materials like <strong>blackletter</strong>.</p>
+<div id="fig-blackletter" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-blackletter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../images/ch11/blackletter_example.jpg" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-blackletter-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;32.2
+</figcaption>
+</figure>
+</div>
+<p>Running:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ballad <span class="ot">&lt;-</span> <span class="st">"https://ebba.english.ucsb.edu/images/cache/hunt_1_18305_2448x2448.jpg"</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>ballad_out <span class="ot">&lt;-</span> <span class="fu">ocr</span>(ballad)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Produces:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(ballad_out)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>- @€ QADdifcriptionof Roxtons faleehod ’
+afPozkie byze, and of hig fatall favewel.
+fLhe fatal fineof Lraitours loes ;
+% 4Bp Fufice due, deferupngfoe. - 1
+T Iate (alas) the great bntrath  Ehe Crane wwoldefipebptothe punte,  Roto, bis futerpug long (be fure) o
+Df Traitours, hoto (£ fped g heardit once of olve s _ @diplipay bis foes atlaf: : ,
+T boliff to knoin, Hal berez.wae Sndwoith the Lpng of bpaoes did frine Pig mercpe moued once atwap, |
+Potv late allegeance fev, 1Bp Fame, 3 beardittolves = Pe Hall them &amp;uigbt out caff i
+« 3f Reucrsrage agamnit the Hea. GAnddofvoeihe welve not fal benoy aaith fentence infk fo2 theit butruth, .
+And ffwell Wwith oddeine rapnes 1But higher Epld nipMOUAL 2 and bacakpng of his fwpll s :
+Potu glao are they to fall agapne, ST il pait her teach((aithoroevepote) £Lhe fruits oftheir fedicfous (s, :
+Andtracetheic onted traine? Shame madea backevecour SChebarnes of cavth thail fpll.
+8l 36 five by fozce Wwolde fozge the fall 3 touch no Grmes herefn atall, TCheir foules God wot foze clogd 1 crime
+Df any fumptuoule place, AButfhetna fable fopfes __ Qnd theirpofteritie
+B 36 water flods byd bim leaueof, T hofemozall fence doth repr 4Befpotted foze With theirabule,
+s flames he wyll difgrace, DEclpmers bye theguple. Ano fEand by theit follie.
+| 3t Goo command the Wwpides to ceafe, Tuho buploes a houle of many 5 heiclinpngs left theiv namea hante,
+i is blaffes ave lapd full lotu ¢ anbdlaith not ground Wogkr heir dedes ith poplon fped: :
+i 3fBod command the feas focalme, 4Butdoth ertotethe groundk i3&gt;  Theivdeathesawage foz wantof grace §
+: 2Chey wyll notrage 02 flolu. Pis bufldpng can notdure. SCheir honours quite is dead.
+4 Gl thinges at Gods commandemet be, @ TWhofekes furmifingtodilp SCheir flefh tofedethe kptes and crolues |
+3f betheir fateregarde s : a Ruler fentbp GOD 2 ACheir arnies a mase foa men s b
+Hl andnoman liues whole veffinie 35 fubiect fure, Deuoide of grace. Cheir guerdon as examples are ¥
+1By hum i8 bupzeparde. Checauleof his otonerod. 2Co dafh dolte Dunces den.
+{15t when a man foxfakes theip, - Q byve that Wyl hernefEdefple SChaotn bp pout fouts pou Auggifh foxte  §
+8 - anorowlesin allowing Wwaues 1By vight Hould lofe a wyngs 3 oumumming malkyng route : -;
+And of bis boluntarfe wyll, Gud then is e no fying fo Wi CErtoll your erclamations bp, g
+! Bis onite god hap depraues 1But ot agother thyng. ABaals chapletnes,champions ffoute,
+i Wow fal hehopeto lcape the gulfe 2 anbhe that lofeth all at games, Datke fute fo2 pardons, papilts braue,
+: Bot Hal be thinke todeale 2 D3 fpendes infoiole ercefle: Foztraitours indulgence
+. 1o Mal bis fanfie baing him lound Qnbhopes by hapsto bealehisharme, . fend ot fome purgatosic (craps, i
+£ 4T o @afties MHoze Wwith laple 2 Mufk vzinke of deare piffrefle, Some WBulls tuith Peter pence.
+; Botv hall is fratght in fine (uccede 2 o fpeatie of bapdles fovelirapne D fwavime of D2ones, how dare pefipl |
+4 Qlas what Hall hegapne 2 Trhis wylfull wapardereive $ Twith labourpng Wees contend
+| wubatfeare by oams Do matke bimquake hey cave not foz the boke of Gov, Pou fonght fo2honie from thehiues, v
+i Hotw ofte [ubleceto papne 2 1o P2inces, men bntrue. 1B ut gall you foundinend. b
+ot funozie times in Dangers ven o cuntepe, caufers of much woe, SChefe tafpes oo Wwafk, their fings beont &amp;
+33 thootone theman bnivple 2 ﬁts'i‘faitbfull frdendes, afall: heir fpight topll nofanaple: i
+8l @uhoclimes Withouten bolde ot bye, b ftheiv otone effates, afipng, ZChefle Peacocks pronvearenaked lefee [
+= ABewware, 3 hint aduise. T 5 others, avpeasgall. DF theiv difplayed taple. h
+8 Qllfuch as teatt to falle confrads, D 1Loz0e, hotu long thefe Liserdsluvke, Chele Lurkpe cocks fu cullourred,
+3 D2 feseet harmes confpive? BGos GO D, holv greata fuhple _ Holong banelurkt alofe &amp;
+{ 15¢(ure, with Hoxtonsithey hal taffe  Wlere thepin hand with fefgnedbarts  Ehe WBeare (althongh but fot of fwote) "
+Q right deferucd bire, heir cuntrye to defple? Path pluct bis wynges by piofe,
+&amp; Thep can not loke foz better (pede, oto did thep frame their turniture?  SCbe Mone ber bozowenlighthath loff, [
+Do death foz (uch to fell 7 Poiv fitthey mave theirtoles : Sbe wapnedas wele
+&amp; Godgrantthe futticeof the Wozive Poiw Hymon feught our englplh Trofe  TWhohoped by bap of othersharnes, 4
+Put by the papnes of bell, o bapng to Romaine feoles. 4 full Poneonce tobie,
+i oz fuchapentiuccale it is, Potu Himon Pagus playd bis parte, 4The Lpon (uffred long the Wull,
+: TChat Cnglifh barts diddare 39t 1Babilon balvoe dibrage: 1is noble mpnd totrye:
+&amp; 700 palle the boundes of dutieslatve, Potw WBafan bulles begon to bell, Wntpll the 1Bull Wwas rageypng wod, :
+: D3 of their cuntriecare. Hofu Judas fought bis wage. dndfrombisfakedid hye. 3
+i dnomerciehath (o longreleal 13oin Jannes and Jambzes 0id abyde fChen time it was to bid him Fap
+] Dfenvours (God doth knofv) TChe baunt of baaineficke ads, Perfozce, bishomestocut
+i andbountic of our curteous Nuécne Yot Dathan, Choze, Abivam (md Andmake him leauebis rageing tunes ¢
+S T long hath fpared her foe. o dath out Poyples faas. 3In(cilence to be put. £
+b 1But Gov, Wwhofegrace fpiresherharte, ol Romaine marchant feta frefh Andall the calues of WBalan kynd i
+i AW pll not abyoethe fpight g pardons baauea fale, Are weaned from their Wwifh s i
+i Df RAebels rage, Wwho rampets veach Potw aliapes fomeagain( the aenty  ELheBivcan Tigers tanmed notn, 0
+i Fromber, hee title quight. Tioloe dzeame afencelestale.  dlemathon eatesnofifh). i
+B4 Qithough e dotwe inpititull seale, BGos bicar frombis god receaucd 4Beholoe befoze pour balefull epes
+And loueth to fucke noblod 3 Che kepes to lofeand bpnds Lhepurchace of pour pacte,
+i1 ¢t Gona caueat topll her lend 4Baals chaplein thoght he fire wolk ™ 1o SHutuey pour fodefneforolful fight
+I appealethole Wipers mode, Huch was his pagan mynd. i ith fighes of dubble harte,
+B q man that (s bis bouleon fire, Gob 1Lozve hotn bits the tert theie ts  Lament thelackeof pouralies i
+vl feke to quench the flame : TThat faith fuch men thall bé  Religiousrebellgalls 5
+it Clsfrom thefpoylefomepacteconuey, Futheic reltgﬂonbo;no;tnlhz ABetuepethat pll fuccele of pours, b
+C1s feke the heate to tame, D much bavietie. Come curfe pour (odeine fall, G
+R wnho (@ea penthoule wether beate, and fund2p (02tsof fects furk nd Wben pe hauc pour guiles out fought
+| And heares a boiftroule fopndes iuifion Mall appeare &lt; And all your craft appzoued,
+il s3utheoefull fafetic of himlelte, dgaintE thefatber; fonnefhe  ue, Peccanimus Hall be your fong .
+T pll foace him fuccour fynde 2 Gaint mother, daughter 2 Pour ground wozke is renoued,
+AChepitifull pacient Pellican, 9 it not come to pafe trofy pra? QAud lokehotv Poztons (ped their wills
+; Per blod although Hee Hed e ea, baftards furethey bees €uen (o thetr fee MHall haue, e
+il 3oct Wopll (hee femeber dateto end, qrho our gwd mother Nuane o, . 4 o better et thenthope to gapne e
+!‘ n ﬂbzcarle hﬁzwnung befped. b m(lgthtzang rzbelllnu?xz.g ol 15ut gallotwes without graue, :
+i1 he Cagle fipnges ber yong ones dotone Lan o0 bis bengeance long etais ey 3
+it what ﬁfght lnf fg]nne vefule 2 mbell;z})is e (pruants ficle CEINTS léha ibl'nn. L
+8l Wnperfed foiles (e deadly hates, Fniuvfoule (pights of godlelemeit, @Xg * i
+. Anv rightlp fuch mirble, \ wuhe turne as doth &amp; Whele2 A 0 @‘@ @A@ 2
+£ » it
+¢ @ Tmp2inted at London by Fleyandet Lacfe, foz Hentrie Tipskeham, divellyng at the figne
+o o of the blacke 3Bope, at themivdle {po2th Doze of Paules chuveh, 2 :</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>By the way, this example used a JPG file. The <code>ocr</code> function can handle those too!</p>
+</div>
+</div>
+<p>Even though every page is an “image” to OCR, OCR struggles with imagistic or unconventional page layouts, as well as inset graphics. Add to that sub-par scans of archival documents, as in the newspaper page below, and the output will contain way more errors than correct matches.</p>
+<div id="fig-chronicling-america" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-chronicling-america-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../images/ch11/chronicling_america_example.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-chronicling-america-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;32.3
+</figcaption>
+</figure>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>newspaper <span class="ot">&lt;-</span> <span class="st">"https://chroniclingamerica.loc.gov/data/batches/mimtptc_inkster_ver01/data/sn88063294/00340589130/1945120201/0599.pdf"</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>newspaper_ocr <span class="ot">&lt;-</span> <span class="fu">ocr</span>(newspaper)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Beautifully messy output results:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">message</span>(newspaper_ocr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+</div>
+<p>One strategy you might use to work with sources like this is to crop out everything you don’t want to OCR. This would be especially effective if, for example, you had a newspaper column that always appeared in the top left-hand corner of the page. You could preprocess your page images so that they only showed that part of the newspaper and left out any ads, images, or extra text. Doing so would likely increase the quality of your OCR output. Such a strategy can be achieved outside of R with software ranging from Adobe Photoshop or the open-source GIMP to Apple’s Automator workflows. Within R, packages like tabulizer and magick enable this. You won’t, however, be required to use these tools in the course, though we may have a chance to demonstrate some of them during lecture.</p>
+<p>There are several other scenarios where OCR might not be able to read text. Two final (and major) ones are worth highlighting. First, for a long time OCR support for non-alphabetic writing systems was all but nonexistent. New datasets have been released in recent years that mostly rectify these absences, but sometimes support remains spotty and your mileage may vary. Second, OCR continues to struggle with handwriting. While it is possible to train unsupervised learning processes on datasets of handwriting and get good results, as of yet there is no general purpose method for OCRing handwritten texts. The various ways people write just don’t conform to the standardized methods of printing that enable computers to recognize text in images. If, someday, you figure out a solution for this, you’ll have solved one of the most challenging problems in computer vision and pattern recognition to date!</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/week10/making-git-comfortable.html" class="pagination-link" aria-label="Making Git Comfortable">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Making Git Comfortable</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/12_statistics.html" class="pagination-link" aria-label="Statistics">
+        <span class="nav-page-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Statistics</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/11_optical-character-recognition.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>

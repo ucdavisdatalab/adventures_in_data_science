@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>13&nbsp; Data Types – Adventures in Data Science</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../chapters/week04/packages.html" rel="next">
+<link href="../../chapters/week03/intro-to-r.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-19b5e973626355a97465437b783fde54.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+.callout.callout-style-default .callout-body {
+  padding: 0 1.5rem 0;
+}
+.cell-output-stdout {
+  overflow-y: scroll;
+  max-height: 30rem;
+  margin-bottom: 0.75rem;
+}
+</style>
+
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week03/intro-to-r.html">Week 3</a></li><li class="breadcrumb-item"><a href="../../chapters/week03/data-types.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
+      <a href="https://datalab.ucdavis.edu/" class="sidebar-logo-link">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo light-content py-0 d-lg-inline d-none">
+      <img src="../../images/datalab-logo-full-color-rgb.png" alt="The logo of the UC Davis DataLab." class="sidebar-logo dark-content py-0 d-lg-inline d-none">
+      </a>
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../../">Adventures in Data Science</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/ucdavisdatalab/adventures_in_data_science" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/required-software.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Required Software</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/research-lifecycle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Research Lifecycle</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/interacting-with-computers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Interacting with Computers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/browsing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Browsing Files</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/other-commands.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Going Beyond Browsing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week01/editing-files.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Editing Files</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/how-ai-works.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">How AI Works</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/version-control-systems.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Version Control Systems</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/git-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Git Basics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/remote-repositories.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Remote Repositories</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/the-git-workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The Git Workflow</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week02/intro-to-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Introduction to Datasets</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/intro-to-r.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week03/data-types.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/packages.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Packages</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/indexing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Indexing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/data-forensics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Data Forensics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week04/aggregation-grouping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Aggregation &amp; Grouping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/data-visualization-principles.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Data Visualization Principles &amp; Perception</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week05/intro-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Introduction to <code>ggplot2</code></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/date-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Dates &amp; Times</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week06/reshaping-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Reshaping Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 7</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/data-structures.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Data Structures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/string-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Strings &amp; Regular Expressions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week07/getting-data-from-web.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Getting Data from the Web</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 8</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week08/writing-functions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Writing Functions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week08/control-flow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Control Flow</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 9</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week09/web-scraping.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Web Scraping</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 10</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/collaboration.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Collaboration in Data-Driven Work</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/branches-merges.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Branches &amp; Merges</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/working-with-github.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Working with GitHub</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/week10/making-git-comfortable.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Making Git Comfortable</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true">
+ <span class="menu-text">Special Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-11" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-11" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/11_optical-character-recognition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Optical Character Recognition</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/12_statistics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Statistics</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/13_reshaping-tabular-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Reshaping Tabular Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/14_network-analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Network Analysis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/15_natural-language-processing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Natural Language Processing</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../chapters/16_geospatial-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Geospatial Data</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+<div class="quarto-sidebar-footer"><div class="sidebar-footer-item">
+<hr>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank"> <img alt="CC BY-SA 4.0" src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg" style="float: right; padding-right: 10px;"> </a></p>
+</div></div></nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-vectors" id="toc-sec-vectors" class="nav-link active" data-scroll-target="#sec-vectors"><span class="header-section-number">13.1</span> Vectors</a>
+  <ul class="collapse">
+  <li><a href="#creating-vectors" id="toc-creating-vectors" class="nav-link" data-scroll-target="#creating-vectors"><span class="header-section-number">13.1.1</span> Creating Vectors</a></li>
+  <li><a href="#sec-indexing-vectors" id="toc-sec-indexing-vectors" class="nav-link" data-scroll-target="#sec-indexing-vectors"><span class="header-section-number">13.1.2</span> Indexing Vectors</a></li>
+  <li><a href="#sec-vectorization" id="toc-sec-vectorization" class="nav-link" data-scroll-target="#sec-vectorization"><span class="header-section-number">13.1.3</span> Vectorization</a></li>
+  <li><a href="#sec-recycling" id="toc-sec-recycling" class="nav-link" data-scroll-target="#sec-recycling"><span class="header-section-number">13.1.4</span> Recycling</a></li>
+  </ul></li>
+  <li><a href="#sec-data-types-classes" id="toc-sec-data-types-classes" class="nav-link" data-scroll-target="#sec-data-types-classes"><span class="header-section-number">13.2</span> Data Types &amp; Classes</a>
+  <ul class="collapse">
+  <li><a href="#sec-lists" id="toc-sec-lists" class="nav-link" data-scroll-target="#sec-lists"><span class="header-section-number">13.2.1</span> Lists</a></li>
+  <li><a href="#sec-implicit-coercion" id="toc-sec-implicit-coercion" class="nav-link" data-scroll-target="#sec-implicit-coercion"><span class="header-section-number">13.2.2</span> Implicit Coercion</a></li>
+  <li><a href="#matrices-arrays" id="toc-matrices-arrays" class="nav-link" data-scroll-target="#matrices-arrays"><span class="header-section-number">13.2.3</span> Matrices &amp; Arrays</a></li>
+  <li><a href="#sec-factors" id="toc-sec-factors" class="nav-link" data-scroll-target="#sec-factors"><span class="header-section-number">13.2.4</span> Factors</a></li>
+  </ul></li>
+  <li><a href="#special-values" id="toc-special-values" class="nav-link" data-scroll-target="#special-values"><span class="header-section-number">13.3</span> Special Values</a>
+  <ul class="collapse">
+  <li><a href="#sec-missing-values" id="toc-sec-missing-values" class="nav-link" data-scroll-target="#sec-missing-values"><span class="header-section-number">13.3.1</span> Missing Values</a></li>
+  <li><a href="#infinity" id="toc-infinity" class="nav-link" data-scroll-target="#infinity"><span class="header-section-number">13.3.2</span> Infinity</a></li>
+  <li><a href="#not-a-number" id="toc-not-a-number" class="nav-link" data-scroll-target="#not-a-number"><span class="header-section-number">13.3.3</span> Not a Number</a></li>
+  <li><a href="#null" id="toc-null" class="nav-link" data-scroll-target="#null"><span class="header-section-number">13.3.4</span> Null</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week03/data-types.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../chapters/week03/intro-to-r.html">Week 3</a></li><li class="breadcrumb-item"><a href="../../chapters/week03/data-types.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data Types</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled" title="Learning Goals">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Learning Goals
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>After this lesson, you should be able to:</p>
+<ul>
+<li>Create vectors, including sequences</li>
+<li>Identify whether a function is vectorized or not</li>
+<li>Check the type and class of an object</li>
+<li>Coerce an object to a different type</li>
+<li>Describe matrices and lists</li>
+<li>Describe and differentiate <code>NA</code>, <code>NaN</code>, <code>Inf</code>, <code>NULL</code></li>
+<li>Identify, create, and relevel factors</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- FIXME -->
+<p>The previous chapter introduced R and gave you enough background to do some simple computations on data sets. This chapter focuses on the foundational knowledge and skills you’ll need in order to use R effectively in the long term. Specifically, it’s a deep dive into R’s various data structures and data types.</p>
+<section id="sec-vectors" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="sec-vectors"><span class="header-section-number">13.1</span> Vectors</h2>
+<p>A <strong>vector</strong> is a collection of values. Vectors are the fundamental unit of data in R, and you’ve already used them in the previous sections.</p>
+<p>For instance, each column in a data frame is a vector. So the <code>site_name</code> column in the California least terns data set (<a href="../week02/intro-to-data.html#sec-ca-least-terns" class="quarto-xref"><span>Section 11.4</span></a>) is a vector. Take a look at it now. You can use <code>head</code> to avoid printing too much. Set the second argument to <code>10</code> so that exactly 10 values are printed:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(terns<span class="sc">$</span>site_name, <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "PITTSBURG POWER PLANT"                       
+ [2] "ALBANY CENTRAL AVE"                          
+ [3] "ALAMEDA POINT"                               
+ [4] "KETTLEMAN CITY"                              
+ [5] "OCEANO DUNES STATE VEHICULAR RECREATION AREA"
+ [6] "RANCHO GUADALUPE DUNES PRESERVE"             
+ [7] "VANDENBERG SFB"                              
+ [8] "SANTA CLARA RIVER MCGRATH STATE BEACH"       
+ [9] "ORMOND BEACH"                                
+[10] "NBVC POINT MUGU"                             </code></pre>
+</div>
+</div>
+<p>Like all vectors, this vector is <strong>ordered</strong>, which just means the values, or <strong>elements</strong>, have specific positions. The value of the 1st element is PITTSBURG POWER PLANT, the 2nd is ALBANY CENTRAL AVE, the 5th is OCEANO DUNES STATE VEHICULAR RECREATION AREA, and so on.</p>
+<p>Notice that the elements of this vector are all strings. In R, the elements of a vector must all be the same type of data (we say the elements are <strong>homogeneous</strong>). A vector can contain integers, decimal numbers, strings, or any of several other types of data, but not a mix these all at once.</p>
+<p>The other columns in the least terns data frame are also vectors. For instance, the <code>year</code> column is a vector of integers:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(terns<span class="sc">$</span>year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2000 2000 2000 2000 2000 2000</code></pre>
+</div>
+</div>
+<p>Vectors can contain any number of elements, including 0 or 1 element. Unlike mathematics, R does not distinguish between vectors and scalars (solitary values). As far as R is concerned, a solitary value, like <code>3</code>, is a vector with 1 element.</p>
+<p>You can check the length of a vector (and other objects) with the <code>length</code> function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="st">"hello"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(terns<span class="sc">$</span>year)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 791</code></pre>
+</div>
+</div>
+<p>Since the last of these is a column from the data frame <code>terns</code>, the length is the same as the number of rows in <code>terns</code>.</p>
+<section id="creating-vectors" class="level3" data-number="13.1.1">
+<h3 data-number="13.1.1" class="anchored" data-anchor-id="creating-vectors"><span class="header-section-number">13.1.1</span> Creating Vectors</h3>
+<p>Sometimes you’ll want to create your own vectors. For instance, you might want to combine data from several columns (or datasets), need to pass a vector of arguments to a function, or want to use R as a calculator.</p>
+<p>You can create vectors withe the <code>c</code> function. Recall that R considers individual values to be vectors, so what the <code>c</code> function really does is concatenate vectors. That is, it accepts any number of arguments, and combines them into a single vector:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">19</span>, <span class="sc">-</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  2 19 -3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"hi"</span>, <span class="st">"hello"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "hi"    "hello"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 2 3 4</code></pre>
+</div>
+</div>
+<p>For example, suppose you want to use the <code>unique</code> function to get all of the unique site names in <code>terns</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(<span class="fu">c</span>(terns<span class="sc">$</span>site_name_2013_2018, terns<span class="sc">$</span>site_name_1988_2001))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Pittsburg Power Plant"                                    
+ [2] "NA_NO POLYGON"                                            
+ [3] "Alameda Point"                                            
+ [4] "Kettleman"                                                
+ [5] "Oceano Dunes State Vehicular Recreation Area"             
+ [6] "Rancho Guadalupe Dunes Preserve"                          
+ [7] "Vandenberg AFB"                                           
+ [8] "Santa Clara River"                                        
+ [9] "Ormond Beach"                                             
+[10] "NBVC Point Mugu"                                          
+[11] "Venice Beach"                                             
+[12] "Port of LA"                                               
+[13] "Seal Beach National Wildlife Refuge"                      
+[14] "Bolsa Chica"                                              
+[15] "Huntington Beach State Park"                              
+[16] "Upper Newport Bay"                                        
+[17] "Camp Pendleton"                                           
+[18] "Batiquitos Lagoon"                                        
+[19] "San Elijo Lagoon"                                         
+[20] "FAA Island"                                               
+[21] "North Fiesta Island"                                      
+[22] "Mariner's Point"                                          
+[23] "Lindbergh Field/Former Naval Training Center"             
+[24] "Naval Base Coronado"                                      
+[25] "D Street Fill"                                            
+[26] "Chula Vista Wildlife Refuge"                              
+[27] "Saltworks"                                                
+[28] "Tijuana Estuary"                                          
+[29] "Coal Oil Point Reserve"                                   
+[30] "Hollywood Beach"                                          
+[31] "Burris Basin"                                             
+[32] "San Diego River Mouth"                                    
+[33] "Hayward Regional Shoreline"                               
+[34] "Montezuma"                                                
+[35] "Stony Point"                                              
+[36] "Napa Sonoma Marsh Wildlife Area Huichica Unit (Pond 7/7A)"
+[37] "Eden Landing Ecological Reserve"                          
+[38] "Bufferlands"                                              
+[39] "Fairbanks Ranch"                                          
+[40] "San Diequito Lagoon"                                      
+[41] "Salton Sea"                                               
+[42] "Saticoy United Water Conservation District"               
+[43] "Anaheim Lake"                                             
+[44] "Malibu Lagoon"                                            
+[45] ""                                                         
+[46] "NA_2013_2018 POLYGON"                                     
+[47] "Albany Central Avenue"                                    </code></pre>
+</div>
+</div>
+<p>If the arguments you pass to the <code>c</code> function have different data types, R will attempt to convert them to a common data type that preserves the information:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>, <span class="st">"cool"</span>, <span class="fl">2.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1"    "cool" "2.3" </code></pre>
+</div>
+</div>
+<p><a href="#sec-implicit-coercion" class="quarto-xref"><span>Section 13.2.2</span></a> explains the rules for this conversion in more detail.</p>
+<p>The colon operator <code>:</code> creates vectors that contain sequences of integers. This is useful for creating “toy” data to test things on, and <a href="#sec-indexing-vectors" class="quarto-xref"><span>Section 13.1.2</span></a> will show that it’s important for selecting elements from other vectors. Here are a few different sequences:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 2 3</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span><span class="dv">3</span><span class="sc">:</span><span class="dv">5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -3 -2 -1  0  1  2  3  4  5</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="dv">10</span><span class="sc">:</span><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 10  9  8  7  6  5  4  3  2  1</code></pre>
+</div>
+</div>
+<p>Beware that both endpoints are included in the sequence, even in sequences like <code>1:0</code>, and that the difference between elements is always <code>-1</code> or <code>1</code>. If you want more control over the generated sequence, use the <code>seq</code> function instead.</p>
+</section>
+<section id="sec-indexing-vectors" class="level3" data-number="13.1.2">
+<h3 data-number="13.1.2" class="anchored" data-anchor-id="sec-indexing-vectors"><span class="header-section-number">13.1.2</span> Indexing Vectors</h3>
+<p>You can access individual elements of a vector with the <strong>indexing operator</strong> <code>[</code> (also called the square bracket operator). The syntax is:</p>
+<pre><code>VECTOR[INDEXES]</code></pre>
+<p>Here <code>INDEXES</code> is a vector of positions of elements you want to get or set.</p>
+<p>For example, let’s make a vector with 5 elements and get the 2nd element:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">2</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8</code></pre>
+</div>
+</div>
+<p>Now let’s get the 3rd and 1st element:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>x[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3 4</code></pre>
+</div>
+</div>
+<p>You can use the indexing operator together with the assignment operator to assign elements of a vector:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>x[<span class="dv">3</span>] <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4 8 0 2 1</code></pre>
+</div>
+</div>
+<p>Indexing is among the most frequently used operations in R, so take some time to try it out with few different vectors and indexes. We’ll revisit indexing in <a href="../week04/indexing.html" class="quarto-xref"><span>Chapter 15</span></a> to learn a lot more about it.</p>
+</section>
+<section id="sec-vectorization" class="level3" data-number="13.1.3">
+<h3 data-number="13.1.3" class="anchored" data-anchor-id="sec-vectorization"><span class="header-section-number">13.1.3</span> Vectorization</h3>
+<p>Let’s look at what happens if we call a mathematical function, like <code>sqrt</code>, on a vector:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">0</span>, pi)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.000000 1.732051 0.000000 1.772454</code></pre>
+</div>
+</div>
+<p>This gives us the same result as if we had called the function separately on each element. That is, the result is the same as:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">sqrt</span>(<span class="dv">1</span>), <span class="fu">sqrt</span>(<span class="dv">3</span>), <span class="fu">sqrt</span>(<span class="dv">0</span>), <span class="fu">sqrt</span>(pi))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.000000 1.732051 0.000000 1.772454</code></pre>
+</div>
+</div>
+<p>Of course, the first version is much easier to type.</p>
+<p>Functions that take a vector argument and get applied element-by-element like this are said to be <strong>vectorized</strong>. Most functions in R are vectorized, especially math functions. Some examples include <code>round</code>, <code>sqrt</code>, <code>exp</code>, <code>log</code>, <code>sin</code>, <code>cos</code>, and <code>tan</code>.</p>
+<p>Vectorized functions are often useful for transforming columns. For example, suppose we want to transform the total number of nests in the <code>terns</code> data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(terns<span class="sc">$</span>total_nests)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1]  3.872983  4.472136 17.663522  1.732051  2.236068  3.000000  5.656854
+  [8]  4.690416  8.544004 15.874508 17.549929 23.769729 10.344080  7.483315
+ [15] 21.931712  8.246211 32.848135 13.114877  4.000000 13.674794  5.099020
+ [22] 20.493902  5.196152 11.575837 25.079872  5.830952  0.000000  6.633250
+ [29] 14.491377  3.872983  0.000000 20.976177  1.414214  7.937254  2.828427
+ [36]  1.000000  2.449490  9.110434  7.071068  5.385165 24.839485  4.123106
+ [43] 32.726136 14.352700 15.132746 17.972201  2.236068  9.433981 37.815341
+ [50] 24.331050  0.000000 17.748239  4.123106 17.291616  6.480741  8.717798
+ [57] 13.114877 32.171416  1.000000 10.535654  8.124038  7.000000 22.803509
+ [64]  2.000000 23.452079  2.828427  1.000000  7.681146  2.000000  6.633250
+ [71]  0.000000  3.000000  5.196152 24.657656  9.486833 36.496575 12.041595
+ [78] 11.618950 18.411953  5.291503 40.792156 24.413111  1.000000  2.449490
+ [85]  0.000000 16.763055 10.862780 12.529964 11.575837 33.689761 10.049876
+ [92]  7.549834  5.830952 21.400935  4.123106  0.000000 21.000000  3.872983
+ [99]  1.414214  6.164414  0.000000  1.414214  2.236068        NA  7.280110
+[106] 21.656408 19.595918 30.116441 13.638182 14.899664 22.825424  6.000000
+[113] 39.242834 25.039968  0.000000 10.198039  5.477226 10.954451 11.661904
+[120]  3.741657 11.445523 13.416408 37.749172 10.000000  3.872983  9.055385
+[127] 19.261360  1.414214  5.656854  2.645751 19.849433  5.916080  2.449490
+[134]  1.414214  8.124038  1.000000  4.242641  2.449490  8.774964  1.000000
+[141]  7.211103 20.760539 23.366643 26.645825 12.884099 15.033296 22.022716
+[148]  3.000000  6.480741 39.115214 24.372115  0.000000  5.291503  6.244998
+[155] 10.246951  6.708204  5.477226 11.618950 11.090537 34.088121 11.401754
+[162]  6.782330  9.848858 17.058722  1.000000  4.242641  5.916080  1.000000
+[169] 18.330303  7.874008  1.414214  1.000000  7.483315  0.000000  4.242641
+[176]  1.000000  9.848858  4.898979  9.000000 22.494444 30.463092 23.000000
+[183] 14.352700 15.556349 21.307276  3.162278  5.000000 40.804412 24.698178
+[190]  0.000000  0.000000  3.162278  3.741657  1.000000  1.000000 11.789826
+[197] 12.083046 39.051248 12.165525  5.744563 10.099505 14.177447  1.000000
+[204]  7.211103  5.196152  0.000000 18.601075  8.944272  1.000000  1.000000
+[211]  5.099020  1.732051  5.567764  0.000000  9.219544  2.000000  6.633250
+[218] 25.059928 17.175564 20.856654 13.304135 17.804494 20.832667  4.000000
+[225]  3.162278 41.448764 25.475478  0.000000  1.414214  6.164414  6.708204
+[232]  3.741657  0.000000  0.000000 12.041595 11.180340 41.725292 11.489125
+[239]  6.928203  8.831761 17.146428  1.732051  1.000000  6.855655  4.123106
+[246]  0.000000 17.888544  7.280110  0.000000  1.000000  4.795832  1.000000
+[253]  5.830952  0.000000  6.000000  1.000000  6.928203 26.608269 12.806248
+[260] 14.696938 16.278821 21.118712 20.808652  2.828427  3.605551 41.496988
+[267] 21.908902  0.000000  0.000000  0.000000  4.123106  5.000000 10.816654
+[274]  1.000000  3.000000 10.770330  9.165151 33.391616 10.908712  6.324555
+[281]  8.062258 14.933185  1.000000  6.164414  3.872983  0.000000 18.841444
+[288]  8.774964  0.000000  0.000000  5.916080  0.000000  5.656854  1.000000
+[295]  5.099020  0.000000  7.745967 26.776856  5.291503  3.162278 13.304135
+[302] 12.922848 26.683328  3.741657  2.449490 39.064050 23.065125  0.000000
+[309]        NA  0.000000  4.582576  1.000000 12.041595  3.464102  3.605551
+[316]  8.831761  9.110434 32.588341 10.770330  7.280110  7.416198 16.248077
+[323]  1.732051  1.414214  5.916080  5.477226  1.732051 19.544820 13.747727
+[330]  0.000000  0.000000  6.782330  0.000000  4.242641  0.000000  6.480741
+[337]  1.000000  2.449490 29.051678  3.741657 14.525839 11.000000 17.464249
+[344] 23.280893  3.316625  4.472136 35.284558 23.727621  0.000000  0.000000
+[351]  0.000000  7.000000  1.000000 11.916375  4.123106  3.464102 11.401754
+[358]  3.162278 32.680269 10.677078  8.000000  9.486833 16.822604  0.000000
+[365]  0.000000  8.944272  5.385165  0.000000 17.088007  9.219544  0.000000
+[372]  0.000000  7.549834  0.000000  3.872983  0.000000  6.082763 14.456832
+[379]  2.645751 18.601075  0.000000  3.872983 15.937377 12.806248 12.529964
+[386] 18.627936  4.795832  5.656854 35.256205 23.622024  0.000000  0.000000
+[393]  1.732051 12.489996  0.000000  6.082763  6.403124  0.000000 10.677078
+[400]  2.645751 32.155870 12.000000  8.888194  6.708204 16.792856  1.414214
+[407]  0.000000  6.708204  4.000000  0.000000 18.055470  9.219544  0.000000
+[414]  0.000000  7.000000  0.000000  4.582576  0.000000  2.000000 10.954451
+[421]  4.690416 21.563859  0.000000  9.000000 11.224972 12.409674 17.349352
+[428] 22.715633  4.242641  1.414214 36.565011 21.863211  0.000000  0.000000
+[435]  0.000000  2.828427  3.605551 10.908712  1.414214  0.000000 10.000000
+[442]  7.549834 32.233523 12.165525  9.327379  5.916080 16.155494  1.732051
+[449]  1.000000  8.888194  4.000000  1.732051 18.734994  8.426150  0.000000
+[456]  0.000000  7.348469  0.000000  4.690416  0.000000  8.485281  4.898979
+[463]  0.000000 21.748563  0.000000  2.828427 10.440307 10.295630 14.282857
+[470] 22.891046  4.795832  4.690416 37.202150 20.371549  0.000000  0.000000
+[477]  0.000000  4.472136  4.898979 13.453624  1.000000  0.000000  4.242641
+[484]  5.744563 28.740216 11.090537  8.888194  5.385165 14.422205  1.000000
+[491]  1.000000  8.888194  2.449490  1.000000 20.074860  9.380832  0.000000
+[498]  0.000000  7.000000  0.000000  5.196152  0.000000  7.874008  0.000000
+[505]  4.242641 19.000000  0.000000  1.414214 11.874342  8.944272 11.916375
+[512] 18.654758  2.000000  3.162278  4.472136 29.949958 21.236761  0.000000
+[519]  0.000000  0.000000  7.071068  5.000000 11.269428  3.872983  2.236068
+[526]  6.082763  5.830952 29.308702 10.862780  8.717798  5.099020 13.564660
+[533]  0.000000  1.000000 11.916375  3.000000        NA 21.142375  8.485281
+[540]  4.582576  0.000000  7.211103  0.000000  0.000000  5.291503  0.000000
+[547]  3.000000  0.000000  6.164414 19.416488  0.000000  0.000000  5.567764
+[554]  2.236068 11.135529 13.341664 26.057628  0.000000  3.741657  4.123106
+[561] 37.483330 26.305893  0.000000        NA  0.000000  6.403124  0.000000
+[568] 13.266499  1.414214        NA  4.898979  4.690416 29.816103 11.269428
+[575]  9.797959  6.324555 15.000000  0.000000  5.291503  4.242641 19.364917
+[582]  5.656854 11.874342  5.916080  9.110434  4.898979  0.000000  9.165151
+[589] 17.058722  0.000000  2.236068  2.449490 11.532563 10.816654 11.532563
+[596] 26.229754  4.000000  4.690416 18.275667 26.153394  0.000000  3.464102
+[603]  1.000000 13.341664  3.316625  4.358899  4.000000 28.757608 10.440307
+[610]  9.110434  5.744563 13.820275  1.732051  3.872983 18.574176  7.483315
+[617] 11.000000  5.830952  4.123106  6.855655        NA  0.000000  9.591663
+[624] 17.748239  0.000000  2.449490  0.000000 14.106736  7.483315 11.575837
+[631] 23.043437  4.123106  4.472136 20.445048 23.409400  0.000000  6.244998
+[638]  1.414214 12.609520  1.000000  4.358899  2.000000 30.463092 10.198039
+[645]  8.124038  6.244998 12.247449  1.732051  5.385165 20.856654 10.049876
+[652]  1.000000  6.928203  7.483315  3.464102  6.244998  4.582576  4.795832
+[659] 14.317821        NA  6.782330  0.000000 13.490738  3.316625  9.539392
+[666] 20.712315  3.741657  4.242641 19.364917 11.789826  0.000000  6.082763
+[673]  1.000000 12.569805  0.000000  2.449490  2.449490 33.955854  7.874008
+[680] 11.224972  6.708204 14.247807  1.732051  8.888194  4.795832 20.493902
+[687] 10.630146  7.483315  7.280110  0.000000  5.830952  9.539392  0.000000
+[694]  5.196152 13.152946        NA  6.082763  0.000000 14.071247  7.141428
+[701] 12.961481 23.727621  4.472136  3.162278 25.059928 17.233688  0.000000
+[708]  8.660254  1.000000 11.532563  0.000000  3.316625  1.414214 33.763886
+[715] 10.392305 10.049876  6.000000 13.638182  7.348469  8.831761  2.645751
+[722] 20.615528  7.810250  6.708204  6.708204  1.000000  6.708204  7.141428
+[729]  5.099020  5.830952 17.691806  1.732051  0.000000 13.747727  7.483315
+[736] 13.114877 19.824228  4.358899  1.414214 21.771541 15.937377  0.000000
+[743]  5.385165  9.899495  0.000000 10.344080  0.000000  3.162278  0.000000
+[750] 28.372522  8.774964  9.055385  4.898979 12.288206  6.782330  3.000000
+[757]  5.567764 18.411953 12.000000  8.774964  6.480741  0.000000  6.480741
+[764]  5.477226  0.000000  4.358899 13.711309  0.000000  0.000000  7.483315
+[771]  8.426150 10.677078 17.029386  1.000000  3.000000  2.000000 23.494680
+[778] 15.099669  0.000000  6.855655 12.489996  1.000000  2.449490  0.000000
+[785]  2.828427  0.000000 26.776856  6.633250  7.681146  6.928203 13.076697</code></pre>
+</div>
+</div>
+<p>This square root transformation can be helpful when fitting certain kinds of statistical models, because it shrinks large values in a dataset more than small ones.</p>
+<p>Functions that are not vectorized tend to be ones that combine or aggregate values in some way. For instance, the <code>sum</code>, <code>mean</code>, <code>median</code>, <code>length</code>, and <code>class</code> functions are not vectorized.</p>
+<p>Non-vectorized functions are often useful for summarizing columns. For example, we can compute the mean of the minimum breeding pairs in the <code>terns</code> data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(terns<span class="sc">$</span>bp_min, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 129.3199</code></pre>
+</div>
+</div>
+<p>A function can be vectorized across multiple arguments. This is easiest to understand in terms of the arithmetic operators. Let’s see what happens if we add two vectors together:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">10</span>, <span class="sc">-</span><span class="dv">10</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>x <span class="sc">+</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  0  9 13 -6</code></pre>
+</div>
+</div>
+<p>The elements are paired up and added according to their positions. The other arithmetic operators are also vectorized:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">-</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  2 -5 -7 14</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">*</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  -1  14  30 -40</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">/</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -1.0000000  0.2857143  0.3000000 -0.4000000</code></pre>
+</div>
+</div>
+<p>This means we can use arithmetic operators on whole columns. Let’s compute the average number of fledglings per nest for each row in the <code>terns</code> data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>terns<span class="sc">$</span>fl_min <span class="sc">/</span> terns<span class="sc">$</span>total_nests</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 1.066666667 0.050000000 0.641025641 0.333333333 0.800000000 1.888888889
+  [7] 0.343750000 0.409090909 0.821917808 0.253968254 0.487012987 1.008849558
+ [13] 1.682242991 0.000000000 0.904365904 0.176470588 0.949953661 0.220930233
+ [19] 0.437500000 1.069518717 0.307692308 0.357142857 0.888888889 0.634328358
+ [25] 0.508744038 0.794117647         NaN 0.386363636 0.376190476 0.066666667
+ [31]         NaN 0.352272727 1.000000000 0.396825397 0.000000000 0.000000000
+ [37] 0.000000000 0.325301205 0.540000000 0.137931034 0.196110211 0.000000000
+ [43] 0.519140990 0.354368932 0.262008734 0.117647059 0.400000000          NA
+ [49] 0.032867133 0.185810811         NaN 0.031746032 0.000000000 0.000000000
+ [55] 0.238095238 0.131578947 0.034883721 0.032850242 0.000000000 0.036036036
+ [61] 0.166666667 0.081632653 0.030769231 0.000000000 0.254545455 0.000000000
+ [67] 0.000000000 0.305084746 0.000000000 0.022727273         NaN 0.444444444
+ [73] 0.000000000 0.108552632 0.000000000 0.337087087 0.600000000 1.333333333
+ [79] 0.209439528 0.000000000 0.179687500 0.182885906 0.000000000 0.000000000
+ [85]         NaN 0.177935943 0.050847458 0.286624204 0.149253731 0.110132159
+ [91] 0.089108911 0.035087719 0.058823529 0.082969432 1.647058824         NaN
+ [97] 0.020408163 0.266666667 1.000000000 0.947368421         NaN 0.000000000
+[103] 1.400000000          NA 0.830188679 0.226012793 0.541666667 0.563395810
+[109] 0.580645161 1.238738739 0.251439539 0.055555556 0.337662338 0.355661882
+[115]         NaN 0.019230769 0.133333333 0.000000000 0.073529412 0.000000000
+[121] 0.412213740 0.194444444 0.120000000 0.180000000 0.133333333 0.073170732
+[127] 0.153638814          NA 0.156250000 0.000000000 0.375634518 1.400000000
+[133] 0.000000000 1.000000000 1.060606061 1.000000000 0.888888889 0.000000000
+[139] 0.987012987 2.000000000 0.673076923 0.322505800 0.758241758 0.261971831
+[145] 0.072289157 0.066371681 0.443298969 0.777777778 0.285714286 0.241176471
+[151] 0.245791246         NaN 0.071428571 0.153846154 0.190476190 0.177777778
+[157] 0.266666667 0.251851852 0.252032520 0.172117040 0.192307692 0.000000000
+[163] 0.134020619 0.099656357 0.000000000 0.055555556 0.314285714 0.000000000
+[169] 1.062500000 1.177419355 0.000000000 2.000000000 1.250000000         NaN
+[175] 1.055555556 0.000000000 0.793814433 1.166666667 0.370370370 0.156126482
+[181] 0.318965517 0.396975425 0.213592233 0.413223140 0.588105727 0.200000000
+[187] 0.800000000 0.064264264 0.201639344         NaN         NaN 0.000000000
+[193] 0.000000000 0.000000000 0.000000000 0.827338129 0.171232877 0.085245902
+[199] 0.114864865 0.060606061 0.058823529 0.223880597 2.000000000 0.038461538
+[205] 0.222222222         NaN 0.728323699 0.787500000 0.000000000 1.000000000
+[211] 1.076923077 1.000000000 1.193548387         NaN 0.658823529 1.000000000
+[217] 0.545454545 0.211783439 0.000000000 0.172413793 0.451977401 0.835962145
+[223] 0.304147465 0.312500000 0.000000000 0.104190920 0.326656394         NaN
+[229] 0.000000000 0.000000000 0.266666667 0.000000000         NaN         NaN
+[235] 0.248275862 0.240000000 0.024124067 0.143939394 0.083333333 0.051282051
+[241] 0.091836735 0.333333333 1.000000000 1.808510638 0.294117647         NaN
+[247] 0.690625000 1.415094340         NaN 2.000000000 1.260869565 2.000000000
+[253] 0.852941176         NaN 0.388888889 0.000000000 0.333333333 0.138418079
+[259] 0.000000000 0.018518519 0.120754717 0.150224215 0.688221709 0.500000000
+[265] 0.615384615 0.223577236 0.433333333         NaN         NaN         NaN
+[271] 0.000000000 0.000000000 0.341880342 0.000000000 0.666666667 0.250000000
+[277] 0.297619048 0.197309417 0.126050420 0.050000000 0.076923077 0.206278027
+[283] 3.000000000          NA          NA         NaN 0.504225352 0.311688312
+[289]         NaN         NaN 1.428571429         NaN 0.125000000 0.000000000
+[295] 0.769230769         NaN 0.200000000 0.100418410 0.000000000 0.000000000
+[301] 0.062146893 0.395209581 0.150280899 0.857142857 0.000000000 0.068152031
+[307] 0.093984962         NaN          NA         NaN 0.428571429 0.000000000
+[313] 0.344827586 0.250000000 0.384615385 0.141025641 0.144578313 0.090395480
+[319] 0.293103448 0.226415094 0.036363636 0.340909091 0.000000000 0.000000000
+[325] 0.428571429 0.133333333 0.000000000 0.044502618 0.640211640         NaN
+[331]         NaN 0.913043478         NaN 0.555555556         NaN 0.190476190
+[337] 0.000000000 0.000000000 0.017772512 0.000000000 0.165876777 0.330578512
+[343] 0.052459016 0.166051661 0.636363636 0.200000000 0.020080321 0.060390764
+[349]         NaN         NaN         NaN 0.000000000 0.000000000 0.000000000
+[355] 0.000000000 0.000000000 0.276923077 0.000000000 0.009363296 0.078947368
+[361] 0.281250000 0.011111111 0.000000000         NaN         NaN 0.137500000
+[367] 0.103448276         NaN 1.034246575 1.388235294         NaN         NaN
+[373] 0.982456140         NaN 1.266666667         NaN 0.000000000 0.148325359
+[379] 0.000000000 0.000000000         NaN 0.000000000 0.122047244 0.542682927
+[385] 0.222929936 0.288184438 0.043478261 0.250000000 0.120675784 0.209677419
+[391]         NaN         NaN 0.000000000 0.044871795         NaN 0.000000000
+[397] 0.073170732         NaN 0.298245614 1.714285714 0.150870406 0.159722222
+[403] 0.405063291 0.044444444 0.202127660 1.000000000         NaN 1.333333333
+[409] 0.062500000         NaN 1.199386503 1.388235294         NaN         NaN
+[415] 1.183673469         NaN 0.952380952         NaN 0.500000000 0.191666667
+[421] 0.000000000 0.273118280         NaN 0.925925926 0.126984127 0.025974026
+[427] 0.265780731 0.325581395 0.555555556 0.000000000 0.314136126 0.485355649
+[433]         NaN         NaN         NaN 0.250000000 0.538461538 0.504201681
+[439] 0.500000000         NaN 0.340000000 0.087719298 0.120307988 0.202702703
+[445] 0.264367816 0.285714286 0.130268199 0.000000000 1.000000000 0.303797468
+[451] 0.000000000 0.000000000 0.940170940 1.267605634         NaN         NaN
+[457] 1.277777778         NaN 1.318181818         NaN 0.375000000 0.000000000
+[463]         NaN 0.245243129         NaN 0.000000000 0.000000000 0.066037736
+[469] 0.250000000 0.238549618 0.130434783 0.045454545 0.122832370 0.216867470
+[475]         NaN         NaN         NaN 0.450000000 0.041666667 0.552486188
+[481] 0.000000000         NaN 0.444444444 0.090909091 0.202179177 0.170731707
+[487] 0.417721519 0.310344828 0.144230769 0.000000000 2.000000000 0.063291139
+[493] 0.166666667 0.000000000 1.454094293 1.784090909         NaN         NaN
+[499] 1.204081633         NaN 0.666666667         NaN 0.177419355         NaN
+[505] 0.777777778 0.155124654         NaN 0.000000000 0.326241135 0.312500000
+[511] 0.302816901 0.287356322 0.000000000 0.000000000 0.100000000 0.094760312
+[517] 0.388026608         NaN         NaN         NaN 0.100000000 0.160000000
+[523] 0.118110236 0.466666667 0.000000000 0.270270270 0.147058824 0.123399302
+[529] 0.177966102 0.197368421 0.230769231 0.179347826         NaN 0.000000000
+[535] 0.563380282 0.555555556          NA 0.407158837 0.986111111 0.952380952
+[541]         NaN 0.134615385         NaN         NaN 0.285714286         NaN
+[547] 0.000000000         NaN 0.526315789 0.071618037         NaN         NaN
+[553] 0.419354839 0.000000000 0.032258065 0.033707865 0.038291605         NaN
+[559] 0.714285714 0.764705882 0.002846975 0.252890173         NaN          NA
+[565]         NaN 0.390243902         NaN 0.170454545 0.500000000          NA
+[571] 0.541666667 0.045454545 0.312710911 0.196850394 0.177083333 0.050000000
+[577] 0.342222222         NaN 0.000000000 0.000000000 0.506666667 0.343750000
+[583] 0.007092199 1.000000000 0.421686747 0.250000000         NaN 0.523809524
+[589] 0.209621993         NaN 0.000000000 0.000000000 0.518796992 0.358974359
+[595] 0.533834586 0.093023256 0.375000000 0.045454545 0.011976048 0.137426901
+[601]         NaN 0.000000000 0.000000000 0.168539326 0.000000000 0.684210526
+[607] 0.062500000 0.035066505 0.110091743 0.072289157 0.030303030 0.078534031
+[613] 0.000000000 0.133333333 0.527536232 0.785714286 0.082644628 1.117647059
+[619] 0.235294118 0.446808511          NA         NaN 0.195652174 0.203174603
+[625]         NaN 0.000000000         NaN 0.487437186 0.000000000 0.328358209
+[631] 0.152542373 0.117647059 0.200000000 0.035885167 0.040145985         NaN
+[637] 0.025641026 0.000000000 0.226415094 0.000000000 0.315789474 0.250000000
+[643] 0.022629310 0.115384615 0.030303030 0.025641026 0.040000000 0.000000000
+[649] 0.103448276 0.664367816 1.326732673 0.000000000 0.791666667 0.107142857
+[655] 0.500000000 0.076923077 0.000000000 0.260869565 0.068292683          NA
+[661] 0.543478261         NaN 0.016483516 0.090909091 0.000000000 0.006993007
+[667] 0.214285714 0.277777778 0.266666667 0.352517986         NaN 0.162162162
+[673] 0.000000000 0.392405063         NaN 0.666666667 0.333333333 0.026886383
+[679] 0.000000000 0.126984127 0.044444444 0.073891626 0.000000000 0.215189873
+[685] 0.173913043 0.383333333 0.513274336 0.017857143 0.905660377         NaN
+[691] 0.235294118 0.384615385         NaN 0.592592593 0.248554913          NA
+[697] 0.135135135         NaN 0.191919192 0.000000000 0.083333333 0.033747780
+[703] 0.350000000 0.000000000 0.146496815 0.107744108         NaN 0.533333333
+[709] 0.000000000 0.360902256         NaN 0.545454545 0.000000000 0.071052632
+[715] 0.074074074 0.009900990 0.083333333 0.086021505 0.000000000 0.038461538
+[721] 0.000000000 0.461176471 1.081967213 0.088888889 0.822222222 0.000000000
+[727] 0.511111111 0.000000000 0.000000000 0.176470588 0.041533546 0.000000000
+[733]         NaN 0.010582011 0.035714286 0.122093023 0.203562341 0.000000000
+[739] 0.000000000 0.198312236 0.070866142         NaN 0.655172414 0.183673469
+[745]         NaN 0.299065421         NaN 0.900000000         NaN 0.026086957
+[751] 0.000000000 0.024390244 0.083333333 0.158940397 0.130434783 0.000000000
+[757] 0.064516129 0.321533923 0.881944444 0.051948052 0.833333333         NaN
+[763] 0.404761905 0.066666667         NaN 0.157894737 0.271276596         NaN
+[769]         NaN 0.000000000 0.183098592 0.315789474 0.110344828 0.000000000
+[775] 0.000000000 0.750000000 0.313405797 0.337719298         NaN 0.340425532
+[781] 0.282051282 0.000000000 0.000000000         NaN 1.250000000         NaN
+[787] 0.125523013 0.090909091 0.084745763 0.145833333 0.204678363</code></pre>
+</div>
+</div>
+</section>
+<section id="sec-recycling" class="level3" data-number="13.1.4">
+<h3 data-number="13.1.4" class="anchored" data-anchor-id="sec-recycling"><span class="header-section-number">13.1.4</span> Recycling</h3>
+<p>When a function is vectorized across multiple arguments, what happens if the vectors have different lengths? Whenever you think of a question like this as you’re learning R, the best way to find out is to create some toy data and test it yourself. Let’s try that now:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>x <span class="sc">+</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 3 2 5</code></pre>
+</div>
+</div>
+<p>The elements of the shorter vector are <strong>recycled</strong> to match the length of the longer vector. That is, after the second element, the elements of <code>y</code> are repeated to make a vector with the same length as <code>x</code> (because <code>x</code> is longer), and then vectorized addition is carried out as usual.</p>
+<p>Here’s what that looks like written down:</p>
+<pre><code>   1  2  3  4
++ -1  1 -1  1
+  -----------
+   0  3  2  5</code></pre>
+<p>If the length of the longer vector is not a multiple of the length of the shorter vector, R issues a warning, but still returns the result. The warning as meant as a reminder, because unintended recycling is a common source of bugs:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>x <span class="sc">+</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in x + y: longer object length is not a multiple of shorter object
+length</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 3 2 5 4</code></pre>
+</div>
+</div>
+<p>Recycling might seem strange at first, but it’s convenient if you want to use a specific value (or pattern of values) with a vector. For instance, suppose you want to multiply all the elements of a vector by <code>2</code>. Recycling makes this easy:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 4 6</code></pre>
+</div>
+</div>
+<p>When you use recycling, most of the time one of the arguments will be a scalar like this.</p>
+</section>
+</section>
+<section id="sec-data-types-classes" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="sec-data-types-classes"><span class="header-section-number">13.2</span> Data Types &amp; Classes</h2>
+<p><a href="../week02/intro-to-data.html#sec-types-of-data" class="quarto-xref"><span>Section 11.3</span></a> introduced the idea of categorizing data into types based on sets of shared characteristics. Thinking about types can help you figure out which analyses might be appropriate, or at least possible, for your data. Types are such a helpful idea that most programming languages also use types.</p>
+<p>In R, data objects are categorized in two different ways:</p>
+<ol type="1">
+<li><p>The <strong>class</strong> of an R object describes what the object does, or the role that it plays. Sometimes objects can do more than one thing, so objects can have more than one class. The <code>class</code> function, which debuted in <a href="../week02/intro-to-data.html#sec-ca-least-terns" class="quarto-xref"><span>Section 11.4</span></a>, returns the classes of its argument.</p></li>
+<li><p>The <strong>type</strong> of an R object describes what the object is. Technically, the type corresponds to how the object is stored in your computer’s memory. Each object has exactly one type. The <code>typeof</code> function returns the type of its argument.</p></li>
+</ol>
+<p>Of the two, classes are more important than types. If you aren’t sure what an object is, checking its classes should be the first thing you do.</p>
+<p>The built-in classes you’ll use all the time correspond to vectors and lists (which we’ll learn more about in <a href="#sec-lists" class="quarto-xref"><span>Section 13.2.1</span></a>):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 30%">
+<col style="width: 47%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Class</th>
+<th style="text-align: left;">Example</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">logical</td>
+<td style="text-align: left;"><code>TRUE</code>, <code>FALSE</code></td>
+<td style="text-align: left;">Logical (or Boolean) values</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;"><code>-1L</code>, <code>1L</code>, <code>2L</code></td>
+<td style="text-align: left;">Integer numbers</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;"><code>-2.1</code>, <code>7</code>, <code>34.2</code></td>
+<td style="text-align: left;">Real numbers</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">complex</td>
+<td style="text-align: left;"><code>3-2i</code>, <code>-8+0i</code></td>
+<td style="text-align: left;">Complex numbers</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;"><code>"hi"</code>, <code>"YAY"</code></td>
+<td style="text-align: left;">Text strings</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">list</td>
+<td style="text-align: left;"><code>list(TRUE, 1, "hi")</code></td>
+<td style="text-align: left;">Ordered collection of heterogeneous elements</td>
+</tr>
+</tbody>
+</table>
+<p>R doesn’t distinguish between scalars and vectors, so the class of a vector is the same as the class of its elements:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="st">"hi"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="fu">c</span>(<span class="st">"hello"</span>, <span class="st">"hi"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>In addition, for most vectors, the class and the type are the same:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "logical"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "logical"</code></pre>
+</div>
+</div>
+<p>The exception to this rule is numeric vectors, which have type <code>double</code> for historical reasons:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(pi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(pi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "double"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "double"</code></pre>
+</div>
+</div>
+<p>The word “double” here stands for <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">double-precision floating point number</a>, a standard way to represent real numbers on computers.</p>
+<p>By default, R assumes any numbers you enter in code are numeric, even if they’re integer-valued.</p>
+<p>The class <code>integer</code> also represents integer numbers, but it’s not used as often as <code>numeric</code>. A few functions, such as the sequence operator <code>:</code> and the <code>length</code> function, return integers. You can also force R to create an integer by adding the suffix <code>L</code> to a number, but there are no major drawbacks to using the <code>double</code> default:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "integer"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="dv">3</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "integer"</code></pre>
+</div>
+</div>
+<p>Besides the classes for vectors and lists, there are several built-in classes that represent more sophisticated data structures:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 68%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Class</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">function</td>
+<td style="text-align: left;">Functions</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor</td>
+<td style="text-align: left;">Categorical values</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">matrix</td>
+<td style="text-align: left;">Two-dimensional ordered collection of homogeneous elements</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">array</td>
+<td style="text-align: left;">Multi-dimensional ordered collection of homogeneous elements</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">data.frame</td>
+<td style="text-align: left;">Data frames</td>
+</tr>
+</tbody>
+</table>
+<p>For these, the class is usually different from the type. We’ll learn more about most of these later on.</p>
+<section id="sec-lists" class="level3" data-number="13.2.1">
+<h3 data-number="13.2.1" class="anchored" data-anchor-id="sec-lists"><span class="header-section-number">13.2.1</span> Lists</h3>
+<p>A <strong>list</strong> is an ordered data structure where the elements can have different types (they are <strong>heterogeneous</strong>). This differs from a vector, where the elements all have to have the same type, as we saw in <a href="#sec-vectors" class="quarto-xref"><span>Section 13.1</span></a>. The tradeoff is that most vectorized functions do not work with lists.</p>
+<p>You can make an ordinary list with the <code>list</code> function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">list</span>(<span class="dv">1</span>, <span class="fu">c</span>(<span class="st">"hi"</span>, <span class="st">"bye"</span>))</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+</div>
+<p>For ordinary lists, the type and the class are both <code>list</code>. In <a href="../week04/indexing.html" class="quarto-xref"><span>Chapter 15</span></a>, we’ll learn how to get and set list elements, and in later sections we’ll learn more about when and why to use lists.</p>
+<p>You’ve already seen one list, the <code>terns</code> data frame:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(terns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(terns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+</div>
+<p>Under the hood, data frames are lists, and each column is a list element. Because the class is <code>data.frame</code> rather than <code>list</code>, R treats data frames differently from ordinary lists. This difference is apparent in how data frames are printed compared to ordinary lists.</p>
+</section>
+<section id="sec-implicit-coercion" class="level3" data-number="13.2.2">
+<h3 data-number="13.2.2" class="anchored" data-anchor-id="sec-implicit-coercion"><span class="header-section-number">13.2.2</span> Implicit Coercion</h3>
+<p>R’s types fall into a natural hierarchy of expressiveness:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/week03/types.png" class="img-fluid figure-img"></p>
+<figcaption>R’s hierarchy of types.</figcaption>
+</figure>
+</div>
+<p>Each type on the right is more expressive than the ones to its left. That is, with the convention that <code>FALSE</code> is <code>0</code> and <code>TRUE</code> is <code>1</code>, we can represent any logical value as an integer. In turn, we can represent any integer as a double, and any double as a complex number. By writing the number out, we can also represent any complex number as a string.</p>
+<p>The point is that no information is lost as we follow the arrows from left to right along the types in the hierarchy. In fact, R will automatically and silently convert from types on the left to types on the right as needed. This is called <strong>implicit coercion</strong>.</p>
+<p>As an example, consider what happens if we add a logical value to a number:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">+</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>R automatically converts the <code>TRUE</code> to the numeric value <code>1</code>, and then carries out the arithmetic as usual.</p>
+<p>We’ve already seen implicit coercion at work once before, when we learned the <code>c</code> function. Since the elements of a vector all have to have the same type, if you pass several different types to <code>c</code>, then R tries to use implicit coercion to make them the same:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="st">"hi"</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">+</span><span class="dv">3</span>i)</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "TRUE" "hi"   "1"    "1+3i"</code></pre>
+</div>
+</div>
+<p>Implicit coercion is strictly one-way; it never occurs in the other direction. If you want to coerce a type on the right to one on the left, you can do it explicitly with one of the <code>as.TYPE</code> functions. For instance, the <code>as.numeric</code> (or <code>as.double</code>) function coerces to numeric:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="st">"3.1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.1</code></pre>
+</div>
+</div>
+<p>There are a few types that fall outside of the hierarchy entirely, like functions. Implicit coercion doesn’t apply to these. If you try to use these types where it doesn’t make sense to, R generally returns an error:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>sin <span class="sc">+</span> <span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in sin + 3: non-numeric argument to binary operator</code></pre>
+</div>
+</div>
+<p>If you try to use these types as elements of a vector, you get back a list instead:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, sum)</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "list"</code></pre>
+</div>
+</div>
+<p>Understanding how implicit coercion works will help you avoid bugs, and can also be a time-saver. For example, we can use implicit coercion to succinctly count how many elements of a vector satisfy a some condition:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">10</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">2</span>)</span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>condition <span class="ot">=</span> x <span class="sc">&lt;</span> <span class="dv">4</span></span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(condition)    <span class="co"># or sum(x &lt; 4)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6</code></pre>
+</div>
+</div>
+<p>If you still don’t quite understand how the code above works, try inspecting each variable. In general, inspecting each step or variable is a good strategy for understanding why a piece of code works (or doesn’t work!). Here the implicit coercion happens in the third line.</p>
+</section>
+<section id="matrices-arrays" class="level3" data-number="13.2.3">
+<h3 data-number="13.2.3" class="anchored" data-anchor-id="matrices-arrays"><span class="header-section-number">13.2.3</span> Matrices &amp; Arrays</h3>
+<p>A <strong>matrix</strong> is the two-dimensional analogue of a vector. The elements, which are arranged into rows and columns, are ordered and homogeneous.</p>
+<p>You can create a matrix from a vector with the <code>matrix</code> function. By default, the columns are filled first:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A matrix with 2 rows and 3 columns:</span></span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]    1    3    5
+[2,]    2    4    6</code></pre>
+</div>
+</div>
+<p>The class of a matrix is always <code>matrix</code>, and the type matches the type of the elements:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">=</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="cn">NA</span>, <span class="st">"c"</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,] "a"  NA  
+[2,] "b"  "c" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "matrix" "array" </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(x)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>You can use the matrix multiplication operator <code>%*%</code> to multiply two matrices with compatible dimensions.</p>
+<p>An <strong>array</strong> is a further generalization of matrices to higher dimensions. You can create an array from a vector with the <code>array</code> function. The characteristics of arrays are almost identical to matrices, but the class of an array is always <code>array</code>.</p>
+</section>
+<section id="sec-factors" class="level3" data-number="13.2.4">
+<h3 data-number="13.2.4" class="anchored" data-anchor-id="sec-factors"><span class="header-section-number">13.2.4</span> Factors</h3>
+<p>A feature is <strong>categorical</strong> if it measures a qualitative category. For example, the genres <code>rock</code>, <code>blues</code>, <code>alternative</code>, <code>folk</code>, <code>pop</code> are categories.</p>
+<p>R uses the class <code>factor</code> to represent categorical data. Visualizations and statistical models sometimes treat factors differently than other data types, so it’s important to make sure you have the right data type. If you’re ever unsure, remember that you can check the class of an object with the <code>class</code> function.</p>
+<p>When it reads a data set, R usually can’t tell which features are categorical. That means identifying and converting the categorical features is up to you. For beginners, it can be difficult to understand whether a feature is categorical or not. The key is to think about whether you want to use the feature to divide the data into groups.</p>
+<p>For example, if you want to know how many songs are in the <code>rock</code> genre, you first need to divide the songs by genre, and then count the number of songs in each group (or at least the <code>rock</code> group).</p>
+<p>As a second example, months recorded as numbers can be categorical or not, depending on how you want to use them. You might want to treat them as categorical (for example, to compute max rainfall in each month) or you might want to treat them as numbers (for example, to compute the number of months time between two events).</p>
+<p>The bottom line is that you have to think about what you’ll be doing in the analysis. In some cases, you might treat a feature as categorical only for part of the analysis.</p>
+<p>Let’s think about which features are categorical in least terns data set. To refresh your memory of what’s in the data set, take a look at the structural summary:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(terns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   791 obs. of  43 variables:
+ $ year               : int  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+ $ site_name          : chr  "PITTSBURG POWER PLANT" "ALBANY CENTRAL AVE" "ALAMEDA POINT" "KETTLEMAN CITY" ...
+ $ site_name_2013_2018: chr  "Pittsburg Power Plant" "NA_NO POLYGON" "Alameda Point" "Kettleman" ...
+ $ site_name_1988_2001: chr  "NA_2013_2018 POLYGON" "Albany Central Avenue" "NA_2013_2018 POLYGON" "NA_2013_2018 POLYGON" ...
+ $ site_abbr          : chr  "PITT_POWER" "AL_CENTAVE" "ALAM_PT" "KET_CTY" ...
+ $ region_3           : chr  "S.F._BAY" "S.F._BAY" "S.F._BAY" "KINGS" ...
+ $ region_4           : chr  "S.F._BAY" "S.F._BAY" "S.F._BAY" "KINGS" ...
+ $ event              : chr  "LA_NINA" "LA_NINA" "LA_NINA" "LA_NINA" ...
+ $ bp_min             : num  15 6 282 2 4 9 30 21 73 166 ...
+ $ bp_max             : num  15 12 301 3 5 9 32 21 73 167 ...
+ $ fl_min             : int  16 1 200 1 4 17 11 9 60 64 ...
+ $ fl_max             : int  18 1 230 2 4 17 11 9 65 64 ...
+ $ total_nests        : int  15 20 312 3 5 9 32 22 73 252 ...
+ $ nonpred_eggs       : int  3 NA 124 NA 2 0 NA 4 2 NA ...
+ $ nonpred_chicks     : int  0 NA 81 3 0 1 27 3 0 NA ...
+ $ nonpred_fl         : int  0 NA 2 1 0 0 0 NA 0 NA ...
+ $ nonpred_ad         : int  0 NA 1 6 0 0 0 NA 0 NA ...
+ $ pred_control       : chr  "" "" "" "" ...
+ $ pred_eggs          : int  4 NA 17 NA 0 NA 0 NA NA NA ...
+ $ pred_chicks        : int  2 NA 0 NA 4 NA 3 NA NA NA ...
+ $ pred_fl            : int  0 NA 0 NA 0 NA 0 NA NA NA ...
+ $ pred_ad            : int  0 NA 0 NA 0 NA 0 NA NA NA ...
+ $ pred_pefa          : chr  "N" "" "N" "" ...
+ $ pred_coy_fox       : chr  "N" "" "N" "" ...
+ $ pred_meso          : chr  "N" "" "N" "" ...
+ $ pred_owlspp        : chr  "N" "" "N" "" ...
+ $ pred_corvid        : chr  "Y" "" "N" "" ...
+ $ pred_other_raptor  : chr  "Y" "" "Y" "" ...
+ $ pred_other_avian   : chr  "N" "" "Y" "" ...
+ $ pred_misc          : chr  "N" "" "N" "" ...
+ $ total_pefa         : int  0 NA 0 NA 0 NA 0 NA NA NA ...
+ $ total_coy_fox      : int  0 NA 0 NA 0 NA 0 NA NA NA ...
+ $ total_meso         : int  0 NA 0 NA 0 NA 0 NA NA NA ...
+ $ total_owlspp       : int  0 NA 0 NA 0 NA 0 NA NA NA ...
+ $ total_corvid       : int  4 NA 0 NA 0 NA 0 NA NA NA ...
+ $ total_other_raptor : int  2 NA 6 NA 0 NA 3 NA NA NA ...
+ $ total_other_avian  : int  0 NA 11 NA 4 NA 0 NA NA NA ...
+ $ total_misc         : int  0 NA 0 NA 0 NA 0 NA NA NA ...
+ $ first_observed     : chr  "2000-05-11" "" "2000-05-01" "2000-06-10" ...
+ $ last_observed      : chr  "2000-08-05" "" "2000-08-19" "2000-09-24" ...
+ $ first_nest         : chr  "2000-05-26" "" "2000-05-16" "2000-06-17" ...
+ $ first_chick        : chr  "2000-06-18" "" "2000-06-07" "2000-07-22" ...
+ $ first_fledge       : chr  "2000-07-08" "" "2000-06-30" "2000-08-06" ...</code></pre>
+</div>
+</div>
+<p>The <code>site_name</code>, <code>site_abbr</code>, and <code>event</code> columns are all examples of categorical data. The <code>region_</code> columns and some of the <code>pred_</code> columns also contain categorical data.</p>
+<p>One way to check whether a feature is useful for grouping (and thus effectively categorical) is to count the number of times each value appears. You can do this with the <code>table</code> function. For instance, to count the number of times each category of <code>event</code> appears:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(terns<span class="sc">$</span>event)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+EL_NINO LA_NINA NEUTRAL 
+    120     258     413 </code></pre>
+</div>
+</div>
+<p>Features with only a few unique values, repeated many times, are ideal for grouping. Numerical features, like <code>total_nests</code>, usually aren’t good for grouping, both because of what they measure and because they tend to have many unique values, which leads to very small groups.</p>
+<p>The <code>year</code> column can be treated as categorical or quantitative data. It’s easy to imagine grouping observations by year, but years are also numerical: they have an order and we might want to do math on them. The most appropriate type for <code>year</code> depends on how we want to use it for analysis.</p>
+<p>You can convert a column to the <code>factor</code> class with the <code>factor</code> function. Try this for the <code>event</code> column:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>event <span class="ot">=</span> <span class="fu">factor</span>(terns<span class="sc">$</span>event)</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>event</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+ [10] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+ [19] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+ [28] LA_NINA LA_NINA NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+ [37] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+ [46] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+ [55] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+ [64] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+ [73] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+ [82] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+ [91] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[100] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[109] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[118] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[127] NEUTRAL EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[136] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[145] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[154] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[163] EL_NINO EL_NINO LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[172] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[181] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[190] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[199] LA_NINA LA_NINA LA_NINA LA_NINA NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[208] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[217] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[226] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[235] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL EL_NINO
+[244] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[253] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[262] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[271] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[280] EL_NINO EL_NINO EL_NINO LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[289] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[298] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[307] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[316] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[325] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[334] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[343] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[352] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[361] LA_NINA LA_NINA LA_NINA LA_NINA NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[370] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[379] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[388] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[397] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[406] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[415] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[424] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[433] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[442] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[451] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[460] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[469] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[478] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[487] NEUTRAL NEUTRAL NEUTRAL NEUTRAL EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[496] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[505] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[514] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[523] EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO EL_NINO
+[532] EL_NINO EL_NINO NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[541] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[550] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[559] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[568] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[577] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[586] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[595] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[604] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[613] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[622] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[631] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[640] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[649] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[658] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[667] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL
+[676] NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL NEUTRAL LA_NINA LA_NINA
+[685] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[694] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[703] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[712] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[721] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[730] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[739] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[748] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[757] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[766] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[775] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+[784] LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA LA_NINA
+Levels: EL_NINO LA_NINA NEUTRAL</code></pre>
+</div>
+</div>
+<p>Notice that factors are printed differently than strings.</p>
+<p>The categories of a factor are called <strong>levels</strong>. You can list the levels with the <code>levels</code> function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(event)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>A factor remembers all possible levels even if you take a subset where some of the levels aren’t present:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>event[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] LA_NINA LA_NINA LA_NINA
+Levels: EL_NINO LA_NINA NEUTRAL</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(event[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "EL_NINO" "LA_NINA" "NEUTRAL"</code></pre>
+</div>
+</div>
+<p>This is an important way factors are different from strings (or <code>character</code> vectors). It ensures that if you plot a factor, the missing levels will still be represented on the plot.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can make a factor forget levels that aren’t present with the <code>droplevels</code> function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">droplevels</span>(event[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] LA_NINA LA_NINA LA_NINA
+Levels: LA_NINA</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="special-values" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="special-values"><span class="header-section-number">13.3</span> Special Values</h2>
+<p>R has four special values to represent missing or invalid data.</p>
+<section id="sec-missing-values" class="level3" data-number="13.3.1">
+<h3 data-number="13.3.1" class="anchored" data-anchor-id="sec-missing-values"><span class="header-section-number">13.3.1</span> Missing Values</h3>
+<p>The value <code>NA</code>, called the <strong>missing value</strong>, represents missing entries in a data set. It’s implied that the entries are missing due to how the data was collected, although there are exceptions. As an example, imagine the data came from a survey, and respondents chose not to answer some questions. In the data set, their answers for those questions can be recorded as <code>NA</code>.</p>
+<p>The missing value is a chameleon: it can be a logical, integer, numeric, complex, or character value. By default, the missing value is logical, and the other types occur through coercion (<a href="#sec-implicit-coercion" class="quarto-xref"><span>Section 13.2.2</span></a>):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "logical"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="fu">c</span>(<span class="st">"hi"</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>The missing value is also contagious: it represents an unknown quantity, so using it as an argument to a function usually produces another missing value. The idea is that if the inputs to a computation are unknown, generally so is the output:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="cn">NA</span> <span class="sc">-</span> <span class="dv">3</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="cn">NA</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>As a consequence, testing whether an object is equal to the missing value with <code>==</code> doesn’t return a meaningful result:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span> <span class="sc">==</span> <span class="cn">NA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="cn">NA</span> <span class="sc">==</span> <span class="cn">NA</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>You can use the <code>is.na</code> function instead:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="cn">NA</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.na</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE  TRUE FALSE</code></pre>
+</div>
+</div>
+<p>Missing values are a feature that sets R apart from most other programming languages.</p>
+</section>
+<section id="infinity" class="level3" data-number="13.3.2">
+<h3 data-number="13.3.2" class="anchored" data-anchor-id="infinity"><span class="header-section-number">13.3.2</span> Infinity</h3>
+<p>The value <code>Inf</code> represents infinity, and can be numeric or complex. You’re most likely to encounter it as the result of certain computations:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="dv">13</span> <span class="sc">/</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] Inf</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">Inf</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<p>You can use the <code>is.infinite</code> function to test whether a value is infinite:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.infinite</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.infinite</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>, <span class="cn">Inf</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  TRUE FALSE  TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="not-a-number" class="level3" data-number="13.3.3">
+<h3 data-number="13.3.3" class="anchored" data-anchor-id="not-a-number"><span class="header-section-number">13.3.3</span> Not a Number</h3>
+<p>The value <code>NaN</code> (“not a number”) represents a quantity that’s undefined mathematically. For instance, dividing 0 by 0 is undefined:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span> <span class="sc">/</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NaN</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">NaN</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<p>Like <code>Inf</code>, <code>NaN</code> can be numeric or complex.</p>
+<p>You can use the <code>is.nan</code> function to test whether a value is <code>NaN</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.nan</span>(<span class="fu">c</span>(<span class="fl">10.1</span>, <span class="fu">log</span>(<span class="sc">-</span><span class="dv">1</span>), <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in log(-1): NaNs produced</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE  TRUE FALSE</code></pre>
+</div>
+</div>
+</section>
+<section id="null" class="level3" data-number="13.3.4">
+<h3 data-number="13.3.4" class="anchored" data-anchor-id="null"><span class="header-section-number">13.3.4</span> Null</h3>
+<p>The value <code>NULL</code> represents a quantity that’s undefined in R. Most of the time, <code>NULL</code> indicates the absence of a result. For instance, vectors don’t have dimensions, so the <code>dim</code> function returns <code>NULL</code> for vectors:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>NULL</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(<span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NULL"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(<span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "NULL"</code></pre>
+</div>
+</div>
+<p>Unlike the other special values, <code>NULL</code> has its own unique type and class.</p>
+<p>You can use the <code>is.null</code> function to test whether a value is <code>NULL</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb164"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.null</span>(<span class="st">"null"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb166"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb166-1"><a href="#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.null</span>(<span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../chapters/week03/intro-to-r.html" class="pagination-link" aria-label="Introduction to R">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Introduction to R</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../chapters/week04/packages.html" class="pagination-link" aria-label="Packages">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Packages</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li><li><a href="https://github.com/ucdavisdatalab/adventures_in_data_science/blob/main/chapters/week03/data-types.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer></body></html>
