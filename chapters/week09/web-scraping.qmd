@@ -505,14 +505,14 @@ xml_find_all(doc, "//div[contains(@class, 'td_block_inner')]")
 ```
 
 That returns a lot of results, so let's try using the `id` attribute, which is
-`"tdi_113"`, instead. Usually the id of an element is unique, so this ensures
+`"tdi_73"`, instead. Usually the id of an element is unique, so this ensures
 that we get the right section.
 
 We can also add in a part about getting links now:
 
 ```{r}
-div = xml_find_all(doc, "//div[@id = 'tdi_113']")
-# OR html_nodes(doc, "div#tdi_113")
+div = xml_find_all(doc, "//div[@id = 'tdi_73']")
+# OR html_nodes(doc, "div#tdi_73")
 
 links = xml_find_all(div, ".//a")
 # OR html_nodes(div, "a")
@@ -550,7 +550,7 @@ and the output will be the article links.
 
 ```{r}
 parse_article_links = function(page) {
-  div = xml_find_all(page, "//div[@id = 'tdi_113']")
+  div = xml_find_all(page, "//div[@id = 'tdi_73']")
   links = xml_find_all(div, ".//h3/a")
   xml_attr(links, "href")
 }
@@ -596,7 +596,7 @@ We can now modify our parser function to return the link to the next page:
 ```{r}
 parse_article_links = function(page) {
   # Get article URLs
-  div = xml_find_all(page, "//div[@id = 'tdi_113']")
+  div = xml_find_all(page, "//div[@id = 'tdi_73']")
   links = xml_find_all(div, ".//h3/a")
   urls = xml_attr(links, "href")
 
@@ -636,7 +636,7 @@ Then the code becomes:
 ```{r}
 parse_article_links = function(page) {
   # Get article URLs
-  div = xml_find_all(page, "//div[@id = 'tdi_113']")
+  div = xml_find_all(page, "//div[@id = 'tdi_73']")
   links = xml_find_all(div, ".//h3/a")
   urls = xml_attr(links, "href")
 
