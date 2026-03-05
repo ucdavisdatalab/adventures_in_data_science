@@ -323,6 +323,70 @@ functions on [Wikipedia][wiki-xpath].
 [wiki-xpath]: https://en.wikipedia.org/wiki/XPath#Functions_and_operators
 
 
+## CSS Selectors
+
+**Cascading style sheets** (CSS) is a language used to control the formatting
+of an XML or HTML document.
+
+**CSS selectors** are the CSS way to write paths to elements. CSS selectors are
+more concise than XPath, so many people prefer them. Even if you prefer CSS
+selectors, it's good to know XPath because CSS selectors are less flexible.
+
+Here's the basic syntax of CSS selectors:
+
+CSS           | Description
+------------- | --------------------------
+`a`           | tags `a`
+`a > b`       | tags `b` directly beneath `a`
+`a b`         | tags `b` anywhere beneath `a`
+`a, b`        | tags `a` or `b`
+`#hi`         | tags with attribute `id="hi"`
+`.hi`         | tags with attribute `class` that contains `"hi"`
+`[foo="hi"]`  | tags with attribute `foo="hi"`
+`[foo*="hi"]` | tags with attribute `foo` that contains `"hi"`
+
+: {.striped .hover}
+
+If you want to learn more, [CSS Diner](http://flukeout.github.io/) is an
+interactive tutorial that covers the entire CSS selector language.
+
+In Firefox, you can get CSS selectors from the web developer tool. Right-click
+the tag you want a selector for and choose "Copy Unique Selector". Beware that
+the selectors Firefox generates are often too specific to be useful for
+anything beyond the simplest web scrapers.
+
+The rvest package uses CSS selectors by default, which is why we've so far had to specify that we are using XPath selectors.
+
+Here are a few examples of CSS selectors, using rvest's `html_elements` function:
+
+```{r}
+html = r"(
+<html>
+  <head>
+    <title>This is the page title!</title>
+  </head>
+  <body>
+    <h1>This is a header!</h1>
+    <p>This is a paragraph.
+      <a href="http://www.r-project.org/">Here's a website!</a>
+    </p>
+    <p id="hello">This is another paragraph.</p>
+  </body>
+</html> )"
+
+doc = read_html(html)
+
+# Get all p elements
+html_elements(doc, "p")
+
+# Get all links
+html_elements(doc, css = "a")
+
+# Get all tags with id="hello"
+html_elements(doc, "#hello")
+```
+
+
 ## The Web Scraping Workflow
 
 Scraping a web page is part technology, part art. The goal is to find an XPath
@@ -381,7 +445,7 @@ terms of service to make sure scraping is not explicitly forbidden.
 :::
 
 
-### Case Study: CA Cities
+## Case Study: CA Cities
 
 [Wikipedia](https://en.wikipedia.org/) has many pages that are just tables of
 data. For example, there's this [list of cities and towns in
@@ -491,7 +555,7 @@ any(is.na(pop))
 cities$population2020 = pop
 ```
 
-### Case Study: The CA Aggie
+## Case Study: The CA Aggie
 
 Suppose we want to scrape The California Aggie.
 
@@ -719,67 +783,3 @@ while (!is.na(url)) {
 ```
 
 Now we've got the basis for a simple scraper.
-
-
-## CSS Selectors
-
-**Cascading style sheets** (CSS) is a language used to control the formatting
-of an XML or HTML document.
-
-**CSS selectors** are the CSS way to write paths to elements. CSS selectors are
-more concise than XPath, so many people prefer them. Even if you prefer CSS
-selectors, it's good to know XPath because CSS selectors are less flexible.
-
-Here's the basic syntax of CSS selectors:
-
-CSS           | Description
-------------- | --------------------------
-`a`           | tags `a`
-`a > b`       | tags `b` directly beneath `a`
-`a b`         | tags `b` anywhere beneath `a`
-`a, b`        | tags `a` or `b`
-`#hi`         | tags with attribute `id="hi"`
-`.hi`         | tags with attribute `class` that contains `"hi"`
-`[foo="hi"]`  | tags with attribute `foo="hi"`
-`[foo*="hi"]` | tags with attribute `foo` that contains `"hi"`
-
-: {.striped .hover}
-
-If you want to learn more, [CSS Diner](http://flukeout.github.io/) is an
-interactive tutorial that covers the entire CSS selector language.
-
-In Firefox, you can get CSS selectors from the web developer tool. Right-click
-the tag you want a selector for and choose "Copy Unique Selector". Beware that
-the selectors Firefox generates are often too specific to be useful for
-anything beyond the simplest web scrapers.
-
-The rvest package uses CSS selectors by default, which is why we've so far had to specify that we are using XPath selectors.
-
-Here are a few examples of CSS selectors, using rvest's `html_elements` function:
-
-```{r}
-html = r"(
-<html>
-  <head>
-    <title>This is the page title!</title>
-  </head>
-  <body>
-    <h1>This is a header!</h1>
-    <p>This is a paragraph.
-      <a href="http://www.r-project.org/">Here's a website!</a>
-    </p>
-    <p id="hello">This is another paragraph.</p>
-  </body>
-</html> )"
-
-doc = read_html(html)
-
-# Get all p elements
-html_elements(doc, "p")
-
-# Get all links
-html_elements(doc, css = "a")
-
-# Get all tags with id="hello"
-html_elements(doc, "#hello")
-```
