@@ -28,6 +28,7 @@ After this lesson, you should be able to:
 :::{.callout-important title="Required Packages"}
 This chapter uses the following packages:
 
+* lubridate
 * rvest
 * stringr
 
@@ -524,27 +525,41 @@ names(cities) = c(
 )
 ```
 
-How can we clean up the `date` column? The `as.Date` function converts a string
-into a date R understands. The idea is to match the date string to a _format
-string_ where the components of the date are indicated by codes that start with
-`%`. For example, `%m` stands for the month as a two-digit number. You can read
-about the different date format codes in `?strptime`.
-
-Here's the code to convert the dates in the data frame:
+How can we clean up the `date` column? Recall from @sec-date-processing that
+the lubridate package provides a variety of functions for parsing strings into
+dates. In this case, we need a function that parses month, day, and year, which
+means the `mdy` function. Here's the code to convert the dates in the data
+frame:
 
 ```{r}
-dates = as.Date(cities$date, "%B %m, %Y")
-cities$date = dates
+library("lubridate")
+
+dates = mdy(cities$date)
 ```
 
-We can also convert the population to a number:
+One of the strings fails to parse. We can use `is.na` to find out which one:
 
 ```{r}
-class(cities$population2020)
+cities$date[is.na(dates)]
+```
 
-# Remove commas and footnotes (e.g., [1]) before conversion
+It looks like this date has a footnote after it. We can fix this with the
+stringr package. We'll use `str_split_fixed` to split the dates on `[` and keep
+only the first part:
+
+```{r}
 library("stringr")
 
+dates = str_split_fixed(cities$date, fixed("["), 2)
+dates = dates[, 1]
+cities$date = mdy(dates)
+```
+
+We should also convert the population to a number. Again we need to remove
+footnotes. This time we'll use a different approach:
+
+```{r}
+# Remove commas and footnotes (e.g., [1]) before conversion
 pop = str_replace_all(cities$population2020, ",", "")
 pop = str_replace_all(pop, "\\[[0-9]+\\]", "")
 pop = as.numeric(pop)
@@ -554,6 +569,13 @@ any(is.na(pop))
 
 cities$population2020 = pop
 ```
+
+Now the data frame is quite a bit cleaner:
+
+```{r}
+head(cities)
+```
+
 
 ## Case Study: The CA Aggie
 
