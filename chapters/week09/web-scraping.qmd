@@ -112,38 +112,23 @@ See [here][html_basics] for a more detailed explanation of HTML, and
 [html_ref]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element
 
 
-## R's XML Parsers
+## The rvest Package
 
-A **parser** converts structured data into familiar data structures. R has two
-popular packages for parsing XML (and HTML):
+A **parser** converts structured data into familiar data structures. The
+[rvest][] package is designed to parse HTML. It can scrape HTML tables
+automatically and supports two different ways to select tags: XPath and CSS
+selectors (both described in subsequent sections).
 
-* The XML package
-* The [xml2 package][xml2]
-
-The XML package has more features. The xml2 package is more user-friendly, and
-as part of the Tidyverse, it's relatively well-documented. This lesson focuses
-on xml2, since most of the additional features in the XML package are related
-to writing (rather than parsing) XML documents.
-
-The xml2 package is often used in conjunction with the [rvest package][rvest],
-which provides support for CSS selectors (described later in this lesson) and
-automates scraping HTML tables.
-
-[xml2]: https://xml2.r-lib.org/
 [rvest]: https://rvest.tidyverse.org/
 
-The first time you use these packages, you'll have to install them:
+Let's get acquainted with rvest by parsing the example of a complete web page
+from earlier. The rvest function `read_html` reads an HTML document. It accepts
+either an HTML string or a file path (including URLs):
 
 ```{r}
-#| eval: false
-install.packages("rvest")
-```
+# install.packages("rvest")
+library("rvest")
 
-Let's start by parsing the example of a complete web page from earlier. The rvest function
-`read_html` reads an HTML document. It accepts either an HTML string or a file
-path (including URLs):
-
-```{r}
 html = r"(
 <html>
   <head>
@@ -158,8 +143,6 @@ html = r"(
   </body>
 </html> )"
 
-library("rvest")
-
 doc = read_html(html)
 doc
 ```
@@ -172,6 +155,7 @@ are the `head` and `body` tags:
 
 ```{r}
 tags = html_children(doc)
+tags
 ```
 
 The result from `html_children` is a **node set** (`xml_nodeset` object). Think
@@ -196,6 +180,23 @@ html_text(title)
 
 Navigating through the tags by hand is tedious and easy to get wrong, but
 fortunately there's a better way to find the tags we want.
+
+:::{.callout-note}
+Sometimes you might need to parse XML rather than HTML. R has two popular
+packages for parsing XML:
+
+* The XML package
+* The [xml2 package][xml2]
+
+[xml2]: https://xml2.r-lib.org/
+
+The XML package has more features, most of which are related to writing (rather
+than parsing) XML documents.
+
+The xml2 package is more user-friendly, and as part of the Tidyverse, it's
+relatively well-documented. The rvest package is based on the xml2 package.
+:::
+
 
 ## XPath
 
